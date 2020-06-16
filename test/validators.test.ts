@@ -1,4 +1,4 @@
-import { Log, Action, CopyAction, Validator, ContextContract, DeleteAction } from '../src';
+import { Log, Action, CopyActionContract, Validator, ContextContract, DeleteActionContract } from '../src';
 import { mock } from 'jest-mock-extended';
 
 const context = mock<ContextContract>();
@@ -21,7 +21,7 @@ describe('Validator', () => {
 
 describe('Copy Validator', () => {
   it('returns defaults values', async () => {
-    const copyAction: Partial<CopyAction> = {
+    const copyAction: Partial<CopyActionContract> = {
       type: 'copy',
     };
 
@@ -36,7 +36,7 @@ describe('Copy Validator', () => {
   });
 
   it('returns passed values', async () => {
-    const copyAction: Partial<CopyAction> = {
+    const copyAction: Partial<CopyActionContract> = {
       files: 'subfolder/**/*',
       strategy: 'skip',
       target: 'subfolder',
@@ -56,7 +56,7 @@ describe('Copy Validator', () => {
 
 describe('Delete Validator', () => {
   it('returns default values', async () => {
-    const deleteAction: Partial<DeleteAction> = {
+    const deleteAction: Partial<DeleteActionContract> = {
       type: 'delete',
     };
 
@@ -69,7 +69,7 @@ describe('Delete Validator', () => {
   });
 
   it('returns passed values', async () => {
-    const deleteAction: Partial<DeleteAction> = {
+    const deleteAction: Partial<DeleteActionContract> = {
       files: ['some-file.txt', 'subfolder/file.txt'],
       type: 'delete',
     };

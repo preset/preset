@@ -1,9 +1,9 @@
-import { ActionContract } from '../Contracts';
+import { ActionContract } from '.';
 
 /**
  * Copies the files
  */
-export interface CopyAction extends ActionContract<'copy'> {
+export interface CopyActionContract extends ActionContract<'copy'> {
   /**
    * A glob matching files in the template directory.
    */

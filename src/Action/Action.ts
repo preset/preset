@@ -1,3 +1,3 @@
-import { CopyAction, DeleteAction, UpdateJsonFileAction } from './Actions';
+import { CopyActionContract, DeleteActionContract, UpdateJsonFileActionContract } from './Contracts';
 
-export type Action = CopyAction | DeleteAction; //| UpdateJsonFileAction;
+export type Action = CopyActionContract | DeleteActionContract | UpdateJsonFileActionContract;

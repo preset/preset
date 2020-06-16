@@ -3,7 +3,6 @@ import { Preset } from './Preset';
 import path from 'path';
 import ts from 'typescript';
 import fs from 'fs';
-import { CopyValidator } from 'Validator';
 
 export class Parser {
   /**
@@ -79,10 +78,6 @@ export class Parser {
    */
   private static async run(context: ContextContract): Promise<void> {
     const actions = await context.generator.actions(context);
-
-    const validators = {
-      copy: CopyValidator,
-    };
 
     // Validates actions first.
     // If one action is not correctly parsed, the whole preset is compromised.

@@ -1,5 +1,5 @@
 import { Action, ContextContract, Log, Color } from '../';
-import { CopyValidator, DeleteValidator } from './Validators';
+import { CopyValidator, DeleteValidator, UpdateJsonFileValidator, ValidatorContract } from './';
 
 /**
  * A validator that takes an action and validates it against its assigned validator.
@@ -8,6 +8,7 @@ export class Validator {
   private static validators = {
     copy: CopyValidator,
     delete: DeleteValidator,
+    'update-json-file': UpdateJsonFileValidator,
   };
 
   /**
@@ -18,7 +19,7 @@ export class Validator {
       return Log.exit(`Invalid action of ${Color.keyword(action.type ?? 'undefined')} type.`);
     }
 
-    // @ts-expect-error TODO - understand this one
+    // @ts-expect-error
     return new this.validators[action.type]().validate(action, context);
   }
 }

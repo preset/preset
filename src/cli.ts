@@ -1,5 +1,5 @@
 import { parse, flags } from '@oclif/parser';
-import { Preset } from './Preset';
+import { Parser } from './Preset';
 
 class Command {
   protected args = [
@@ -24,7 +24,7 @@ class Command {
       strict: false,
     });
 
-    await Preset.run(args.preset, flags.debug !== false, argv.splice(1));
+    await Parser.handle(args.preset, flags.debug !== false, argv.splice(1));
   }
 }
 
