@@ -1,7 +1,7 @@
-import { Action } from '../Action/Action';
+import { Action } from '../../Action/Action';
 import { ContextContract } from './ContextContract';
 
-export interface Generator {
+export interface GeneratorContract {
   /**
    * The name of the preset.
    */

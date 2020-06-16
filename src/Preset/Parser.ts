@@ -1,4 +1,4 @@
-import { Log, Color, ContextContract, PresetPackage, Resolver, Validator } from '../';
+import { Log, Color, ContextContract, PackageContract, Resolver, Validator } from '../';
 import { Preset } from './Preset';
 import path from 'path';
 import ts from 'typescript';
@@ -7,9 +7,10 @@ import fs from 'fs';
 export class Parser {
   /**
    * Tries to find a preset of the given name.
-   * @param name
-   * @param debug
-   * @param args
+   *
+   * @param name The name of the preset.
+   * @param debug Whether or not to display debug messages.
+   * @param args Additional command line arguments.
    */
   static async handle(name: string, debug: boolean, args: string[]): Promise<void> {
     Log.configure({ debug });
@@ -33,6 +34,8 @@ export class Parser {
    * Returns a preset context from the given directory.
    *
    * @param directory A preset directory.
+   * @param temporary Whether or not the directory is temporary.
+   * @param args Additional command line arguments.
    */
   private static async parse(
     directory: string,
@@ -53,7 +56,7 @@ export class Parser {
       return Log.exit(`${Color.directory(directory)} does not have a ${Color.file('package.json')}.`);
     }
 
-    const presetPackage = require(packagePath) as PresetPackage;
+    const presetPackage = require(packagePath) as PackageContract;
     const presetAbsolutePath = path.join(directory, presetPackage.preset ?? 'preset.js');
 
     // Preset file check
@@ -79,6 +82,8 @@ export class Parser {
 
   /**
    * Runs the preset for the given context.
+   *
+   * @param context The current preset context.
    */
   private static async run(context: ContextContract): Promise<void> {
     const actions = await context.generator.actions(context);

@@ -1,4 +1,4 @@
-import { Log, ContextContract, Generator, PresetPackage } from '../';
+import { Log, ContextContract, GeneratorContract, PackageContract } from '../';
 import path from 'path';
 
 /**
@@ -6,9 +6,9 @@ import path from 'path';
  * to get the current context.
  */
 export class Preset {
-  private generator: Generator;
+  private generator: GeneratorContract;
 
-  private constructor(generator: Generator) {
+  private constructor(generator: GeneratorContract) {
     this.generator = generator;
   }
 
@@ -18,7 +18,7 @@ export class Preset {
    *
    * @param generator The generator object.
    */
-  static make(generator: Generator): Generator {
+  static make(generator: GeneratorContract): GeneratorContract {
     return generator;
   }
 
@@ -27,7 +27,7 @@ export class Preset {
    *
    * @param generator The generator object.
    */
-  static from(generator: Generator): Preset {
+  static from(generator: GeneratorContract): Preset {
     return new Preset(generator);
   }
 
@@ -59,7 +59,7 @@ export class Preset {
    */
   generateContext(
     resolved: string,
-    presetPackage: PresetPackage,
+    presetPackage: PackageContract,
     temporary: boolean,
     ...args: string[]
   ): ContextContract {

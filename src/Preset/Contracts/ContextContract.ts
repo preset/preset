@@ -1,4 +1,4 @@
-import { Generator } from './Generator';
+import { GeneratorContract } from './GeneratorContract';
 
 export interface ContextContract {
   /**
@@ -29,7 +29,7 @@ export interface ContextContract {
   /**
    * The generator object.
    */
-  generator: Generator;
+  generator: GeneratorContract;
 
   /**
    * Additional command line arguments.

@@ -1,4 +1,4 @@
-export interface PresetPackage {
+export interface PackageContract {
   name: string;
   version: string;
   license: string;
