@@ -1,5 +1,5 @@
 import { Action } from './Action';
-import { Context } from './Context';
+import { ContextContract } from './ContextContract';
 
 export interface Generator {
   /**
@@ -15,10 +15,10 @@ export interface Generator {
   /**
    * A list of prompts messages.
    */
-  prompts?: (context: Context) => Promise<void> | void;
+  prompts?: (context: ContextContract) => Promise<void> | void;
 
   /**
    * A list of actions to execute.
    */
-  actions: (context: Context) => Promise<Action[]> | Action[];
+  actions: (context: ContextContract) => Promise<Action[]> | Action[];
 }

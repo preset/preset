@@ -1,6 +1,6 @@
 import { Generator } from './Generator';
 
-export interface Context {
+export interface ContextContract {
   /**
    * Name of the preset
    */

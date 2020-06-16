@@ -1,4 +1,4 @@
-import { Log, Context, Generator, PresetPackage } from '../';
+import { Log, ContextContract, Generator, PresetPackage } from '../';
 import path from 'path';
 
 /**
@@ -57,7 +57,7 @@ export class Preset {
    * @param presetPackage The package.json of the preset.
    * @param args Additional command line arguments
    */
-  generateContext(resolved: string, presetPackage: PresetPackage, ...args: string[]): Context {
+  generateContext(resolved: string, presetPackage: PresetPackage, ...args: string[]): ContextContract {
     return {
       args,
       presetName: this.generator.name || presetPackage.name || 'Unnamed',

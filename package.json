@@ -38,6 +38,7 @@
     "@types/jest": "^26.0.0",
     "@types/tmp": "^0.2.0",
     "jest": "^26.0.1",
+    "jest-mock-extended": "^1.0.9",
     "rimraf": "^3.0.2",
     "standard-version": "^8.0.0",
     "ts-jest": "^26.1.0",

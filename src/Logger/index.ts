@@ -1,6 +1,7 @@
 import { MessageNode, ActionNames } from '@poppinss/fancy-logs/build/src/contracts';
 import { Logger as BaseLogger } from '@poppinss/fancy-logs';
 import { Colors, FakeColors } from '@poppinss/colors';
+import stripAnsi from 'strip-ansi';
 import figures from 'figures';
 import fs from 'fs';
 import path from 'path';
@@ -8,6 +9,7 @@ import path from 'path';
 interface LoggerOptions {
   debug: boolean;
   fake: boolean;
+  color: boolean;
 }
 
 class Logger {
@@ -24,13 +26,17 @@ class Logger {
    * Fake the logger.
    */
   public fake(): this {
-    return this.configure({ fake: true });
+    return this.configure({ fake: true, color: false });
+  }
+
+  get logs(): string[] {
+    return this.logger.logs;
   }
 
   /**
    * Configures the debugger.
    */
-  configure({ fake, debug }: Partial<LoggerOptions> = {}): this {
+  configure({ fake, debug, color }: Partial<LoggerOptions> = {}): this {
     const data = JSON.parse(<string>(<unknown>fs.readFileSync(path.resolve(__dirname, '..', '..', 'package.json'))));
     const scopes = [Object.keys(data.bin).shift() ?? '', '*'];
 
@@ -39,7 +45,7 @@ class Logger {
       this.debugging = scopes.some(scope => (process.env.DEBUG ?? '').includes(scope));
     }
 
-    this.logger = new BaseLogger({ fake });
+    this.logger = new BaseLogger({ fake, color });
     this.logger.actions = {
       ...this.logger.actions,
       skip: {
@@ -127,17 +133,18 @@ class Logger {
    */
   public exit(message: string | MessageNode | Error, ...args: string[]): never {
     this.logger.log('error', message, ...args);
-    process.exit();
+    process.exit(0);
   }
 }
 
 const Log = new Logger();
+// TODO clean up this shit xd
 const Color = {
-  directory: Log.colors.underline,
-  file: Log.colors.underline,
-  keyword: Log.colors.yellow,
-  link: Log.colors.cyan,
-  preset: Log.colors.cyan,
+  directory: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
+  file: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
+  keyword: (text: string) => (Log.isFake() ? text : Log.colors.yellow(text)),
+  link: (text: string) => (Log.isFake() ? text : Log.colors.cyan(text)),
+  preset: (text: string) => (Log.isFake() ? text : Log.colors.cyan(text)),
 };
 
 export { Log, Color };

@@ -1,5 +1,5 @@
 export * from './Action';
 export * from './Actions';
-export * from './Context';
+export * from './ContextContract';
 export * from './Generator';
 export * from './PresetPackage';

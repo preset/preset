@@ -1,8 +1,9 @@
-import { Log, Color, Context, PresetPackage, Resolver } from '../';
+import { Log, Color, ContextContract, PresetPackage, Resolver, Validator } from '../';
 import { Preset } from './Preset';
 import path from 'path';
 import ts from 'typescript';
 import fs from 'fs';
+import { CopyValidator } from 'Validator';
 
 export class Parser {
   /**
@@ -34,7 +35,7 @@ export class Parser {
    *
    * @param directory A preset directory.
    */
-  private static async parse(directory: string, ...args: string[]): Promise<Context> | never {
+  private static async parse(directory: string, ...args: string[]): Promise<ContextContract> | never {
     Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
 
     // Directory check
@@ -76,21 +77,25 @@ export class Parser {
   /**
    * Runs the preset for the given context.
    */
-  private static async run(context: Context): Promise<void> {
+  private static async run(context: ContextContract): Promise<void> {
     const actions = await context.generator.actions(context);
 
-    // Validates actions
+    const validators = {
+      copy: CopyValidator,
+    };
+
+    // Validates actions first.
+    // If one action is not correctly parsed, the whole preset is compromised.
+    // The validator returns an action with its defaults.
     const validated = await Promise.all(
-      actions
-        .map(async action => {
-          return await Validator.validate(context, action);
-        })
-        .filter(async action => false !== (await action))
+      actions.map(async action => {
+        return await Validator.validate(action, context);
+      })
     );
 
     // Executes actions
-    for (const action of validated) {
-      await Action.execute(context, <ActionContract>action); // TODO test that
-    }
+    // for (const action of validated) {
+    //   await Action.execute(context, <ActionContract>action); // TODO test that
+    // }
   }
 }
