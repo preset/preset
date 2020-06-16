@@ -18,15 +18,7 @@ export class Validator {
       return Log.exit(`Invalid action of ${Color.keyword(action.type ?? 'undefined')} type.`);
     }
 
-    // @ts-ignore
+    // @ts-expect-error TODO - understand this one
     return new this.validators[action.type]().validate(action, context);
-  }
-}
-
-export abstract class AbstractValidator<T = Action> {
-  constructor(protected action: Partial<T>, protected context: ContextContract) {}
-
-  protected async validate(): Promise<T | false> {
-    throw new Error('This method should be implemented.');
   }
 }
