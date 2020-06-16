@@ -1,8 +1,13 @@
 {
   "name": "use-preset",
   "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "bin": {
     "use-preset": "./bin/run"
+  },
+  "engines": {
+    "node": ">=10"
   },
   "keywords": [
     "scaffolding",
