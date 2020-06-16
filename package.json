@@ -1,6 +1,12 @@
 {
   "name": "use-preset",
+  "version": "0.0.1-alpha.8",
   "license": "MIT",
+  "author": {
+    "name": "Enzo Innocenzi",
+    "email": "enzo@innocenzi.dev",
+    "url": "https://github.com/innocenzi"
+  },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "bin": {
