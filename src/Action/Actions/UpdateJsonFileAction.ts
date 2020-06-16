@@ -1,4 +1,4 @@
-import { BaseAction } from './BaseAction';
+import { ActionContract } from '../Contracts';
 
 export interface JSON {
   [key: string]: string | string[] | JSON;
@@ -7,7 +7,7 @@ export interface JSON {
 /**
  * Update a JSON file.
  */
-export interface UpdateJsonFileAction extends BaseAction<'update-json-file'> {
+export interface UpdateJsonFileAction extends ActionContract<'update-json-file'> {
   /**
    * A path relative to the target directory, pointing to the JSON file.
    */

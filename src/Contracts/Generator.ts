@@ -1,4 +1,4 @@
-import { Action } from './Action';
+import { Action } from '../Action/Action';
 import { ContextContract } from './ContextContract';
 
 export interface Generator {

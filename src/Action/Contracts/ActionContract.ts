@@ -1,4 +1,4 @@
-export interface BaseAction<T> {
+export interface ActionContract<T> {
   /**
    * The type of the action.
    */
