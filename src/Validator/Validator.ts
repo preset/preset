@@ -1,5 +1,5 @@
 import { Action, ContextContract, Log, Color } from '../';
-import { CopyValidator } from './Validators';
+import { CopyValidator, DeleteValidator } from './Validators';
 
 /**
  * A validator that takes an action and validates it against its assigned validator.
@@ -7,8 +7,7 @@ import { CopyValidator } from './Validators';
 export class Validator {
   private static validators = {
     copy: CopyValidator,
-    delete: CopyValidator,
-    'update-json-file': CopyValidator,
+    delete: DeleteValidator,
   };
 
   /**
@@ -19,11 +18,12 @@ export class Validator {
       return Log.exit(`Invalid action of ${Color.keyword(action.type ?? 'undefined')} type.`);
     }
 
+    // @ts-ignore
     return new this.validators[action.type]().validate(action, context);
   }
 }
 
-export abstract class AbstractValidator<T extends Action> {
+export abstract class AbstractValidator<T = Action> {
   constructor(protected action: Partial<T>, protected context: ContextContract) {}
 
   protected async validate(): Promise<T | false> {

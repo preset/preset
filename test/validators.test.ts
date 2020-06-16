@@ -1,9 +1,25 @@
-import { Log, CopyAction, Validator, ContextContract } from '../src';
+import { Log, Action, CopyAction, Validator, ContextContract, DeleteAction } from '../src';
 import { mock } from 'jest-mock-extended';
 
-describe('Copy Validator', () => {
-  const context = mock<ContextContract>();
+const context = mock<ContextContract>();
 
+describe('Validator', () => {
+  it('throws if given an action of unknown type', async () => {
+    Log.fake();
+
+    // @ts-expect-error
+    const action: Partial<Action> = { type: 'not-a-known-action-type' };
+    const exit = jest.spyOn(process, 'exit').mockImplementation();
+
+    const validated = await Validator.validate(action, context);
+
+    expect(Log.logs).toContainEqual('error Invalid action of not-a-known-action-type type.');
+    expect(exit).toHaveBeenCalled();
+    expect(validated).toBeUndefined();
+  });
+});
+
+describe('Copy Validator', () => {
   it('returns defaults values', async () => {
     const copyAction: Partial<CopyAction> = {
       type: 'copy',
@@ -19,17 +35,50 @@ describe('Copy Validator', () => {
     });
   });
 
-  it('throws if unknown type', async () => {
-    Log.fake();
-
-    // @ts-expect-error
-    const copyAction: Partial<CopyAction> = { type: 'not-a-copy-action' };
-    const exit = jest.spyOn(process, 'exit').mockImplementation();
+  it('returns passed values', async () => {
+    const copyAction: Partial<CopyAction> = {
+      files: 'subfolder/**/*',
+      strategy: 'skip',
+      target: 'subfolder',
+      type: 'copy',
+    };
 
     const validated = await Validator.validate(copyAction, context);
 
-    expect(Log.logs).toContainEqual('error Invalid action of not-a-copy-action type.');
-    expect(exit).toHaveBeenCalled();
-    expect(validated).toBeUndefined();
+    expect(validated).toStrictEqual({
+      files: 'subfolder/**/*',
+      strategy: 'skip',
+      target: 'subfolder',
+      type: 'copy',
+    });
+  });
+});
+
+describe('Delete Validator', () => {
+  it('returns default values', async () => {
+    const deleteAction: Partial<DeleteAction> = {
+      type: 'delete',
+    };
+
+    const validated = await Validator.validate(deleteAction, context);
+
+    expect(validated).toStrictEqual({
+      files: [],
+      type: 'delete',
+    });
+  });
+
+  it('returns passed values', async () => {
+    const deleteAction: Partial<DeleteAction> = {
+      files: ['some-file.txt', 'subfolder/file.txt'],
+      type: 'delete',
+    };
+
+    const validated = await Validator.validate(deleteAction, context);
+
+    expect(validated).toStrictEqual({
+      files: ['some-file.txt', 'subfolder/file.txt'],
+      type: 'delete',
+    });
   });
 });
