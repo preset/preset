@@ -11,9 +11,9 @@ export class UpdateJsonFileValidator implements ValidatorContract<UpdateJsonFile
     }
 
     return {
+      strategy: 'create',
       ...action,
       target: action.target,
-      strategy: 'create',
       type: 'update-json-file',
     };
   }

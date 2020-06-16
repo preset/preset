@@ -21,7 +21,7 @@ export interface UpdateJsonFileActionContract extends ActionContract<'update-jso
   /**
    * Deeply remove the given JSON object.
    */
-  remove?: string | number | symbol;
+  remove?: string | string[];
 
   /**
    * Replace with the given JSON object.
