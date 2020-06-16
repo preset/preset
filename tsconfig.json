@@ -1,15 +1,25 @@
 {
-	"compilerOptions": {
-		"target": "es2017",
-		"module": "commonjs",
-		"outDir": "dist",
-		"rootDir": "src",
-		"strict": true,
-		"importHelpers": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"declaration": true,
-		"forceConsistentCasingInFileNames": true
-	},
-	"include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "module": "CommonJS",
+    // "lib": ["ES2015"],
+    "target": "ES2017",
+    "outDir": "dist",
+    "rootDir": "src",
+    "importHelpers": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/*", "node_modules/*"]
+    }
+  }
 }
