@@ -1,3 +1,3 @@
 export * from './Validators';
 export * from './Validator';
-export * from './ValidatorContract';
+export * from './Contracts';
