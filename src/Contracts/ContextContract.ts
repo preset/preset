@@ -35,4 +35,9 @@ export interface ContextContract {
    * Additional command line arguments.
    */
   args: string[];
+
+  /**
+   * True if the current preset directory is temporary.
+   */
+  temporary: boolean;
 }

@@ -1,12 +1,18 @@
-import { ResolverContract } from '../ResolverContract';
+import { ResolverContract, ResolverResultContract } from '../Contracts';
 import fs from 'fs';
 
 export class LocalResolver implements ResolverContract {
-  async resolve(input: string): Promise<string | false> {
+  async resolve(input: string): Promise<ResolverResultContract> {
     if (!fs.existsSync(input)) {
-      return false;
+      return {
+        success: false,
+      };
     }
 
-    return input;
+    return {
+      success: true,
+      path: input,
+      temporary: false,
+    };
   }
 }

@@ -16,8 +16,8 @@ export class Parser {
 
     // Resolves and parses the preset
     Log.debug(`Current working directory is ${Color.directory(process.cwd())}.`);
-    const directory = await Resolver.resolve(name);
-    const context = await this.parse(directory, ...args);
+    const { path, temporary } = await Resolver.resolve(name);
+    const context = await this.parse(path!, temporary!, ...args);
 
     // Preset has been found
     Log.debug(`Running preset ${Color.preset(context.presetName ?? name)}.`);
@@ -34,7 +34,11 @@ export class Parser {
    *
    * @param directory A preset directory.
    */
-  private static async parse(directory: string, ...args: string[]): Promise<ContextContract> | never {
+  private static async parse(
+    directory: string,
+    temporary: boolean,
+    ...args: string[]
+  ): Promise<ContextContract> | never {
     Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
 
     // Directory check
@@ -70,7 +74,7 @@ export class Parser {
       return Log.exit(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
     }
 
-    return preset.generateContext(directory, presetPackage, ...args);
+    return preset.generateContext(directory, presetPackage, temporary, ...args);
   }
 
   /**

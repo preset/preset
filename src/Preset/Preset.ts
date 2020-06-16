@@ -57,9 +57,15 @@ export class Preset {
    * @param presetPackage The package.json of the preset.
    * @param args Additional command line arguments
    */
-  generateContext(resolved: string, presetPackage: PresetPackage, ...args: string[]): ContextContract {
+  generateContext(
+    resolved: string,
+    presetPackage: PresetPackage,
+    temporary: boolean,
+    ...args: string[]
+  ): ContextContract {
     return {
       args,
+      temporary,
       presetName: this.generator.name || presetPackage.name || 'Unnamed',
       targetDirectory: process.cwd(),
       presetDirectory: path.join(resolved),
