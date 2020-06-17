@@ -1,4 +1,4 @@
-import { HandlerContract, CopyHandler } from './';
+import { DeleteHandler, CopyHandler } from './';
 import { Action, ContextContract, Log, Color } from '../';
 
 /**
@@ -7,7 +7,7 @@ import { Action, ContextContract, Log, Color } from '../';
 export class Handler {
   private static handlers = {
     copy: CopyHandler,
-    // delete: DeleteValidator,
+    delete: DeleteHandler,
     // 'update-json-file': UpdateJsonFileValidator,
   };
 

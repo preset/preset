@@ -3,6 +3,8 @@ import path from 'path';
 import tmp from 'tmp';
 import fs from 'fs-extra';
 
+const STUB_DIRECTORY = path.join(__dirname, '__stubs__');
+
 async function testTemporaryResolver(input: string, results: ResolverResultContract[]) {
   const result = await Resolver.resolve(input);
   const directory = result?.path ?? '';
@@ -22,7 +24,7 @@ async function testTemporaryResolver(input: string, results: ResolverResultContr
 
 describe('Local Resolver', () => {
   it('returns a successful response when finding a local directory', async () => {
-    const preset = path.join(__dirname, 'stubs', 'copy');
+    const preset = path.join(STUB_DIRECTORY, 'copy');
     const result = await Resolver.resolve(preset);
 
     expect(result).toStrictEqual({
@@ -35,7 +37,7 @@ describe('Local Resolver', () => {
   it('throws an error when it cannot find a local directory', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const preset = path.join(__dirname, 'stubs', 'preset-that-does-not-exist');
+    const preset = path.join(STUB_DIRECTORY, 'preset-that-does-not-exist');
     const result = await Resolver.resolve(preset);
 
     expect(Log.logs).toContainEqual(`error Could not find preset ${preset}.`);

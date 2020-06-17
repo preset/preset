@@ -1,10 +1,10 @@
-import { Prompt, CopyHandler, ContextContract, CopyActionContract, Log } from '../src';
+import { Prompt, CopyHandler, ContextContract, CopyActionContract, Log } from '../../src';
 import { mock } from 'jest-mock-extended';
 import path from 'path';
 import fs from 'fs-extra';
 
-const TARGET_DIRECTORY = path.join(__dirname, 'target');
-const TEMPLATES_DIRECTORY = path.join(__dirname, 'templates');
+const TARGET_DIRECTORY = path.join(__dirname, '..', '__target__');
+const TEMPLATES_DIRECTORY = path.join(__dirname, '..', '__templates__');
 
 beforeEach(async () => {
   await fs.emptyDir(TARGET_DIRECTORY);

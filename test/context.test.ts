@@ -1,9 +1,11 @@
 import { Parser, Log, ContextContract } from '../src';
 import path from 'path';
 
+const STUB_DIRECTORY = path.join(__dirname, '__stubs__');
+
 describe('Context', () => {
   it('parses extra flags and arguments', async () => {
-    const directory = path.join(__dirname, 'stubs', 'args');
+    const directory = path.join(STUB_DIRECTORY, 'args');
     const context = await Parser.parse(directory, false, ...['--auth', 'hello world']);
 
     expect(context?.args?.input).toBe('hello world');
@@ -13,7 +15,7 @@ describe('Context', () => {
   it('throws an error when a required argument is not given', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const directory = path.join(__dirname, 'stubs', 'args');
+    const directory = path.join(STUB_DIRECTORY, 'args');
     const context = await Parser.parse(directory, false, ...['--auth']);
 
     expect(Log.logs).toStrictEqual([
@@ -27,7 +29,7 @@ describe('Context', () => {
   it('throws when the given directory does not exist', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const directory = path.join(__dirname, 'stubs', 'inexisting-preset-directory');
+    const directory = path.join(STUB_DIRECTORY, 'inexisting-preset-directory');
     const context = await Parser.parse(directory, false);
 
     expect(exit).toHaveBeenCalled();
@@ -38,7 +40,7 @@ describe('Context', () => {
   it('throws when there is no package.json', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const directory = path.join(__dirname, 'stubs', 'packageless-preset');
+    const directory = path.join(STUB_DIRECTORY, 'packageless-preset');
     const context = await Parser.parse(directory, false);
 
     expect(exit).toHaveBeenCalled();
@@ -49,7 +51,7 @@ describe('Context', () => {
   it('throws when the specified preset file does not exist', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const directory = path.join(__dirname, 'stubs', 'wrong-preset-file');
+    const directory = path.join(STUB_DIRECTORY, 'wrong-preset-file');
     const presetFile = require(path.join(directory, 'package.json')).preset;
     const context = await Parser.parse(directory, false);
 
@@ -61,7 +63,7 @@ describe('Context', () => {
   it('throws when the specified preset is not valid', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
-    const directory = path.join(__dirname, 'stubs', 'invalid-preset-file');
+    const directory = path.join(STUB_DIRECTORY, 'invalid-preset-file');
     const context = await Parser.parse(directory, false);
 
     expect(exit).toHaveBeenCalled();
@@ -70,7 +72,7 @@ describe('Context', () => {
   });
 
   it('loads a context for a preset', async () => {
-    const directory = path.join(__dirname, 'stubs', 'copy');
+    const directory = path.join(STUB_DIRECTORY, 'copy');
     const context = await Parser.parse(directory, false);
 
     expect(Object.keys(context.git)).toMatchObject(['context', 'config']);
