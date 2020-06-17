@@ -3,6 +3,23 @@ import path from 'path';
 import tmp from 'tmp';
 import fs from 'fs-extra';
 
+async function testTemporaryResolver(input: string, results: ResolverResultContract[]) {
+  const result = await Resolver.resolve(input);
+  const directory = result?.path ?? '';
+
+  expect(directory.includes(tmp.tmpdir)).toBe(true);
+  expect(result).toMatchObject({
+    success: true,
+    temporary: true,
+  });
+
+  results.push(result);
+  return {
+    ...result,
+    path: directory,
+  };
+}
+
 describe('Local Resolver', () => {
   it('returns a successful response when finding a local directory', async () => {
     const preset = path.join(__dirname, 'stubs', 'copy');
@@ -27,7 +44,7 @@ describe('Local Resolver', () => {
   });
 });
 
-describe('Github Resolver', () => {
+describe('Git Resolver', () => {
   const results: ResolverResultContract[] = [];
 
   /**
@@ -46,40 +63,31 @@ describe('Github Resolver', () => {
     }
   });
 
-  async function testGithubResolver(input: string) {
-    const result = await Resolver.resolve(input);
-    const directory = result?.path ?? '';
-
-    expect(directory.includes(tmp.tmpdir)).toBe(true);
-    expect(result).toMatchObject({
-      success: true,
-      temporary: true,
-    });
-
-    results.push(result);
-    return {
-      ...result,
-      path: directory,
-    };
-  }
-
   /**
    * Note: these tests apply side-effect on the operating system (they actually download stuff).
    * It could be great to mock everything, but this would be a huge refactoring task.
    * TODO
    */
   it('finds and clones GitHub repositories with the username/repository syntax', async () => {
-    const result = await testGithubResolver('use-preset/use-preset');
+    const result = await testTemporaryResolver('use-preset/use-preset', results);
     expect(fs.existsSync(path.join(result.path, '.git'))).toBe(true);
   });
 
-  it('fins and clones Github repositories with the full URL using the http protocol', async () => {
-    const result = await testGithubResolver('https://github.com/use-preset/use-preset');
+  it('finds and clones Github repositories with the full URL using the http protocol', async () => {
+    const result = await testTemporaryResolver('https://github.com/use-preset/use-preset', results);
     expect(fs.existsSync(path.join(result.path, '.git'))).toBe(true);
   });
 
-  it('fins and clones Github repositories with the full URL using the git protocol', async () => {
-    const result = await testGithubResolver('git@github.com:use-preset/use-preset.git');
+  it('finds and clones Github repositories with the full URL using the git protocol', async () => {
+    const result = await testTemporaryResolver('git@github.com:use-preset/use-preset.git', results);
     expect(fs.existsSync(path.join(result.path, '.git'))).toBe(true);
+  });
+
+  it('finds and clones public Gists', async () => {
+    const result = await testTemporaryResolver(
+      'https://gist.github.com/innocenzi/cd8a085144c803f85be572395fafc8ae',
+      results
+    );
+    expect(fs.existsSync(path.join(result.path, 'package.json'))).toBe(true);
   });
 });

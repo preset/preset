@@ -1,10 +1,11 @@
-import { GithubResolver, LocalResolver, ResolverResultContract } from './';
+import { GithubResolver, GistResolver, LocalResolver, ResolverResultContract } from './';
 import { Log, Color } from '../';
 
 export class Resolver {
   private static resolvers = {
     local: new LocalResolver(),
     github: new GithubResolver(),
+    gist: new GistResolver(),
   };
   /**
    * Tries to resolve the preset at the given path.
