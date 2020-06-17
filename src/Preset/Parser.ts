@@ -73,7 +73,7 @@ export class Parser {
       return Log.exit(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
     }
 
-    return preset.generateContext(directory, presetPackage, temporary, ...args);
+    return await preset.generateContext(directory, presetPackage, temporary, ...args);
   }
 
   /**

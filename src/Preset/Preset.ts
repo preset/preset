@@ -1,5 +1,6 @@
-import { Log, ContextContract, GeneratorContract, PackageContract } from '../';
+import { ContextContract, GeneratorContract, PackageContract } from '../';
 import path from 'path';
+import git from 'simple-git';
 
 /**
  * A preset object, containing the use-defined generator object and a method
@@ -57,12 +58,12 @@ export class Preset {
    * @param presetPackage The package.json of the preset.
    * @param args Additional command line arguments
    */
-  generateContext(
+  async generateContext(
     resolved: string,
     presetPackage: PackageContract,
     temporary: boolean,
     ...args: string[]
-  ): ContextContract {
+  ): Promise<ContextContract> {
     return {
       args,
       temporary,
@@ -72,6 +73,10 @@ export class Preset {
       presetTemplates: path.join(resolved, this.generator.templates ?? 'templates'),
       presetFile: path.join(resolved, presetPackage.preset ?? 'preset.js'),
       generator: this.generator,
+      git: {
+        context: git(),
+        config: (await git().listConfig()).all,
+      },
     };
   }
 }

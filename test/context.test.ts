@@ -1,4 +1,4 @@
-import { Parser, Log } from '../src';
+import { Parser, Log, ContextContract } from '../src';
 import path from 'path';
 
 describe('Context', () => {
@@ -52,8 +52,10 @@ describe('Context', () => {
     const directory = path.join(__dirname, 'stubs', 'copy');
     const context = await Parser.parse(directory, false);
 
-    delete context.generator;
-    expect(context).toEqual({
+    expect(Object.keys(context.git)).toMatchObject(['context', 'config']);
+    expect(context?.git?.context).not.toBeUndefined();
+    expect(context.generator).not.toBeUndefined();
+    expect(context).toMatchObject<Partial<ContextContract>>({
       args: [],
       presetDirectory: directory,
       presetFile: path.join(directory, 'preset.js'),

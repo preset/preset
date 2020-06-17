@@ -1,4 +1,5 @@
 import { GeneratorContract } from './GeneratorContract';
+import { ConfigValues, SimpleGit } from 'simple-git';
 
 export interface ContextContract {
   /**
@@ -40,4 +41,20 @@ export interface ContextContract {
    * True if the current preset directory is temporary.
    */
   temporary: boolean;
+
+  /**
+   * Git context.
+   */
+  git: {
+    /**
+     * Current local options.
+     */
+    config: ConfigValues;
+
+    /**
+     * Git object.
+     * @see https://github.com/steveukx/git-js
+     */
+    context: SimpleGit;
+  };
 }
