@@ -9,7 +9,7 @@ import path from 'path';
 interface LoggerOptions {
   debug: boolean;
   fake: boolean;
-  color: boolean;
+  noColor: boolean;
 }
 
 class Logger {
@@ -26,7 +26,7 @@ class Logger {
    * Fake the logger.
    */
   public fake(): this {
-    return this.configure({ fake: true, color: false });
+    return this.configure({ fake: true, noColor: true });
   }
 
   get logs(): string[] {
@@ -36,7 +36,7 @@ class Logger {
   /**
    * Configures the debugger.
    */
-  configure({ fake, debug, color }: Partial<LoggerOptions> = {}): this {
+  configure({ fake, debug, noColor }: Partial<LoggerOptions> = {}): this {
     const data = JSON.parse(<string>(<unknown>fs.readFileSync(path.resolve(__dirname, '..', '..', 'package.json'))));
     const scopes = [Object.keys(data.bin).shift() ?? '', '*'];
 
@@ -45,12 +45,18 @@ class Logger {
       this.debugging = scopes.some(scope => (process.env.DEBUG ?? '').includes(scope));
     }
 
-    this.logger = new BaseLogger({ fake, color });
+    this.logger = new BaseLogger({
+      fake,
+      color: !noColor,
+      underline: true,
+    });
+
     this.logger.actions = {
       ...this.logger.actions,
-      skip: {
+      // @ts-expect-error
+      debug: {
         color: 'gray',
-        badge: figures.radioOff,
+        badge: figures.arrowRight,
         logLevel: 'info',
       },
     };
@@ -107,7 +113,8 @@ class Logger {
       return this;
     }
 
-    this.logger.log('skip', message, ...args);
+    // @ts-expect-error
+    this.logger.log('debug', message, ...args);
     return this;
   }
 
@@ -140,6 +147,7 @@ class Logger {
 const Log = new Logger();
 // TODO clean up this shit xd
 const Color = {
+  debug: (text: string) => (Log.isFake() ? text : Log.colors.grey(text)),
   directory: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
   file: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
   keyword: (text: string) => (Log.isFake() ? text : Log.colors.yellow(text)),

@@ -24,7 +24,7 @@ class Command {
       strict: false,
     });
 
-    await Parser.handle(args.preset, flags.debug !== false, argv.splice(1));
+    await Parser.handle(args.preset, !!flags.debug, argv.splice(1));
   }
 }
 
