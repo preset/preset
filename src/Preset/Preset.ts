@@ -70,7 +70,7 @@ export class Preset {
       targetDirectory: process.cwd(),
       presetDirectory: path.join(resolved),
       presetTemplates: path.join(resolved, this.generator.templates ?? 'templates'),
-      presetFile: path.join(resolved, presetPackage.preset),
+      presetFile: path.join(resolved, presetPackage.preset ?? 'preset.js'),
       generator: this.generator,
     };
   }

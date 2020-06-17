@@ -1,7 +1,7 @@
-import { Resolver, Log } from '../src';
+import { Resolver, Log, ResolverResultContract } from '../src';
 import path from 'path';
 import tmp from 'tmp';
-import fs from 'fs';
+import fs from 'fs-extra';
 
 describe('Local Resolver', () => {
   it('returns a successful response when finding a local directory', async () => {
@@ -28,6 +28,24 @@ describe('Local Resolver', () => {
 });
 
 describe('Github Resolver', () => {
+  const results: ResolverResultContract[] = [];
+
+  /**
+   * Cleans up the temporary directories.
+   */
+  afterAll(() => {
+    try {
+      results.forEach(result => {
+        if (result.success && result.temporary) {
+          fs.removeSync(<any>result.path);
+        }
+      });
+    } catch (error) {
+      console.error(`Could not delete temporary directory.`);
+      console.error(error);
+    }
+  });
+
   async function testGithubResolver(input: string) {
     const result = await Resolver.resolve(input);
     const directory = result?.path ?? '';
@@ -38,6 +56,7 @@ describe('Github Resolver', () => {
       temporary: true,
     });
 
+    results.push(result);
     return {
       ...result,
       path: directory,

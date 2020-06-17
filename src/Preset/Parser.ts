@@ -1,5 +1,5 @@
 import { Log, Color, ContextContract, PackageContract, Resolver, Validator } from '../';
-import { Preset } from './Preset';
+import { Preset, GeneratorContract } from './';
 import path from 'path';
 import ts from 'typescript';
 import fs from 'fs';
@@ -37,11 +37,7 @@ export class Parser {
    * @param temporary Whether or not the directory is temporary.
    * @param args Additional command line arguments.
    */
-  private static async parse(
-    directory: string,
-    temporary: boolean,
-    ...args: string[]
-  ): Promise<ContextContract> | never {
+  static async parse(directory: string, temporary: boolean, ...args: string[]): Promise<ContextContract> | never {
     Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
 
     // Directory check
@@ -70,7 +66,7 @@ export class Parser {
     // a danger, so the end-user needs to be aware of that.
     // const preset = (await import(presetAbsolutePath)) as Preset;
     const file = fs.readFileSync(presetAbsolutePath).toString();
-    const preset = eval(ts.transpile(file)) as Preset;
+    const preset = Preset.from(eval(ts.transpile(file)) as GeneratorContract);
 
     // Preset check
     if (!preset || !preset.isValid()) {
@@ -91,6 +87,7 @@ export class Parser {
     // Validates actions first.
     // If one action is not correctly parsed, the whole preset is compromised.
     // The validator returns an action with its defaults.
+    // TODO check order and timing
     const validated = await Promise.all(
       actions.map(async action => {
         return await Validator.validate(action, context);
