@@ -12,7 +12,6 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
   };
 
   async handle(action: CopyActionContract, context: ContextContract): Promise<void | never> {
-    console.log({ action, context });
     // Get the entries in the preset template directory, thanks
     // to the glob in the action.
     const entries = await fg(action.files, {
@@ -28,14 +27,13 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
       const outputDirectory = path.join(context.targetDirectory, action.target);
       const output = path.join(outputDirectory, entry);
 
-      if (!fs.pathExistsSync(output)) {
-        Log.debug(`Path ${Color.file(outputDirectory)} does not exist. Creting it.`);
-        fs.mkdirSync(outputDirectory);
-      }
+      // Make sure the output directory exists.
+      console.log(`Ensuring ${outputDirectory} exists`);
+      await fs.ensureDir(outputDirectory);
 
       // If file exists, there is a conflict that should be handled
       // according to the strategy defined in the action.
-      if (fs.existsSync(output)) {
+      if (await fs.pathExists(output)) {
         Log.debug(`File ${Color.file(output)} exists. Using strategy ${Color.keyword(action.strategy)}.`);
 
         // If the result of the strategy is not truthy, we skip
@@ -49,14 +47,14 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
 
       // Copy the file
       Log.debug(`Copying ${Color.file(input)} to ${Color.file(output)}.`);
-      fs.copyFileSync(input, output);
+      await fs.copy(input, output);
     }
   }
 
   private async override(entry: string, input: string, output: string): Promise<boolean> {
     try {
       Log.debug(`Deleting ${Color.file(output)}.`);
-      fs.unlinkSync(output);
+      await fs.remove(output);
 
       return true;
     } catch (error) {
