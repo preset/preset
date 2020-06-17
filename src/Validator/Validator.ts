@@ -20,6 +20,6 @@ export class Validator {
     }
 
     // @ts-expect-error
-    return new this.validators[action.type]().validate(action, context);
+    return await new this.validators[action.type]().validate(action, context);
   }
 }

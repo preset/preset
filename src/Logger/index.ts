@@ -147,12 +147,12 @@ class Logger {
 const Log = new Logger();
 // TODO clean up this shit xd
 const Color = {
-  debug: (text: string) => (Log.isFake() ? text : Log.colors.grey(text)),
-  directory: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
-  file: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
-  keyword: (text: string) => (Log.isFake() ? text : Log.colors.yellow(text)),
-  link: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
-  preset: (text: string) => (Log.isFake() ? text : Log.colors.blue(text)),
+  debug: (text: any) => (Log.isFake() ? text : Log.colors.grey(text)),
+  directory: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
+  file: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
+  keyword: (text: any) => (Log.isFake() ? text : Log.colors.yellow(text)),
+  link: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
+  preset: (text: any) => (Log.isFake() ? text : Log.colors.blue(text)),
 };
 
 export { Log, Color };

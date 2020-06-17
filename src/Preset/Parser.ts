@@ -1,4 +1,4 @@
-import { Log, Color, ContextContract, PackageContract, Resolver, Validator } from '../';
+import { Log, Handler, Color, ContextContract, PackageContract, Resolver, Validator } from '../';
 import { Preset, GeneratorContract } from './';
 import path from 'path';
 import ts from 'typescript';
@@ -107,8 +107,8 @@ export class Parser {
     );
 
     // Executes actions
-    // for (const action of validated) {
-    //   await Action.execute(context, <ActionContract>action); // TODO test that
-    // }
+    for (const action of validated) {
+      await Handler.handle(action, context); // TODO test that
+    }
   }
 }
