@@ -5,7 +5,8 @@ import { ActionContract } from '.';
  */
 export interface CopyActionContract extends ActionContract<'copy'> {
   /**
-   * A glob matching files in the template directory.
+   * A glob matching files in the template directory. The directory structure is kept, so you need
+   * to organize your template directory as it will be in the target directory.
    */
   files: string | string[];
 

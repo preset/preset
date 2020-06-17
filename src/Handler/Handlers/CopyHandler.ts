@@ -28,7 +28,6 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
       const output = path.join(outputDirectory, entry);
 
       // Make sure the output directory exists.
-      console.log(`Ensuring ${outputDirectory} exists`);
       await fs.ensureDir(outputDirectory);
 
       // If file exists, there is a conflict that should be handled

@@ -31,7 +31,7 @@
   "scripts": {
     "prepare": "rimraf dist && tsc -b",
     "build": "yarn prepare",
-    "test": "jest",
+    "test": "jest --verbose",
     "release": "standard-version"
   },
   "devDependencies": {
