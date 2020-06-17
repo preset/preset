@@ -1,5 +1,6 @@
 import { DeleteHandler, CopyHandler } from './';
 import { Action, ContextContract, Log, Color } from '../';
+import { UpdateJsonFileHandler } from './Handlers';
 
 /**
  * A handler that takes an action and executes it.
@@ -8,7 +9,7 @@ export class Handler {
   private static handlers = {
     copy: CopyHandler,
     delete: DeleteHandler,
-    // 'update-json-file': UpdateJsonFileValidator,
+    'update-json-file': UpdateJsonFileHandler,
   };
 
   /**

@@ -24,11 +24,6 @@ export interface UpdateJsonFileActionContract extends ActionContract<'update-jso
   remove?: string | string[];
 
   /**
-   * Replace with the given JSON object.
-   */
-  replace?: string | string[];
-
-  /**
    * A strategy describing what to do if the target file does not exist.
    */
   strategy: NotFoundStrategy;
