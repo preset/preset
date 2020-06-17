@@ -45,7 +45,12 @@ export class Parser {
       return Log.exit(`${Color.directory(directory)} is not a preset directory.`);
     }
 
-    const packagePath = path.join(directory, 'package.json');
+    // Make the path absolute
+    if (!path.isAbsolute(directory)) {
+      directory = path.join(process.cwd(), directory);
+    }
+
+    const packagePath = path.join(directory, './package.json');
 
     // package.json check
     if (!fs.existsSync(packagePath)) {
@@ -66,7 +71,14 @@ export class Parser {
     // a danger, so the end-user needs to be aware of that.
     // const preset = (await import(presetAbsolutePath)) as Preset;
     const file = fs.readFileSync(presetAbsolutePath).toString();
-    const preset = Preset.from(eval(ts.transpile(file)) as GeneratorContract);
+    let preset = undefined;
+
+    try {
+      preset = Preset.from(eval(ts.transpile(file)) as GeneratorContract);
+    } catch (error) {
+      Log.fatal(`Could not pase ${Color.file(presetAbsolutePath)}.`);
+      return Log.exit(error);
+    }
 
     // Preset check
     if (!preset || !preset.isValid()) {

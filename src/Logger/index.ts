@@ -151,8 +151,8 @@ const Color = {
   directory: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
   file: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
   keyword: (text: string) => (Log.isFake() ? text : Log.colors.yellow(text)),
-  link: (text: string) => (Log.isFake() ? text : Log.colors.cyan(text)),
-  preset: (text: string) => (Log.isFake() ? text : Log.colors.cyan(text)),
+  link: (text: string) => (Log.isFake() ? text : Log.colors.underline(text)),
+  preset: (text: string) => (Log.isFake() ? text : Log.colors.blue(text)),
 };
 
 export { Log, Color };

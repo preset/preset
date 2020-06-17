@@ -1,4 +1,5 @@
-import { ContextContract, GeneratorContract, PackageContract } from '../';
+import { Log, Color, ContextContract, GeneratorContract, PackageContract } from '../';
+import { parse } from '@oclif/parser';
 import path from 'path';
 import git from 'simple-git';
 
@@ -62,10 +63,31 @@ export class Preset {
     resolved: string,
     presetPackage: PackageContract,
     temporary: boolean,
-    ...args: string[]
-  ): Promise<ContextContract> {
+    ...argv: string[]
+  ): Promise<ContextContract | never> {
+    let parsed = undefined;
+    try {
+      if (this.generator.parse) {
+        parsed = parse(argv, {
+          ...this.generator.parse<any>(),
+          strict: false,
+        });
+      }
+    } catch (error) {
+      if (error?.oclif?.exit === 2) {
+        // TODO - better help and support for this?
+        Log.fatal(`Could not parse extra arguments.`);
+        Log.warn(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
+        return process.exit();
+      }
+
+      return Log.exit(error);
+    }
+
     return {
-      args,
+      argv,
+      args: parsed?.args,
+      flags: parsed?.flags,
       temporary,
       presetName: this.generator.name || presetPackage.name || 'Unnamed',
       targetDirectory: process.cwd(),

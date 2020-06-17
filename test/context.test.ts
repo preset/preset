@@ -2,7 +2,28 @@ import { Parser, Log, ContextContract } from '../src';
 import path from 'path';
 
 describe('Context', () => {
-  // function expectToThrowWith()
+  it('parses extra flags and arguments', async () => {
+    const directory = path.join(__dirname, 'stubs', 'args');
+    const context = await Parser.parse(directory, false, ...['--auth', 'hello world']);
+
+    expect(context?.args?.input).toBe('hello world');
+    expect(context?.flags?.auth).toBe(true);
+  });
+
+  it('throws an error when a required argument is not given', async () => {
+    Log.fake();
+    const exit = jest.spyOn(process, 'exit').mockImplementation();
+    const directory = path.join(__dirname, 'stubs', 'args');
+    const context = await Parser.parse(directory, false, ...['--auth']);
+
+    expect(Log.logs).toStrictEqual([
+      'fatal Could not parse extra arguments.',
+      'warn This is probably an issue from this preset, not from use-preset.',
+    ]);
+    expect(context).toBe(undefined);
+    expect(exit).toHaveBeenCalled();
+  });
+
   it('throws when the given directory does not exist', async () => {
     Log.fake();
     const exit = jest.spyOn(process, 'exit').mockImplementation();
@@ -56,7 +77,7 @@ describe('Context', () => {
     expect(context?.git?.context).not.toBeUndefined();
     expect(context.generator).not.toBeUndefined();
     expect(context).toMatchObject<Partial<ContextContract>>({
-      args: [],
+      argv: [],
       presetDirectory: directory,
       presetFile: path.join(directory, 'preset.js'),
       presetName: 'Unnamed',
