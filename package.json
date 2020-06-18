@@ -16,6 +16,11 @@
   "engines": {
     "node": ">=10"
   },
+  "files": [
+    "bin",
+    "dist",
+    "src"
+  ],
   "keywords": [
     "scaffolding",
     "preset",

@@ -1,8 +1,7 @@
 import { Log, Handler, Color, ContextContract, PackageContract, Resolver, Validator } from '../';
 import { Preset, GeneratorContract } from './';
 import path from 'path';
-import ts from 'typescript';
-import fs from 'fs';
+import fs from 'fs-extra';
 
 export class Parser {
   /**
@@ -80,9 +79,9 @@ export class Parser {
     let preset = undefined;
 
     try {
-      preset = Preset.from(eval(ts.transpile(file)) as GeneratorContract);
+      preset = Preset.from(eval(file) as GeneratorContract);
     } catch (error) {
-      Log.fatal(`Could not pase ${Color.file(presetAbsolutePath)}.`);
+      Log.fatal(`Could not parse ${Color.file(presetAbsolutePath)}.`);
       return Log.exit(error);
     }
 
