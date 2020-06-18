@@ -21,7 +21,7 @@ export class DeleteHandler implements HandlerContract<DeleteActionContract> {
       Log.debug(`Deleting ${Color.file(absolutePath)}.`);
 
       try {
-        await fs.remove(absolutePath);
+        fs.removeSync(absolutePath);
       } catch (error) {
         Log.warn(`Could not delete file ${Color.file(absolutePath)}.`);
         Log.fatal(error);

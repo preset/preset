@@ -28,11 +28,11 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
       const output = path.join(outputDirectory, entry);
 
       // Make sure the output directory exists.
-      await fs.ensureDir(outputDirectory);
+      fs.ensureDirSync(outputDirectory);
 
       // If file exists, there is a conflict that should be handled
       // according to the strategy defined in the action.
-      if (await fs.pathExists(output)) {
+      if (fs.pathExistsSync(output)) {
         Log.debug(`File ${Color.file(output)} exists. Using strategy ${Color.keyword(action.strategy)}.`);
 
         // If the result of the strategy is not truthy, we skip
@@ -46,14 +46,14 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
 
       // Copy the file
       Log.debug(`Copying ${Color.file(input)} to ${Color.file(output)}.`);
-      await fs.copy(input, output);
+      fs.copySync(input, output);
     }
   }
 
   private async override(entry: string, input: string, output: string): Promise<boolean> {
     try {
       Log.debug(`Deleting ${Color.file(output)}.`);
-      await fs.remove(output);
+      fs.removeSync(output);
 
       return true;
     } catch (error) {

@@ -16,7 +16,7 @@ export class UpdateJsonFileHandler implements HandlerContract<UpdateJsonFileActi
 
     // Checks if the file exists. If not, creates it
     // or skips depending on the strategy.
-    if (!(await fs.pathExists(filePath))) {
+    if (!fs.pathExistsSync(filePath)) {
       Log.debug(`File ${Color.file(filePath)} does not exists. Using strategy ${Color.keyword(action.strategy)}.`);
 
       const shouldContinue = await this.strategies[action.strategy].call(this, filePath);
@@ -36,7 +36,7 @@ export class UpdateJsonFileHandler implements HandlerContract<UpdateJsonFileActi
 
   private async performEdition(filePath: string, action: UpdateJsonFileActionContract) {
     let changes = 0;
-    let content = await fs.readJSON(filePath);
+    let content = fs.readJSONSync(filePath);
 
     // Remove the contents
     if (action.remove) {
@@ -54,7 +54,7 @@ export class UpdateJsonFileHandler implements HandlerContract<UpdateJsonFileActi
 
     // Write the new content
     Log.debug(`Writing new content to ${Color.file(filePath)}. Made ${Color.keyword(changes)} change(s).`);
-    await fs.writeJSON(filePath, content, { spaces: '\t' });
+    fs.writeJSONSync(filePath, content, { spaces: '\t' });
   }
 
   /**
@@ -70,8 +70,8 @@ export class UpdateJsonFileHandler implements HandlerContract<UpdateJsonFileActi
   private async create(filePath: string): Promise<boolean> {
     try {
       Log.debug(`Creating ${Color.file(filePath)}.`);
-      await fs.ensureFile(filePath);
-      await fs.writeJSON(filePath, {});
+      fs.ensureFileSync(filePath);
+      fs.writeJSONSync(filePath, {});
 
       return true;
     } catch (error) {
