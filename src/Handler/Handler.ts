@@ -1,13 +1,12 @@
-import { DeleteHandler, CopyHandler } from './';
+import { DeleteHandler, CopyHandler, UpdateJsonFileHandler, NullHandler } from './';
 import { Action, ContextContract, Log, Color } from '../';
-import { UpdateJsonFileHandler } from './Handlers';
 
 /**
  * A handler that takes an action and executes it.
  */
 export class Handler {
   private static handlers = {
-    none: () => {},
+    none: NullHandler,
     copy: CopyHandler,
     delete: DeleteHandler,
     'update-json-file': UpdateJsonFileHandler,
@@ -21,22 +20,28 @@ export class Handler {
       return Log.exit(`Invalid action of ${Color.keyword(action.type ?? 'undefined')} type.`);
     }
 
-    let shouldPerformAction = true;
-
-    if (typeof action.if === 'function') {
-      shouldPerformAction = action.if();
+    if (!Array.isArray(action.if)) {
+      action.if = [action.if ?? true];
     }
 
-    if (typeof action.if !== 'undefined') {
-      shouldPerformAction = !!action.if;
-    }
+    const shouldPerformAction = action.if?.every(condition => {
+      if (typeof condition === 'function') {
+        return condition();
+      }
+
+      if (typeof condition !== 'undefined') {
+        return !!condition;
+      }
+
+      return true;
+    });
 
     if (!shouldPerformAction) {
       Log.debug(`An action did not met its defined conditions. Skipping.`);
       return false;
     }
 
-    // @ts-expect-error
+    // @ts-ignore
     await new this.handlers[action.type]().handle(action, context);
 
     return true;

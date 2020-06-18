@@ -1,3 +1,4 @@
+type Condition = boolean | (() => boolean);
 export interface ActionContract<T> {
   /**
    * The type of the action.
@@ -17,5 +18,5 @@ export interface ActionContract<T> {
   /**
    * Executes the action only if the condition is met.
    */
-  if?: boolean | (() => boolean);
+  if?: Condition | Condition[];
 }
