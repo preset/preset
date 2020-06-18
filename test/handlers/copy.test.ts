@@ -50,7 +50,7 @@ it('copies a specific file in a specific folder', async () => {
 
   const target = path.join(TARGET_DIRECTORY, 'copy', 'first-subfolder', 'sub', 'world.txt');
   expect(fs.pathExistsSync(target)).toBe(true);
-  expect(fs.readFileSync(target).toString()).toBe('world\r\n');
+  expect(fs.readFileSync(target).toString()).toContain('world');
 });
 
 async function copyWithOriginalFiles(
@@ -92,8 +92,8 @@ it('overrides existing files when using the override strategy', async () => {
 
   expect(fs.pathExistsSync(originalFile)).toBe(true);
   expect(fs.pathExistsSync(originalFileInSubfolder)).toBe(true);
-  expect(fs.readFileSync(originalFile).toString()).toBe('hello\r\n');
-  expect(fs.readFileSync(originalFileInSubfolder).toString()).toBe('world\r\n');
+  expect(fs.readFileSync(originalFile).toString()).toContain('hello');
+  expect(fs.readFileSync(originalFileInSubfolder).toString()).toContain('world');
 });
 
 it('overrides existing files after user answered yes when using the ask strategy', async () => {
@@ -120,8 +120,8 @@ it('overrides existing files after user answered yes when using the ask strategy
 
   expect(fs.pathExistsSync(originalFile)).toBe(true);
   expect(fs.pathExistsSync(originalFileInSubfolder)).toBe(true);
-  expect(fs.readFileSync(originalFile).toString()).toBe('hello\r\n');
-  expect(fs.readFileSync(originalFileInSubfolder).toString()).toBe('world\r\n');
+  expect(fs.readFileSync(originalFile).toString()).toContain('hello');
+  expect(fs.readFileSync(originalFileInSubfolder).toString()).toContain('world');
 });
 
 it('keeps existing files after user answered no when using the ask strategy', async () => {
@@ -171,5 +171,5 @@ it('skips existing files when they exist and when using the skip strategy', asyn
   expect(fs.pathExistsSync(originalFile)).toBe(true);
   expect(fs.pathExistsSync(newFileFileInSubfolder)).toBe(true);
   expect(fs.readFileSync(originalFile).toString()).toBe(originalContent);
-  expect(fs.readFileSync(newFileFileInSubfolder).toString()).toBe('world\r\n');
+  expect(fs.readFileSync(newFileFileInSubfolder).toString()).toContain('world');
 });
