@@ -1,10 +1,15 @@
 import { ContextContract, UpdateJsonFileHandler, UpdateJsonFileActionContract, Log } from '../../src';
 import { mock } from 'jest-mock-extended';
+import { sleep, delay } from '../sleep';
 import path from 'path';
 import fs from 'fs-extra';
 
 const TARGET_DIRECTORY = path.join(__dirname, '..', '__target__');
 const PACKAGE_PATH = path.join(TARGET_DIRECTORY, 'edit-json-file', 'package.json');
+
+beforeEach(async () => {
+  await sleep(delay);
+});
 
 beforeAll(() => {
   fs.emptyDirSync(TARGET_DIRECTORY);

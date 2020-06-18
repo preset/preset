@@ -2,7 +2,7 @@ export interface ActionContract<T> {
   /**
    * The type of the action.
    */
-  type: T;
+  type: T | 'none';
 
   /**
    * One or more messages to display before the action is executed.
@@ -13,4 +13,9 @@ export interface ActionContract<T> {
    * One or more messages to display after the action is executed.
    */
   after?: string | string[];
+
+  /**
+   * Executes the action only if the condition is met.
+   */
+  if?: boolean | (() => boolean);
 }

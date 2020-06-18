@@ -1,6 +1,6 @@
 import { Action } from '../../Action/Action';
 import { ContextContract } from './ContextContract';
-import { Input, Output, flags, args } from '@oclif/parser';
+import { flags, args } from '@oclif/parser';
 
 export interface GeneratorContract {
   /**
@@ -14,11 +14,6 @@ export interface GeneratorContract {
   templates?: string;
 
   /**
-   * A list of prompts messages.
-   */
-  prompts?: (context: ContextContract) => Promise<void> | void;
-
-  /**
    * A list of actions to execute.
    */
   actions: (context: ContextContract) => Promise<Action[]> | Action[];
@@ -29,7 +24,9 @@ export interface GeneratorContract {
    * @param argv
    * @param options
    */
-  parse?: <T>() => {
+  parse?: <T>(
+    context: Partial<ContextContract>
+  ) => {
     flags?: flags.Input<T>;
     args?: args.Input;
   };

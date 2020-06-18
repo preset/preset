@@ -1,6 +1,6 @@
-import { GeneratorContract } from './GeneratorContract';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 import { ConfigValues, SimpleGit } from 'simple-git';
-import { Output, OutputArgs, OutputFlags } from '@oclif/parser';
+import { GeneratorContract } from './GeneratorContract';
 
 export interface ContextContract {
   /**

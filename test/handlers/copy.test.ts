@@ -1,4 +1,5 @@
 import { Prompt, CopyHandler, ContextContract, CopyActionContract, Log } from '../../src';
+import { sleep, delay } from '../sleep';
 import { mock } from 'jest-mock-extended';
 import path from 'path';
 import fs from 'fs-extra';
@@ -6,7 +7,8 @@ import fs from 'fs-extra';
 const TARGET_DIRECTORY = path.join(__dirname, '..', '__target__');
 const TEMPLATES_DIRECTORY = path.join(__dirname, '..', '__templates__');
 
-beforeEach(() => {
+beforeEach(async () => {
+  await sleep(delay);
   fs.emptyDirSync(TARGET_DIRECTORY);
 });
 

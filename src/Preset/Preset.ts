@@ -65,11 +65,28 @@ export class Preset {
     temporary: boolean,
     ...argv: string[]
   ): Promise<ContextContract | never> {
+    // Creates the context based on what we currently have.
+    const context: Partial<ContextContract> = {
+      argv,
+      temporary,
+      presetName: this.generator.name || presetPackage.name || 'Unnamed',
+      targetDirectory: process.cwd(),
+      presetDirectory: path.join(resolved),
+      presetTemplates: path.join(resolved, this.generator.templates ?? 'templates'),
+      presetFile: path.join(resolved, presetPackage.preset ?? 'preset.js'),
+      generator: this.generator,
+      git: {
+        context: git(),
+        config: (await git().listConfig()).all,
+      },
+    };
+
+    // Parses the additional arguments.
     let parsed = undefined;
     try {
-      if (this.generator.parse) {
+      if (typeof this.generator.parse === 'function') {
         parsed = parse(argv, {
-          ...this.generator.parse<any>(),
+          ...this.generator.parse<any>(context),
           strict: false,
         });
       }
@@ -84,21 +101,11 @@ export class Preset {
       return Log.exit(error);
     }
 
-    return {
-      argv,
+    // Returns the complete context.
+    return <ContextContract>{
+      ...context,
       args: parsed?.args,
       flags: parsed?.flags,
-      temporary,
-      presetName: this.generator.name || presetPackage.name || 'Unnamed',
-      targetDirectory: process.cwd(),
-      presetDirectory: path.join(resolved),
-      presetTemplates: path.join(resolved, this.generator.templates ?? 'templates'),
-      presetFile: path.join(resolved, presetPackage.preset ?? 'preset.js'),
-      generator: this.generator,
-      git: {
-        context: git(),
-        config: (await git().listConfig()).all,
-      },
     };
   }
 }
