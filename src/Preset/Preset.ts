@@ -75,6 +75,7 @@ export class Preset {
       presetTemplates: path.join(resolved, this.generator.templates ?? 'templates'),
       presetFile: path.join(resolved, presetPackage.preset ?? 'preset.js'),
       generator: this.generator,
+      prompts: {},
       git: {
         context: git(),
         config: (await git().listConfig()).all,

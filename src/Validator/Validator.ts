@@ -1,5 +1,5 @@
 import { Action, ContextContract, Log, Color } from '../';
-import { CopyValidator, DeleteValidator, UpdateJsonFileValidator, ValidatorContract } from './';
+import { PromptValidator, CopyValidator, DeleteValidator, UpdateJsonFileValidator } from './';
 
 /**
  * A validator that takes an action and validates it against its assigned validator.
@@ -8,6 +8,7 @@ export class Validator {
   private static validators = {
     copy: CopyValidator,
     delete: DeleteValidator,
+    prompt: PromptValidator,
     'update-json-file': UpdateJsonFileValidator,
   };
 

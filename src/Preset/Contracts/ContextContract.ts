@@ -54,6 +54,14 @@ export interface ContextContract {
   temporary: boolean;
 
   /**
+   * Prompt results. Names are what name are given for each prompt, value are Enquirer's results.
+   * @see https://github.com/enquirer/enquirer
+   */
+  prompts: {
+    [name: string]: any;
+  };
+
+  /**
    * Git context.
    */
   git: {

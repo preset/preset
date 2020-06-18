@@ -100,7 +100,7 @@ it('overrides existing files after user answered yes when using the ask strategy
   Prompt.fake();
   Log.fake();
 
-  Prompt.prompt.on('prompt', prompt => {
+  Prompt.on('prompt', prompt => {
     if ('confirm' === prompt.type) {
       prompt.answer('y');
     }
@@ -128,7 +128,7 @@ it('keeps existing files after user answered no when using the ask strategy', as
   Prompt.fake();
   Log.fake();
 
-  Prompt.prompt.on('prompt', prompt => {
+  Prompt.on('prompt', prompt => {
     prompt.answer(false);
   });
 

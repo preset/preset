@@ -1,4 +1,4 @@
-import { DeleteHandler, CopyHandler, UpdateJsonFileHandler, NullHandler } from './';
+import { PromptHandler, DeleteHandler, CopyHandler, UpdateJsonFileHandler, NullHandler } from './';
 import { Action, ContextContract, Log, Color } from '../';
 
 /**
@@ -10,6 +10,7 @@ export class Handler {
     copy: CopyHandler,
     delete: DeleteHandler,
     'update-json-file': UpdateJsonFileHandler,
+    prompt: PromptHandler,
   };
 
   /**
@@ -26,14 +27,14 @@ export class Handler {
     }
 
     // Execute before hooks
-    Log.multiple('info', action.before);
+    await Log.multiple('info', action.before);
 
     // Executes the action
     // @ts-expect-error
     await new this.handlers[action.type]().handle(action, context);
 
     // Execute before hooks
-    Log.multiple('info', action.after);
+    await Log.multiple('info', action.after);
 
     return true;
   }

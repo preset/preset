@@ -1,4 +1,4 @@
-import { Prompt, Log, Color, CopyActionContract, ContextContract, copyConflictStrategies } from '../../';
+import { Prompt, Log, Color, CopyActionContract, ContextContract } from '../../';
 import { HandlerContract } from '../';
 import path from 'path';
 import fg from 'fast-glob';
@@ -70,7 +70,7 @@ export class CopyHandler implements HandlerContract<CopyActionContract> {
   private async ask(entry: string, input: string, output: string): Promise<boolean> {
     Log.debug(`Kindly asking to replace ${Color.file(entry)}.`);
 
-    const replace = await Prompt.prompt.confirm(`${Color.keyword(entry)} already exists. Do you want to replace it?`, {
+    const replace = await Prompt.confirm(`${Color.keyword(entry)} already exists. Do you want to replace it?`, {
       default: false,
     });
 

@@ -6,6 +6,7 @@ import {
   ContextContract,
   DeleteActionContract,
   UpdateJsonFileActionContract,
+  PromptActionContract,
 } from '../src';
 import { mock } from 'jest-mock-extended';
 
@@ -150,5 +151,50 @@ describe('Update JSON file Validator', () => {
       },
       remove: ['dependencies.lodash'],
     });
+  });
+});
+
+describe('Prompt validator', () => {
+  it('throws if a prompt with no name is passed', async () => {
+    Log.fake();
+
+    const promptAction: Partial<PromptActionContract> = {
+      type: 'prompt',
+      // @ts-expect-error
+      prompts: [
+        {
+          message: 'Hello',
+        },
+      ],
+    };
+
+    const exit = jest.spyOn(process, 'exit').mockImplementation();
+    const validated = await Validator.validate(promptAction, context);
+
+    expect(Log.logs).toContainEqual('error A prompt has no name.');
+    expect(exit).toHaveBeenCalled();
+    expect(validated).toBeUndefined();
+  });
+
+  it('throws if a prompt with no type is passed', async () => {
+    Log.fake();
+
+    const promptAction: Partial<PromptActionContract> = {
+      type: 'prompt',
+      // @ts-expect-error
+      prompts: [
+        {
+          name: 'helo',
+          message: 'Hello',
+        },
+      ],
+    };
+
+    const exit = jest.spyOn(process, 'exit').mockImplementation();
+    const validated = await Validator.validate(promptAction, context);
+
+    expect(Log.logs).toContainEqual('error A prompt has no type.');
+    expect(exit).toHaveBeenCalled();
+    expect(validated).toBeUndefined();
   });
 });

@@ -24,7 +24,7 @@ export class Parser {
     Log.debug(`Running preset ${Color.preset(context.presetName ?? name)}.`);
 
     // Executes before message hook
-    Log.multiple('info', context.generator.before);
+    await Log.multiple('info', context.generator.before);
 
     // Run the preset
     await this.run(context);
@@ -33,7 +33,7 @@ export class Parser {
     Log.success(`Applied preset ${Color.preset(context.presetName)} on ${Color.directory(context.targetDirectory)}.`);
 
     // Executes after message hook
-    Log.multiple('info', context.generator.after);
+    await Log.multiple('info', context.generator.after);
   }
 
   /**

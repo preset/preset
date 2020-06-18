@@ -123,8 +123,15 @@ class Logger {
    * @param level Print multiple messages
    * @param messages
    */
-  public multiple(level: ActionNames, messages?: string | string[]): this {
+  public async multiple(
+    level: ActionNames,
+    messages?: string | string[] | (() => Promise<string | string[]>)
+  ): Promise<this> {
     if (messages) {
+      if (typeof messages === 'function') {
+        messages = await messages();
+      }
+
       if (!Array.isArray(messages)) {
         messages = [messages];
       }
