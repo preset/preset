@@ -20,11 +20,34 @@ export class Handler {
       return Log.exit(`Invalid action of ${Color.keyword(action.type ?? 'undefined')} type.`);
     }
 
+    // Checks if action should run.
+    if (!this.shouldRun(action)) {
+      return false;
+    }
+
+    // Execute before hooks
+    Log.multiple('info', action.before);
+
+    // Executes the action
+    // @ts-expect-error
+    await new this.handlers[action.type]().handle(action, context);
+
+    // Execute before hooks
+    Log.multiple('info', action.after);
+
+    return true;
+  }
+
+  /**
+   * Checks if an action should run.
+   */
+  private static shouldRun(action: Partial<Action>): boolean {
+    // Check for action conditions
     if (!Array.isArray(action.if)) {
       action.if = [action.if ?? true];
     }
 
-    const shouldPerformAction = action.if?.every(condition => {
+    const shouldPerformAction = action.if.every(condition => {
       if (typeof condition === 'function') {
         return condition();
       }
@@ -40,9 +63,6 @@ export class Handler {
       Log.debug(`An action did not met its defined conditions. Skipping.`);
       return false;
     }
-
-    // @ts-ignore
-    await new this.handlers[action.type]().handle(action, context);
 
     return true;
   }

@@ -8,4 +8,4 @@ export async function sleep(ms: number): Promise<void> {
  * before each test.
  * I know, I know. I accept PR if you know how to better do this...
  */
-export const delay = 1250;
+export const delay = 1500;

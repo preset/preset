@@ -23,11 +23,17 @@ export class Parser {
     // Preset has been found
     Log.debug(`Running preset ${Color.preset(context.presetName ?? name)}.`);
 
+    // Executes before message hook
+    Log.multiple('info', context.generator.before);
+
     // Run the preset
     await this.run(context);
 
     // Sends the end message
     Log.success(`Applied preset ${Color.preset(context.presetName)} on ${Color.directory(context.targetDirectory)}.`);
+
+    // Executes after message hook
+    Log.multiple('info', context.generator.after);
   }
 
   /**

@@ -30,4 +30,14 @@ export interface GeneratorContract {
     flags?: flags.Input<T>;
     args?: args.Input;
   };
+
+  /**
+   * One or more messages to display before the action is executed.
+   */
+  before?: string | string[];
+
+  /**
+   * One or more messages to display after the action is executed.
+   */
+  after?: string | string[];
 }
