@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
 import fs from 'fs-extra';
+import { Name } from '@/Container';
 
 /**
  * A resolver that checks if a local directory exists.

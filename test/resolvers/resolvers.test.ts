@@ -6,7 +6,7 @@ it('returns all resolvers from the container', () => {
   const resolvers = container.get<ResolversContract>(Binding.Resolvers);
   const names = resolvers.map(({ name }) => name);
 
-  expect(names).toStrictEqual(['local']);
+  expect(names).toStrictEqual(['local', 'github-gist']);
 });
 
 it('gets the preset resolvers by default from the container', () => {

@@ -8,3 +8,8 @@ export const stubs = {
   noAction: path.join(STUBS_DIRECTORY, 'no-action'),
   standaloneFile: path.join(STUBS_DIRECTORY, 'file.json'),
 };
+
+export const gists = {
+  FUNCTIONAL_PUBLIC_GIST: 'https://gist.github.com/innocenzi/cd8a085144c803f85be572395fafc8ae',
+  NOT_FUNCTIONAL_GIST_URL: 'https://gist.github.com/innocenzi/654erg56erg4e6azd46e4ez6f4ze8f', // at least, should be
+};

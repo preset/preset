@@ -7,9 +7,11 @@ const Binding = {
 };
 
 const Name = {
-  LocalResolver: 'local-resolver',
-  GithubGistResolver: 'github-gist-resolver',
-  GithubResolver: 'github-resolver',
+  Resolver: 'resolver',
+  LocalResolver: 'local',
+  GithubGistResolver: 'gist',
+  GithubResolver: 'github',
+  PresetResolver: 'preset',
 };
 
 const Tag = {
