@@ -6,6 +6,7 @@ export const TARGET_DIRECTORY = path.join(__dirname, '__target__');
 
 export const stubs = {
   noAction: path.join(STUBS_DIRECTORY, 'no-action'),
+  emptyActionList: path.join(STUBS_DIRECTORY, 'empty-action-list'),
   standaloneFile: path.join(STUBS_DIRECTORY, 'file.json'),
 };
 
