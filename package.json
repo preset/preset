@@ -34,7 +34,7 @@
     "arrowParens": "avoid"
   },
   "scripts": {
-    "prepare": "rimraf dist && tsc -b",
+    "prepare": "rimraf dist && tsc -b src",
     "build": "yarn prepare",
     "test": "jest --verbose",
     "release": "standard-version"
