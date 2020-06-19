@@ -3,4 +3,5 @@ import { container } from './Container';
 
 container //
   .resolve(CommandLineInterface)
-  .run(process.argv.slice(2));
+  .run(process.argv.slice(2))
+  .catch(console.error); // TODO - Log
