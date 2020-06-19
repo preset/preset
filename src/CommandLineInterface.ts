@@ -1,7 +1,9 @@
 import { flags, parse } from '@oclif/parser';
+import { Text } from '@supportjs/text';
 import { inject, injectable } from 'inversify';
-import { Binding } from './Container';
-import { ApplierContract } from 'Contracts';
+import { Binding } from '@/Container';
+import { ApplierContract } from '@/Contracts';
+import { Log, Color } from '@/Logger';
 
 @injectable()
 export class CommandLineInterface {
@@ -36,21 +38,29 @@ export class CommandLineInterface {
     }
 
     if (!args.preset) {
-      return await this.missingArgument();
+      return await this.missingPresetName();
     }
 
     return await this.applier.run(args.preset, argv.splice(1), !!flags.debug);
   }
 
-  async missingArgument(): Promise<number> {
-    // console.log('Missing preset name.'); // TODO Log
+  async missingPresetName(): Promise<number> {
+    Log.fatal(Color.error(`The preset name is missing.`));
     await this.help();
 
     return 1;
   }
 
   async help(): Promise<number> {
-    // console.log('Usage: npx use-preset <name>'); // TODO Log
+    Log.log(
+      'info',
+      Text.make(Color.debug('Usage: ')) //
+        .append('npx use-preset')
+        .space()
+        .append(Color.debug('<'))
+        .append('name')
+        .append(Color.debug('>'))
+    );
 
     return 1;
   }

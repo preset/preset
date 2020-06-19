@@ -1,9 +1,10 @@
-import { MessageNode, ActionNames } from '@poppinss/fancy-logs/build/src/contracts';
+import { MessageNode, ActionNames, ActionsList } from '@poppinss/fancy-logs/build/src/contracts';
 import { Logger as BaseLogger } from '@poppinss/fancy-logs';
 import { Colors, FakeColors } from '@poppinss/colors';
 import figures from 'figures';
 import fs from 'fs-extra';
 import path from 'path';
+import { Text } from '@supportjs/text';
 
 interface LoggerOptions {
   debug: boolean;
@@ -20,7 +21,7 @@ class Logger {
   protected _debugging!: boolean;
 
   constructor() {
-    this.configure();
+    this.configure({ color: true });
   }
 
   /**
@@ -95,44 +96,44 @@ class Logger {
   /**
    * Print success message
    */
-  public success(message: string | MessageNode, ...args: string[]): this {
-    this._logger.log('success', message, ...args);
+  public success(message: Text | string | MessageNode, ...args: string[]): this {
+    this.log('success', message, ...args);
     return this;
   }
 
   /**
    * Print skip message
    */
-  public warn(message: string | MessageNode, ...args: string[]): this {
-    this._logger.log('warn', message, ...args);
+  public warn(message: Text | string | MessageNode, ...args: string[]): this {
+    this.log('warn', message, ...args);
     return this;
   }
   /**
    * Print fatal message
    */
-  public fatal(message: string | Error | MessageNode, ...args: string[]): this {
-    this._logger.log('fatal', message, ...args);
+  public fatal(message: Text | string | Error | MessageNode, ...args: string[]): this {
+    this.log('fatal', message, ...args);
     return this;
   }
 
   /**
    * Print info message
    */
-  public info(message: string | MessageNode, ...args: string[]): this {
-    this._logger.log('info', message, ...args);
+  public info(message: Text | string | MessageNode, ...args: string[]): this {
+    this.log('info', message, ...args);
     return this;
   }
 
   /**
    * Print a debug message
    */
-  public debug(message: string | MessageNode, ...args: string[]): this {
+  public debug(message: Text | string | MessageNode, ...args: string[]): this {
     if (!this._debugging) {
       return this;
     }
 
     // @ts-expect-error
-    this._logger.log('debug', message, ...args);
+    this.log('debug', message, ...args);
     return this;
   }
 
@@ -163,9 +164,21 @@ class Logger {
   /**
    * Display an error message and exit the application
    */
-  public exit(message: string | MessageNode | Error, ...args: string[]): never {
-    this._logger.log('error', message, ...args);
+  public exit(message: Text | string | MessageNode | Error, ...args: string[]): never {
+    this.log('error', message, ...args);
     process.exit(0);
+  }
+
+  public log(
+    name: keyof ActionsList,
+    messageNode: Text | string | Error | MessageNode,
+    ...args: string[]
+  ): string | undefined {
+    if (messageNode instanceof Text) {
+      messageNode = messageNode.toString();
+    }
+
+    return this._logger.log(name, messageNode, ...args);
   }
 }
 
@@ -175,6 +188,7 @@ const Log = new Logger();
 // Creates the color mapping, based on the logger
 const Color = {
   debug: (text: any) => (Log.isFake() ? text : Log.colors.grey(text)),
+  error: (text: any) => (Log.isFake() ? text : Log.colors.red(text)),
   directory: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
   file: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
   keyword: (text: any) => (Log.isFake() ? text : Log.colors.yellow(text)),

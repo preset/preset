@@ -61,6 +61,7 @@
     "@poppinss/fancy-logs": "^1.3.7",
     "@poppinss/prompts": "^1.1.0",
     "@poppinss/utils": "^2.2.6",
+    "@supportjs/text": "^1.5.1",
     "fast-glob": "^3.2.4",
     "inversify": "^5.0.1",
     "node-fetch": "^2.6.0",
@@ -68,9 +69,6 @@
     "simple-git": "^2.7.0",
     "tmp": "^0.2.1",
     "tslib": "^2.0.0"
-  },
-  "_moduleAliases": {
-    "@": "dist"
   },
   "config": {
     "commitizen": {

@@ -599,6 +599,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@supportjs/text@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@supportjs/text/-/text-1.5.1.tgz#2139bbf5b4565342dfe1918e264202a06452cdc0"
+  integrity sha512-dnY7cp21jGV6XSUvICnL4/9u/CXD4dvNJT7JOYYNhIcNs7gKQSrRlstaxkb8xj+NNcoQTUQ9F/0bClIb/zy6QQ==
+
 "@types/babel__core@^7.1.7":
   version "7.1.8"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.8.tgz#057f725aca3641f49fc11c7a87a9de5ec588a5d7"
