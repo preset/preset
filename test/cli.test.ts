@@ -1,6 +1,6 @@
-import { container, Binding } from '../src/Container';
-import { CommandLineInterface } from '../src/CommandLineInterface';
-import { NullApplier } from '../src/Appliers';
+import { container, Binding } from '@/Container';
+import { CommandLineInterface } from '@/CommandLineInterface';
+import { NullApplier } from '@/Appliers';
 
 it('returns code 1 when no argument is passed', async () => {
   const code = await container //

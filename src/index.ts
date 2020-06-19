@@ -1,5 +1,6 @@
-import { CommandLineInterface } from './CommandLineInterface';
-import { container } from './Container';
+require('module-alias/register');
+import { CommandLineInterface } from '@/CommandLineInterface';
+import { container } from '@/Container';
 
 container //
   .resolve(CommandLineInterface)
