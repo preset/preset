@@ -8,5 +8,5 @@ export interface ApplierContract {
    * @param argv Additional command line arguments.
    * @param debug Whether to debug or not.
    */
-  run(preset: PresetResolvable, argv: string[], debug: boolean): Promise<number>;
+  run(preset: PresetResolvable, argv: string[], debug: boolean): Promise<boolean>;
 }

@@ -33,6 +33,10 @@ export class CommandLineInterface {
       strict: false,
     });
 
+    if (flags.debug) {
+      Log.configure({ debug: true });
+    }
+
     if (flags.help) {
       return await this.help();
     }
@@ -41,7 +45,9 @@ export class CommandLineInterface {
       return await this.missingPresetName();
     }
 
-    return await this.applier.run(args.preset, argv.splice(1), !!flags.debug);
+    Log.debug(`Applying preset ${Color.resolvable(args.preset)}.`);
+    const success = await this.applier.run(args.preset, argv.splice(1), !!flags.debug);
+    return success ? 1 : 0;
   }
 
   async missingPresetName(): Promise<number> {

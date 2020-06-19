@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { ContainerModule, Container } from 'inversify';
-import { Binding } from './Binding';
-import { ApplierContract } from '../Contracts';
-import { PresetApplier } from '../Appliers';
+import { ContainerModule, Container, interfaces } from 'inversify';
+import { ApplierContract, ResolverContract, ResolversContract } from '@/Contracts';
+import { PresetResolver, LocalResolver } from '@/Resolvers';
+import { PresetApplier } from '@/Appliers';
+import { Binding, Name, Tag } from './Binding';
 
 /**
  * The application container.
@@ -15,13 +16,23 @@ container.bind<ApplierContract>(Binding.Applier).to(PresetApplier);
 // Add resolvers to the container.
 container.load(
   new ContainerModule(bind => {
-    // bind<ResolverContract>(Bindings.Resolver).to(LocalResolver).whenTargetNamed(Name.Resolver);
-    // bind<ResolverContract>(Bindings.Resolver).to(GithubGistResolver).whenTargetNamed(Name.Resolver);
-    // bind<ResolverContract>(Bindings.Resolver).to(PresetResolver).whenTargetIsDefault();
-    // bind<ResolversContract>(Bindings.Resolvers).toDynamicValue(({ container }) => {
-    //   // @ts-expect-error
-    //   return container.getAllNamed<ResolverContract>(Bindings.Resolver, Name.Resolver);
-    // });
+    // Matches resolvers with the given name
+    const matches = ({ target }: interfaces.Request, name: string) => {
+      return target.name.equals(name) || target.hasTag(Tag.Resolver);
+    };
+
+    // Binds resolvers
+    bind<ResolverContract>(Binding.Resolver)
+      .to(LocalResolver)
+      .when(request => matches(request, Name.LocalResolver));
+
+    // Sets the preset resolver as the default resolver to be matched
+    bind<ResolverContract>(Binding.Resolver).to(PresetResolver).whenTargetIsDefault();
+
+    // Binds the list of resolvers
+    bind<ResolversContract>(Binding.Resolvers).toDynamicValue(() => {
+      return container.getAllTagged<ResolverContract>(Binding.Resolver, Tag.Resolver, Tag.Resolver);
+    });
   })
 );
 
