@@ -59,7 +59,9 @@
     "@poppinss/prompts": "^1.1.0",
     "@poppinss/utils": "^2.2.6",
     "fast-glob": "^3.2.4",
+    "inversify": "^5.0.1",
     "node-fetch": "^2.6.0",
+    "reflect-metadata": "^0.1.13",
     "simple-git": "^2.7.0",
     "tmp": "^0.2.1"
   }
