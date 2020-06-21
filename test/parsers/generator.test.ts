@@ -46,10 +46,6 @@ it('finds specified options in the given preset', async () => {
           return {
             name: 'custom-title',
             templates: 'custom/template/folder',
-            messages: {
-              before: 'The installation starts',
-              after: ['The installation is finished'],
-            },
             actions: () => [],
           };
         }
@@ -62,10 +58,6 @@ it('finds specified options in the given preset', async () => {
   expect(context).toMatchObject<Partial<ContextContract>>({
     presetName: 'custom-title',
     presetTemplates: path.join(stubs.emptyActionList, 'custom', 'template', 'folder'),
-  });
-  expect((<ContextContract>context).generator.messages).toMatchObject({
-    before: 'The installation starts',
-    after: ['The installation is finished'],
   });
 });
 
