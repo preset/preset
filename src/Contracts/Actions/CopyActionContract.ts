@@ -8,7 +8,19 @@ export interface CopyActionContract extends BaseActionContract<'copy'> {
   files: string | string[];
 
   /**
+   * One or more paths to directories to be recursively copied to the target directory.
+   * If an object is given, its keys will be used as the source and its values will be used as the targets.
+   */
+  directories:
+    | string
+    | string[]
+    | {
+        [source: string]: string;
+      };
+
+  /**
    * A path relative to the target directory of where the preset will be applied.
+   * This is ignored by the directories key.
    */
   target: string;
 

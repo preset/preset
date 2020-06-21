@@ -3,7 +3,7 @@ import { Prompt } from '@/Prompt';
 import { Name } from '@/Container';
 import { Log } from '@/Logger';
 import { validate, handle } from './handlers.test';
-import { TARGET_DIRECTORY, templates } from '../constants';
+import { TARGET_DIRECTORY, templates, stubs } from '../constants';
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -16,6 +16,7 @@ describe('Validator', () => {
     expect(result).toStrictEqual<CopyActionContract>({
       type: 'copy',
       files: '*',
+      directories: [],
       target: '',
       strategy: 'ask',
     });
@@ -28,6 +29,7 @@ describe('Validator', () => {
 
     expect(result).toStrictEqual<CopyActionContract>({
       type: 'copy',
+      directories: [],
       files: ['file1.txt', 'file2.txt'],
       target: '',
       strategy: 'ask',
@@ -55,7 +57,7 @@ describe('Handler', () => {
   async function handleCopy(action: Partial<CopyActionContract>, context: Partial<ContextContract> = {}) {
     return await handle<CopyActionContract>(Name.CopyHandler, action, {
       targetDirectory: TARGET_DIRECTORY,
-      presetTemplates: path.join(templates.COPY_WITH_SUBFOLDERS),
+      presetTemplates: path.join(templates.COPY_WITH_SUBFOLDER),
       ...context,
     });
   }
@@ -170,5 +172,25 @@ describe('Handler', () => {
     expect(fs.pathExistsSync(originalFileInSubfolder)).toBe(true);
     expect(fs.readFileSync(originalFile).toString()).toContain('Original content');
     expect(fs.readFileSync(originalFileInSubfolder).toString()).toContain('world');
+  });
+
+  it('copies a map of directories to their targets', async () => {
+    const success = await handleCopy(
+      {
+        directories: {
+          sub1: 'root1',
+          'sub1/sub2': 'root2',
+        },
+        strategy: 'skip',
+      },
+      {
+        presetTemplates: templates.COPY_WITH_SUBFOLDERS,
+      }
+    );
+
+    expect(success).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root1', 'file1.txt'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root1', 'sub2', 'file3.txt'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root2', 'file3.txt'))).toBe(true);
   });
 });

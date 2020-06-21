@@ -30,6 +30,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
 
     return {
       files: '*',
+      directories: [],
       target: '',
       strategy: 'ask',
       ...action,
@@ -38,6 +39,58 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
   }
 
   async handle(action: CopyActionContract, context: ContextContract): Promise<boolean> {
+    const filesCopySuccess = await this.copyFiles(action, context);
+    const directoriesCopySuccess = await this.copyDirectories(action, context);
+
+    return filesCopySuccess && directoriesCopySuccess;
+  }
+
+  private async copyDirectories(action: CopyActionContract, context: ContextContract): Promise<boolean> {
+    if (!action.directories) {
+      return true;
+    }
+
+    // Transform to array if it's a string
+    if (typeof action.directories === 'string') {
+      action.directories = [action.directories];
+    }
+
+    // Transform to object map if it's an array
+    if (Array.isArray(action.directories)) {
+      action.directories = action.directories.reduce(
+        (result, item) => ({
+          ...result,
+          [item]: '',
+        }),
+        {}
+      );
+    }
+
+    const results = [];
+    Log.debug(`Copying ${Color.keyword(Object.entries(action.directories).length)} directories.`);
+
+    // Use the map to copy each directory to its target directory
+    for (const [from, to] of Object.entries(action.directories)) {
+      const entries = await fg('**/*', {
+        dot: true,
+        cwd: path.join(context.presetTemplates, from),
+      });
+
+      Log.debug(`Found ${Color.keyword(entries.length)} file(s) in ${Color.directory(from)} to copy.`);
+
+      // Copies all files found, relative to the "from" directory,
+      // to the "to" directory.
+      results.push(await this.doCopyFiles(entries, from, to, action, context));
+    }
+
+    return results.every(success => success);
+  }
+
+  private async copyFiles(action: CopyActionContract, context: ContextContract): Promise<boolean> {
+    if (!action.files) {
+      return true;
+    }
+
     // Get the entries in the preset template directory, thanks
     // to the glob in the action.
     const entries = await fg(action.files, {
@@ -47,10 +100,21 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
 
     Log.debug(`Found ${Color.keyword(entries.length)} file(s) to copy.`);
 
+    return this.doCopyFiles(entries, '', action.target, action, context);
+  }
+
+  private async doCopyFiles(
+    entries: string[],
+    from: string,
+    to: string,
+    action: CopyActionContract,
+    context: ContextContract
+  ): Promise<boolean> {
+    // TODO - refactor to avoid repetition with copyFiles
     // For each found entry, copy according to the strategy.
     for (const entry of entries) {
-      const input = path.join(context.presetTemplates, entry);
-      const outputDirectory = path.join(context.targetDirectory, action.target);
+      const input = path.join(context.presetTemplates, from, entry);
+      const outputDirectory = path.join(context.targetDirectory, to);
       const output = path.join(outputDirectory, entry);
 
       // Make sure the output directory exists.
