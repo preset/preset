@@ -75,7 +75,15 @@ export class PresetApplier implements ApplierContract {
       // Validates the action.
       const action = await handler.validate(raw);
       if (!action) {
+        Log.debug(`Action could not be validated. Skipping.`);
         continue; // TODO - Give the choice to abort?
+      }
+
+      // Checks if the action should actually run
+      // TODO - test
+      if (!(await this.shouldRun(action, context))) {
+        Log.debug(`Action did not met its defined conditions. Skipping.`);
+        continue;
       }
 
       // Apply "beforeEach" execution hook
@@ -95,6 +103,26 @@ export class PresetApplier implements ApplierContract {
     this.applyHook('after', context);
 
     return true;
+  }
+
+  /**
+   * Checks if an action should run.
+   */
+  private async shouldRun(action: Partial<BaseActionContract<any>>, context: ContextContract): Promise<boolean> {
+    // Check for action conditions
+    if (typeof action.if === 'function') {
+      return await action.if(context);
+    }
+
+    if (typeof action.if === 'undefined') {
+      return true;
+    }
+
+    if (!Array.isArray(action.if)) {
+      action.if = [typeof action.if === undefined ? true : false];
+    }
+
+    return action.if.every(condition => Boolean(condition));
   }
 
   /**
