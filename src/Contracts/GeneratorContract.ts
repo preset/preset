@@ -1,6 +1,6 @@
 import { ContextContract } from './ContextContract';
 import { flags, args } from '@oclif/parser';
-import { BaseActionContract, DeleteActionContract, CopyActionContract } from './Actions';
+import { DeleteActionContract, CopyActionContract } from './Actions';
 
 export interface GeneratorContract {
   /**
@@ -17,18 +17,39 @@ export interface GeneratorContract {
    * A list of actions to execute.
    */
   actions: ((context?: ContextContract) => Promise<Actions[]> | Actions[]) | Actions[];
-  // actions: (context: ContextContract) => Promise<Action[]> | Action[];
 
   /**
    * A method that indicates how to parse extra command line arguments.
-   *
-   * @param argv
-   * @param options
    */
-  parse?: <T>(
+  parse?: (
     context: Partial<ContextContract>
   ) => {
-    flags?: flags.Input<T>;
+    /**
+     * A pair of name <-> flag object.
+     *
+     * @see https://github.com/oclif/parser
+     * @example
+     * flags: {
+     * 		skip: flags.boolean({ char: 's' })
+     * }
+     *
+     * // Later in code, you can use context.flags
+     * context.flags.skip // true if --skip or -s was passed
+     */
+    flags?: flags.Input<any>;
+
+    /**
+     * A list of objects representing an argument.
+     *
+     * @see https://github.com/oclif/parser
+     * @example
+     * args: [
+     * 		{ name: 'input' }
+     * ]
+     *
+     * // Later in code, you can use context.args
+     * context.args.input // "test" if `use-preset <name> test` was called
+     */
     args?: args.Input;
   };
 
@@ -54,6 +75,6 @@ export interface GeneratorContract {
 }
 
 type Actions = CopyActionContract | DeleteActionContract;
-type SyncHook = (context?: ContextContract) => boolean | void;
-type AsyncHook = (context?: ContextContract) => Promise<boolean | void>;
+type SyncHook = (context: ContextContract) => boolean | void;
+type AsyncHook = (context: ContextContract) => Promise<boolean | void>;
 type HookResult = SyncHook | AsyncHook | any;

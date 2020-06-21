@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import { parse, Output } from '@oclif/parser';
 import { ParserContract, ParserContextData, ContextContract, GeneratorContract, ImporterContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
 import { Binding } from '@/Container';
@@ -74,6 +75,30 @@ export class GeneratorParser implements ParserContract {
   }
 
   /**
+   * Parses the arguments and flags from the context thanks to @oclif/parser.
+   */
+  protected parseArgumentsAndFlags(context: ContextContract): undefined | Output<any, any> {
+    Log.debug(`Parsing arguments and flags.`);
+    try {
+      if (typeof context.generator.parse === 'function') {
+        return parse(context.argv ?? [], {
+          ...context.generator.parse(context),
+          strict: false,
+        });
+      }
+    } catch (error) {
+      if (error?.oclif?.exit === 2) {
+        Log.warn(`Could not parse extra arguments.`);
+        Log.warn(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
+      }
+
+      Log.debug(error);
+    }
+
+    return undefined;
+  }
+
+  /**
    * Generates a context from the preset.
    */
   protected async generateContext(
@@ -81,9 +106,9 @@ export class GeneratorParser implements ParserContract {
     generator: Partial<GeneratorContract>,
     parserContext: Partial<ParserContextData>
   ): Promise<ContextContract> {
-    return {
+    Log.debug(`Generating context.`);
+    const context = {
       generator,
-      // prompts: {},
       argv: parserContext.argv ?? [],
       temporary: parserContext.temporary ?? false,
       presetName: generator.name ?? parserContext?.package?.name ?? 'unnamed',
@@ -95,6 +120,14 @@ export class GeneratorParser implements ParserContract {
         context: simpleGit(process.cwd()),
         config: (await simpleGit().listConfig()).all,
       },
+    };
+
+    const parsed = this.parseArgumentsAndFlags(context);
+
+    return <ContextContract>{
+      ...context,
+      args: parsed?.args ?? {},
+      flags: parsed?.flags ?? {},
     };
   }
 }

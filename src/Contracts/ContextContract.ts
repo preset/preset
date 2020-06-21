@@ -1,5 +1,6 @@
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { GeneratorContract } from './GeneratorContract';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 
 export interface ContextContract {
   /**
@@ -41,6 +42,16 @@ export interface ContextContract {
    * Raw additional command line arguments.
    */
   argv: string[];
+
+  /**
+   * Parsed additional arguments from the command line.
+   */
+  args?: OutputFlags<any>;
+
+  /**
+   * Parsed additional flags from the command line.
+   */
+  flags?: OutputArgs<any>;
 
   /**
    * Git context.

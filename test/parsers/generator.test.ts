@@ -1,9 +1,22 @@
 import { container, Binding } from '@/Container';
 import { ParserContract, ContextContract, ImporterContract, GeneratorContract } from '@/Contracts';
 import { Log } from '@/Logger';
-import { stubs, STUBS_DIRECTORY, TARGET_DIRECTORY } from '../constants';
-import path from 'path';
+import { stubs } from '../constants';
 import { injectable } from 'inversify';
+import { flags } from '@oclif/parser';
+import path from 'path';
+
+function mockImporter(generator: Partial<GeneratorContract> | false) {
+  container.rebind(Binding.Importer).to(
+    injectable()(
+      class implements ImporterContract {
+        async import(): Promise<false | GeneratorContract> {
+          return generator as GeneratorContract;
+        }
+      }
+    )
+  );
+}
 
 it('fails to parse a preset that does not have an action key', async () => {
   Log.fake();
@@ -39,19 +52,12 @@ it('parses a simple preset with an empty action list', async () => {
 });
 
 it('finds specified options in the given preset', async () => {
-  container.rebind(Binding.Importer).to(
-    injectable()(
-      class implements ImporterContract {
-        async import(): Promise<false | GeneratorContract> {
-          return {
-            name: 'custom-title',
-            templates: 'custom/template/folder',
-            actions: () => [],
-          };
-        }
-      }
-    )
-  );
+  mockImporter({
+    name: 'custom-title',
+    templates: 'custom/template/folder',
+    actions: () => [],
+  });
+
   const context = await container.get<ParserContract>(Binding.Parser).parse(stubs.emptyActionList);
 
   expect(context).not.toBe(false);
@@ -61,5 +67,36 @@ it('finds specified options in the given preset', async () => {
   });
 });
 
-it.todo('returns parsed arguments');
-it.todo('returns git context');
+it('parses arguments and flags and returns them in the context', async () => {
+  mockImporter({
+    name: 'custom-title',
+    parse: () => ({
+      args: [{ name: 'input' }],
+      flags: {
+        auth: flags.boolean({ char: 'c' }),
+      },
+    }),
+    actions: () => [],
+  });
+
+  const context = (await container.get<ParserContract>(Binding.Parser).parse(stubs.emptyActionList, {
+    argv: ['--auth', 'test'],
+  })) as ContextContract;
+
+  expect(context).not.toBe(false);
+  expect(context.flags?.auth).toBe(true);
+  expect(context.args?.input).toBe('test');
+});
+
+it('adds git in the context', async () => {
+  const parser = container.get<ParserContract>(Binding.Parser);
+  const context = (await parser.parse(stubs.emptyActionList, {
+    argv: [],
+    temporary: false,
+  })) as ContextContract;
+
+  expect(context).not.toBe(false);
+  expect(context.git.config).not.toBe(undefined);
+  // @ts-ignore
+  expect(context.git.context._executor).not.toBe(undefined);
+});
