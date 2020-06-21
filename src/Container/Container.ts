@@ -1,11 +1,19 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { ApplierContract, ResolverContract, ResolversContract, ParserContract, ImporterContract } from '@/Contracts';
+import {
+  ApplierContract,
+  ResolverContract,
+  ResolversContract,
+  ParserContract,
+  ImporterContract,
+  ActionHandlerContract,
+} from '@/Contracts';
 import { PresetResolver, LocalResolver, GithubGistResolver, GithubResolver } from '@/Resolvers';
 import { PresetApplier } from '@/Appliers';
 import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
 import { Binding, Name } from './Binding';
+import { CopyActionHandler } from '@/Handlers';
 
 /**
  * The application container.
@@ -21,6 +29,12 @@ container.bind<ParserContract>(Binding.Parser).to(GeneratorParser);
 // Importers
 container.bind<ImporterContract>(Binding.Importer).to(EvalImporter);
 
+/*
+|--------------------------------------------------------------------------
+| Resolvers
+|--------------------------------------------------------------------------
+*/
+
 // Binds resolvers
 container.bind<ResolverContract>(Binding.Resolver).to(LocalResolver).whenTargetNamed(Name.LocalResolver);
 container.bind<ResolverContract>(Binding.Resolver).to(GithubGistResolver).whenTargetNamed(Name.GithubGistResolver);
@@ -35,5 +49,14 @@ container.bind<ResolversContract>(Binding.Resolvers).toDynamicValue(() => {
     container.getNamed<ResolverContract>(Binding.Resolver, name)
   );
 });
+
+/*
+|--------------------------------------------------------------------------
+| Handlers
+|--------------------------------------------------------------------------
+*/
+
+// Bind handlers
+container.bind<ActionHandlerContract<'copy'>>(Binding.Handler).to(CopyActionHandler).whenTargetNamed(Name.CopyHandler);
 
 export { container };

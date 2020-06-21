@@ -6,3 +6,5 @@ export * from './ParserContract';
 export * from './ContextContract';
 export * from './GeneratorContract';
 export * from './ImporterContract';
+export * from './ActionHandlerContract';
+export * from './Actions';

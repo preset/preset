@@ -5,6 +5,7 @@ const Binding = {
   Resolvers: Symbol.for('Resolvers'),
   Parser: Symbol.for('Parser'),
   Flag: Symbol.for('Flag'),
+  Handler: Symbol.for('Handler'),
 };
 
 const Name = {
@@ -13,10 +14,9 @@ const Name = {
   GithubGistResolver: 'gist',
   GithubResolver: 'github',
   PresetResolver: 'preset',
+  CopyHandler: 'copy',
 };
 
-const Tag = {
-  Resolver: 'resolver',
-};
+const Tag = {};
 
 export { Binding, Name, Tag };
