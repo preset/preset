@@ -1,7 +1,7 @@
 import { MessageNode, ActionNames, ActionsList } from '@poppinss/fancy-logs/build/src/contracts';
 import { Logger as BaseLogger } from '@poppinss/fancy-logs';
 import { Colors, FakeColors } from '@poppinss/colors';
-import figures from 'figures';
+// import figures from 'figures';
 import fs from 'fs-extra';
 import path from 'path';
 import { Text } from '@supportjs/text';
@@ -75,7 +75,8 @@ class Logger {
       // @ts-expect-error
       debug: {
         color: 'gray',
-        badge: figures.arrowRight,
+        // badge: figures.arrowRight,
+        badge: '→',
         logLevel: 'info',
       },
     };

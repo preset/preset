@@ -64,13 +64,13 @@ export class PresetApplier implements ApplierContract {
       }
     }
 
-    console.log({
-      resolvable,
-      context,
-      argv,
-      debug,
-      result,
-    });
+    // console.log({
+    //   resolvable,
+    //   context,
+    //   argv,
+    //   debug,
+    //   result,
+    // });
 
     return true;
   }
