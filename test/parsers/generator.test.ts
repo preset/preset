@@ -99,3 +99,13 @@ it('adds git in the context', async () => {
   // @ts-ignore
   expect(context.git.context._executor).not.toBe(undefined);
 });
+
+it('parses a preset that does not have a package', async () => {
+  const parser = container.get<ParserContract>(Binding.Parser);
+  const context = (await parser.parse(stubs.NO_PACKAGE, {
+    temporary: false,
+  })) as ContextContract;
+
+  expect(context).not.toBe(false);
+  expect(context.presetFile).toBe(path.join(stubs.NO_PACKAGE, 'preset.js'));
+});

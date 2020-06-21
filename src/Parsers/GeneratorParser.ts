@@ -19,6 +19,8 @@ import simpleGit from 'simple-git';
  */
 @injectable()
 export class GeneratorParser implements ParserContract {
+  private readonly DEFAULT_PRESET_FILE = 'preset.js';
+
   @inject(Binding.Importer)
   private importer!: ImporterContract;
 
@@ -36,15 +38,22 @@ export class GeneratorParser implements ParserContract {
       directory = path.join(process.cwd(), directory);
     }
 
+    let packageContents = { preset: this.DEFAULT_PRESET_FILE };
     const packagePath = path.join(directory, 'package.json');
+    const defaultPresetPath = path.join(directory, this.DEFAULT_PRESET_FILE);
 
-    if (!fs.existsSync(packagePath)) {
+    // If neither the default preset path nor a package.json exists, this is an error
+    if (!fs.existsSync(defaultPresetPath) && !fs.existsSync(packagePath)) {
       Log.fatal(`${Color.directory(directory)} does not have a ${Color.file('package.json')}.`);
       return false;
     }
 
-    const presetPackage = require(packagePath); // Type that?
-    const presetAbsolutePath = path.join(directory, presetPackage?.preset ?? 'preset.js');
+    // If a package exists though, we got this
+    else if (fs.existsSync(packagePath)) {
+      packageContents = require(packagePath);
+    }
+
+    const presetAbsolutePath = path.join(directory, packageContents.preset ?? this.DEFAULT_PRESET_FILE);
 
     // Preset file check
     if (!fs.existsSync(presetAbsolutePath)) {
@@ -64,7 +73,7 @@ export class GeneratorParser implements ParserContract {
 
     return await this.generateContext(directory, generator, {
       ...parserContext,
-      package: presetPackage,
+      package: packageContents,
     });
   }
 
@@ -132,7 +141,7 @@ export class GeneratorParser implements ParserContract {
       presetName: generator.name ?? parserContext?.package?.name ?? 'unnamed',
       presetDirectory: path.join(directory),
       presetTemplates: path.join(directory, generator?.templates ?? 'templates'),
-      presetFile: path.join(directory, parserContext?.package?.preset ?? 'preset.js'),
+      presetFile: path.join(directory, parserContext?.package?.preset ?? this.DEFAULT_PRESET_FILE),
       git: {
         context: simpleGit(process.cwd()),
         config: (await simpleGit().listConfig()).all,
