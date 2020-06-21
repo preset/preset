@@ -32,10 +32,18 @@ export async function handle<T>(type: string, data: Partial<T>, context?: Partia
 }
 
 it('finds each handler in the container', () => {
-  const types = [Name.CopyHandler];
+  const handlers = container.getAll<ActionHandlerContract>(Binding.Handler);
+  const knownHandlers = handlers.map(handler => handler.for);
+  const seenHandlers = [];
+  const types = [Name.CopyHandler, Name.DeleteHandler];
 
   types.forEach(type => {
     const handler = getHandlerInstance(type);
     expect(handler.for).toBe(type);
+
+    seenHandlers.push(type);
+    expect(knownHandlers.includes(type)).toBe(true);
   });
+
+  expect(seenHandlers.length).toBe(knownHandlers.length);
 });
