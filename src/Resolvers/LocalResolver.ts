@@ -8,7 +8,7 @@ import { Name } from '@/Container';
  */
 @injectable()
 export class LocalResolver implements ResolverContract {
-  public readonly name: string = 'local';
+  public readonly name: string = Name.LocalResolver;
 
   async resolve(input: string): Promise<ResolverResultContract> {
     if (!fs.pathExistsSync(input) || !fs.statSync(input).isDirectory()) {

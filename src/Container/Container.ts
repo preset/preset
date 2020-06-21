@@ -14,6 +14,7 @@ import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
 import { Binding, Name } from './Binding';
 import { CopyActionHandler, DeleteActionHandler } from '@/Handlers';
+import { GitResolver } from '@/Resolvers/GitResolver';
 
 /**
  * The application container.
@@ -39,13 +40,14 @@ container.bind<ImporterContract>(Binding.Importer).to(EvalImporter);
 container.bind<ResolverContract>(Binding.Resolver).to(LocalResolver).whenTargetNamed(Name.LocalResolver);
 container.bind<ResolverContract>(Binding.Resolver).to(GithubGistResolver).whenTargetNamed(Name.GithubGistResolver);
 container.bind<ResolverContract>(Binding.Resolver).to(GithubResolver).whenTargetNamed(Name.GithubResolver);
+container.bind<ResolverContract>(Binding.Resolver).to(GitResolver).whenTargetNamed(Name.GitResolver);
 
 // Sets the preset resolver as the default resolver to be matched
 container.bind<ResolverContract>(Binding.Resolver).to(PresetResolver).whenTargetIsDefault();
 
 // Binds the list of resolvers
 container.bind<ResolversContract>(Binding.Resolvers).toDynamicValue(() => {
-  return [Name.LocalResolver, Name.GithubGistResolver, Name.GithubResolver].map(name =>
+  return [Name.LocalResolver, Name.GithubGistResolver, Name.GithubResolver, Name.GitResolver].map(name =>
     container.getNamed<ResolverContract>(Binding.Resolver, name)
   );
 });

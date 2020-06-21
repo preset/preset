@@ -1,4 +1,4 @@
-import { container, Binding } from '@/Container';
+import { container, Binding, Name } from '@/Container';
 import { ResolversContract, ResolverContract, ResolverResultContract } from '@/Contracts';
 import { stubs } from '../constants';
 
@@ -6,7 +6,7 @@ it('returns all resolvers from the container', () => {
   const resolvers = container.get<ResolversContract>(Binding.Resolvers);
   const names = resolvers.map(({ name }) => name);
 
-  expect(names).toStrictEqual(['local', 'github-gist', 'github']);
+  expect(names).toStrictEqual([Name.LocalResolver, Name.GithubGistResolver, Name.GithubResolver, Name.GitResolver]);
 });
 
 it('gets the preset resolvers by default from the container', () => {

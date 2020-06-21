@@ -11,8 +11,9 @@ const Binding = {
 const Name = {
   Resolver: 'resolver',
   LocalResolver: 'local',
-  GithubGistResolver: 'gist',
+  GitResolver: 'git',
   GithubResolver: 'github',
+  GithubGistResolver: 'gist',
   PresetResolver: 'preset',
   CopyHandler: 'copy',
   DeleteHandler: 'delete',

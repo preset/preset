@@ -6,13 +6,14 @@ import fetch from 'node-fetch';
 import fs from 'fs-extra';
 import path from 'path';
 import tmp from 'tmp';
+import { Name } from '@/Container';
 
 /**
  * A resolver that downloads a Gist and returns its local, temporary path.
  */
 @injectable()
 export class GithubGistResolver implements ResolverContract {
-  public readonly name: string = 'github-gist';
+  public readonly name: string = Name.GithubGistResolver;
 
   async resolve(input: string): Promise<ResolverResultContract> {
     const [matches, gistId] = /(?:https:\/\/)(?:gist|api)\.github\.com\/[\w-]+\/([\w-]+)/.exec(input) ?? [];

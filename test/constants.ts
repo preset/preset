@@ -22,6 +22,6 @@ export const gists = {
 };
 
 export const repositories = {
-  FUNCTIONAL_PRESET_REPOSITORY: 'https://github.com/use-preset/hello-world',
-  NOT_FUNCTIONAL_PRESET_REPOSITORY: 'https://github.com/use-preset/i-do-not-exist',
+  FUNCTIONAL_PRESET_GITHUB_REPOSITORY: 'https://github.com/use-preset/hello-world',
+  NOT_FUNCTIONAL_PRESET_GITHUB_REPOSITORY: 'https://github.com/use-preset/i-do-not-exist',
 };
