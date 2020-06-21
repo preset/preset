@@ -23,7 +23,7 @@ export class GithubResolver implements ResolverContract {
       };
     }
 
-    return this.clone(org, repository);
+    return this.clone(org ?? 'use-preset', repository);
   }
 
   private getRepositoryUrl(organizationOrUser: string, repository: string): string {
