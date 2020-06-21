@@ -13,7 +13,7 @@ import { PresetApplier } from '@/Appliers';
 import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
 import { Binding, Name } from './Binding';
-import { CopyActionHandler } from '@/Handlers';
+import { CopyActionHandler, DeleteActionHandler } from '@/Handlers';
 
 /**
  * The application container.
@@ -58,5 +58,9 @@ container.bind<ResolversContract>(Binding.Resolvers).toDynamicValue(() => {
 
 // Bind handlers
 container.bind<ActionHandlerContract<'copy'>>(Binding.Handler).to(CopyActionHandler).whenTargetNamed(Name.CopyHandler);
+container
+  .bind<ActionHandlerContract<'delete'>>(Binding.Handler)
+  .to(DeleteActionHandler)
+  .whenTargetNamed(Name.DeleteHandler);
 
 export { container };

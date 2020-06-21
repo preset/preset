@@ -1,11 +1,11 @@
 import { CopyActionContract, ContextContract } from '@/Contracts';
-import { validate, handle } from './handlers.test';
-import { TARGET_DIRECTORY, TEMPLATES_DIRECTORY, templates } from '../constants';
+import { Prompt } from '@/Prompt';
+import { Name } from '@/Container';
 import { Log } from '@/Logger';
+import { validate, handle } from './handlers.test';
+import { TARGET_DIRECTORY, templates } from '../constants';
 import path from 'path';
 import fs from 'fs-extra';
-import { Name } from '@/Container';
-import { Prompt } from '@/Prompt';
 
 describe('Validator', () => {
   it('returns a complete action object when validating a partial one', async () => {

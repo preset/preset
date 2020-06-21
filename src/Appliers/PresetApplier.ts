@@ -48,8 +48,21 @@ export class PresetApplier implements ApplierContract {
       : context.generator.actions) as BaseActionContract<any>[];
 
     for (const raw of actions) {
-      Log.debug(`Getting a ${Color.keyword(raw.type)} action's handler.`);
-      const handler = container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
+      const handler = (() => {
+        try {
+          return container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
+        } catch (error) {
+          Log.debug(`Could not find a handler for an action of type ${Color.keyword(raw.type)}.`);
+          Log.debug(error);
+        }
+
+        return false;
+      })();
+
+      if (!handler) {
+        Log.warn(`Skipping an unknown action of type ${Color.keyword(raw.type)}.`);
+        continue;
+      }
 
       // Validates
       const action = await handler.validate(raw);

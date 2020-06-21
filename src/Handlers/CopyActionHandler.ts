@@ -1,16 +1,10 @@
 import { injectable } from 'inversify';
-import {
-  ActionHandlerContract,
-  CopyActionContract,
-  BaseActionContract,
-  copyConflictStrategies,
-  ContextContract,
-} from '@/Contracts';
+import { ActionHandlerContract, CopyActionContract, copyConflictStrategies, ContextContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
+import { Prompt } from '@/Prompt';
 import path from 'path';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import { Prompt } from '@/Prompt';
 
 @injectable()
 export class CopyActionHandler implements ActionHandlerContract<'copy'> {

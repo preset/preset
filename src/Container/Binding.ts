@@ -15,6 +15,7 @@ const Name = {
   GithubResolver: 'github',
   PresetResolver: 'preset',
   CopyHandler: 'copy',
+  DeleteHandler: 'delete',
 };
 
 const Tag = {};
