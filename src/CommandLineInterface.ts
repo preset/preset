@@ -47,7 +47,20 @@ export class CommandLineInterface {
 
     Log.debug(`Applying preset ${Color.resolvable(args.preset)}.`);
     const success = await this.applier.run(args.preset, argv.splice(1), !!flags.debug);
-    return success ? 1 : 0;
+
+    if (success) {
+      Log.success(`Applied preset ${Color.preset(args.preset)}.`);
+      return 1;
+    }
+
+    // TODO - Add instruction to know what happened
+    // --debug flag or --report flag
+    Log.fatal(
+      `Preset ${Color.preset(args.preset)} could not be applied. Use the ${Color.preset(
+        '--debug'
+      )} flag for more informations.`
+    );
+    return 0;
   }
 
   async missingPresetName(): Promise<number> {
