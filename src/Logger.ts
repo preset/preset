@@ -53,7 +53,7 @@ class Logger {
   /**
    * Configures the debugger.
    */
-  configure({ fake, debug, color }: Partial<LoggerOptions> = {}): this {
+  configure({ fake = false, debug = false, color = true }: Partial<LoggerOptions> = {}): this {
     // Determines if we're faking logs - if yes, we don't actually log,
     // we just save history
     this._faking = fake ?? false;

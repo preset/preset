@@ -12,6 +12,10 @@ export const stubs = {
   USES_EXTERNAL_REQUIRE: path.join(STUBS_DIRECTORY, 'uses-external-require'),
 };
 
+export const templates = {
+  COPY_WITH_SUBFOLDERS: path.join(TEMPLATES_DIRECTORY, 'copy-with-subfolder'),
+};
+
 export const gists = {
   FUNCTIONAL_PUBLIC_GIST: 'https://gist.github.com/innocenzi/cd8a085144c803f85be572395fafc8ae',
   NOT_FUNCTIONAL_GIST_URL: 'https://gist.github.com/innocenzi/654erg56erg4e6azd46e4ez6f4ze8f', // at least, should be

@@ -1,5 +1,6 @@
 import { ContextContract } from './ContextContract';
 import { flags, args } from '@oclif/parser';
+import { BaseActionContract } from './Actions';
 
 export interface GeneratorContract {
   /**
@@ -15,7 +16,9 @@ export interface GeneratorContract {
   /**
    * A list of actions to execute.
    */
-  actions: (context: ContextContract) => Promise<void[]> | void[];
+  actions:
+    | ((context: ContextContract) => Promise<BaseActionContract<any>[]> | BaseActionContract<any>[])
+    | BaseActionContract<any>[];
   // actions: (context: ContextContract) => Promise<Action[]> | Action[];
 
   /**
