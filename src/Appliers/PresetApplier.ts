@@ -5,6 +5,7 @@ import {
   ParserContract,
   BaseActionContract,
   ActionHandlerContract,
+  ContextContract,
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
 import { Log, Color } from '@/Logger';
@@ -36,11 +37,14 @@ export class PresetApplier implements ApplierContract {
       temporary: !!result?.temporary,
     });
 
-    //
+    // If no context is returned we're out
     if (!context) {
       Log.debug(`Could not parse ${Color.file(resolvable)}.`);
       return false;
     }
+
+    // Apply "before"" execution hook
+    this.applyHook('before', context);
 
     // Loops through the action, validate and execute them
     const actions = (typeof context.generator.actions === 'function' //
@@ -48,6 +52,8 @@ export class PresetApplier implements ApplierContract {
       : context.generator.actions) as BaseActionContract<any>[];
 
     for (const raw of actions) {
+      // Tries to get a handler for that action. This is wrapped in a function because I didn't
+      // want to use let, I wanted a const. Am I sick? Yes.
       const handler = (() => {
         try {
           return container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
@@ -59,31 +65,60 @@ export class PresetApplier implements ApplierContract {
         return false;
       })();
 
+      // If we got false we don't have a handler.
       if (!handler) {
         Log.warn(`Skipping an unknown action of type ${Color.keyword(raw.type)}.`);
         continue;
       }
 
-      // Validates
+      // Validates the action.
       const action = await handler.validate(raw);
       if (!action) {
         continue; // TODO - Give the choice to abort?
       }
+
+      // Apply "beforeEach" execution hook
+      this.applyHook('beforeEach', context);
 
       // Handles
       const success = await handler.handle(action, context);
       if (!success) {
         Log.debug(`Failed at handling a ${Color.keyword(action.type)} action.`);
       }
+
+      // Apply "afterEach" execution hook
+      this.applyHook('afterEach', context);
     }
 
-    // console.log({
-    //   resolvable,
-    //   context,
-    //   argv,
-    //   debug,
-    //   result,
-    // });
+    // Apply "after" execution hook
+    this.applyHook('after', context);
+
+    return true;
+  }
+
+  /**
+   * Apply an execution hook.
+   *
+   * @param id The hook to apply.
+   * @param context The current context.
+   */
+  private async applyHook(
+    id: 'before' | 'after' | 'beforeEach' | 'afterEach',
+    context: ContextContract
+  ): Promise<boolean> {
+    const hook = context?.generator[id];
+    if (!hook || typeof hook !== 'function') {
+      return true;
+    }
+
+    try {
+      if (false !== (await hook(context))) {
+        return true;
+      }
+    } catch (error) {
+      Log.warn(`${Color.keyword(id)} execution hook failed to execute.`);
+      Log.debug(error);
+    }
 
     return true;
   }
