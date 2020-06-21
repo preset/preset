@@ -1,6 +1,12 @@
 import { injectable, inject } from 'inversify';
 import { parse, Output } from '@oclif/parser';
-import { ParserContract, ParserContextData, ContextContract, GeneratorContract, ImporterContract } from '@/Contracts';
+import {
+  ParserContract,
+  ParserOptionsContract,
+  ContextContract,
+  GeneratorContract,
+  ImporterContract,
+} from '@/Contracts';
 import { Log, Color } from '@/Logger';
 import { Binding } from '@/Container';
 import fs from 'fs-extra';
@@ -16,7 +22,7 @@ export class GeneratorParser implements ParserContract {
   @inject(Binding.Importer)
   private importer!: ImporterContract;
 
-  async parse(directory: string, parserContext: Partial<ParserContextData> = {}): Promise<ContextContract | false> {
+  async parse(directory: string, parserContext: Partial<ParserOptionsContract> = {}): Promise<ContextContract | false> {
     Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
 
     // Checks that the given directory is indeed one
@@ -104,15 +110,26 @@ export class GeneratorParser implements ParserContract {
   protected async generateContext(
     directory: string,
     generator: Partial<GeneratorContract>,
-    parserContext: Partial<ParserContextData>
+    parserContext: Partial<ParserOptionsContract>
   ): Promise<ContextContract> {
+    const targetDirectory = parserContext?.applierOptions?.in ?? process.cwd();
+
+    if (!fs.pathExistsSync(targetDirectory)) {
+      Log.debug(`Creating target directory ${Color.directory(targetDirectory)}.`);
+      fs.ensureDirSync(targetDirectory);
+    }
+
+    if (!fs.statSync(targetDirectory).isDirectory()) {
+      throw 'Target exists but is not a directory.';
+    }
+
     Log.debug(`Generating context.`);
     const context = {
       generator,
-      argv: parserContext.argv ?? [],
+      targetDirectory,
+      argv: parserContext?.applierOptions?.argv ?? [],
       temporary: parserContext.temporary ?? false,
       presetName: generator.name ?? parserContext?.package?.name ?? 'unnamed',
-      targetDirectory: process.cwd(),
       presetDirectory: path.join(directory),
       presetTemplates: path.join(directory, generator?.templates ?? 'templates'),
       presetFile: path.join(directory, parserContext?.package?.preset ?? 'preset.js'),

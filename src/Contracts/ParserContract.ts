@@ -1,6 +1,7 @@
 import { ContextContract } from './ContextContract';
+import { ApplierOptionsContract } from './ApplierContract';
 
-export interface ParserContextData {
+export interface ParserOptionsContract {
   /**
    * Whether or not the preset directory is temporary and should be
    * deleted after it is applied.
@@ -8,14 +9,14 @@ export interface ParserContextData {
   temporary: boolean;
 
   /**
-   * Additional command line argument to give to the context.
-   */
-  argv: string[];
-
-  /**
    * The package.json contents.
    */
   package?: any;
+
+  /**
+   * More options from the applier.
+   */
+  applierOptions?: Partial<ApplierOptionsContract>;
 }
 
 export interface ParserContract {
@@ -25,5 +26,5 @@ export interface ParserContract {
    * @param directory A local directory containing a preset.
    * @param parserContext Additional context data.
    */
-  parse(directory: string, parserContext?: Partial<ParserContextData>): Promise<ContextContract | false>;
+  parse(directory: string, parserContext?: Partial<ParserOptionsContract>): Promise<ContextContract | false>;
 }

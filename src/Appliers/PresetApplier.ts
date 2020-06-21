@@ -6,6 +6,7 @@ import {
   BaseActionContract,
   ActionHandlerContract,
   ContextContract,
+  ApplierOptionsContract,
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
 import { Log, Color } from '@/Logger';
@@ -22,7 +23,7 @@ export class PresetApplier implements ApplierContract {
   @inject(Binding.Parser)
   private parser!: ParserContract;
 
-  async run(resolvable: string, argv: string[], debug: boolean): Promise<boolean> {
+  async run(resolvable: string, applierOptions: Partial<ApplierOptionsContract> = {}): Promise<boolean> {
     // Tries to resolve the given path/name/whatever
     const result = await this.resolver.resolve(resolvable);
 
@@ -33,7 +34,7 @@ export class PresetApplier implements ApplierContract {
 
     // Parses the preset
     const context = await this.parser.parse(result.path, {
-      argv,
+      applierOptions,
       temporary: !!result?.temporary,
     });
 

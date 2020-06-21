@@ -22,7 +22,6 @@ it('fails to parse a preset that does not have an action key', async () => {
   Log.fake();
   const parser = container.get<ParserContract>(Binding.Parser);
   const context = await parser.parse(stubs.noAction, {
-    argv: [],
     temporary: false,
   });
 
@@ -36,7 +35,6 @@ it('fails to parse a preset that does not have an action key', async () => {
 it('parses a simple preset with an empty action list', async () => {
   const parser = container.get<ParserContract>(Binding.Parser);
   const context = await parser.parse(stubs.emptyActionList, {
-    argv: [],
     temporary: false,
   });
 
@@ -80,7 +78,9 @@ it('parses arguments and flags and returns them in the context', async () => {
   });
 
   const context = (await container.get<ParserContract>(Binding.Parser).parse(stubs.emptyActionList, {
-    argv: ['--auth', 'test'],
+    applierOptions: {
+      argv: ['--auth', 'test'],
+    },
   })) as ContextContract;
 
   expect(context).not.toBe(false);
@@ -91,7 +91,6 @@ it('parses arguments and flags and returns them in the context', async () => {
 it('adds git in the context', async () => {
   const parser = container.get<ParserContract>(Binding.Parser);
   const context = (await parser.parse(stubs.emptyActionList, {
-    argv: [],
     temporary: false,
   })) as ContextContract;
 

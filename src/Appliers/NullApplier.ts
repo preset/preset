@@ -7,6 +7,6 @@ import { ApplierContract } from '../Contracts';
 @injectable()
 export class NullApplier implements ApplierContract {
   async run(): Promise<boolean> {
-    return false;
+    return true;
   }
 }

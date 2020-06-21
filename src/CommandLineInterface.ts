@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { Binding } from '@/Container';
 import { ApplierContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
+import path from 'path';
 
 @injectable()
 export class CommandLineInterface {
@@ -20,6 +21,9 @@ export class CommandLineInterface {
     }),
     help: flags.boolean({
       description: 'Displays command line help.',
+    }),
+    in: flags.string({
+      description: 'Specify a target directory for the preset.',
     }),
   };
 
@@ -46,11 +50,15 @@ export class CommandLineInterface {
     }
 
     Log.debug(`Applying preset ${Color.resolvable(args.preset)}.`);
-    const success = await this.applier.run(args.preset, argv.splice(1), !!flags.debug);
+    const success = await this.applier.run(args.preset, {
+      argv: argv.splice(1),
+      debug: !!flags.debug,
+      in: path.join(flags.in ?? process.cwd()),
+    });
 
     if (success) {
       Log.success(`Applied preset ${Color.preset(args.preset)}.`);
-      return 1;
+      return 0;
     }
 
     // TODO - Add instruction to know what happened
@@ -60,7 +68,7 @@ export class CommandLineInterface {
         '--debug'
       )} flag for more informations.`
     );
-    return 0;
+    return 1;
   }
 
   async missingPresetName(): Promise<number> {
@@ -81,6 +89,6 @@ export class CommandLineInterface {
         .append(Color.debug('>'))
     );
 
-    return 1;
+    return 0;
   }
 }

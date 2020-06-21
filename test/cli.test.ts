@@ -2,6 +2,8 @@ import { container, Binding } from '@/Container';
 import { CommandLineInterface } from '@/CommandLineInterface';
 import { NullApplier } from '@/Appliers';
 import { Log } from '@/Logger';
+import { ApplierContract, ApplierOptionsContract } from '@/Contracts';
+import { injectable } from 'inversify';
 
 beforeEach(() => {
   Log.fake();
@@ -28,18 +30,41 @@ it('returns code 1 when no argument is passed', async () => {
   expect(code).toBe(1);
 });
 
-it('returns code 1 when the help flag is passed', async () => {
+it('returns code 0 when the help flag is passed', async () => {
   const code = await container //
     .resolve(CommandLineInterface)
     .run(['--help']);
 
-  expect(code).toBe(1);
+  expect(code).toBe(0);
 });
 
-it('returns code 0 an argument is passed and the help flag is not passed', async () => {
+it('returns code 0 when an argument is passed and the help flag is not passed', async () => {
+  container.rebind<ApplierContract>(Binding.Applier).to(NullApplier);
   const code = await container //
     .resolve(CommandLineInterface)
     .run(['preset-name']);
 
   expect(code).toBe(0);
+});
+
+it('handles the in command line parameter', async () => {
+  const args: string[] = [];
+
+  container.rebind<ApplierContract>(Binding.Applier).to(
+    injectable()(
+      class implements ApplierContract {
+        async run(preset: string, options?: Partial<ApplierOptionsContract> | undefined): Promise<boolean> {
+          args.push(preset, options?.in ?? '');
+          return true;
+        }
+      }
+    )
+  );
+
+  const code = await container //
+    .resolve(CommandLineInterface)
+    .run(['preset-name', '--in', 'subdirectory']);
+
+  expect(code).toBe(0);
+  expect(args).toStrictEqual(['preset-name', 'subdirectory']);
 });
