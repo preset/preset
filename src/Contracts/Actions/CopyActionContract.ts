@@ -28,6 +28,11 @@ export interface CopyActionContract extends BaseActionContract<'copy'> {
    * A strategy defining how a conflict will be handled.
    */
   strategy: CopyConflictStrategy;
+
+  /**
+   * If true, files starting with a dot will be ignored.
+   */
+  ignoreDotfiles: boolean;
 }
 
 export const copyConflictStrategies = ['ask', 'override', 'skip'] as const;

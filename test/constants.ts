@@ -16,6 +16,7 @@ export const stubs = {
 export const templates = {
   COPY_WITH_SUBFOLDER: path.join(TEMPLATES_DIRECTORY, 'copy-with-subfolder'),
   COPY_WITH_SUBFOLDERS: path.join(TEMPLATES_DIRECTORY, 'copy-with-subfolders'),
+  COPY_WITH_DOTFILES: path.join(TEMPLATES_DIRECTORY, 'copy-with-dotfiles'),
 };
 
 export const gists = {

@@ -33,6 +33,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
       directories: [],
       target: '',
       strategy: 'ask',
+      ignoreDotfiles: false,
       ...action,
       type: 'copy',
     };
@@ -72,7 +73,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     // Use the map to copy each directory to its target directory
     for (const [from, to] of Object.entries(action.directories)) {
       const entries = await fg('**/*', {
-        dot: true,
+        dot: !action.ignoreDotfiles,
         cwd: path.join(context.presetTemplates, from),
       });
 
@@ -92,7 +93,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     // Get the entries in the preset template directory, thanks
     // to the glob in the action.
     const entries = await fg(action.files, {
-      dot: true,
+      dot: !action.ignoreDotfiles,
       cwd: context.presetTemplates,
     });
 
@@ -113,7 +114,10 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     for (const entry of entries) {
       const input = path.join(context.presetTemplates, from, entry);
       const outputDirectory = path.join(context.targetDirectory, to);
-      const output = path.join(outputDirectory, entry);
+      const output = path.join(
+        outputDirectory,
+        entry.endsWith('.dotfile') ? `.${entry.replace('.dotfile', '')}` : entry
+      );
 
       // Make sure the output directory exists.
       fs.ensureDirSync(outputDirectory);

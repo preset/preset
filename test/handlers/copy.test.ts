@@ -16,6 +16,7 @@ describe('Validator', () => {
     expect(result).toStrictEqual<CopyActionContract>({
       type: 'copy',
       files: '**/**',
+      ignoreDotfiles: false,
       directories: [],
       target: '',
       strategy: 'ask',
@@ -31,6 +32,7 @@ describe('Validator', () => {
       type: 'copy',
       directories: [],
       files: ['file1.txt', 'file2.txt'],
+      ignoreDotfiles: false,
       target: '',
       strategy: 'ask',
     });
@@ -206,5 +208,40 @@ describe('Handler', () => {
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root.txt'))).toBe(true);
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub1', 'file1.txt'))).toBe(true);
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub1', 'sub2', 'file3.txt'))).toBe(true);
+  });
+
+  it('it transforms .dotfile files into actual dotfiles', async () => {
+    await handleCopy(
+      {
+        files: '**/*',
+        target: '',
+        strategy: 'skip',
+      },
+      {
+        presetTemplates: templates.COPY_WITH_DOTFILES,
+      }
+    );
+
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, '.file'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, '.gitignore'))).toBe(true);
+    expect(fs.readFileSync(path.join(TARGET_DIRECTORY, '.gitignore')).toString()).toContain('node_modules');
+  });
+
+  it('ignores dot files when told to', async () => {
+    await handleCopy(
+      {
+        files: '**/*',
+        target: '',
+        ignoreDotfiles: true,
+        strategy: 'skip',
+      },
+      {
+        presetTemplates: templates.COPY_WITH_DOTFILES,
+      }
+    );
+
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, '.file'))).toBe(false);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, '.gitignore'))).toBe(true);
+    expect(fs.readFileSync(path.join(TARGET_DIRECTORY, '.gitignore')).toString()).toContain('node_modules');
   });
 });
