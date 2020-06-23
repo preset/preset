@@ -54,6 +54,7 @@ export class CommandLineInterface {
     const success = await this.applier.run(args.preset, {
       argv: argv.splice(1),
       debug: !!flags.debug,
+      resolvable: args.preset,
       in: target,
     });
 

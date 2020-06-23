@@ -11,6 +11,11 @@ export interface ApplierContract {
 
 export interface ApplierOptionsContract {
   /**
+   * The preset resolvable string.
+   */
+  resolvable: string;
+
+  /**
    * Additional command line arguments.
    */
   argv: string[];

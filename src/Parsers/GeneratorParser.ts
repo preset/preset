@@ -138,7 +138,8 @@ export class GeneratorParser implements ParserContract {
       targetDirectory,
       argv: parserContext?.applierOptions?.argv ?? [],
       temporary: parserContext.temporary ?? false,
-      presetName: generator.name ?? parserContext?.package?.name ?? directory,
+      presetName:
+        generator.name ?? parserContext?.package?.name ?? parserContext?.applierOptions?.resolvable ?? directory,
       presetDirectory: path.join(directory),
       presetTemplates: path.join(directory, generator?.templates ?? 'templates'),
       presetFile: path.join(directory, parserContext?.package?.preset ?? this.DEFAULT_PRESET_FILE),
