@@ -1,6 +1,7 @@
 {
   "name": "use-preset",
-  "version": "0.0.1-alpha.8",
+  "version": "0.1.0",
+  "description": "An easy preset system for busy developers.",
   "license": "MIT",
   "author": {
     "name": "Enzo Innocenzi",
@@ -8,14 +9,19 @@
     "url": "https://github.com/innocenzi"
   },
   "repository": "https://github.com/use-preset/use-preset",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/api.js",
+  "typings": "dist/api.d.ts",
   "bin": {
     "use-preset": "./bin/run"
   },
   "engines": {
     "node": ">=10"
   },
+  "files": [
+    "bin",
+    "dist",
+    "src"
+  ],
   "keywords": [
     "scaffolding",
     "preset",
@@ -29,30 +35,40 @@
     "arrowParens": "avoid"
   },
   "scripts": {
-    "prepare": "rimraf dist && tsc -b",
+    "prepare": "rimraf dist && tsc -b src",
     "build": "yarn prepare",
-    "test": "jest",
-    "release": "standard-version"
+    "test": "jest --verbose",
+    "release": "standard-version --skip.changelog",
+    "commit": "git-cz"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^26.0.0",
+    "@types/node-fetch": "^2.5.7",
     "@types/tmp": "^0.2.0",
+    "cz-conventional-changelog": "3.2.0",
     "jest": "^26.0.1",
     "jest-mock-extended": "^1.0.9",
     "rimraf": "^3.0.2",
     "standard-version": "^8.0.0",
     "ts-jest": "^26.1.0",
     "ts-node": "^8.10.2",
-    "tslib": "^2.0.0",
     "typescript": "^3.9.5"
   },
   "dependencies": {
     "@oclif/parser": "^3.8.5",
     "@poppinss/fancy-logs": "^1.3.7",
+    "@poppinss/prompts": "^1.1.0",
     "@poppinss/utils": "^2.2.6",
+    "@supportjs/text": "^1.5.1",
     "fast-glob": "^3.2.4",
+    "fs-extra": "^9.0.1",
+    "inversify": "^5.0.1",
+    "module-alias": "^2.2.2",
+    "node-fetch": "^2.6.0",
+    "reflect-metadata": "^0.1.13",
     "simple-git": "^2.7.0",
-    "tmp": "^0.2.1"
+    "tmp": "^0.2.1",
+    "tslib": "^2.0.0"
   }
 }

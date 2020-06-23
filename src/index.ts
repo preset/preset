@@ -1,5 +1,11 @@
-export * from './Action';
-export * from './Logger';
-export * from './Resolver';
-export * from './Validator';
-export * from './Preset';
+import { CommandLineInterface } from '@/CommandLineInterface';
+import { container } from '@/Container';
+import { Log } from '@/Logger';
+
+container //
+  .resolve(CommandLineInterface)
+  .run(process.argv.slice(2))
+  .catch(error => {
+    Log.fatal(`An error occured.`);
+    Log.fatal(error);
+  });
