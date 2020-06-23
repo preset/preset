@@ -35,7 +35,7 @@ it('finds each handler in the container', () => {
   const handlers = container.getAll<ActionHandlerContract>(Binding.Handler);
   const knownHandlers = handlers.map(handler => handler.for);
   const seenHandlers = [];
-  const types = [Name.CopyHandler, Name.DeleteHandler];
+  const types = [Name.CopyHandler, Name.DeleteHandler, Name.CustomHandler];
 
   types.forEach(type => {
     const handler = getHandlerInstance(type);

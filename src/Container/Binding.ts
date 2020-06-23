@@ -17,6 +17,7 @@ const Name = {
   PresetResolver: 'preset',
   CopyHandler: 'copy',
   DeleteHandler: 'delete',
+  CustomHandler: 'custom',
 };
 
 const Tag = {};

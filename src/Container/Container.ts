@@ -13,7 +13,7 @@ import { PresetApplier } from '@/Appliers';
 import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
 import { Binding, Name } from './Binding';
-import { CopyActionHandler, DeleteActionHandler } from '@/Handlers';
+import { CopyActionHandler, DeleteActionHandler, CustomActionHandler } from '@/Handlers';
 import { GitResolver } from '@/Resolvers/GitResolver';
 
 /**
@@ -64,5 +64,9 @@ container
   .bind<ActionHandlerContract<'delete'>>(Binding.Handler)
   .to(DeleteActionHandler)
   .whenTargetNamed(Name.DeleteHandler);
+container
+  .bind<ActionHandlerContract<'custom'>>(Binding.Handler)
+  .to(CustomActionHandler)
+  .whenTargetNamed(Name.CustomHandler);
 
 export { container };
