@@ -71,3 +71,19 @@ it('deletes specific files', async () => {
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub2', 'hello.txt'))).toBe(true);
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(false);
 });
+
+it('deletes nothing by default', async () => {
+  fs.ensureFileSync(path.join(TARGET_DIRECTORY, 'sub', 'hello.txt'));
+  fs.ensureFileSync(path.join(TARGET_DIRECTORY, 'hello.txt'));
+
+  await handle<DeleteActionContract>(
+    Name.DeleteHandler,
+    {},
+    {
+      targetDirectory: TARGET_DIRECTORY,
+    }
+  );
+
+  expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub', 'hello.txt'))).toBe(true);
+  expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(true);
+});
