@@ -29,7 +29,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     }
 
     return {
-      files: '*',
+      files: '**/**',
       directories: [],
       target: '',
       strategy: 'ask',
@@ -76,8 +76,6 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
         cwd: path.join(context.presetTemplates, from),
       });
 
-      Log.debug(`Found ${Color.keyword(entries.length)} file(s) in ${Color.directory(from)} to copy.`);
-
       // Copies all files found, relative to the "from" directory,
       // to the "to" directory.
       results.push(await this.doCopyFiles(entries, from, to, action, context));
@@ -98,8 +96,6 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
       cwd: context.presetTemplates,
     });
 
-    Log.debug(`Found ${Color.keyword(entries.length)} file(s) to copy.`);
-
     return this.doCopyFiles(entries, '', action.target, action, context);
   }
 
@@ -110,6 +106,8 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     action: CopyActionContract,
     context: ContextContract
   ): Promise<boolean> {
+    Log.debug(`Copying ${Color.keyword(entries.length)} file(s).`);
+
     // TODO - refactor to avoid repetition with copyFiles
     // For each found entry, copy according to the strategy.
     for (const entry of entries) {

@@ -15,7 +15,7 @@ describe('Validator', () => {
 
     expect(result).toStrictEqual<CopyActionContract>({
       type: 'copy',
-      files: '*',
+      files: '**/**',
       directories: [],
       target: '',
       strategy: 'ask',
@@ -192,5 +192,19 @@ describe('Handler', () => {
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root1', 'file1.txt'))).toBe(true);
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root1', 'sub2', 'file3.txt'))).toBe(true);
     expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root2', 'file3.txt'))).toBe(true);
+  });
+
+  it('copies the whole templates directory by default', async () => {
+    const action = await validate<CopyActionContract>('copy', {
+      type: 'copy',
+    });
+    const success = await handleCopy(action as CopyActionContract, {
+      presetTemplates: templates.COPY_WITH_SUBFOLDERS,
+    });
+
+    expect(success).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'root.txt'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub1', 'file1.txt'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'sub1', 'sub2', 'file3.txt'))).toBe(true);
   });
 });
