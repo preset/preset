@@ -29,7 +29,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     }
 
     return {
-      files: '**/**',
+      files: action.directories ? [] : '**/**',
       directories: [],
       target: '',
       strategy: 'ask',
