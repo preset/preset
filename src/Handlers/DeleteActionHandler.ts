@@ -10,27 +10,48 @@ export class DeleteActionHandler implements ActionHandlerContract<'delete'> {
   for = 'delete' as const;
 
   async validate(action: Partial<DeleteActionContract>): Promise<DeleteActionContract> {
-    if (!action.files) {
-      Log.debug(`A ${Color.keyword(this.for)} action has no files specified.`);
-      action.files = [];
+    if (!action.directories && !action.files) {
+      Log.debug(
+        `A ${Color.keyword(this.for)} action will not do anything because it has no target file nor directory..`
+      );
     }
 
     return {
       ...action,
-      files: action.files,
+      files: action.files ?? false,
+      directories: action.directories ?? false,
       type: 'delete',
     };
   }
 
   async handle(action: DeleteActionContract, context: ContextContract): Promise<boolean> {
-    // Get the entries in the preset template directory, thanks
-    // to the glob in the action.
-    const entries = await fg(action.files, {
+    const directoriesDeleted = await this.delete('directories', action, context);
+    const filesDeleted = await this.delete('files', action, context);
+
+    return directoriesDeleted && filesDeleted;
+  }
+
+  protected async delete(
+    mode: 'directories' | 'files',
+    action: DeleteActionContract,
+    context: ContextContract
+  ): Promise<boolean> {
+    if (mode === 'directories' && !action.directories) {
+      return true;
+    }
+
+    if (mode === 'files' && !action.files) {
+      return true;
+    }
+
+    const entries = await fg(<string | string[]>action[mode], {
       dot: true,
       cwd: context.targetDirectory,
+      onlyFiles: mode === 'files',
+      onlyDirectories: mode === 'directories',
     });
 
-    Log.debug(`Found ${Color.keyword(entries.length)} file(s) to delete.`);
+    Log.debug(`Found ${Color.keyword(entries.length)} entries to delete.`);
 
     // For each found entry, delete it.
     for (const entry of entries) {
