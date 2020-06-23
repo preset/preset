@@ -195,7 +195,7 @@ const Color = {
   keyword: (text: any) => (Log.isFake() ? text : Log.colors.yellow(text)),
   resolvable: (text: any) => (Log.isFake() ? text : Log.colors.yellow(text)),
   link: (text: any) => (Log.isFake() ? text : Log.colors.underline(text)),
-  preset: (text: any) => (Log.isFake() ? text : Log.colors.blue(text)),
+  preset: (text: any) => (Log.isFake() ? text : Log.colors.green(text)),
 };
 
 export { Log, Color };

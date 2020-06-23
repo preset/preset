@@ -103,8 +103,8 @@ export class GeneratorParser implements ParserContract {
       }
     } catch (error) {
       if (error?.oclif?.exit === 2) {
-        Log.warn(`Could not parse extra arguments.`);
-        Log.warn(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
+        Log.debug(`Could not parse extra arguments.`);
+        Log.debug(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
       }
 
       Log.debug(error);

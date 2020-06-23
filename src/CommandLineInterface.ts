@@ -50,14 +50,15 @@ export class CommandLineInterface {
     }
 
     Log.debug(`Applying preset ${Color.resolvable(args.preset)}.`);
+    const target = path.join(flags.in ?? process.cwd());
     const success = await this.applier.run(args.preset, {
       argv: argv.splice(1),
       debug: !!flags.debug,
-      in: path.join(flags.in ?? process.cwd()),
+      in: target,
     });
 
     if (success) {
-      Log.success(`Applied preset ${Color.preset(args.preset)}.`);
+      Log.debug(`Applied preset ${Color.preset(args.preset)} into ${Color.directory(target)}.`);
       return 0;
     }
 
