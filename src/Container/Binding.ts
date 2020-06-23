@@ -18,6 +18,7 @@ const Name = {
   CopyHandler: 'copy',
   DeleteHandler: 'delete',
   PromptHandler: 'prompt',
+  EditJsonHandler: 'edit-json',
   CustomHandler: 'custom',
 };
 

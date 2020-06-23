@@ -13,7 +13,13 @@ import { PresetApplier } from '@/Appliers';
 import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
 import { Binding, Name } from './Binding';
-import { CopyActionHandler, DeleteActionHandler, PromptActionHandler, CustomActionHandler } from '@/Handlers';
+import {
+  CopyActionHandler,
+  DeleteActionHandler,
+  PromptActionHandler,
+  CustomActionHandler,
+  EditJsonActionHandler,
+} from '@/Handlers';
 import { GitResolver } from '@/Resolvers/GitResolver';
 
 /**
@@ -68,6 +74,10 @@ container
   .bind<ActionHandlerContract<'prompt'>>(Binding.Handler)
   .to(PromptActionHandler)
   .whenTargetNamed(Name.PromptHandler);
+container
+  .bind<ActionHandlerContract<'edit-json'>>(Binding.Handler)
+  .to(EditJsonActionHandler)
+  .whenTargetNamed(Name.EditJsonHandler);
 container
   .bind<ActionHandlerContract<'custom'>>(Binding.Handler)
   .to(CustomActionHandler)
