@@ -10,6 +10,7 @@ export const stubs = {
   standaloneFile: path.join(STUBS_DIRECTORY, 'file.json'),
   NO_PACKAGE: path.join(STUBS_DIRECTORY, 'no-package'),
   NO_ACTION_USES_API: path.join(STUBS_DIRECTORY, 'no-action-uses-api'),
+  HAS_REQUIRE: path.join(STUBS_DIRECTORY, 'has-require'),
   USES_EXTERNAL_REQUIRE: path.join(STUBS_DIRECTORY, 'uses-external-require'),
 };
 

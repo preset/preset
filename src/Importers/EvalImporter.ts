@@ -64,7 +64,7 @@ export class EvalImporter implements ImporterContract {
           return true;
         }
 
-        if (line.includes('require')) {
+        if (line.match(/require *\( *['"].*['"] *\)/)) {
           throw 'External requires are forbidden in eval mode.';
         }
 
