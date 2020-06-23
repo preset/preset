@@ -6,7 +6,7 @@ export interface GeneratorContract {
   /**
    * The name of the preset.
    */
-  name: string;
+  name?: string;
 
   /**
    * The path that contain the templates, relative to the preset.
