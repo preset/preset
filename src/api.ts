@@ -1,5 +1,6 @@
 import { GeneratorContract } from './Contracts';
-import { Log as Logger, Color } from './Logger';
+import { Log as Logger } from './Logger';
+import path from 'path';
 
 export const Preset = {
   make: (preset: GeneratorContract) => preset as GeneratorContract,
@@ -13,6 +14,7 @@ export const Log = {
 };
 
 export { flags } from '@oclif/parser';
+export { path };
 
 export * as fs from 'fs-extra';
 export * as fetch from 'node-fetch';
