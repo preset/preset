@@ -118,7 +118,7 @@ export class GeneratorParser implements ParserContract {
    */
   protected async generateContext(
     directory: string,
-    generator: Partial<GeneratorContract>,
+    generator: GeneratorContract,
     parserContext: Partial<ParserOptionsContract>
   ): Promise<ContextContract> {
     const targetDirectory = parserContext?.applierOptions?.in ?? process.cwd();
@@ -133,7 +133,7 @@ export class GeneratorParser implements ParserContract {
     }
 
     Log.debug(`Generating context.`);
-    const context = {
+    const context: ContextContract = {
       generator,
       targetDirectory,
       argv: parserContext?.applierOptions?.argv ?? [],
@@ -142,6 +142,7 @@ export class GeneratorParser implements ParserContract {
       presetDirectory: path.join(directory),
       presetTemplates: path.join(directory, generator?.templates ?? 'templates'),
       presetFile: path.join(directory, parserContext?.package?.preset ?? this.DEFAULT_PRESET_FILE),
+      prompts: {},
       git: {
         context: simpleGit(process.cwd()),
         config: (await simpleGit().listConfig()).all,

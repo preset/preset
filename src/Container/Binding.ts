@@ -17,6 +17,7 @@ const Name = {
   PresetResolver: 'preset',
   CopyHandler: 'copy',
   DeleteHandler: 'delete',
+  PromptHandler: 'prompt',
   CustomHandler: 'custom',
 };
 

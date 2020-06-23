@@ -27,11 +27,11 @@ export interface DirectPromptOptions {
   format?: Function;
   result?: Function;
   validate?: Function;
-  choices: Array<
+  choices?: Array<
     | {
-        name: string;
-        message: string;
-        value: string;
+        name: string | number;
+        message: string | number;
+        value: string | number;
       }
     | string
   >;
