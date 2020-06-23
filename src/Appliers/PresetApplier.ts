@@ -102,6 +102,9 @@ export class PresetApplier implements ApplierContract {
     // Apply "after" execution hook
     this.applyHook('after', context);
 
+    // Log a success message
+    Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
+
     return true;
   }
 

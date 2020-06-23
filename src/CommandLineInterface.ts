@@ -58,7 +58,7 @@ export class CommandLineInterface {
     });
 
     if (success) {
-      Log.debug(`Applied preset ${Color.preset(args.preset)} into ${Color.directory(target)}.`);
+      Log.debug(`Operation successful.`);
       return 0;
     }
 
