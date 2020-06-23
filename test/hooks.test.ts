@@ -9,8 +9,10 @@ import {
 import { stubs, TARGET_DIRECTORY } from './constants';
 import { injectable } from 'inversify';
 import { CopyActionHandler } from '@/Handlers';
+import { Log } from '@/Logger';
 
 it('apply every hook in the right order', async () => {
+  Log.fake();
   const logs: string[] = [];
 
   container
