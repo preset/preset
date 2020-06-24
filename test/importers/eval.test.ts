@@ -20,6 +20,15 @@ it('imports a preset which requires the api', async () => {
   expect((<GeneratorContract>generator).name).toBe('preset');
 });
 
+it('does not throw when a preset has the term require', async () => {
+  Log.fake();
+  const importer = container.get<ImporterContract>(Binding.Importer);
+  const generator = await importer.import(path.join(stubs.HAS_REQUIRE, 'preset.js'));
+
+  expect(generator).not.toBe(false);
+  expect((<GeneratorContract>generator).name).toBe('preset');
+});
+
 it('throws when importing a preset which requires an external script', async () => {
   Log.fake();
   const generatorPath = path.join(stubs.USES_EXTERNAL_REQUIRE, 'preset.js');

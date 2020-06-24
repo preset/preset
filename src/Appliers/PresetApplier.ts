@@ -10,6 +10,7 @@ import {
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
 import { Log, Color } from '@/Logger';
+import fs from 'fs-extra';
 
 /**
  * Tries to resolve the given resolvable to a preset.
@@ -23,9 +24,9 @@ export class PresetApplier implements ApplierContract {
   @inject(Binding.Parser)
   private parser!: ParserContract;
 
-  async run(resolvable: string, applierOptions: Partial<ApplierOptionsContract> = {}): Promise<boolean> {
+  async run(applierOptions: ApplierOptionsContract): Promise<boolean> {
     // Tries to resolve the given path/name/whatever
-    const result = await this.resolver.resolve(resolvable);
+    const result = await this.resolver.resolve(applierOptions.resolvable);
 
     // Instantly leave if the resolvable couldn't be resolved
     if (!result || !result.success || !result.path) {
@@ -40,7 +41,7 @@ export class PresetApplier implements ApplierContract {
 
     // If no context is returned we're out
     if (!context) {
-      Log.debug(`Could not parse ${Color.file(resolvable)}.`);
+      Log.debug(`Could not parse ${Color.file(applierOptions.resolvable)}.`);
       return false;
     }
 
@@ -104,6 +105,28 @@ export class PresetApplier implements ApplierContract {
 
     // Log a success message
     Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
+
+    // Delete temporary folder
+    await this.deleteTemporaryFolder(context);
+
+    return true;
+  }
+
+  /**
+   * Deletes the temporary folder if needed.
+   */
+  private async deleteTemporaryFolder(context: ContextContract): Promise<boolean> {
+    if (!context.temporary) {
+      return true;
+    }
+
+    try {
+      Log.debug(`Removing temporary directory ${Color.directory(context.presetDirectory)}`);
+      fs.removeSync(context.presetDirectory);
+    } catch (error) {
+      Log.debug(error);
+      return false;
+    }
 
     return true;
   }

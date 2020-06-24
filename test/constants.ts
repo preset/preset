@@ -3,6 +3,7 @@ import path from 'path';
 export const STUBS_DIRECTORY = path.join(__dirname, '__stubs__');
 export const TEMPLATES_DIRECTORY = path.join(__dirname, '__templates__');
 export const TARGET_DIRECTORY = path.join(__dirname, '__target__');
+export const TEMP_DIRECTORY = path.join(__dirname, '__temp__');
 
 export const stubs = {
   noAction: path.join(STUBS_DIRECTORY, 'no-action'),
@@ -10,6 +11,7 @@ export const stubs = {
   standaloneFile: path.join(STUBS_DIRECTORY, 'file.json'),
   NO_PACKAGE: path.join(STUBS_DIRECTORY, 'no-package'),
   NO_ACTION_USES_API: path.join(STUBS_DIRECTORY, 'no-action-uses-api'),
+  HAS_REQUIRE: path.join(STUBS_DIRECTORY, 'has-require'),
   USES_EXTERNAL_REQUIRE: path.join(STUBS_DIRECTORY, 'uses-external-require'),
 };
 
