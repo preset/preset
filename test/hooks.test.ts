@@ -63,7 +63,7 @@ it('apply every hook in the right order', async () => {
   );
 
   const applier = container.get<ApplierContract>(Binding.Applier);
-  const result = await applier.run(stubs.emptyActionList);
+  const result = await applier.run({ resolvable: stubs.emptyActionList });
 
   expect(result).toBe(true);
   expect(logs).toStrictEqual([

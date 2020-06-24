@@ -6,27 +6,27 @@ export interface ApplierContract {
    *
    * @param preset A value that should resolve to a preset. A name, a git repository or a local path are exemples.
    */
-  run(preset: PresetResolvable, options?: Partial<ApplierOptionsContract>): Promise<boolean>;
+  run(options: ApplierOptionsContract): Promise<boolean>;
 }
 
 export interface ApplierOptionsContract {
   /**
    * The preset resolvable string.
    */
-  resolvable: string;
+  resolvable: PresetResolvable;
 
   /**
    * Additional command line arguments.
    */
-  argv: string[];
+  argv?: string[];
 
   /**
    * Target directory. Defaults to current working directory.
    */
-  in: string;
+  in?: string;
 
   /**
    * Whether to debug or not.
    */
-  debug: boolean;
+  debug?: boolean;
 }

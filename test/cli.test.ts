@@ -53,8 +53,8 @@ it('handles the in command line parameter', async () => {
   container.rebind<ApplierContract>(Binding.Applier).to(
     injectable()(
       class implements ApplierContract {
-        async run(preset: string, options?: Partial<ApplierOptionsContract> | undefined): Promise<boolean> {
-          args.push(preset, options?.in ?? '');
+        async run(options: ApplierOptionsContract): Promise<boolean> {
+          args.push(options.resolvable, options.in ?? '');
           return true;
         }
       }
