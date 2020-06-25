@@ -19,6 +19,7 @@ const Name = {
   DeleteHandler: 'delete',
   PromptHandler: 'prompt',
   EditJsonHandler: 'edit-json',
+  EditHandler: 'edit',
   CustomHandler: 'custom',
 };
 
