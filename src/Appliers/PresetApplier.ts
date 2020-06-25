@@ -41,18 +41,37 @@ export class PresetApplier implements ApplierContract {
 
     // If no context is returned we're out
     if (!context) {
-      Log.debug(`Could not parse ${Color.file(applierOptions.resolvable)}.`);
+      Log.debug(`Could not generate context for ${Color.file(applierOptions.resolvable)}.`);
       return false;
     }
 
     // Apply "before"" execution hook
     this.applyHook('before', context);
 
-    // Loops through the action, validate and execute them
-    const actions = (typeof context.generator.actions === 'function' //
-      ? context.generator.actions(context)
-      : context.generator.actions) as BaseActionContract<any>[];
+    // Ensure we have actions
+    if (!context.generator.actions || typeof context.generator.actions !== 'function') {
+      Log.debug(`Preset ${Color.preset(context.presetName)} has no action to execute.`);
+    } else {
+      await this.applyActions(context);
+    }
 
+    // Apply "after" execution hook
+    this.applyHook('after', context);
+
+    // Log a success message
+    Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
+
+    // Delete temporary folder
+    await this.deleteTemporaryFolder(context);
+
+    return true;
+  }
+
+  private async applyActions(context: ContextContract): Promise<boolean> {
+    // Get the actions
+    const actions = await (context.generator.actions as Function)(context);
+
+    // Loops through the action, validate and execute them
     for (const raw of actions) {
       // Tries to get a handler for that action. This is wrapped in a function because I didn't
       // want to use let, I wanted a const. Am I sick? Yes.
@@ -99,15 +118,6 @@ export class PresetApplier implements ApplierContract {
       // Apply "afterEach" execution hook
       this.applyHook('afterEach', context);
     }
-
-    // Apply "after" execution hook
-    this.applyHook('after', context);
-
-    // Log a success message
-    Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
-
-    // Delete temporary folder
-    await this.deleteTemporaryFolder(context);
 
     return true;
   }

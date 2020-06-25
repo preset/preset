@@ -1,10 +1,9 @@
 import { MessageNode, ActionNames, ActionsList } from '@poppinss/fancy-logs/build/src/contracts';
 import { Logger as BaseLogger } from '@poppinss/fancy-logs';
 import { Colors, FakeColors } from '@poppinss/colors';
-// import figures from 'figures';
+import { Text } from '@supportjs/text';
 import fs from 'fs-extra';
 import path from 'path';
-import { Text } from '@supportjs/text';
 
 interface LoggerOptions {
   debug: boolean;

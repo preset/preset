@@ -18,20 +18,6 @@ function mockImporter(generator: Partial<GeneratorContract> | false) {
   );
 }
 
-it('fails to parse a preset that does not have an action key', async () => {
-  Log.fake();
-  const parser = container.get<ParserContract>(Binding.Parser);
-  const context = await parser.parse(stubs.noAction, {
-    temporary: false,
-  });
-
-  expect(context).toBe(false);
-  expect(Log.history).toStrictEqual([
-    'warn Preset is not valid because it lacks an action key.',
-    `fatal ${path.join(stubs.noAction, 'preset.js')} is not a valid preset file.`,
-  ]);
-});
-
 it('parses a simple preset with an empty action list', async () => {
   const parser = container.get<ParserContract>(Binding.Parser);
   const context = await parser.parse(stubs.emptyActionList, {

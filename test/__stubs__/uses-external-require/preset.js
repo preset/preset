@@ -1,7 +1,5 @@
 const { Preset } = require('use-preset');
-const { flags } = require('@oclif/parser');
-
-const test = flags.boolean({ char: 't ' });
+const dep = require('some-external-dependency');
 
 module.exports = Preset.make({
   name: 'preset',
