@@ -76,4 +76,9 @@ export interface ContextContract {
      */
     context: SimpleGit;
   };
+
+  /**
+   * Runs `yarn install` if available, or `npm install` if not.
+   */
+  installDependencies: Function;
 }
