@@ -67,7 +67,7 @@ export class GeneratorParser implements ParserContract {
 
     // Preset check
     if (!generator || !(await this.isPresetValid(generator))) {
-      Log.fatal(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
+      Log.debug(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
       return false;
     }
 
@@ -81,10 +81,10 @@ export class GeneratorParser implements ParserContract {
    * Ensures that the preset is valid.
    */
   protected async isPresetValid(generator: Partial<GeneratorContract>): Promise<boolean> {
-    if (!generator?.actions || typeof generator?.actions !== 'function') {
-      Log.warn(`Preset is not valid because it lacks an ${Color.keyword('action')} key.`);
-      return false;
-    }
+    // if (typeof generator.actions !== 'function') {
+    //   Log.warn(`The ${Color.keyword('action')} key must be a function.`);
+    //   return false;
+    // }
 
     return true;
   }

@@ -30,14 +30,14 @@ it('does not throw when a preset has the term require', async () => {
 });
 
 it('throws when importing a preset which requires an external script', async () => {
-  Log.fake();
+  Log.configure({ fake: true, debug: true, color: false });
   const generatorPath = path.join(stubs.USES_EXTERNAL_REQUIRE, 'preset.js');
   const importer = container.get<ImporterContract>(Binding.Importer);
   const generator = await importer.import(generatorPath);
 
   expect(generator).toBe(false);
   expect(Log.history).toEqual([
-    'fatal External requires are forbidden in eval mode.',
-    `fatal Could not parse ${generatorPath}.`,
+    `debug Could not parse ${generatorPath}.`,
+    'debug Dependency some-external-dependency is not authorized. If you think this is a mistake, please open an issue.',
   ]);
 });

@@ -3,6 +3,7 @@ import { ImporterContract, GeneratorContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
 import fs from 'fs-extra';
 import { Text } from '@supportjs/text';
+import { Logger } from '@poppinss/fancy-logs';
 
 /**
  * Instead of requiring or importing, we read the preset file, transpile and evaluate it.
@@ -14,6 +15,22 @@ import { Text } from '@supportjs/text';
 export class EvalImporter implements ImporterContract {
   private static API_VARIABLE_NAME: string = 'api';
   private static USE_PRESET_IMPORT_NAME: string = 'use-preset';
+  private static DEPENDENCY_WHITELIST: string[] = [
+    '@poppinss/fancy-logs',
+    '@poppinss/colors',
+    '@poppinss/prompts',
+    '@poppinss/utils',
+    '@supportjs/text',
+    'fast-glob',
+    'fs-extra',
+    'node-fetch',
+    'simple-git',
+    'tmp',
+    'os',
+    'debug',
+    'graceful-fs',
+    'run-parallel',
+  ];
 
   async import(filePath: string): Promise<false | GeneratorContract> {
     const presetFileContents = fs.readFileSync(filePath).toString();
@@ -21,8 +38,8 @@ export class EvalImporter implements ImporterContract {
     try {
       return this.evaluate(presetFileContents);
     } catch (error) {
-      Log.fatal(error);
-      Log.fatal(`Could not parse ${Color.file(filePath)}.`);
+      Log.debug(`Could not parse ${Color.file(filePath)}.`);
+      Log.debug(error);
     }
 
     return false;
@@ -64,8 +81,11 @@ export class EvalImporter implements ImporterContract {
           return true;
         }
 
-        if (line.match(/require *\( *['"].*['"] *\)/)) {
-          throw 'External requires are forbidden in eval mode.';
+        const match = line.match(/require *\( *['"](.*)['"] *\)/);
+        if (match && !EvalImporter.DEPENDENCY_WHITELIST.includes(match[1])) {
+          throw `Dependency ${Color.keyword(
+            match[1]
+          )} is not authorized. If you think this is a mistake, please open an issue.`;
         }
 
         return false;
