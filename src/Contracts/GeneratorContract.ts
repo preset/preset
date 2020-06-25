@@ -1,6 +1,13 @@
 import { ContextContract } from './ContextContract';
 import { flags, args } from '@oclif/parser';
-import { DeleteActionContract, CopyActionContract } from './Actions';
+import {
+  DeleteActionContract,
+  CopyActionContract,
+  EditActionContract,
+  EditJsonActionContract,
+  CustomActionContract,
+  PromptActionContract,
+} from './Actions';
 
 export interface GeneratorContract {
   /**
@@ -74,7 +81,13 @@ export interface GeneratorContract {
   afterEach?: HookResult;
 }
 
-type Actions = CopyActionContract | DeleteActionContract;
+type Actions =
+  | CopyActionContract
+  | DeleteActionContract
+  | EditActionContract
+  | EditJsonActionContract
+  | CustomActionContract
+  | PromptActionContract;
 type SyncHook = (context: ContextContract) => boolean | void;
 type AsyncHook = (context: ContextContract) => Promise<boolean | void>;
 type HookResult = SyncHook | AsyncHook | any;
