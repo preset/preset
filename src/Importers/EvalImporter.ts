@@ -30,6 +30,7 @@ export class EvalImporter implements ImporterContract {
     'debug',
     'graceful-fs',
     'run-parallel',
+    'cross-spawn',
   ];
 
   async import(filePath: string): Promise<false | GeneratorContract> {

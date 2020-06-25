@@ -46,7 +46,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     // Apply "before"" execution hook
-    this.applyHook('before', context);
+    await this.applyHook('before', context);
 
     // Ensure we have actions
     if (!context.generator.actions || typeof context.generator.actions !== 'function') {
@@ -56,7 +56,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     // Apply "after" execution hook
-    this.applyHook('after', context);
+    await this.applyHook('after', context);
 
     // Log a success message
     Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
@@ -177,11 +177,9 @@ export class PresetApplier implements ApplierContract {
     }
 
     try {
-      if (false !== (await hook(context))) {
-        return true;
-      }
+      await hook(context);
     } catch (error) {
-      Log.warn(`${Color.keyword(id)} execution hook failed to execute.`);
+      Log.warn(`Hook ${Color.keyword(id)} failed to execute.`);
       Log.debug(error);
     }
 
