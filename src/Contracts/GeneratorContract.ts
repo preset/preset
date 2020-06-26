@@ -63,22 +63,22 @@ export interface GeneratorContract {
   /**
    * Execution hook that is executed at the very start of the preset.
    */
-  before?: HookResult;
+  before?: HookFunction;
 
   /**
    * Execution hook that is executed before any action is handled.
    */
-  beforeEach?: HookResult;
+  beforeEach?: HookFunction;
 
   /**
    * Execution hook that is executed at the end of the preset.
    */
-  after?: HookResult;
+  after?: HookFunction;
 
   /**
    * Execution hook that is executed after any action is handled.
    */
-  afterEach?: HookResult;
+  afterEach?: HookFunction;
 }
 
 type Actions =
@@ -88,6 +88,6 @@ type Actions =
   | EditJsonActionContract
   | CustomActionContract
   | PromptActionContract;
-type SyncHook = (context: ContextContract) => boolean | void;
-type AsyncHook = (context: ContextContract) => Promise<boolean | void>;
-type HookResult = SyncHook | AsyncHook | any;
+
+export type HookResult = boolean | void | any;
+export type HookFunction = (context: ContextContract) => Promise<HookResult> | HookResult;

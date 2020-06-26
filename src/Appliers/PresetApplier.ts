@@ -46,7 +46,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     // Apply "before"" execution hook
-    await this.applyHook('before', context);
+    await this.applyGlobalHook('before', context);
 
     // Ensure we have actions
     if (!context.generator.actions || typeof context.generator.actions !== 'function') {
@@ -56,7 +56,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     // Apply "after" execution hook
-    await this.applyHook('after', context);
+    await this.applyGlobalHook('after', context);
 
     // Log a success message
     Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
@@ -107,7 +107,8 @@ export class PresetApplier implements ApplierContract {
       }
 
       // Apply "beforeEach" execution hook
-      this.applyHook('beforeEach', context);
+      this.applyGlobalHook('beforeEach', context);
+      this.applyActionHook('before', action, context);
 
       // Handles
       const success = await handler.handle(action, context);
@@ -116,7 +117,8 @@ export class PresetApplier implements ApplierContract {
       }
 
       // Apply "afterEach" execution hook
-      this.applyHook('afterEach', context);
+      this.applyActionHook('after', action, context);
+      this.applyGlobalHook('afterEach', context);
     }
 
     return true;
@@ -161,13 +163,7 @@ export class PresetApplier implements ApplierContract {
     return action.if.every(condition => Boolean(condition));
   }
 
-  /**
-   * Apply an execution hook.
-   *
-   * @param id The hook to apply.
-   * @param context The current context.
-   */
-  private async applyHook(
+  private async applyGlobalHook(
     id: 'before' | 'after' | 'beforeEach' | 'afterEach',
     context: ContextContract
   ): Promise<boolean> {
@@ -176,6 +172,23 @@ export class PresetApplier implements ApplierContract {
       return true;
     }
 
+    return this.applyHook(id, hook, context);
+  }
+
+  private async applyActionHook(
+    id: 'before' | 'after',
+    action: BaseActionContract<any>,
+    context: ContextContract
+  ): Promise<boolean> {
+    const hook = action[id];
+    if (!hook || typeof hook !== 'function') {
+      return true;
+    }
+
+    return this.applyHook(id, hook, context);
+  }
+
+  private async applyHook(id: string, hook: Function, context: ContextContract): Promise<boolean> {
     try {
       await hook(context);
     } catch (error) {
