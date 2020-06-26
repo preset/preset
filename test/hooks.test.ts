@@ -5,6 +5,7 @@ import {
   ContextContract,
   GeneratorContract,
   ActionHandlerContract,
+  CopyActionContract,
 } from '@/Contracts';
 import { stubs, TARGET_DIRECTORY } from './constants';
 import { injectable } from 'inversify';
@@ -44,16 +45,21 @@ it('apply every hook in the right order', async () => {
               after: () => logs.push('after'),
               beforeEach: () => logs.push('before each'),
               afterEach: () => logs.push('after each'),
-              actions: () => [
-                {
-                  type: 'copy',
-                  files: 'test.txt',
-                },
-                {
-                  type: 'copy',
-                  files: 'test2.txt',
-                },
-              ],
+              actions: async () =>
+                <Partial<CopyActionContract>[]>[
+                  {
+                    type: 'copy',
+                    files: 'test.txt',
+                    before: () => logs.push('before first copy action'),
+                    after: () => logs.push('after first copy action'),
+                  },
+                  {
+                    type: 'copy',
+                    files: 'test2.txt',
+                    before: () => logs.push('before second copy action'),
+                    after: () => logs.push('after second copy action'),
+                  },
+                ],
             },
             targetDirectory: TARGET_DIRECTORY,
           };
@@ -69,10 +75,14 @@ it('apply every hook in the right order', async () => {
   expect(logs).toStrictEqual([
     'before',
     'before each',
+    'before first copy action',
     'copy test.txt',
+    'after first copy action',
     'after each',
     'before each',
+    'before second copy action',
     'copy test2.txt',
+    'after second copy action',
     'after each',
     'after',
   ]);
