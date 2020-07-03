@@ -21,6 +21,7 @@ export class EvalImporter implements ImporterContract {
     '@poppinss/prompts',
     '@poppinss/utils',
     '@supportjs/text',
+    'path',
     'fast-glob',
     'fs-extra',
     'node-fetch',
