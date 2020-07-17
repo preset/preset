@@ -5,3 +5,4 @@ export * from './CustomActionContract';
 export * from './PromptActionContract';
 export * from './EditJsonActionContract';
 export * from './EditActionContract';
+export * from './PresetActionContract';

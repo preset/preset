@@ -21,6 +21,7 @@ const Name = {
   EditJsonHandler: 'edit-json',
   EditHandler: 'edit',
   CustomHandler: 'custom',
+  PresetHandler: 'preset',
 };
 
 const Tag = {};

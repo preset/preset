@@ -79,6 +79,6 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
 
   protected async merge(original: JsonEntry, data: JsonEntry): Promise<JsonEntry> {
     Log.debug(`Merging new data.`);
-    return lodash.merge(data, original);
+    return lodash.merge(original, data);
   }
 }
