@@ -42,6 +42,7 @@ it('finds each handler in the container', () => {
     Name.EditJsonHandler,
     Name.CustomHandler,
     Name.EditHandler,
+    Name.PresetHandler,
   ];
 
   types.forEach(type => {

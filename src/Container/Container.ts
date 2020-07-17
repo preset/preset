@@ -20,6 +20,7 @@ import {
   CustomActionHandler,
   EditJsonActionHandler,
   EditActionHandler,
+  PresetActionHandler,
 } from '@/Handlers';
 import { GitResolver } from '@/Resolvers/GitResolver';
 
@@ -84,5 +85,9 @@ container
   .to(CustomActionHandler)
   .whenTargetNamed(Name.CustomHandler);
 container.bind<ActionHandlerContract<'edit'>>(Binding.Handler).to(EditActionHandler).whenTargetNamed(Name.EditHandler);
+container
+  .bind<ActionHandlerContract<'preset'>>(Binding.Handler)
+  .to(PresetActionHandler)
+  .whenTargetNamed(Name.PresetHandler);
 
 export { container };

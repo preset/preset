@@ -37,7 +37,7 @@ it('merges content in a JSON file', async () => {
   expect(fs.readJsonSync(jsonPath)).toStrictEqual({
     license: 'MIT',
     dependencies: {
-      'laravel-mix': '^5	',
+      'laravel-mix': '^5',
       vue: '^2',
       '@supportjs/text': '^1',
     },

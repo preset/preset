@@ -13,6 +13,7 @@ export const stubs = {
   NO_ACTION_USES_API: path.join(STUBS_DIRECTORY, 'no-action-uses-api'),
   HAS_REQUIRE: path.join(STUBS_DIRECTORY, 'has-require'),
   USES_EXTERNAL_REQUIRE: path.join(STUBS_DIRECTORY, 'uses-external-require'),
+  COPY_SINGLE_FILE: path.join(STUBS_DIRECTORY, 'copy-single-file'),
 };
 
 export const templates = {
