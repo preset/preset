@@ -15,6 +15,12 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
       return false;
     }
 
+    if (action.arguments && !Array.isArray(action.arguments)) {
+      action.arguments = [action.arguments];
+    }
+
+    action.inherit = Boolean(action.inherit);
+
     return {
       ...action,
       type: 'preset',
@@ -23,14 +29,22 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
 
   async handle(action: PresetActionContract, context: ContextContract): Promise<boolean> {
     try {
+      if (!action.arguments) {
+        action.arguments = [];
+      }
+
+      if (action.inherit) {
+        (action.arguments as string[]).push(...context.argv);
+      }
+
       return await this.applier.run({
         resolvable: action.preset,
-        argv: context.argv,
+        argv: action.arguments as string[],
         in: context.targetDirectory,
       });
     } catch (error) {
       Log.warn(`Preset ${Color.resolvable(action.preset ?? 'unnamed')} could not be applied.`);
-      Log.debug(error);
+      Log.warn(error);
     }
 
     return false;
