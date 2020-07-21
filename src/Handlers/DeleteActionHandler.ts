@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, DeleteActionContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+// import { Log, Color } from '@/Logger';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import path from 'path';
@@ -11,9 +11,9 @@ export class DeleteActionHandler implements ActionHandlerContract<'delete'> {
 
   async validate(action: Partial<DeleteActionContract>): Promise<DeleteActionContract> {
     if (!action.directories && !action.files) {
-      Log.debug(
-        `A ${Color.keyword(this.for)} action will not do anything because it has no target file nor directory..`
-      );
+      // Log.debug(
+      //   `A ${Color.keyword(this.for)} action will not do anything because it has no target file nor directory..`
+      // );
     }
 
     return {
@@ -51,18 +51,18 @@ export class DeleteActionHandler implements ActionHandlerContract<'delete'> {
       onlyDirectories: mode === 'directories',
     });
 
-    Log.debug(`Found ${Color.keyword(entries.length)} entries to delete.`);
+    // Log.debug(`Found ${Color.keyword(entries.length)} entries to delete.`);
 
     // For each found entry, delete it.
     for (const entry of entries) {
       const absolutePath = path.join(context.targetDirectory, entry);
-      Log.debug(`Deleting ${Color.file(absolutePath)}.`);
+      // Log.debug(`Deleting ${Color.file(absolutePath)}.`);
 
       try {
         fs.removeSync(absolutePath);
       } catch (error) {
-        Log.warn(`Could not delete file ${Color.file(absolutePath)}.`);
-        Log.fatal(error);
+        // Log.warn(`Could not delete file ${Color.file(absolutePath)}.`);
+        // Log.fatal(error);
         return false;
       }
     }

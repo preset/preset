@@ -3,9 +3,8 @@ import { Text } from '@supportjs/text';
 import { inject, injectable } from 'inversify';
 import { Binding } from '@/Container';
 import { ApplierContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
 import path from 'path';
-import { Listr } from 'listr2';
 
 @injectable()
 export class CommandLineInterface {
@@ -39,7 +38,7 @@ export class CommandLineInterface {
     });
 
     if (flags.debug) {
-      Log.configure({ debug: true });
+      // Log.configure({ debug: true });
     }
 
     if (flags.help) {
@@ -50,7 +49,7 @@ export class CommandLineInterface {
       return await this.missingPresetName();
     }
 
-    Log.debug(`Applying preset ${Color.resolvable(args.preset)}.`);
+    Logger.info(`Applying preset ${args.preset}.`);
     const target = path.join(flags.in ?? process.cwd());
     const success = await this.applier.run({
       argv: argv.splice(1),
@@ -59,38 +58,39 @@ export class CommandLineInterface {
       in: target,
     });
 
+    Logger.saveToFile();
     if (success) {
-      Log.debug(`Operation successful.`);
+      // Log.debug(`Operation successful.`);
       return 0;
     }
 
     // TODO - Add instruction to know what happened
     // --debug flag or --report flag
-    Log.fatal(
-      `Preset ${Color.preset(args.preset)} could not be applied. Use the ${Color.preset(
-        '--debug'
-      )} flag for more informations.`
-    );
+    // Log.fatal(
+    //   `Preset ${Color.preset(args.preset)} could not be applied. Use the ${Color.preset(
+    //     '--debug'
+    //   )} flag for more informations.`
+    // );
     return 1;
   }
 
   async missingPresetName(): Promise<number> {
-    Log.fatal(Color.error(`The preset name is missing.`));
+    // Log.fatal(Color.error(`The preset name is missing.`));
     await this.help();
 
     return 1;
   }
 
   async help(): Promise<number> {
-    Log.log(
-      'info',
-      Text.make(Color.debug('Usage: ')) //
-        .append('npx use-preset')
-        .space()
-        .append(Color.debug('<'))
-        .append('name')
-        .append(Color.debug('>'))
-    );
+    // Log.log(
+    //   'info',
+    //   Text.make(Color.debug('Usage: ')) //
+    //     .append('npx use-preset')
+    //     .space()
+    //     .append(Color.debug('<'))
+    //     .append('name')
+    //     .append(Color.debug('>'))
+    // );
 
     return 0;
   }

@@ -7,7 +7,7 @@ import {
   GeneratorContract,
   ImporterContract,
 } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+// import { Log, Color } from '@/Logger';
 import { Binding } from '@/Container';
 import fs from 'fs-extra';
 import path from 'path';
@@ -26,7 +26,7 @@ export class GeneratorParser implements ParserContract {
   private importer!: ImporterContract;
 
   async parse(directory: string, parserContext: Partial<ParserOptionsContract> = {}): Promise<ContextContract | false> {
-    Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
+    // Log.debug(`Parsing preset at ${Color.directory(directory)}.`);
 
     // Checks that the given directory is indeed one
     if (!directory || !fs.pathExistsSync(directory) || !fs.statSync(directory).isDirectory) {
@@ -56,16 +56,16 @@ export class GeneratorParser implements ParserContract {
 
     // Preset file check
     if (!fs.existsSync(presetAbsolutePath)) {
-      throw new Error(`Preset file ${Color.file(presetAbsolutePath)} does not exist.`);
+      throw new Error(`Preset file ${presetAbsolutePath} does not exist.`);
     }
 
     // Import the preset
-    Log.debug(`Evaluating preset.`);
+    // Log.debug(`Evaluating preset.`);
     const generator = await this.importer.import(presetAbsolutePath);
 
     // Preset check
     if (!generator || !(await this.isPresetValid(generator))) {
-      throw new Error(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
+      throw new Error(`${presetAbsolutePath} is not a valid preset file.`);
     }
 
     return await this.generateContext(directory, generator, {
@@ -90,7 +90,7 @@ export class GeneratorParser implements ParserContract {
    * Parses the arguments and flags from the context thanks to @oclif/parser.
    */
   protected parseArgumentsAndFlags(context: ContextContract): undefined | Output<any, any> {
-    Log.debug(`Parsing arguments and flags.`);
+    // Log.debug(`Parsing arguments and flags.`);
     try {
       if (typeof context.generator.parse === 'function') {
         return parse(context.argv ?? [], {
@@ -100,11 +100,11 @@ export class GeneratorParser implements ParserContract {
       }
     } catch (error) {
       if (error?.oclif?.exit === 2) {
-        Log.debug(`Could not parse extra arguments.`);
-        Log.debug(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
+        // Log.debug(`Could not parse extra arguments.`);
+        // Log.debug(`This is probably an issue from this preset, not from ${Color.preset('use-preset')}.`);
       }
 
-      Log.debug(error);
+      // Log.debug(error);
     }
 
     return undefined;
@@ -121,7 +121,7 @@ export class GeneratorParser implements ParserContract {
     const targetDirectory = parserContext?.applierOptions?.in ?? process.cwd();
 
     if (!fs.pathExistsSync(targetDirectory)) {
-      Log.debug(`Creating target directory ${Color.directory(targetDirectory)}.`);
+      // Log.debug(`Creating target directory ${Color.directory(targetDirectory)}.`);
       fs.ensureDirSync(targetDirectory);
     }
 
@@ -129,7 +129,7 @@ export class GeneratorParser implements ParserContract {
       throw 'Target exists but is not a directory.';
     }
 
-    Log.debug(`Generating context.`);
+    // Log.debug(`Generating context.`);
     const context: ContextContract = {
       generator,
       targetDirectory,

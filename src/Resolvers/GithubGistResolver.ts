@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { Text } from '@supportjs/text';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+// import { Log, Color } from '@/Logger';
 import fetch from 'node-fetch';
 import fs from 'fs-extra';
 import path from 'path';
@@ -33,12 +33,12 @@ export class GithubGistResolver implements ResolverContract {
 
   private async clone(gistId: string): Promise<ResolverResultContract> {
     try {
-      Log.debug(`Fetching the Github Gist ${Color.keyword(gistId)}.`);
+      // Log.debug(`Fetching the Github Gist ${Color.keyword(gistId)}.`);
 
       const response = await fetch(this.getGistUrl(gistId));
 
       if (!response.ok) {
-        Log.warn(`Could not clone Gist ${Color.keyword(gistId)}.`);
+        // Log.warn(`Could not clone Gist ${Color.keyword(gistId)}.`);
         return {
           success: false,
         };
@@ -50,7 +50,7 @@ export class GithubGistResolver implements ResolverContract {
       const hasPackage = files.some(({ filename }) => filename === 'package.json');
 
       // Add a package.json if there is none
-      Log.debug(`That Gist had no ${Color.keyword('package.json')}. Made an empty one.`);
+      // Log.debug(`That Gist had no ${Color.keyword('package.json')}. Made an empty one.`);
       if (!hasPackage) {
         files.push({
           filename: 'package.json',
@@ -60,10 +60,10 @@ export class GithubGistResolver implements ResolverContract {
 
       // Write everything in a temporary folder
       const temporary = tmp.dirSync();
-      Log.debug(`Created ${Color.directory(temporary.name)} to write the preset files into.`);
+      // Log.debug(`Created ${Color.directory(temporary.name)} to write the preset files into.`);
       files.forEach(({ filename, content }) => {
         const file = path.join(temporary.name, filename);
-        Log.debug(`Writing ${Color.file(Text.make(file).afterLast('\\').afterLast('/'))}.`);
+        // Log.debug(`Writing ${Color.file(Text.make(file).afterLast('\\').afterLast('/'))}.`);
         fs.writeFileSync(file, content);
       });
 
@@ -73,8 +73,8 @@ export class GithubGistResolver implements ResolverContract {
         temporary: true,
       };
     } catch (error) {
-      Log.debug(`Could not clone Gist ${Color.keyword(gistId)}.`);
-      Log.fatal(error);
+      // Log.debug(`Could not clone Gist ${Color.keyword(gistId)}.`);
+      // Log.fatal(error);
 
       return {
         success: false,

@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { ActionHandlerContract, ContextContract, PresetActionContract, ApplierContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+// import { Log, Color } from '@/Logger';
 import { Binding } from '@/Container';
 
 @injectable()
@@ -43,8 +43,8 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
         in: context.targetDirectory,
       });
     } catch (error) {
-      Log.warn(`Preset ${Color.resolvable(action.preset ?? 'unnamed')} could not be applied.`);
-      Log.warn(error);
+      // Log.warn(`Preset ${Color.resolvable(action.preset ?? 'unnamed')} could not be applied.`);
+      // Log.warn(error);
     }
 
     return false;

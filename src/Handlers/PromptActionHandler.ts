@@ -1,7 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, PromptActionContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
-import { createPrompt } from 'listr2';
+// import { Log, Color } from '@/Logger';
 
 @injectable()
 export class PromptActionHandler implements ActionHandlerContract<'prompt'> {
@@ -22,12 +21,12 @@ export class PromptActionHandler implements ActionHandlerContract<'prompt'> {
     }
 
     const prompts = Array.isArray(action.prompts) ? action.prompts : [action.prompts];
-    Log.debug(`Prompting ${Color.keyword(prompts.length)} item(s).`);
+    // Log.debug(`Prompting ${Color.keyword(prompts.length)} item(s).`);
 
     // Prompting each one, and adding their result in the
     // context.
     for (const prompt of prompts) {
-      Log.debug(`Prompting ${Color.keyword(prompt?.name ?? 'unknown prompt')}.`);
+      // Log.debug(`Prompting ${Color.keyword(prompt?.name ?? 'unknown prompt')}.`);
       // console.log({ task: context.task });
       // process.exit();
       context.prompts[prompt.name] = await context.task.prompt(prompt);

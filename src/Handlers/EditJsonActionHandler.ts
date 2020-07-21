@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, EditJsonActionContract, JsonEntry } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+// import { Log, Color } from '@/Logger';
 import { lodash } from '@poppinss/utils';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -39,7 +39,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
       const targetFile = path.join(directory, file);
 
       try {
-        Log.debug(`Reading ${Color.file(file)}.`);
+        // Log.debug(`Reading ${Color.file(file)}.`);
         let content = fs.readJsonSync(targetFile);
 
         if (action.delete) {
@@ -50,13 +50,13 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
           content = await this.merge(content, action.merge);
         }
 
-        Log.debug(`Writing back to ${Color.file(file)}.`);
+        // Log.debug(`Writing back to ${Color.file(file)}.`);
         fs.writeJsonSync(targetFile, content, {
           spaces: '\t',
         });
       } catch (error) {
-        Log.warn(`Could not edit ${Color.file(file)}.`);
-        Log.debug(error);
+        // Log.warn(`Could not edit ${Color.file(file)}.`);
+        // Log.debug(error);
       }
     }
 
@@ -68,7 +68,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
       data = [data];
     }
 
-    Log.debug(`Deleting ${Color.keyword(data.length)} entries.`);
+    // Log.debug(`Deleting ${Color.keyword(data.length)} entries.`);
 
     data.forEach(deletion => {
       lodash.unset(original, deletion);
@@ -78,7 +78,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
   }
 
   protected async merge(original: JsonEntry, data: JsonEntry): Promise<JsonEntry> {
-    Log.debug(`Merging new data.`);
+    // Log.debug(`Merging new data.`);
     return lodash.merge(original, data);
   }
 }

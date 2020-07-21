@@ -13,10 +13,9 @@ import {
   HookFunction,
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
-import fs from 'fs-extra';
 import { Listr, ListrTask } from 'listr2';
-
-import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
+import fs from 'fs-extra';
 
 /**
  * Tries to resolve the given resolvable to a preset.
@@ -92,7 +91,7 @@ export class PresetApplier implements ApplierContract {
           return task.skip('No action to execute');
         }
 
-        return new Listr(await this.getActionList(context));
+        return task.newListr(await this.getActionList(context));
       },
     });
 
@@ -163,7 +162,7 @@ export class PresetApplier implements ApplierContract {
             try {
               return container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
             } catch (error) {
-              throw new Error(`Could not find a handler for an action of type ${Color.keyword(raw.type)}.`);
+              throw new Error(`Could not find a handler for an action of type ${raw.type}.`);
             }
           })();
 
@@ -263,7 +262,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     try {
-      Log.debug(`Removing temporary directory ${Color.directory(context.presetDirectory)}`);
+      // Logger.debug(`Removing temporary directory ${context.presetDirectory}`);
       fs.removeSync(context.presetDirectory);
     } catch (error) {
       throw new Error('Could not delete the temporary folder.');
@@ -370,7 +369,7 @@ export class PresetApplier implements ApplierContract {
     try {
       await hook(context);
     } catch (error) {
-      throw new Error(`Hook ${Color.keyword(id)} failed to execute.`);
+      throw new Error(`Hook ${id} failed to execute.`);
     }
 
     return true;

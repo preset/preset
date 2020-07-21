@@ -23,6 +23,7 @@ import {
   PresetActionHandler,
 } from '@/Handlers';
 import { Listr } from 'listr2';
+import { Logger } from '@/Logger';
 
 /**
  * The application container.
