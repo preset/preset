@@ -7,10 +7,15 @@ import {
   ActionHandlerContract,
   ContextContract,
   ApplierOptionsContract,
+  ResolverResultContract,
+  ApplicationContextContract,
+  ActionContextContract,
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
-import { Log, Color } from '@/Logger';
 import fs from 'fs-extra';
+import { Listr, ListrTask } from 'listr2';
+
+import { Log, Color } from '@/Logger';
 
 /**
  * Tries to resolve the given resolvable to a preset.
@@ -24,104 +29,222 @@ export class PresetApplier implements ApplierContract {
   @inject(Binding.Parser)
   private parser!: ParserContract;
 
+  @inject(Binding.Tasks)
+  private tasks!: Listr<ApplicationContextContract>;
+
   async run(applierOptions: ApplierOptionsContract): Promise<boolean> {
+    this.tasks.add([
+      {
+        title: 'Resolve preset',
+        task: async (local, task) => {
+          // Tries to resolve the given path/name/whatever
+          const result = await this.resolvePreset(applierOptions.resolvable);
+
+          if (!result) {
+            return task.skip('Could not resolve the preset.');
+          }
+
+          local.resolverResult = result;
+        },
+      },
+    ]);
+
+    this.tasks.add({
+      title: 'Parse preset',
+      task: async local => {
+        const { resolverResult } = local;
+
+        // Parses the preset
+        const context = await this.parser.parse(resolverResult.path!, {
+          applierOptions,
+          temporary: !!resolverResult?.temporary,
+        });
+
+        // If no context is returned we're out
+        if (!context) {
+          throw new Error('Could not generate the preset context.');
+        }
+
+        local.context = context;
+      },
+    });
+
+    this.tasks.add({
+      title: 'Execute global before hook',
+      task: async ({ context }, task) => {
+        context.task = task;
+
+        const before = await this.applyGlobalHook('before', context);
+        if (!before) {
+          task.skip('No hook defined');
+        }
+      },
+    });
+
+    this.tasks.add({
+      title: 'Execute actions',
+      task: async ({ context }, task) => {
+        context.task = task;
+
+        if (!context.generator.actions || typeof context.generator.actions !== 'function') {
+          return task.skip('No action to execute');
+        }
+
+        return new Listr(await this.getActionList(context));
+      },
+    });
+
+    this.tasks.add({
+      title: 'Execute global after hook',
+      task: async ({ context }, task) => {
+        context.task = task;
+
+        const after = await this.applyGlobalHook('after', context);
+
+        if (!after) {
+          task.skip('No hook defined');
+        }
+      },
+    });
+
+    this.tasks.add({
+      title: 'Delete temporary directory',
+      task: async ({ context }) => {
+        await this.deleteTemporaryFolder(context);
+      },
+    });
+
+    await this.tasks.run();
+
+    // Log a success message
+    // Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
+
+    return true;
+  }
+
+  private async resolvePreset(resolvable: string): Promise<ResolverResultContract | false> {
     // Tries to resolve the given path/name/whatever
-    const result = await this.resolver.resolve(applierOptions.resolvable);
+    const result = await this.resolver.resolve(resolvable);
 
     // Instantly leave if the resolvable couldn't be resolved
     if (!result || !result.success || !result.path) {
       return false;
     }
 
-    // Parses the preset
-    const context = await this.parser.parse(result.path, {
-      applierOptions,
-      temporary: !!result?.temporary,
-    });
-
-    // If no context is returned we're out
-    if (!context) {
-      Log.debug(`Could not generate context for ${Color.file(applierOptions.resolvable)}.`);
-      return false;
-    }
-
-    // Apply "before"" execution hook
-    await this.applyGlobalHook('before', context);
-
-    // Ensure we have actions
-    if (!context.generator.actions || typeof context.generator.actions !== 'function') {
-      Log.debug(`Preset ${Color.preset(context.presetName)} has no action to execute.`);
-    } else {
-      await this.applyActions(context);
-    }
-
-    // Apply "after" execution hook
-    await this.applyGlobalHook('after', context);
-
-    // Log a success message
-    Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
-
-    // Delete temporary folder
-    await this.deleteTemporaryFolder(context);
-
-    return true;
+    return result;
   }
 
-  private async applyActions(context: ContextContract): Promise<boolean> {
+  private async getActionList(context: ContextContract): Promise<ListrTask<ApplicationContextContract>[]> {
+    const tasks: ListrTask<ApplicationContextContract>[] = [];
+
     // Get the actions
     const actions = await (context.generator.actions as Function)(context);
 
     // Loops through the action, validate and execute them
     for (const raw of actions) {
-      // Tries to get a handler for that action. This is wrapped in a function because I didn't
-      // want to use let, I wanted a const. Am I sick? Yes.
-      const handler = (() => {
-        try {
-          return container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
-        } catch (error) {
-          Log.debug(`Could not find a handler for an action of type ${Color.keyword(raw.type)}.`);
-          Log.debug(error);
-        }
+      const subtasks = new Listr<ActionContextContract>([], {
+        ctx: <ActionContextContract>{
+          context,
+          skip: false,
+        },
+        concurrent: false,
+        exitOnError: false,
+      });
 
-        return false;
-      })();
+      subtasks.add({
+        title: 'Validating action.',
+        task: async (local, task) => {
+          // Tries to get a handler for that action. This is wrapped in a function because I didn't
+          // want to use let, I wanted a const. Am I sick? Yes.
+          const handler = (() => {
+            try {
+              return container.getNamed<ActionHandlerContract>(Binding.Handler, raw.type);
+            } catch (error) {
+              throw new Error(`Could not find a handler for an action of type ${Color.keyword(raw.type)}.`);
+            }
+          })();
 
-      // If we got false we don't have a handler.
-      if (!handler) {
-        Log.warn(`Skipping an unknown action of type ${Color.keyword(raw.type)}.`);
-        continue;
-      }
+          // If we got false we don't have a handler.
+          if (!handler) {
+            return task.skip(`Invalid action type, "${raw.type}".`);
+          }
 
-      // Validates the action.
-      const action = await handler.validate(raw);
-      if (!action) {
-        Log.debug(`Action could not be validated. Skipping.`);
-        continue; // TODO - Give the choice to abort?
-      }
+          // Validates the action.
+          const action = await handler.validate(raw);
+          if (!action) {
+            return task.skip(`Validation failed.`);
+          }
 
-      // Checks if the action should actually run
-      // TODO - test
-      if (!(await this.shouldRun(action, context))) {
-        Log.debug(`Action did not met its defined conditions. Skipping.`);
-        continue;
-      }
+          // Checks if the action should actually run
+          // TODO - test
+          if (!(await this.shouldRun(action, local.context))) {
+            local.skip = true;
+            return task.skip(`Condition unmet`);
+          }
 
-      // Apply "beforeEach" execution hook
-      this.applyGlobalHook('beforeEach', context);
-      this.applyActionHook('before', action, context);
+          local.handler = handler;
+          local.action = action;
+        },
+      });
 
-      // Handles
-      const success = await handler.handle(action, context);
-      if (!success) {
-        Log.debug(`Failed at handling a ${Color.keyword(action.type)} action.`);
-      }
+      subtasks.add({
+        title: 'Execute before hooks',
+        enabled: ({ skip }) => !skip,
+        task: async ({ action, context }, task) => {
+          context.task = task;
 
-      // Apply "afterEach" execution hook
-      this.applyActionHook('after', action, context);
-      this.applyGlobalHook('afterEach', context);
+          task.output = 'Executing global beforeEach hook...';
+          const beforeEach = await this.applyGlobalHook('beforeEach', context);
+
+          task.output = 'Executing local before hook...';
+          const before = await this.applyActionHook('before', action, context);
+
+          if (!beforeEach && !before) {
+            task.skip('No before hook defined');
+          }
+        },
+      });
+
+      subtasks.add({
+        title: 'Executing action.',
+        enabled: ({ skip }) => !skip,
+        task: async ({ handler, action, context }, task) => {
+          // Updates the nested task context
+          context.task = task;
+
+          const success = await handler.handle(action, context);
+
+          if (!success) {
+            throw new Error('Failed to execute.');
+          }
+        },
+      });
+
+      subtasks.add({
+        title: 'Execute after hooks',
+        enabled: ({ skip }) => !skip,
+        task: async ({ action, context }, task) => {
+          context.task = task;
+
+          task.output = 'Applying local after hook...';
+          const after = await this.applyActionHook('after', action, context);
+
+          task.output = 'Applying global afterEach hook...';
+          const afterEach = await this.applyGlobalHook('afterEach', context);
+
+          if (!afterEach && !after) {
+            task.skip('No after hook defined');
+          }
+        },
+      });
+
+      tasks.push({
+        title: raw.title ?? raw.type,
+        task: async () => subtasks,
+      });
     }
 
-    return true;
+    return tasks;
   }
 
   /**
@@ -136,8 +259,9 @@ export class PresetApplier implements ApplierContract {
       Log.debug(`Removing temporary directory ${Color.directory(context.presetDirectory)}`);
       fs.removeSync(context.presetDirectory);
     } catch (error) {
-      Log.debug(error);
-      return false;
+      throw new Error('Could not delete the temporary folder.');
+      // Log.debug(error);
+      // return false;
     }
 
     return true;
@@ -169,7 +293,7 @@ export class PresetApplier implements ApplierContract {
   ): Promise<boolean> {
     const hook = context?.generator[id];
     if (!hook || typeof hook !== 'function') {
-      return true;
+      return false;
     }
 
     return this.applyHook(id, hook, context);
@@ -182,7 +306,7 @@ export class PresetApplier implements ApplierContract {
   ): Promise<boolean> {
     const hook = action[id];
     if (!hook || typeof hook !== 'function') {
-      return true;
+      return false;
     }
 
     return this.applyHook(id, hook, context);
@@ -192,8 +316,7 @@ export class PresetApplier implements ApplierContract {
     try {
       await hook(context);
     } catch (error) {
-      Log.warn(`Hook ${Color.keyword(id)} failed to execute.`);
-      Log.debug(error);
+      throw new Error(`Hook ${Color.keyword(id)} failed to execute.`);
     }
 
     return true;

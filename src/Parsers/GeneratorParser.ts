@@ -30,8 +30,7 @@ export class GeneratorParser implements ParserContract {
 
     // Checks that the given directory is indeed one
     if (!directory || !fs.pathExistsSync(directory) || !fs.statSync(directory).isDirectory) {
-      Log.fatal(`${Color.directory(directory)} is not a preset directory.`);
-      return false;
+      throw new Error(`${directory} is not a preset directory.`);
     }
 
     // Make the path absolute
@@ -45,8 +44,7 @@ export class GeneratorParser implements ParserContract {
 
     // If neither the default preset path nor a package.json exists, this is an error
     if (!fs.existsSync(defaultPresetPath) && !fs.existsSync(packagePath)) {
-      Log.fatal(`${Color.directory(directory)} does not have a ${Color.file('package.json')}.`);
-      return false;
+      throw new Error(`${directory} does not have a package.json file.`);
     }
 
     // If a package exists though, we got this
@@ -58,8 +56,7 @@ export class GeneratorParser implements ParserContract {
 
     // Preset file check
     if (!fs.existsSync(presetAbsolutePath)) {
-      Log.fatal(`Preset file ${Color.file(presetAbsolutePath)} does not exist.`);
-      return false;
+      throw new Error(`Preset file ${Color.file(presetAbsolutePath)} does not exist.`);
     }
 
     // Import the preset
@@ -68,8 +65,7 @@ export class GeneratorParser implements ParserContract {
 
     // Preset check
     if (!generator || !(await this.isPresetValid(generator))) {
-      Log.debug(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
-      return false;
+      throw new Error(`${Color.file(presetAbsolutePath)} is not a valid preset file.`);
     }
 
     return await this.generateContext(directory, generator, {
@@ -137,6 +133,7 @@ export class GeneratorParser implements ParserContract {
     const context: ContextContract = {
       generator,
       targetDirectory,
+      task: parserContext.task!,
       argv: parserContext?.applierOptions?.argv ?? [],
       temporary: parserContext.temporary ?? false,
       presetName:

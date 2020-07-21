@@ -6,6 +6,7 @@ const Binding = {
   Parser: Symbol.for('Parser'),
   Flag: Symbol.for('Flag'),
   Handler: Symbol.for('Handler'),
+  Tasks: Symbol.for('Tasks'),
 };
 
 const Name = {

@@ -5,6 +5,7 @@ import { Binding } from '@/Container';
 import { ApplierContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
 import path from 'path';
+import { Listr } from 'listr2';
 
 @injectable()
 export class CommandLineInterface {

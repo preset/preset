@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, CopyActionContract, copyConflictStrategies, ContextContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
-import { Prompt } from '@/Prompt';
+// import { Prompt } from '@/Prompt';
 import path from 'path';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -163,11 +163,11 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
   private async ask(entry: string, input: string, output: string): Promise<boolean> {
     Log.debug(`Kindly asking to replace ${Color.file(entry)}.`);
 
-    const replace = await Prompt.confirm(`${Color.keyword(entry)} already exists. Do you want to replace it?`, {
-      default: false,
-    });
+    // const replace = await Prompt.confirm(`${Color.keyword(entry)} already exists. Do you want to replace it?`, {
+    //   default: false,
+    // });
 
-    if (!replace) {
+    if (!true /*replace */) {
       Log.debug(`User chosed not to repace ${Color.file(entry)}.`);
 
       return false;

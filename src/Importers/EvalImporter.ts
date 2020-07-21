@@ -2,8 +2,6 @@ import { injectable } from 'inversify';
 import { ImporterContract, GeneratorContract } from '@/Contracts';
 import { Log, Color } from '@/Logger';
 import fs from 'fs-extra';
-import { Text } from '@supportjs/text';
-import { Logger } from '@poppinss/fancy-logs';
 
 /**
  * Instead of requiring or importing, we read the preset file, transpile and evaluate it.
@@ -40,11 +38,8 @@ export class EvalImporter implements ImporterContract {
     try {
       return this.evaluate(presetFileContents);
     } catch (error) {
-      Log.debug(`Could not parse ${Color.file(filePath)}.`);
-      Log.debug(error);
+      throw new Error(`Could not parse ${Color.file(filePath)}.`);
     }
-
-    return false;
   }
 
   /**

@@ -1,5 +1,7 @@
 import { ContextContract } from './ContextContract';
 import { ApplierOptionsContract } from './ApplierContract';
+import { ListrTaskWrapper } from 'listr2';
+import { ActionContextContract } from './TaskContract';
 
 export interface ParserOptionsContract {
   /**
@@ -17,6 +19,11 @@ export interface ParserOptionsContract {
    * More options from the applier.
    */
   applierOptions?: Partial<ApplierOptionsContract>;
+
+  /**
+   * The current task.
+   */
+  task?: ListrTaskWrapper<ActionContextContract, any>;
 }
 
 export interface ParserContract {
