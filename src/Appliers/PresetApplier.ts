@@ -10,6 +10,7 @@ import {
   ResolverResultContract,
   ApplicationContextContract,
   ActionContextContract,
+  HookFunction,
 } from '@/Contracts';
 import { Binding, container } from '@/Container';
 import fs from 'fs-extra';
@@ -71,6 +72,7 @@ export class PresetApplier implements ApplierContract {
 
     this.tasks.add({
       title: 'Execute global before hook',
+      enabled: async ({ context }) => Boolean(await this.getGlobalHook('before', context)),
       task: async ({ context }, task) => {
         context.task = task;
 
@@ -96,6 +98,7 @@ export class PresetApplier implements ApplierContract {
 
     this.tasks.add({
       title: 'Execute global after hook',
+      enabled: async ({ context }) => Boolean(await this.getGlobalHook('after', context)),
       task: async ({ context }, task) => {
         context.task = task;
 
@@ -152,7 +155,7 @@ export class PresetApplier implements ApplierContract {
       });
 
       subtasks.add({
-        title: 'Validating action.',
+        title: 'Validate action',
         task: async (local, task) => {
           // Tries to get a handler for that action. This is wrapped in a function because I didn't
           // want to use let, I wanted a const. Am I sick? Yes.
@@ -189,7 +192,9 @@ export class PresetApplier implements ApplierContract {
 
       subtasks.add({
         title: 'Execute before hooks',
-        enabled: ({ skip }) => !skip,
+        enabled: async ({ skip, context, action }) => {
+          return (await this.hasBeforeHook(context, action)) && !skip;
+        },
         task: async ({ action, context }, task) => {
           context.task = task;
 
@@ -206,7 +211,7 @@ export class PresetApplier implements ApplierContract {
       });
 
       subtasks.add({
-        title: 'Executing action.',
+        title: 'Execute action',
         enabled: ({ skip }) => !skip,
         task: async ({ handler, action, context }, task) => {
           // Updates the nested task context
@@ -222,7 +227,9 @@ export class PresetApplier implements ApplierContract {
 
       subtasks.add({
         title: 'Execute after hooks',
-        enabled: ({ skip }) => !skip,
+        enabled: async ({ skip, context, action }) => {
+          return (await this.hasAfterHook(context, action)) && !skip;
+        },
         task: async ({ action, context }, task) => {
           context.task = task;
 
@@ -239,7 +246,7 @@ export class PresetApplier implements ApplierContract {
       });
 
       tasks.push({
-        title: raw.title ?? raw.type,
+        title: raw.title ?? `Action: ${raw.type}`,
         task: async () => subtasks,
       });
     }
@@ -287,16 +294,62 @@ export class PresetApplier implements ApplierContract {
     return action.if.every(condition => Boolean(condition));
   }
 
-  private async applyGlobalHook(
+  private async hasBeforeHook(context: ContextContract, action: BaseActionContract<any>): Promise<boolean> {
+    const hasBefore = await this.getActionHook('before', action);
+    const hasBeforeEach = await this.getGlobalHook('beforeEach', context);
+
+    return Boolean(hasBefore) || Boolean(hasBeforeEach);
+  }
+
+  private async hasAfterHook(context: ContextContract, action: BaseActionContract<any>): Promise<boolean> {
+    const hasAfter = await this.getActionHook('after', action);
+    const hasAfterEach = await this.getGlobalHook('afterEach', context);
+
+    return Boolean(hasAfter) || Boolean(hasAfterEach);
+  }
+
+  private async getGlobalHook(
     id: 'before' | 'after' | 'beforeEach' | 'afterEach',
     context: ContextContract
-  ): Promise<boolean> {
+  ): Promise<HookFunction | false> {
+    if (!Reflect.has(context?.generator ?? {}, id)) {
+      return false;
+    }
+
     const hook = context?.generator[id];
+
     if (!hook || typeof hook !== 'function') {
       return false;
     }
 
+    return hook;
+  }
+
+  private async applyGlobalHook(
+    id: 'before' | 'after' | 'beforeEach' | 'afterEach',
+    context: ContextContract
+  ): Promise<boolean> {
+    const hook = await this.getGlobalHook(id, context);
+
+    if (!hook) {
+      return false;
+    }
+
     return this.applyHook(id, hook, context);
+  }
+
+  private async getActionHook(id: 'before' | 'after', action: BaseActionContract<any>): Promise<HookFunction | false> {
+    if (!Reflect.has(action ?? {}, id)) {
+      return false;
+    }
+
+    const hook = action[id];
+
+    if (!hook || typeof hook !== 'function') {
+      return false;
+    }
+
+    return hook;
   }
 
   private async applyActionHook(
@@ -304,8 +357,9 @@ export class PresetApplier implements ApplierContract {
     action: BaseActionContract<any>,
     context: ContextContract
   ): Promise<boolean> {
-    const hook = action[id];
-    if (!hook || typeof hook !== 'function') {
+    const hook = await this.getActionHook(id, action);
+
+    if (!hook) {
       return false;
     }
 
