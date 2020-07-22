@@ -24,9 +24,9 @@ it('apply every hook in the right order', async () => {
           async validate(action: any): Promise<any> {
             return action;
           }
-          async handle(action: any): Promise<boolean> {
+          async handle(action: any) {
             logs.push(`copy ${action.files}`);
-            return true;
+            return { success: true };
           }
         }
       )
