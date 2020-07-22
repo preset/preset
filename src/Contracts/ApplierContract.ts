@@ -1,3 +1,6 @@
+import { ApplicationContextContract } from './TaskContract';
+import { ListrTask } from 'listr2';
+
 type PresetResolvable = string;
 
 export interface ApplierContract {
@@ -6,7 +9,7 @@ export interface ApplierContract {
    *
    * @param preset A value that should resolve to a preset. A name, a git repository or a local path are exemples.
    */
-  run(options: ApplierOptionsContract): Promise<boolean>;
+  run(options: ApplierOptionsContract): Promise<ListrTask<ApplicationContextContract>[]>;
 }
 
 export interface ApplierOptionsContract {

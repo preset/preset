@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, EditJsonActionContract, JsonEntry } from '@/Contracts';
-// import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
 import { lodash } from '@poppinss/utils';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -11,6 +11,8 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
   for = 'edit-json' as const;
 
   async validate(action: Partial<EditJsonActionContract>): Promise<EditJsonActionContract> {
+    action.title = action.title ?? 'Edit JSON file';
+
     return {
       file: action.file ?? [],
       merge: false,
@@ -39,7 +41,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
       const targetFile = path.join(directory, file);
 
       try {
-        // Log.debug(`Reading ${Color.file(file)}.`);
+        Logger.info(`Reading ${file}.`);
         let content = fs.readJsonSync(targetFile);
 
         if (action.delete) {
@@ -50,13 +52,12 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
           content = await this.merge(content, action.merge);
         }
 
-        // Log.debug(`Writing back to ${Color.file(file)}.`);
+        Logger.info(`Writing back to ${file}.`);
         fs.writeJsonSync(targetFile, content, {
           spaces: '\t',
         });
       } catch (error) {
-        // Log.warn(`Could not edit ${Color.file(file)}.`);
-        // Log.debug(error);
+        throw Logger.throw(`Could not edit ${file}.`, error);
       }
     }
 
@@ -68,7 +69,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
       data = [data];
     }
 
-    // Log.debug(`Deleting ${Color.keyword(data.length)} entries.`);
+    Logger.info(`Deleting ${data.length} entries.`);
 
     data.forEach(deletion => {
       lodash.unset(original, deletion);
@@ -78,7 +79,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
   }
 
   protected async merge(original: JsonEntry, data: JsonEntry): Promise<JsonEntry> {
-    // Log.debug(`Merging new data.`);
+    Logger.info(`Merging new data.`);
     return lodash.merge(original, data);
   }
 }

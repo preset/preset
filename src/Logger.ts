@@ -2,6 +2,8 @@ import fs from 'fs-extra';
 
 enum Level {
   info = 'info',
+  warning = 'warning',
+  fatal = 'fatal',
 }
 
 interface LoggerEntry {
@@ -39,12 +41,26 @@ export class SLogger {
     }
   }
 
+  public warn(message: string): void {
+    this.archive(Level.warning, message);
+  }
+
   public info(message: string): void {
     this.archive(Level.info, message);
   }
 
   public error(message: string | Error): void {
-    this.archive(Level.info, message.toString());
+    this.archive(Level.fatal, message.toString());
+  }
+
+  public throw(message: string, error?: string | Error): never {
+    this.archive(Level.fatal, message);
+
+    if (error) {
+      this.archive(Level.fatal, error.toString());
+    }
+
+    throw new Error(message);
   }
 }
 

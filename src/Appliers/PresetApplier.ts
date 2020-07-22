@@ -29,28 +29,25 @@ export class PresetApplier implements ApplierContract {
   @inject(Binding.Parser)
   private parser!: ParserContract;
 
-  @inject(Binding.Tasks)
-  private tasks!: Listr<ApplicationContextContract>;
+  async run(applierOptions: ApplierOptionsContract): Promise<ListrTask<ApplicationContextContract>[]> {
+    const tasks: ListrTask<ApplicationContextContract>[] = [];
 
-  async run(applierOptions: ApplierOptionsContract): Promise<boolean> {
-    this.tasks.add([
-      {
-        title: 'Resolve preset',
-        task: async (local, task) => {
-          // Tries to resolve the given path/name/whatever
-          const result = await this.resolvePreset(applierOptions.resolvable);
+    tasks.push({
+      title: 'Resolve and download',
+      task: async (local, task) => {
+        // Tries to resolve the given path/name/whatever
+        const result = await this.resolvePreset(applierOptions.resolvable);
 
-          if (!result) {
-            return task.skip('Could not resolve the preset.');
-          }
+        if (!result) {
+          return task.skip('Could not resolve the preset.');
+        }
 
-          local.resolverResult = result;
-        },
+        local.resolverResult = result;
       },
-    ]);
+    });
 
-    this.tasks.add({
-      title: 'Parse preset',
+    tasks.push({
+      title: 'Parse and validate',
       task: async local => {
         const { resolverResult } = local;
 
@@ -69,7 +66,7 @@ export class PresetApplier implements ApplierContract {
       },
     });
 
-    this.tasks.add({
+    tasks.push({
       title: 'Execute global before hook',
       enabled: async ({ context }) => Boolean(await this.getGlobalHook('before', context)),
       task: async ({ context }, task) => {
@@ -82,7 +79,7 @@ export class PresetApplier implements ApplierContract {
       },
     });
 
-    this.tasks.add({
+    tasks.push({
       title: 'Execute actions',
       task: async ({ context }, task) => {
         context.task = task;
@@ -91,11 +88,15 @@ export class PresetApplier implements ApplierContract {
           return task.skip('No action to execute');
         }
 
-        return task.newListr(await this.getActionList(context));
+        return task.newListr(await this.getActionList(context), {
+          rendererOptions: {
+            collapse: false,
+          },
+        });
       },
     });
 
-    this.tasks.add({
+    tasks.push({
       title: 'Execute global after hook',
       enabled: async ({ context }) => Boolean(await this.getGlobalHook('after', context)),
       task: async ({ context }, task) => {
@@ -109,19 +110,14 @@ export class PresetApplier implements ApplierContract {
       },
     });
 
-    this.tasks.add({
+    tasks.push({
       title: 'Delete temporary directory',
       task: async ({ context }) => {
         await this.deleteTemporaryFolder(context);
       },
     });
 
-    await this.tasks.run();
-
-    // Log a success message
-    // Log.success(`Applied preset ${Color.preset(context.presetName)}.`);
-
-    return true;
+    return tasks;
   }
 
   private async resolvePreset(resolvable: string): Promise<ResolverResultContract | false> {
@@ -150,14 +146,15 @@ export class PresetApplier implements ApplierContract {
           skip: false,
         },
         concurrent: false,
-        exitOnError: false,
+        exitOnError: true,
         rendererOptions: {
-          collapse: true,
+          collapse: false,
+          showSubtasks: true,
         },
       });
 
       subtasks.add({
-        title: 'Validate action',
+        title: 'Validate action structure',
         task: async (local, task) => {
           // Tries to get a handler for that action. This is wrapped in a function because I didn't
           // want to use let, I wanted a const. Am I sick? Yes.
@@ -215,15 +212,24 @@ export class PresetApplier implements ApplierContract {
       subtasks.add({
         title: 'Execute action',
         enabled: ({ skip }) => !skip,
+        options: {
+          persistentOutput: true,
+        } as any,
         task: async ({ handler, action, context }, task) => {
           // Updates the nested task context
           context.task = task;
 
-          const success = await handler.handle(action, context);
+          const result = await handler.handle(action, context);
 
-          if (!success) {
+          if (typeof result === 'boolean' && !result) {
             throw new Error('Failed to execute.');
           }
+
+          if (typeof result !== 'boolean') {
+            return new Listr(result);
+          }
+
+          return true;
         },
       });
 
@@ -248,12 +254,37 @@ export class PresetApplier implements ApplierContract {
       });
 
       tasks.push({
-        title: raw.title ?? `Action: ${raw.type}`,
+        title: this.getActionFriendlyNameByType(raw),
         task: async () => subtasks,
+        options: {
+          persistentOutput: true,
+        },
       });
     }
 
     return tasks;
+  }
+
+  private getActionFriendlyNameByType(action: BaseActionContract<any>): string {
+    if (action.title) {
+      return action.title;
+    }
+
+    const map: { [str: string]: string } = {
+      copy: 'Copy files or directories',
+      custom: 'Execute custom code',
+      delete: 'Delete files or directories',
+      edit: 'Edit file',
+      'edit-json': 'Edit JSON file',
+      preset: 'Apply external preset',
+      prompt: 'Ask for information',
+    };
+
+    if (Reflect.has(map, action.type)) {
+      return map[action.type];
+    }
+
+    return action.type;
   }
 
   /**
@@ -265,12 +296,10 @@ export class PresetApplier implements ApplierContract {
     }
 
     try {
-      // Logger.debug(`Removing temporary directory ${context.presetDirectory}`);
+      Logger.info(`Removing temporary directory ${context.presetDirectory}`);
       fs.removeSync(context.presetDirectory);
     } catch (error) {
-      throw new Error('Could not delete the temporary folder.');
-      // Log.debug(error);
-      // return false;
+      throw Logger.throw('Could not delete the temporary folder.', error);
     }
 
     return true;

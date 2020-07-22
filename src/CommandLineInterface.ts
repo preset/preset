@@ -5,6 +5,7 @@ import { Binding } from '@/Container';
 import { ApplierContract } from '@/Contracts';
 import { Logger } from '@/Logger';
 import path from 'path';
+import { Listr } from 'listr2';
 
 @injectable()
 export class CommandLineInterface {
@@ -37,10 +38,6 @@ export class CommandLineInterface {
       strict: false,
     });
 
-    if (flags.debug) {
-      // Log.configure({ debug: true });
-    }
-
     if (flags.help) {
       return await this.help();
     }
@@ -51,17 +48,18 @@ export class CommandLineInterface {
 
     Logger.info(`Applying preset ${args.preset}.`);
     const target = path.join(flags.in ?? process.cwd());
-    const success = await this.applier.run({
+    const tasks = await this.applier.run({
       argv: argv.splice(1),
       debug: !!flags.debug,
       resolvable: args.preset,
       in: target,
     });
 
-    Logger.saveToFile();
-    if (success) {
-      // Log.debug(`Operation successful.`);
-      return 0;
+    await new Listr(tasks).run();
+
+    if (flags.debug) {
+      Logger.info('Saving logs to file.');
+      Logger.saveToFile();
     }
 
     // TODO - Add instruction to know what happened

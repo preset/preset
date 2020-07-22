@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, CustomActionContract } from '@/Contracts';
-// import { Log } from '@/Logger';
+import { Logger } from '@/Logger';
 
 @injectable()
 export class CustomActionHandler implements ActionHandlerContract<'custom'> {
@@ -18,10 +18,7 @@ export class CustomActionHandler implements ActionHandlerContract<'custom'> {
     try {
       return false !== (await action.execute(context));
     } catch (error) {
-      // Log.warn(`A custom action did not perform correctly.`);
-      // Log.debug(error);
+      throw Logger.throw('Custom action failed', error);
     }
-
-    return false;
   }
 }

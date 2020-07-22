@@ -1,7 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, CopyActionContract, copyConflictStrategies, ContextContract } from '@/Contracts';
-// import { Log, Color } from '@/Logger';
-// import { Prompt } from '@/Prompt';
+import { Logger } from '@/Logger';
 import path from 'path';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -24,8 +23,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
 
     // Ensures the strategy is known
     if (action.strategy && !copyConflictStrategies.includes(action.strategy)) {
-      // Log.warn(`Unknown strategy ${Color.keyword(action.strategy)} for a ${Color.keyword(this.for)} action.`);
-      action.strategy = 'ask';
+      throw Logger.throw(`Unknown strategy ${action.strategy}`);
     }
 
     return {
@@ -68,7 +66,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     }
 
     const results = [];
-    // Log.debug(`Copying ${Color.keyword(Object.entries(action.directories).length)} directories.`);
+    Logger.info(`Copying ${Object.entries(action.directories).length} directories.`);
 
     // Use the map to copy each directory to its target directory
     for (const [from, to] of Object.entries(action.directories)) {
@@ -107,7 +105,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     action: CopyActionContract,
     context: ContextContract
   ): Promise<boolean> {
-    // Log.debug(`Copying ${Color.keyword(entries.length)} file(s).`);
+    Logger.info(`Copying ${entries.length} file(s).`);
 
     // TODO - refactor to avoid repetition with copyFiles
     // For each found entry, copy according to the strategy.
@@ -125,18 +123,18 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
       // If file exists, there is a conflict that should be handled
       // according to the strategy defined in the action.
       if (fs.pathExistsSync(output)) {
-        // Log.debug(`File ${Color.file(output)} exists. Using strategy ${Color.keyword(action.strategy)}.`);
+        Logger.info(`File ${output} exists. Using strategy ${action.strategy}.`);
 
         // If the result of the strategy is not truthy, we skip
         const result = await this.strategies[action.strategy].call(this, entry, input, output, context);
         if (!result) {
-          // Log.debug(`Skipping ${Color.file(entry)}.`);
+          Logger.info(`Skipping ${entry}.`);
           continue;
         }
       }
 
       // Copy the file
-      // Log.debug(`Copying ${Color.file(input)} to ${Color.file(output)}.`);
+      Logger.info(`Copying ${input} to ${output}.`);
       fs.copySync(input, output);
     }
 
@@ -145,14 +143,12 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
 
   private async override(entry: string, input: string, output: string, context: ContextContract): Promise<boolean> {
     try {
-      // Log.debug(`Deleting ${Color.file(output)}.`);
+      Logger.info(`Deleting ${output}.`);
       fs.removeSync(output);
 
       return true;
     } catch (error) {
-      // Log.warn(`Could not delete ${Color.file(output)}.`);
-
-      return false;
+      throw Logger.throw(`Could not delete ${output}.`);
     }
   }
 
@@ -161,7 +157,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
   }
 
   private async ask(entry: string, input: string, output: string, context: ContextContract): Promise<boolean> {
-    // Log.debug(`Kindly asking to replace ${Color.file(entry)}.`);
+    Logger.info(`Kindly asking to replace ${entry}.`);
 
     const replace = await context.task.prompt({
       type: 'Toggle',
@@ -170,7 +166,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     });
 
     if (replace) {
-      // Log.debug(`User chosed not to repace ${Color.file(entry)}.`);
+      Logger.info(`User chosed not to repace ${entry}.`);
 
       return false;
     }
