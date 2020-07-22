@@ -68,13 +68,21 @@ export class CommandLineInterface {
       await new Listr(tasks).run();
     } catch (error) {
       Logger.error(error);
-      Logger.cli(`Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`);
+      Logger.cli('');
+      Logger.cli(
+        `${chalk.red('×')} Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`
+      );
 
       return 1;
     }
 
     if (flags.debug) {
-      Logger.cli(`Since debug is enabled, a log file has been saved in ${Logger.saveToFile()}.`);
+      Logger.cli('');
+      Logger.cli(
+        `${chalk.gray(
+          `➜ Since debug is enabled, a log file has been saved in ${chalk.reset(Logger.saveToFile())}`
+        )}${chalk.gray('.')}`
+      );
     }
 
     return 0;
