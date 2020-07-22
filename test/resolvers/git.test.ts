@@ -1,7 +1,6 @@
-import { gists, repositories } from '../constants';
+import { repositories } from '../constants';
 import { container, Binding, Name } from '@/Container';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
-import { Log } from '@/Logger';
 import path from 'path';
 import fs from 'fs-extra';
 
