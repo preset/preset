@@ -1,9 +1,9 @@
 import { gists } from '../constants';
-import { container, Binding, Name, Tag } from '@/Container';
+import { container, Binding, Name } from '@/Container';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
+import { Text } from '@supportjs/text';
 import path from 'path';
 import fs from 'fs-extra';
-import { Log } from '@/Logger';
 
 const results: ResolverResultContract[] = [];
 
@@ -29,12 +29,13 @@ it('returns a successful response when finding a public gist', async () => {
 });
 
 it('returns an unsuccessful response when not finding a gist', async () => {
-  Log.fake();
   const gistResolver = container.getNamed<ResolverContract>(Binding.Resolver, Name.GithubGistResolver);
-  const result = await gistResolver.resolve(gists.NOT_FUNCTIONAL_GIST_URL);
 
-  results.push(result);
+  const t = async () => {
+    await gistResolver.resolve(gists.NOT_FUNCTIONAL_GIST_URL);
+  };
 
-  expect(result.success).toBe(false);
-  expect(Log.history.pop()?.startsWith('warn Could not clone Gist')).toBe(true);
+  const id = Text.make(gists.NOT_FUNCTIONAL_GIST_URL).afterLast('/').str();
+
+  await expect(t).rejects.toThrowError(`Could not clone Gist ${id}`);
 });
