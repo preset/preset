@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { ImporterContract, GeneratorContract } from '@/Contracts';
-// import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
 import fs from 'fs-extra';
 
 /**
@@ -38,9 +38,7 @@ export class EvalImporter implements ImporterContract {
     try {
       return this.evaluate(presetFileContents);
     } catch (error) {
-      console.log({ error });
-      process.exit();
-      throw new Error(`Could not parse ${filePath}.`);
+      throw Logger.throw(`Could not parse ${filePath}.`, error);
     }
   }
 
@@ -82,7 +80,9 @@ export class EvalImporter implements ImporterContract {
 
         const match = line.match(/require *\( *['"](.*)['"] *\)/);
         if (match && !EvalImporter.DEPENDENCY_WHITELIST.includes(match[1])) {
-          throw `Dependency ${match[1]} is not authorized. If you think this is a mistake, please open an issue.`;
+          Logger.throw(
+            `Dependency ${match[1]} is not authorized. If you think this is a mistake, please open an issue.`
+          );
         }
 
         return false;
