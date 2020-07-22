@@ -1,4 +1,3 @@
-import { Log } from '@/Logger';
 import { handle } from './handlers.test';
 import { EditActionContract } from '@/Contracts';
 import { Name } from '@/Container';
@@ -8,7 +7,6 @@ import path from 'path';
 import { Text } from '@supportjs/text';
 
 async function assertEditAction(template: Text, action: Partial<EditActionContract>, expects: Text) {
-  Log.fake();
   const filepath = path.join(TARGET_DIRECTORY, 'test.txt');
 
   fs.writeFileSync(filepath, Text.make(template).str());
