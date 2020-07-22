@@ -1,4 +1,3 @@
-import { Log } from '@/Logger';
 import { TARGET_DIRECTORY } from './constants';
 import fs from 'fs-extra';
 import path from 'path';
@@ -12,7 +11,6 @@ it('install dependencies', async () => {
   const packageFile = path.join(TARGET_DIRECTORY, 'package.json');
   fs.ensureFileSync(packageFile);
   fs.writeJsonSync(packageFile, {});
-  Log.fake();
 
   const result = await installDependencies(TARGET_DIRECTORY);
 
