@@ -1,11 +1,13 @@
 import { flags, parse } from '@oclif/parser';
 import { Text } from '@supportjs/text';
+import { Listr } from 'listr2';
 import { inject, injectable } from 'inversify';
 import { Binding } from '@/Container';
 import { ApplierContract } from '@/Contracts';
 import { Logger } from '@/Logger';
+import chalk from 'chalk';
 import path from 'path';
-import { Listr } from 'listr2';
+import fs from 'fs-extra';
 
 @injectable()
 export class CommandLineInterface {
@@ -17,6 +19,9 @@ export class CommandLineInterface {
   ];
 
   protected flags = {
+    version: flags.boolean({
+      description: 'Display the current version.',
+    }),
     debug: flags.boolean({
       description: 'Output debugging messages.',
     }),
@@ -38,6 +43,10 @@ export class CommandLineInterface {
       strict: false,
     });
 
+    if (flags.version) {
+      return await this.version();
+    }
+
     if (flags.help) {
       return await this.help();
     }
@@ -55,40 +64,50 @@ export class CommandLineInterface {
       in: target,
     });
 
-    await new Listr(tasks).run();
-
-    if (flags.debug) {
-      Logger.info('Saving logs to file.');
-      Logger.saveToFile();
+    let hasError = false;
+    try {
+      await new Listr(tasks).run();
+    } catch (error) {
+      Logger.throw(`Preset could not be applied. Try using --debug for more information.`, error);
+      hasError = true;
     }
 
-    // TODO - Add instruction to know what happened
-    // --debug flag or --report flag
-    // Log.fatal(
-    //   `Preset ${Color.preset(args.preset)} could not be applied. Use the ${Color.preset(
-    //     '--debug'
-    //   )} flag for more informations.`
-    // );
-    return 1;
+    if (hasError) {
+      const file = Logger.saveToFile();
+      Logger.cli(`Could not apply the preset. Check the logs in ${file} for more information.`);
+      return 1;
+    } else if (flags.debug) {
+      const file = Logger.saveToFile();
+      Logger.cli(`Since debug is enabled, a log file has been saved in ${file}.`);
+    }
+
+    return 0;
   }
 
   async missingPresetName(): Promise<number> {
-    // Log.fatal(Color.error(`The preset name is missing.`));
+    Logger.cli(chalk.redBright(`The preset name is missing.`));
     await this.help();
 
     return 1;
   }
 
+  async version(): Promise<number> {
+    const { version } = fs.readJsonSync(path.join(__dirname, '../package.json'));
+    Logger.cli(`v${version}`);
+
+    return 0;
+  }
+
   async help(): Promise<number> {
-    // Log.log(
-    //   'info',
-    //   Text.make(Color.debug('Usage: ')) //
-    //     .append('npx use-preset')
-    //     .space()
-    //     .append(Color.debug('<'))
-    //     .append('name')
-    //     .append(Color.debug('>'))
-    // );
+    Logger.cli(
+      Text.make(chalk.gray('Usage: ')) //
+        .append('npx use-preset')
+        .space()
+        .append(chalk.gray('<'))
+        .append('name')
+        .append(chalk.gray('>'))
+        .str()
+    );
 
     return 0;
   }

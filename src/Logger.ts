@@ -23,8 +23,9 @@ export class SLogger {
     });
   }
 
-  public saveToFile(json: boolean = false): void {
+  public saveToFile(json: boolean = false): string {
     try {
+      const fileName = `preset-logs-${Date.now()}.log`;
       const content = this.history.map(({ datetime, level, message }) =>
         json
           ? {
@@ -35,10 +36,17 @@ export class SLogger {
           : `[${datetime.toISOString()} / ${level}] ${message}`
       );
 
-      fs.writeFileSync(`preset-logs-${Date.now()}.log`, content.join('\n'));
+      fs.writeFileSync(fileName, content.join('\n'));
+
+      return fileName;
     } catch (error) {
-      console.error(error);
+      throw this.throw('Could not save log file.', error);
     }
+  }
+
+  public cli(message: string): void {
+    this.archive(Level.warning, message);
+    console.log(message);
   }
 
   public warn(message: string): void {
