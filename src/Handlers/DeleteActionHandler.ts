@@ -22,11 +22,11 @@ export class DeleteActionHandler implements ActionHandlerContract<'delete'> {
     };
   }
 
-  async handle(action: DeleteActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: DeleteActionContract, context: ContextContract) {
     const directoriesDeleted = await this.delete('directories', action, context);
     const filesDeleted = await this.delete('files', action, context);
 
-    return directoriesDeleted && filesDeleted;
+    return { success: directoriesDeleted && filesDeleted };
   }
 
   protected async delete(

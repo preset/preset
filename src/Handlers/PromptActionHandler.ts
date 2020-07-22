@@ -14,9 +14,9 @@ export class PromptActionHandler implements ActionHandlerContract<'prompt'> {
     };
   }
 
-  async handle(action: PromptActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: PromptActionContract, context: ContextContract) {
     if (!action.prompts) {
-      return true;
+      return { success: true };
     }
 
     const prompts = Array.isArray(action.prompts) ? action.prompts : [action.prompts];
@@ -29,6 +29,6 @@ export class PromptActionHandler implements ActionHandlerContract<'prompt'> {
       context.prompts[prompt.name] = await context.task.prompt(prompt);
     }
 
-    return true;
+    return { success: true };
   }
 }

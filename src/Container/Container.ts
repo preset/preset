@@ -24,6 +24,7 @@ import {
 } from '@/Handlers';
 import { Listr } from 'listr2';
 import { Logger } from '@/Logger';
+import { InstallDependenciesActionHandler } from '@/Handlers/InstallDependenciesActionHandler';
 
 /**
  * The application container.
@@ -102,5 +103,9 @@ container
   .bind<ActionHandlerContract<'preset'>>(Binding.Handler)
   .to(PresetActionHandler)
   .whenTargetNamed(Name.PresetHandler);
+container
+  .bind<ActionHandlerContract<'install-dependencies'>>(Binding.Handler)
+  .to(InstallDependenciesActionHandler)
+  .whenTargetNamed(Name.InstallDependenciesHandler);
 
 export { container };

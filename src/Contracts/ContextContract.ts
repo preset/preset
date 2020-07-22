@@ -46,6 +46,11 @@ export interface ContextContract {
   argv: string[];
 
   /**
+   * Whether or not debug mode is enabled.
+   */
+  debug: boolean;
+
+  /**
    * The current task.
    */
   task: ListrTaskWrapper<any, any>;

@@ -14,9 +14,11 @@ export class CustomActionHandler implements ActionHandlerContract<'custom'> {
     };
   }
 
-  async handle(action: CustomActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: CustomActionContract, context: ContextContract) {
     try {
-      return false !== (await action.execute(context));
+      return {
+        success: false !== (await action.execute(context)),
+      };
     } catch (error) {
       throw Logger.throw('Custom action failed', error);
     }

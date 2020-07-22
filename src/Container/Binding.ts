@@ -23,6 +23,7 @@ const Name = {
   EditHandler: 'edit',
   CustomHandler: 'custom',
   PresetHandler: 'preset',
+  InstallDependenciesHandler: 'install-dependencies',
 };
 
 const Tag = {};

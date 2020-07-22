@@ -24,9 +24,9 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     };
   }
 
-  async handle(action: EditActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: EditActionContract, context: ContextContract) {
     if (!action.files) {
-      return true;
+      return { success: true };
     }
 
     const entries = await fg(action.files, {
@@ -49,7 +49,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
       }
     }
 
-    return true;
+    return { success: true };
   }
 
   /**
