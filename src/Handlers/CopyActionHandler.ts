@@ -128,7 +128,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
         // Log.debug(`File ${Color.file(output)} exists. Using strategy ${Color.keyword(action.strategy)}.`);
 
         // If the result of the strategy is not truthy, we skip
-        const result = await this.strategies[action.strategy].call(this, entry, input, output);
+        const result = await this.strategies[action.strategy].call(this, entry, input, output, context);
         if (!result) {
           // Log.debug(`Skipping ${Color.file(entry)}.`);
           continue;
@@ -143,7 +143,7 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     return true;
   }
 
-  private async override(entry: string, input: string, output: string): Promise<boolean> {
+  private async override(entry: string, input: string, output: string, context: ContextContract): Promise<boolean> {
     try {
       // Log.debug(`Deleting ${Color.file(output)}.`);
       fs.removeSync(output);
@@ -156,23 +156,25 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     }
   }
 
-  private async skip(entry: string, input: string, output: string): Promise<boolean> {
+  private async skip(entry: string, input: string, output: string, context: ContextContract): Promise<boolean> {
     return false;
   }
 
-  private async ask(entry: string, input: string, output: string): Promise<boolean> {
+  private async ask(entry: string, input: string, output: string, context: ContextContract): Promise<boolean> {
     // Log.debug(`Kindly asking to replace ${Color.file(entry)}.`);
 
-    // const replace = await Prompt.confirm(`${Color.keyword(entry)} already exists. Do you want to replace it?`, {
-    //   default: false,
-    // });
+    const replace = await context.task.prompt({
+      type: 'Toggle',
+      message: `${entry} already exists. Do you want to replace it?`,
+      initial: false,
+    });
 
-    if (!true /*replace */) {
+    if (replace) {
       // Log.debug(`User chosed not to repace ${Color.file(entry)}.`);
 
       return false;
     }
 
-    return await this.override(entry, input, output);
+    return await this.override(entry, input, output, context);
   }
 }
