@@ -15,7 +15,7 @@ export async function validate<T>(type: string, data: Partial<T>): Promise<T | f
   })) as unknown) as T; // yikes
 }
 
-export async function handle<T>(type: string, data: Partial<T>, context?: Partial<ContextContract>): Promise<boolean> {
+export async function handle<T>(type: string, data: Partial<T>, context?: Partial<ContextContract>) {
   const handler = getHandlerInstance(type);
 
   if (!context) {

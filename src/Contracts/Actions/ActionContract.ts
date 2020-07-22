@@ -11,6 +11,11 @@ export interface BaseActionContract<T> {
   type: T;
 
   /**
+   * A human-friendly title for that action.
+   */
+  title?: string;
+
+  /**
    * Executes the action only if the given conditions are met.
    */
   if?: Condition;

@@ -1,9 +1,7 @@
 import { injectable } from 'inversify';
 import { ImporterContract, GeneratorContract } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
 import fs from 'fs-extra';
-import { Text } from '@supportjs/text';
-import { Logger } from '@poppinss/fancy-logs';
 
 /**
  * Instead of requiring or importing, we read the preset file, transpile and evaluate it.
@@ -40,11 +38,8 @@ export class EvalImporter implements ImporterContract {
     try {
       return this.evaluate(presetFileContents);
     } catch (error) {
-      Log.debug(`Could not parse ${Color.file(filePath)}.`);
-      Log.debug(error);
+      throw Logger.throw(`Could not parse ${filePath}.`, error);
     }
-
-    return false;
   }
 
   /**
@@ -85,9 +80,9 @@ export class EvalImporter implements ImporterContract {
 
         const match = line.match(/require *\( *['"](.*)['"] *\)/);
         if (match && !EvalImporter.DEPENDENCY_WHITELIST.includes(match[1])) {
-          throw `Dependency ${Color.keyword(
-            match[1]
-          )} is not authorized. If you think this is a mistake, please open an issue.`;
+          Logger.throw(
+            `Dependency ${match[1]} is not authorized. If you think this is a mistake, please open an issue.`
+          );
         }
 
         return false;

@@ -8,3 +8,4 @@ export * from './GeneratorContract';
 export * from './ImporterContract';
 export * from './ActionHandlerContract';
 export * from './Actions';
+export * from './TaskContract';

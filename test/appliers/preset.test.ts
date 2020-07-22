@@ -1,8 +1,8 @@
 import { container, Binding } from '@/Container';
 import { ApplierContract, ResolverContract, ResolverResultContract } from '@/Contracts';
 import { TARGET_DIRECTORY, TEMP_DIRECTORY, stubs } from '../constants';
+import { applyTasks } from '../test-utils';
 import { injectable } from 'inversify';
-import { Log } from '@/Logger';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -18,17 +18,17 @@ afterAll(() => {
 });
 
 it('applies a distant preset', async () => {
-  Log.fake();
   const applier = container.get<ApplierContract>(Binding.Applier);
-  await applier.run({
+  const tasks = await applier.run({
     resolvable: 'hello-world',
   });
+
+  await applyTasks(tasks);
 
   expect(fs.existsSync(path.join(TARGET_DIRECTORY, 'hello-world.txt'))).toBe(true);
 });
 
 it('removes temporary directories', async () => {
-  Log.fake();
   const presetDirectory = path.join(TEMP_DIRECTORY, 'no-action');
 
   fs.ensureDirSync(TEMP_DIRECTORY);
@@ -50,10 +50,11 @@ it('removes temporary directories', async () => {
   );
 
   const applier = container.get<ApplierContract>(Binding.Applier);
-  await applier.run({
+  const tasks = await applier.run({
     resolvable: presetDirectory,
   });
 
+  await applyTasks(tasks);
+
   expect(fs.pathExistsSync(presetDirectory)).toBe(false);
-  expect(Log.history).toStrictEqual(['success Applied preset preset.']);
 });

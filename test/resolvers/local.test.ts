@@ -1,5 +1,5 @@
 import { stubs, STUBS_DIRECTORY } from '../constants';
-import { container, Binding, Name, Tag } from '@/Container';
+import { container, Binding, Name } from '@/Container';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
 import path from 'path';
 

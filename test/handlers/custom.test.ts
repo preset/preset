@@ -2,16 +2,15 @@ import { Name } from '@/Container';
 import { CustomActionContract } from '@/Contracts';
 import { TARGET_DIRECTORY } from '../constants';
 import { handle } from './handlers.test';
-import { Log } from '@/Logger';
 
 it('executes a custom task', async () => {
-  Log.fake();
+  let actionHandled = false;
 
   await handle<CustomActionContract>(
     Name.CustomHandler,
     {
       execute: () => {
-        Log.info('test');
+        actionHandled = true;
       },
     },
     {
@@ -19,25 +18,29 @@ it('executes a custom task', async () => {
     }
   );
 
-  expect(Log.history).toStrictEqual(['info test']);
+  expect(actionHandled).toBe(true);
 });
 
 it('has context in custom task', async () => {
-  Log.fake();
+  const actionContext: any = {
+    argv: null,
+    targetDirectory: null,
+  };
 
   await handle<CustomActionContract>(
     Name.CustomHandler,
     {
       execute: context => {
-        Log.info(context.targetDirectory);
-        Log.info(context.argv.join(' '));
+        actionContext.targetDirectory = context.targetDirectory;
+        actionContext.argv = context.argv.join(' ');
       },
     },
     {
-      argv: ['hello'],
+      argv: ['hello', 'world'],
       targetDirectory: TARGET_DIRECTORY,
     }
   );
 
-  expect(Log.history).toStrictEqual([`info ${TARGET_DIRECTORY}`, 'info hello']);
+  expect(actionContext.argv).toBe('hello world');
+  expect(actionContext.targetDirectory).toBe(TARGET_DIRECTORY);
 });

@@ -1,5 +1,7 @@
 import { BaseActionContract } from './ActionContract';
-import { DirectPromptOptions } from '@/Prompt';
+import { PromptOptions as BasePromptOptions } from 'listr2';
+
+export type PromptOptions<T extends boolean = false> = BasePromptOptions<T> & { name: string };
 
 /**
  * Asks for user input.
@@ -8,5 +10,5 @@ export interface PromptActionContract extends BaseActionContract<'prompt'> {
   /**
    * A list of prompt options from Enquirer.
    */
-  prompts: DirectPromptOptions | DirectPromptOptions[] | false;
+  prompts: PromptOptions | PromptOptions<true>[] | false;
 }

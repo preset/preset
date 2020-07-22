@@ -1,6 +1,8 @@
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { GeneratorContract } from './GeneratorContract';
 import { OutputArgs, OutputFlags } from '@oclif/parser';
+import { ListrTaskWrapper } from 'listr2';
+import { ActionContextContract, ApplicationContextContract } from './TaskContract';
 
 export interface ContextContract {
   /**
@@ -44,6 +46,11 @@ export interface ContextContract {
   argv: string[];
 
   /**
+   * The current task.
+   */
+  task: ListrTaskWrapper<any, any>;
+
+  /**
    * Parsed additional arguments from the command line.
    */
   args?: OutputFlags<any>;
@@ -76,9 +83,4 @@ export interface ContextContract {
      */
     context: SimpleGit;
   };
-
-  /**
-   * Runs `yarn install` if available, or `npm install` if not.
-   */
-  installDependencies: Function;
 }

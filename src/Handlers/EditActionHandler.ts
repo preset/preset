@@ -4,11 +4,10 @@ import {
   ContextContract,
   EditActionContract,
   ReplaceObject,
-  Replacer,
   Searchable,
   SearchableFunction,
 } from '@/Contracts';
-import { Log, Color } from '@/Logger';
+import { Logger } from '@/Logger';
 import fs from 'fs-extra';
 import fg from 'fast-glob';
 import path from 'path';
@@ -35,7 +34,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
       cwd: context.targetDirectory,
     });
 
-    Log.debug(`Editing ${Color.keyword(entries.length)} file(s).`);
+    Logger.info(`Editing ${entries.length} file(s).`);
 
     for (const entry of entries) {
       try {
@@ -43,11 +42,10 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
         const content = fs.readFileSync(filepath).toString();
         const data = await this.performEdition(filepath, content, action, context);
 
-        Log.debug(`Writing back to ${Color.file(filepath)}.`);
+        Logger.info(`Writing back to ${filepath}.`);
         fs.writeFileSync(filepath, data);
       } catch (error) {
-        Log.debug(`Could not edit file ${Color.file(entry)}.`);
-        Log.debug(error);
+        throw Logger.throw(`Could not edit file ${entry}.`, error);
       }
     }
 
@@ -131,7 +129,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
 
     if (action.replace) {
       for (const replacement of action.replace) {
-        Log.debug(`Replacing content on ${Color.file(filepath)}.`);
+        Logger.info(`Replacing content on ${filepath}.`);
         content = await this.performReplacement(content, replacement, context);
       }
     }
@@ -184,7 +182,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
 
       content = content.replace(replacement.search, replacement.with as string);
     } catch (error) {
-      Log.debug(error);
+      throw Logger.throw(`Could not perform string replacement`, error);
     }
 
     return content;

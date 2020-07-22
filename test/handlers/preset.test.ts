@@ -2,7 +2,7 @@ import { Name } from '@/Container';
 import { PresetActionContract } from '@/Contracts';
 import { TARGET_DIRECTORY, stubs } from '../constants';
 import { handle } from './handlers.test';
-import { Log } from '@/Logger';
+import { applyTasks } from '../test-utils';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -10,9 +10,7 @@ beforeAll(() => fs.removeSync(TARGET_DIRECTORY));
 afterEach(() => fs.removeSync(TARGET_DIRECTORY));
 
 it('installs an external preset', async () => {
-  Log.fake();
-
-  await handle<PresetActionContract>(
+  const tasks = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -22,14 +20,14 @@ it('installs an external preset', async () => {
     }
   );
 
+  await applyTasks(tasks);
+
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(true);
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'copy-flag.txt'))).toBe(false);
 });
 
 it('handles command line arguments', async () => {
-  Log.fake();
-
-  await handle<PresetActionContract>(
+  const tasks = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -40,14 +38,14 @@ it('handles command line arguments', async () => {
     }
   );
 
+  await applyTasks(tasks);
+
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(true);
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'copy-flag.txt'))).toBe(true);
 });
 
 it('inherits command line arguments', async () => {
-  Log.fake();
-
-  await handle<PresetActionContract>(
+  const tasks = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -59,14 +57,14 @@ it('inherits command line arguments', async () => {
     }
   );
 
+  await applyTasks(tasks);
+
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(true);
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'copy-flag.txt'))).toBe(true);
 });
 
 it('does not inherit command line arguments if told so', async () => {
-  Log.fake();
-
-  await handle<PresetActionContract>(
+  const tasks = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -77,6 +75,8 @@ it('does not inherit command line arguments if told so', async () => {
       argv: ['--copy-flag'],
     }
   );
+
+  await applyTasks(tasks);
 
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'hello.txt'))).toBe(true);
   expect(fs.pathExistsSync(path.join(TARGET_DIRECTORY, 'copy-flag.txt'))).toBe(false);

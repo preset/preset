@@ -8,7 +8,7 @@ import {
   ImporterContract,
   ActionHandlerContract,
 } from '@/Contracts';
-import { PresetResolver, LocalResolver, GithubGistResolver, GithubResolver } from '@/Resolvers';
+import { PresetResolver, LocalResolver, GithubGistResolver, GithubResolver, GitResolver } from '@/Resolvers';
 import { PresetApplier } from '@/Appliers';
 import { GeneratorParser } from '@/Parsers';
 import { EvalImporter } from '@/Importers';
@@ -22,12 +22,25 @@ import {
   EditActionHandler,
   PresetActionHandler,
 } from '@/Handlers';
-import { GitResolver } from '@/Resolvers/GitResolver';
+import { Listr } from 'listr2';
+import { Logger } from '@/Logger';
 
 /**
  * The application container.
  */
 const container = new Container();
+
+// Tasks
+container.bind(Binding.Tasks).toConstantValue(
+  new Listr([], {
+    rendererOptions: {
+      showSubtasks: true,
+      // clearOutput: false,
+      collapse: false,
+      // collapseSkips: false,
+    },
+  })
+);
 
 // Appliers
 container.bind<ApplierContract>(Binding.Applier).to(PresetApplier);

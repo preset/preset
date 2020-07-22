@@ -1,9 +1,8 @@
-import { gists, repositories } from '../constants';
+import { repositories } from '../constants';
 import { container, Binding, Name } from '@/Container';
 import { ResolverContract, ResolverResultContract } from '@/Contracts';
 import path from 'path';
 import fs from 'fs-extra';
-import { Log } from '@/Logger';
 
 const results: ResolverResultContract[] = [];
 
@@ -29,12 +28,11 @@ it('returns a successful response when finding a public repository', async () =>
 });
 
 it('returns an unsuccessful response when not finding a repository', async () => {
-  Log.fake();
   const githubResolver = container.getNamed<ResolverContract>(Binding.Resolver, Name.GithubResolver);
-  const result = await githubResolver.resolve(repositories.NOT_FUNCTIONAL_PRESET_GITHUB_REPOSITORY);
 
-  results.push(result);
+  const t = async () => {
+    await githubResolver.resolve(repositories.NOT_FUNCTIONAL_PRESET_GITHUB_REPOSITORY);
+  };
 
-  expect(result.success).toBe(false);
-  expect(Log.history.pop()?.startsWith('warn Could not clone')).toBe(true);
+  await expect(t).rejects.toThrowError('Could not clone');
 });
