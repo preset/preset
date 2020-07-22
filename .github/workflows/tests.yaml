@@ -27,4 +27,4 @@ jobs:
         run: yarn install
 
       - name: Perform tests
-        run: yarn jest --verbose
+        run: yarn test:ci

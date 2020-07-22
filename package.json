@@ -37,7 +37,8 @@
   "scripts": {
     "prepare": "rimraf dist && tsc -b src",
     "build": "yarn prepare",
-    "test": "jest --verbose",
+    "test": "jest --runInBand",
+    "test:ci": "jest --verbose --expand",
     "release": "standard-version --skip.changelog",
     "commit": "git-cz"
   },
