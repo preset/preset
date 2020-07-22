@@ -60,7 +60,7 @@ describe('Handler', () => {
   }
 
   it('copies everything in a folder with a glob', async () => {
-    const success = await handleCopy({
+    const { success } = await handleCopy({
       files: '**/*',
       target: '',
     });
@@ -71,7 +71,7 @@ describe('Handler', () => {
   });
 
   it('copies a specific file in a specific folder', async () => {
-    const success = await handleCopy({
+    const { success } = await handleCopy({
       files: 'sub/world.txt',
       target: 'first-subfolder',
     });
@@ -168,7 +168,7 @@ describe('Handler', () => {
   });
 
   it('copies a map of directories to their targets', async () => {
-    const success = await handleCopy(
+    const { success } = await handleCopy(
       {
         directories: {
           sub1: 'root1',
@@ -191,7 +191,7 @@ describe('Handler', () => {
     const action = await validate<CopyActionContract>('copy', {
       type: 'copy',
     });
-    const success = await handleCopy(action as CopyActionContract, {
+    const { success } = await handleCopy(action as CopyActionContract, {
       presetTemplates: templates.COPY_WITH_SUBFOLDERS,
     });
 

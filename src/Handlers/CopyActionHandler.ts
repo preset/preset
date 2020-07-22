@@ -37,11 +37,13 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     };
   }
 
-  async handle(action: CopyActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: CopyActionContract, context: ContextContract) {
     const filesCopySuccess = await this.copyFiles(action, context);
     const directoriesCopySuccess = await this.copyDirectories(action, context);
 
-    return filesCopySuccess && directoriesCopySuccess;
+    return {
+      success: filesCopySuccess && directoriesCopySuccess,
+    };
   }
 
   private async copyDirectories(action: CopyActionContract, context: ContextContract): Promise<boolean> {

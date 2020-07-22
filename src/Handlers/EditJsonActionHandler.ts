@@ -22,9 +22,9 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
     };
   }
 
-  async handle(action: EditJsonActionContract, context: ContextContract): Promise<boolean> {
+  async handle(action: EditJsonActionContract, context: ContextContract) {
     if (!action.file) {
-      return true;
+      return { success: true };
     }
 
     if (!Array.isArray(action.file)) {
@@ -61,7 +61,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
       }
     }
 
-    return true;
+    return { success: true };
   }
 
   protected async delete(original: JsonEntry, data: string | string[]): Promise<JsonEntry> {

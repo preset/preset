@@ -33,7 +33,7 @@ export class PresetApplier implements ApplierContract {
     const tasks: ListrTask<ApplicationContextContract>[] = [];
 
     tasks.push({
-      title: 'Resolve and download',
+      title: 'Resolve',
       task: async (local, task) => {
         // Tries to resolve the given path/name/whatever
         const result = await this.resolvePreset(applierOptions.resolvable);
@@ -47,7 +47,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      title: 'Parse and validate',
+      title: 'Parse',
       task: async local => {
         const { resolverResult } = local;
 
@@ -67,7 +67,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      title: 'Execute global before hook',
+      title: 'Execute "before" hook',
       enabled: async ({ context }) => Boolean(await this.getGlobalHook('before', context)),
       task: async ({ context }, task) => {
         context.task = task;
@@ -80,7 +80,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      title: 'Execute actions',
+      // title: 'Preset execution',
       task: async ({ context }, task) => {
         context.task = task;
 
@@ -97,7 +97,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      title: 'Execute global after hook',
+      title: 'Execute "after" hook',
       enabled: async ({ context }) => Boolean(await this.getGlobalHook('after', context)),
       task: async ({ context }, task) => {
         context.task = task;
@@ -111,7 +111,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      title: 'Delete temporary directory',
+      title: 'Clean up temporary files',
       task: async ({ context }, task) => {
         if (!context.temporary) {
           return task.skip('Delete temporary directory');
@@ -152,14 +152,17 @@ export class PresetApplier implements ApplierContract {
         concurrent: false,
         exitOnError: true,
         rendererOptions: {
-          collapse: false,
+          collapse: !context.debug,
           showSubtasks: true,
         },
       });
 
       subtasks.add({
-        title: 'Validate action structure',
+        title: 'Validate',
         task: async (local, task) => {
+          // Reset the skip context
+          local.skip = false;
+
           // Tries to get a handler for that action. This is wrapped in a function because I didn't
           // want to use let, I wanted a const. Am I sick? Yes.
           const handler = (() => {
@@ -172,18 +175,20 @@ export class PresetApplier implements ApplierContract {
 
           // If we got false we don't have a handler.
           if (!handler) {
+            local.skip = true;
             return task.skip(`Invalid action type, "${raw.type}".`);
           }
 
           // Validates the action.
           const action = await handler.validate(raw);
+
           if (!action) {
+            local.skip = true;
             return task.skip(`Validation failed.`);
           }
 
           // Checks if the action should actually run
-          // TODO - test
-          if (!(await this.shouldRun(action, local.context))) {
+          if (!Boolean(await this.shouldRun(action, local.context))) {
             local.skip = true;
             return task.skip(`Condition unmet`);
           }
@@ -194,7 +199,7 @@ export class PresetApplier implements ApplierContract {
       });
 
       subtasks.add({
-        title: 'Execute before hooks',
+        title: 'Execute "before" hooks',
         enabled: async ({ skip, context, action }) => {
           return (await this.hasBeforeHook(context, action)) && !skip;
         },
@@ -208,29 +213,39 @@ export class PresetApplier implements ApplierContract {
           const before = await this.applyActionHook('before', action, context);
 
           if (!beforeEach && !before) {
-            task.skip('No before hook defined');
+            return task.skip('No before hook defined');
           }
         },
       });
 
       subtasks.add({
-        title: 'Execute action',
+        title: 'Execute',
         enabled: ({ skip }) => !skip,
         options: {
           persistentOutput: true,
         } as any,
-        task: async ({ handler, action, context }, task) => {
+        task: async (local, task) => {
+          const { context, handler, action } = local;
+
           // Updates the nested task context
           context.task = task;
 
+          // Get the result from the handler
           const result = await handler.handle(action, context);
 
-          if (typeof result === 'boolean' && !result) {
-            throw new Error('Failed to execute.');
+          // Handle fail
+          if (result?.success === false) {
+            if (result?.reason) {
+              local.skip = true;
+              return task.skip(result?.reason ?? 'Handling skipped');
+            } else {
+              throw new Error('Failed to execute.');
+            }
           }
 
-          if (typeof result !== 'boolean') {
-            return new Listr(result);
+          // Handle new tasks
+          if (Array.isArray(result.tasks)) {
+            return new Listr(result.tasks);
           }
 
           return true;
@@ -238,7 +253,7 @@ export class PresetApplier implements ApplierContract {
       });
 
       subtasks.add({
-        title: 'Execute after hooks',
+        title: 'Execute "after" hooks',
         enabled: async ({ skip, context, action }) => {
           return (await this.hasAfterHook(context, action)) && !skip;
         },
@@ -282,6 +297,7 @@ export class PresetApplier implements ApplierContract {
       'edit-json': 'Edit JSON file',
       preset: 'Apply external preset',
       prompt: 'Ask for information',
+      'install-dependencies': 'Install dependencies',
     };
 
     if (Reflect.has(map, action.type)) {

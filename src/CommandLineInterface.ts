@@ -59,26 +59,21 @@ export class CommandLineInterface {
     const target = path.join(flags.in ?? process.cwd());
     const tasks = await this.applier.run({
       argv: argv.splice(1),
-      debug: !!flags.debug,
+      debug: Boolean(flags.debug),
       resolvable: args.preset,
       in: target,
     });
 
-    let hasError = false;
     try {
       await new Listr(tasks).run();
     } catch (error) {
-      Logger.throw(`Preset could not be applied. Try using --debug for more information.`, error);
-      hasError = true;
+      Logger.cli(`Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`);
+
+      return 1;
     }
 
-    if (hasError) {
-      const file = Logger.saveToFile();
-      Logger.cli(`Could not apply the preset. Check the logs in ${file} for more information.`);
-      return 1;
-    } else if (flags.debug) {
-      const file = Logger.saveToFile();
-      Logger.cli(`Since debug is enabled, a log file has been saved in ${file}.`);
+    if (flags.debug) {
+      Logger.cli(`Since debug is enabled, a log file has been saved in ${Logger.saveToFile()}.`);
     }
 
     return 0;

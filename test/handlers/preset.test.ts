@@ -10,7 +10,7 @@ beforeAll(() => fs.removeSync(TARGET_DIRECTORY));
 afterEach(() => fs.removeSync(TARGET_DIRECTORY));
 
 it('installs an external preset', async () => {
-  const tasks = await handle<PresetActionContract>(
+  const { tasks } = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -27,7 +27,7 @@ it('installs an external preset', async () => {
 });
 
 it('handles command line arguments', async () => {
-  const tasks = await handle<PresetActionContract>(
+  const { tasks } = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -45,7 +45,7 @@ it('handles command line arguments', async () => {
 });
 
 it('inherits command line arguments', async () => {
-  const tasks = await handle<PresetActionContract>(
+  const { tasks } = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,
@@ -64,7 +64,7 @@ it('inherits command line arguments', async () => {
 });
 
 it('does not inherit command line arguments if told so', async () => {
-  const tasks = await handle<PresetActionContract>(
+  const { tasks } = await handle<PresetActionContract>(
     Name.PresetHandler,
     {
       preset: stubs.COPY_SINGLE_FILE,

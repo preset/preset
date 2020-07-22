@@ -37,11 +37,15 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
         (action.arguments as string[]).push(...context.argv);
       }
 
-      return await this.applier.run({
-        resolvable: action.preset,
-        argv: action.arguments as string[],
-        in: context.targetDirectory,
-      });
+      return {
+        success: true,
+        tasks: await this.applier.run({
+          resolvable: action.preset,
+          argv: action.arguments as string[],
+          in: context.targetDirectory,
+          debug: context.debug,
+        }),
+      };
     } catch (error) {
       throw Logger.throw(`Preset ${action.preset ?? 'unnamed'} could not be applied.`, error);
     }

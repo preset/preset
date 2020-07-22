@@ -126,6 +126,7 @@ export class GeneratorParser implements ParserContract {
     Logger.info(`Generating context.`);
     const context: ContextContract = {
       generator,
+      debug: Boolean(parserContext.applierOptions?.debug),
       targetDirectory,
       task: parserContext.task!,
       argv: parserContext?.applierOptions?.argv ?? [],
