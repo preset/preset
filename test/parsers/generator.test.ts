@@ -1,6 +1,5 @@
 import { container, Binding } from '@/Container';
 import { ParserContract, ContextContract, ImporterContract, GeneratorContract } from '@/Contracts';
-import { Log } from '@/Logger';
 import { stubs } from '../constants';
 import { injectable } from 'inversify';
 import { flags } from '@oclif/parser';
