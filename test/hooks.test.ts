@@ -10,10 +10,9 @@ import {
 import { stubs, TARGET_DIRECTORY } from './constants';
 import { injectable } from 'inversify';
 import { CopyActionHandler } from '@/Handlers';
-import { Log } from '@/Logger';
+import { applyTasks } from './test-utils';
 
 it('apply every hook in the right order', async () => {
-  Log.fake();
   const logs: string[] = [];
 
   container
@@ -69,9 +68,10 @@ it('apply every hook in the right order', async () => {
   );
 
   const applier = container.get<ApplierContract>(Binding.Applier);
-  const result = await applier.run({ resolvable: stubs.emptyActionList });
+  const tasks = await applier.run({ resolvable: stubs.emptyActionList });
 
-  expect(result).toBe(true);
+  await applyTasks(tasks);
+
   expect(logs).toStrictEqual([
     'before',
     'before each',
