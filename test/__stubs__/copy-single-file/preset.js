@@ -3,7 +3,9 @@ module.exports = {
     { type: 'copy', files: 'hello.txt' },
     {
       type: 'copy',
-      if: context => context.argv[0] === '--copy-flag',
+      if: context => {
+        return context.argv[0] === '--copy-flag';
+      },
       files: 'copy-flag.txt',
     },
   ],

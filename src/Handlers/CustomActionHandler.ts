@@ -1,12 +1,15 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, CustomActionContract } from '@/Contracts';
 import { Logger } from '@/Logger';
+import { contextualize } from '.';
 
 @injectable()
 export class CustomActionHandler implements ActionHandlerContract<'custom'> {
   for = 'custom' as const;
 
-  async validate(action: Partial<CustomActionContract>): Promise<CustomActionContract> {
+  async validate(action: Partial<CustomActionContract>, context: ContextContract): Promise<CustomActionContract> {
+    action = contextualize(action, context);
+
     return {
       ...action,
       execute: action.execute ?? (async () => true),

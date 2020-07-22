@@ -5,7 +5,7 @@ import { ListrTask } from 'listr2';
 
 export interface ActionHandlerContract<T = any> {
   for: T;
-  validate(action: Partial<BaseActionContract<T>>): Promise<BaseActionContract<T> | false>;
+  validate(action: Partial<BaseActionContract<T>>, context: ContextContract): Promise<BaseActionContract<T> | false>;
   handle(action: BaseActionContract<T>, context: ContextContract): Promise<ActionHandlingResult>;
 }
 

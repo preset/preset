@@ -7,6 +7,7 @@ import {
   Searchable,
   SearchableFunction,
 } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import fs from 'fs-extra';
 import fg from 'fast-glob';
@@ -16,7 +17,8 @@ import path from 'path';
 export class EditActionHandler implements ActionHandlerContract<'edit'> {
   for = 'edit' as const;
 
-  async validate(action: Partial<EditActionContract>): Promise<EditActionContract> {
+  async validate(action: Partial<EditActionContract>, context: ContextContract): Promise<EditActionContract> {
+    action = contextualize(action, context);
     return {
       ...action,
       files: action.files ?? false,

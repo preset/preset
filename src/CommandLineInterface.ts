@@ -67,6 +67,7 @@ export class CommandLineInterface {
     try {
       await new Listr(tasks).run();
     } catch (error) {
+      Logger.error(error);
       Logger.cli(`Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`);
 
       return 1;

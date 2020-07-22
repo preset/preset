@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, EditJsonActionContract, JsonEntry } from '@/Contracts';
 import { Logger } from '@/Logger';
+import { contextualize } from '@/Handlers';
 import { lodash } from '@poppinss/utils';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -10,7 +11,8 @@ import path from 'path';
 export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'> {
   for = 'edit-json' as const;
 
-  async validate(action: Partial<EditJsonActionContract>): Promise<EditJsonActionContract> {
+  async validate(action: Partial<EditJsonActionContract>, context: ContextContract): Promise<EditJsonActionContract> {
+    action = contextualize(action, context);
     action.title = action.title ?? 'Edit JSON file';
 
     return {

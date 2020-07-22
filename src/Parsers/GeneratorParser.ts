@@ -12,6 +12,7 @@ import { Binding } from '@/Container';
 import fs from 'fs-extra';
 import path from 'path';
 import simpleGit from 'simple-git';
+import { Preset, PendingObject } from '@/Preset';
 
 /**
  * Parses a preset that should have at least a "preset.js" file, or
@@ -60,10 +61,21 @@ export class GeneratorParser implements ParserContract {
 
     // Import the preset
     Logger.info(`Evaluating preset.`);
-    const generator = await this.importer.import(presetAbsolutePath);
+    let generator = await this.importer.import(presetAbsolutePath);
+
+    // Make sure it's not empty
+    if (!generator) {
+      throw new Error(`${presetAbsolutePath} is not a valid preset file.`);
+    }
+
+    // Convert it from builder to generator
+    if (generator instanceof Preset) {
+      Logger.info(`Converting from builder instance to plain generator object.`);
+      generator = generator.toGenerator();
+    }
 
     // Preset check
-    if (!generator || !(await this.isPresetValid(generator))) {
+    if (!(await this.isPresetValid(generator))) {
       throw new Error(`${presetAbsolutePath} is not a valid preset file.`);
     }
 

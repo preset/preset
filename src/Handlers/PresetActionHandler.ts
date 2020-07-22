@@ -1,5 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { ActionHandlerContract, ContextContract, PresetActionContract, ApplierContract } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import { Binding } from '@/Container';
 
@@ -10,7 +11,12 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
   @inject(Binding.Applier)
   protected applier!: ApplierContract;
 
-  async validate(action: Partial<PresetActionContract>): Promise<PresetActionContract | false> {
+  async validate(
+    action: Partial<PresetActionContract>,
+    context: ContextContract
+  ): Promise<PresetActionContract | false> {
+    action = contextualize(action, context);
+
     if (!action.preset) {
       return false;
     }

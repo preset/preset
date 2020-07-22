@@ -9,6 +9,7 @@ import {
   Ecosystem,
   ActionHandlingResult,
 } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import { Text } from '@supportjs/text';
 import fs from 'fs-extra';
@@ -20,7 +21,12 @@ import { ChildProcess } from 'child_process';
 export class InstallDependenciesActionHandler implements ActionHandlerContract<'install-dependencies'> {
   for = 'install-dependencies' as const;
 
-  async validate(action: Partial<InstallDependenciesActionContract>): Promise<InstallDependenciesActionContract> {
+  async validate(
+    action: Partial<InstallDependenciesActionContract>,
+    context: ContextContract
+  ): Promise<InstallDependenciesActionContract> {
+    action = contextualize(action, context);
+
     if (!action.for) {
       throw Logger.throw(`No ecosystem specified`);
     }
