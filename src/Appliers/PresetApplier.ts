@@ -112,7 +112,11 @@ export class PresetApplier implements ApplierContract {
 
     tasks.push({
       title: 'Delete temporary directory',
-      task: async ({ context }) => {
+      task: async ({ context }, task) => {
+        if (!context.temporary) {
+          return task.skip('Delete temporary directory');
+        }
+
         await this.deleteTemporaryFolder(context);
       },
     });
@@ -299,7 +303,7 @@ export class PresetApplier implements ApplierContract {
       Logger.info(`Removing temporary directory ${context.presetDirectory}`);
       fs.removeSync(context.presetDirectory);
     } catch (error) {
-      throw Logger.throw('Could not delete the temporary folder.', error);
+      throw Logger.throw('Could not delete the temporary folder', error);
     }
 
     return true;
