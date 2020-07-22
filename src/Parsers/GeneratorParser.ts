@@ -12,7 +12,6 @@ import { Binding } from '@/Container';
 import fs from 'fs-extra';
 import path from 'path';
 import simpleGit from 'simple-git';
-import { installDependencies } from '@/utils';
 
 /**
  * Parses a preset that should have at least a "preset.js" file, or
@@ -141,7 +140,6 @@ export class GeneratorParser implements ParserContract {
         context: simpleGit(process.cwd()),
         config: (await simpleGit().listConfig()).all,
       },
-      installDependencies: () => installDependencies(targetDirectory),
     };
 
     const parsed = this.parseArgumentsAndFlags(context);
