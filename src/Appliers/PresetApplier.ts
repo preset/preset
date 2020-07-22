@@ -151,6 +151,9 @@ export class PresetApplier implements ApplierContract {
         },
         concurrent: false,
         exitOnError: false,
+        rendererOptions: {
+          collapse: true,
+        },
       });
 
       subtasks.add({
