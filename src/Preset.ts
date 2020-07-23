@@ -7,16 +7,12 @@ import {
   Actions,
   CopyConflictStrategy,
   ContextAware,
-  CopyActionContract,
+  InstallationMode,
+  Ecosystem,
 } from './Contracts';
 
-type PromisedAction<T> =
-  | Partial<BaseActionContract<T>>
-  | ((context: ContextContract) => Promise<Partial<BaseActionContract<T>>>);
-[];
-
 export class Preset {
-  public actions: Partial<PromisedAction<any>>[] = [];
+  public actions: Partial<Actions>[] = [];
 
   public name?: string;
   public templates?: string;
@@ -73,6 +69,8 @@ export class Preset {
   }
 
   public addAction(action: Partial<Actions>): this {
+    Object.keys(action).forEach(key => Reflect.get(action, key) === undefined && Reflect.deleteProperty(action, key));
+
     this.actions.push(action);
 
     return this;
@@ -93,12 +91,31 @@ export class Preset {
 
   /*
 	|--------------------------------------------------------------------------
-	| Copy
+	| Actions
 	|--------------------------------------------------------------------------
 	*/
 
-  public copyFiles(files: string): PendingCopy {
+  public copyFiles(files: string | string[]): PendingCopy {
     return new PendingCopy(this).files(files);
+  }
+
+  public copyDirectories(
+    directories:
+      | string
+      | string[]
+      | {
+          [source: string]: string;
+        }
+  ): PendingCopy {
+    return new PendingCopy(this).directories(directories);
+  }
+
+  public installDependencies(mode: InstallationMode = 'install'): PendingDependencyInstallation {
+    return new PendingDependencyInstallation(this).withMode(mode);
+  }
+
+  public updateDependencies(): PendingDependencyInstallation {
+    return new PendingDependencyInstallation(this).withMode('update');
   }
 }
 
@@ -107,8 +124,15 @@ export abstract class PendingObject {
   protected beforeHook?: HookFunction;
   protected afterHook?: HookFunction;
   protected actionTitle?: string;
+  protected keys: any = {};
 
   constructor(protected preset: Preset) {}
+
+  setKey(key: string, value: any): this {
+    this.keys[key] = value;
+
+    return this;
+  }
 
   title(title: string): this {
     this.actionTitle = title;
@@ -138,13 +162,13 @@ export abstract class PendingObject {
 }
 
 class PendingCopy extends PendingObject {
-  private target?: ContextAware<string>;
+  private target?: string;
   private strategy?: CopyConflictStrategy;
   private shouldIgnoreDotFiles: boolean = false;
-  private filesToCopy?: ContextAware<string | string[]>;
+  private filesToCopy?: string | string[];
   private directoriesToCopy?: any;
 
-  files(files: ContextAware<string | string[]>): this {
+  files(files: string | string[]): this {
     this.filesToCopy = files;
     return this;
   }
@@ -177,21 +201,46 @@ class PendingCopy extends PendingObject {
   }
 
   then(): Preset {
-    const action: CopyActionContract = {
+    return this.preset.addAction({
       type: 'copy',
-      target: this.target! as any,
-      files: this.filesToCopy! as any,
+      ...this.keys,
+      target: this.target,
+      files: this.filesToCopy,
       directories: this.directoriesToCopy,
       if: this.condition,
       before: this.beforeHook,
       after: this.afterHook,
       title: this.actionTitle,
-      strategy: this.strategy!,
+      strategy: this.strategy,
       ignoreDotfiles: this.shouldIgnoreDotFiles,
-    };
+    });
+  }
+}
 
-    Object.keys(action).forEach(key => Reflect.get(action, key) === undefined && Reflect.deleteProperty(action, key));
+class PendingDependencyInstallation extends PendingObject {
+  private ecosystem?: Ecosystem;
+  private mode?: InstallationMode;
 
-    return this.preset.addAction(action);
+  for(ecosystem: Ecosystem): this {
+    this.ecosystem = ecosystem;
+    return this;
+  }
+
+  withMode(mode: InstallationMode): this {
+    this.mode = mode;
+    return this;
+  }
+
+  then(): Preset {
+    return this.preset.addAction({
+      type: 'install-dependencies',
+      ...this.keys,
+      for: this.ecosystem,
+      mode: this.mode,
+      if: this.condition,
+      before: this.beforeHook,
+      after: this.afterHook,
+      title: this.actionTitle,
+    });
   }
 }
