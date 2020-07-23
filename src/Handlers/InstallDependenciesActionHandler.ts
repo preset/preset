@@ -52,6 +52,23 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
 
   async handle(action: InstallDependenciesActionContract, context: ContextContract): Promise<ActionHandlingResult> {
     try {
+      if (action.ask) {
+        Logger.info('Kindly asking the user if they want to install dependencies.');
+        const response = await context.task.prompt({
+          type: 'Toggle',
+          message: `Do you want to ${action.mode} your ${action.for} dependencies?`,
+          initial: false,
+        });
+
+        if (!response) {
+          Logger.info('User decided not to install dependencies.');
+          return {
+            success: true,
+            reason: 'Skipped installation',
+          };
+        }
+      }
+
       const installs: { [key in Ecosystem]: Function } = {
         node: this.node,
         php: this.php,

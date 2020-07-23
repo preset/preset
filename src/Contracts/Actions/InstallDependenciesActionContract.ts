@@ -13,6 +13,11 @@ export interface InstallDependenciesActionContract extends BaseActionContract<'i
    * Whether to install or update the dependencies.
    */
   mode: InstallationMode;
+
+  /**
+   * Whether or not to ask before installing the dependencies.
+   */
+  ask: boolean;
 }
 
 export const ecosystems = ['node', 'php'] as const;
