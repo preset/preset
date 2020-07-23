@@ -27,7 +27,7 @@ export interface GeneratorContract {
   /**
    * A list of actions to execute.
    */
-  actions: ContextAware<() => Actions[]>;
+  actions: ContextAware<Actions[]>;
 
   /**
    * A method that indicates how to parse extra command line arguments.
