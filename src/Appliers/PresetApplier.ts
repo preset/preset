@@ -153,7 +153,9 @@ export class PresetApplier implements ApplierContract {
         exitOnError: true,
         rendererOptions: {
           collapse: !context.debug,
-          showSubtasks: true,
+          showSubtasks: context.debug,
+          collapseSkips: !context.debug,
+          clearOutput: context.debug,
         },
       });
 
@@ -233,14 +235,15 @@ export class PresetApplier implements ApplierContract {
           // Get the result from the handler
           const result = await handler.handle(action, context);
 
+          // Handle skip
+          if (result?.reason) {
+            local.skip = true;
+            return task.skip(result?.reason ?? 'Handling skipped');
+          }
+
           // Handle fail
           if (result?.success === false) {
-            if (result?.reason) {
-              local.skip = true;
-              return task.skip(result?.reason ?? 'Handling skipped');
-            } else {
-              throw new Error('Failed to execute.');
-            }
+            throw new Error('Failed to execute.');
           }
 
           // Handle new tasks
