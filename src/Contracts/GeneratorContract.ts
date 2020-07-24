@@ -7,7 +7,11 @@ import {
   EditJsonActionContract,
   CustomActionContract,
   PromptActionContract,
+  PresetActionContract,
+  InstallDependenciesActionContract,
 } from './Actions';
+
+export type ContextAware<T> = T | ((context: ContextContract) => Promise<T> | T);
 
 export interface GeneratorContract {
   /**
@@ -23,42 +27,12 @@ export interface GeneratorContract {
   /**
    * A list of actions to execute.
    */
-  actions: ((context?: ContextContract) => Promise<Actions[]> | Actions[]) | Actions[];
+  actions: ContextAware<Actions[]>;
 
   /**
    * A method that indicates how to parse extra command line arguments.
    */
-  parse?: (
-    context: Partial<ContextContract>
-  ) => {
-    /**
-     * A pair of name <-> flag object.
-     *
-     * @see https://github.com/oclif/parser
-     * @example
-     * flags: {
-     * 		skip: flags.boolean({ char: 's' })
-     * }
-     *
-     * // Later in code, you can use context.flags
-     * context.flags.skip // true if --skip or -s was passed
-     */
-    flags?: flags.Input<any>;
-
-    /**
-     * A list of objects representing an argument.
-     *
-     * @see https://github.com/oclif/parser
-     * @example
-     * args: [
-     * 		{ name: 'input' }
-     * ]
-     *
-     * // Later in code, you can use context.args
-     * context.args.input // "test" if `use-preset <name> test` was called
-     */
-    args?: args.Input;
-  };
+  parse?: ContextAware<ParseObject>;
 
   /**
    * Execution hook that is executed at the very start of the preset.
@@ -81,13 +55,44 @@ export interface GeneratorContract {
   afterEach?: HookFunction;
 }
 
-type Actions =
+export type Actions =
   | CopyActionContract
   | DeleteActionContract
   | EditActionContract
   | EditJsonActionContract
   | CustomActionContract
-  | PromptActionContract;
+  | PromptActionContract
+  | PresetActionContract
+  | InstallDependenciesActionContract;
 
 export type HookResult = boolean | void | any;
-export type HookFunction = (context: ContextContract) => Promise<HookResult> | HookResult;
+export type HookFunction = ContextAware<HookResult>;
+export type ParseObject = {
+  /**
+   * A pair of name <-> flag object.
+   *
+   * @see https://github.com/oclif/parser
+   * @example
+   * flags: {
+   * 		skip: flags.boolean({ char: 's' })
+   * }
+   *
+   * // Later in code, you can use context.flags
+   * context.flags.skip // true if --skip or -s was passed
+   */
+  flags?: flags.Input<any>;
+
+  /**
+   * A list of objects representing an argument.
+   *
+   * @see https://github.com/oclif/parser
+   * @example
+   * args: [
+   * 		{ name: 'input' }
+   * ]
+   *
+   * // Later in code, you can use context.args
+   * context.args.input // "test" if `use-preset <name> test` was called
+   */
+  args?: args.Input;
+};

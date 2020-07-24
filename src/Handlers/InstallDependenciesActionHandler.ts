@@ -9,6 +9,7 @@ import {
   Ecosystem,
   ActionHandlingResult,
 } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import { Text } from '@supportjs/text';
 import fs from 'fs-extra';
@@ -20,7 +21,12 @@ import { ChildProcess } from 'child_process';
 export class InstallDependenciesActionHandler implements ActionHandlerContract<'install-dependencies'> {
   for = 'install-dependencies' as const;
 
-  async validate(action: Partial<InstallDependenciesActionContract>): Promise<InstallDependenciesActionContract> {
+  async validate(
+    action: Partial<InstallDependenciesActionContract>,
+    context: ContextContract
+  ): Promise<InstallDependenciesActionContract> {
+    action = contextualize(action, context);
+
     if (!action.for) {
       throw Logger.throw(`No ecosystem specified`);
     }
@@ -46,6 +52,23 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
 
   async handle(action: InstallDependenciesActionContract, context: ContextContract): Promise<ActionHandlingResult> {
     try {
+      if (action.ask) {
+        Logger.info('Kindly asking the user if they want to install dependencies.');
+        const response = await context.task.prompt({
+          type: 'Toggle',
+          message: `Do you want to ${action.mode} your ${action.for} dependencies?`,
+          initial: false,
+        });
+
+        if (!response) {
+          Logger.info('User decided not to install dependencies.');
+          return {
+            success: true,
+            reason: 'Skipped installation',
+          };
+        }
+      }
+
       const installs: { [key in Ecosystem]: Function } = {
         node: this.node,
         php: this.php,

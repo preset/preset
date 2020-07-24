@@ -80,8 +80,8 @@ export class PresetApplier implements ApplierContract {
     });
 
     tasks.push({
-      // title: 'Preset execution',
       task: async ({ context }, task) => {
+        task.title = `Apply ${context.presetName}`;
         context.task = task;
 
         if (!context.generator.actions || typeof context.generator.actions !== 'function') {
@@ -153,7 +153,9 @@ export class PresetApplier implements ApplierContract {
         exitOnError: true,
         rendererOptions: {
           collapse: !context.debug,
-          showSubtasks: true,
+          showSubtasks: context.debug,
+          collapseSkips: !context.debug,
+          clearOutput: context.debug,
         },
       });
 
@@ -180,7 +182,7 @@ export class PresetApplier implements ApplierContract {
           }
 
           // Validates the action.
-          const action = await handler.validate(raw);
+          const action = await handler.validate(raw, local.context);
 
           if (!action) {
             local.skip = true;
@@ -233,14 +235,15 @@ export class PresetApplier implements ApplierContract {
           // Get the result from the handler
           const result = await handler.handle(action, context);
 
+          // Handle skip
+          if (result?.reason) {
+            local.skip = true;
+            return task.skip(result?.reason ?? 'Handling skipped');
+          }
+
           // Handle fail
           if (result?.success === false) {
-            if (result?.reason) {
-              local.skip = true;
-              return task.skip(result?.reason ?? 'Handling skipped');
-            } else {
-              throw new Error('Failed to execute.');
-            }
+            throw new Error('Failed to execute.');
           }
 
           // Handle new tasks
@@ -329,17 +332,16 @@ export class PresetApplier implements ApplierContract {
    * Checks if an action should run.
    */
   private async shouldRun(action: Partial<BaseActionContract<any>>, context: ContextContract): Promise<boolean> {
-    // Check for action conditions
-    if (typeof action.if === 'function') {
-      return await action.if(context);
-    }
-
     if (typeof action.if === 'undefined') {
       return true;
     }
 
+    if (typeof action.if === 'function') {
+      action.if = await action.if(context);
+    }
+
     if (!Array.isArray(action.if)) {
-      action.if = [typeof action.if === undefined ? true : false];
+      action.if = [typeof action.if === undefined ? true : Boolean(action.if)];
     }
 
     return action.if.every(condition => Boolean(condition));

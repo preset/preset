@@ -1,12 +1,15 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, PromptActionContract } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 
 @injectable()
 export class PromptActionHandler implements ActionHandlerContract<'prompt'> {
   for = 'prompt' as const;
 
-  async validate(action: Partial<PromptActionContract>): Promise<PromptActionContract> {
+  async validate(action: Partial<PromptActionContract>, context: ContextContract): Promise<PromptActionContract> {
+    action = contextualize(action, context);
+
     return {
       ...action,
       prompts: action.prompts ?? [],

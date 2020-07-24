@@ -65,15 +65,26 @@ export class CommandLineInterface {
     });
 
     try {
+      Logger.info(`Running tasks.`);
       await new Listr(tasks).run();
+      Logger.info(`Successfully applied preset.`);
     } catch (error) {
-      Logger.cli(`Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`);
+      Logger.error(error);
+      Logger.cli('');
+      Logger.cli(
+        `${chalk.red('×')} Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`
+      );
 
       return 1;
     }
 
     if (flags.debug) {
-      Logger.cli(`Since debug is enabled, a log file has been saved in ${Logger.saveToFile()}.`);
+      Logger.cli('');
+      Logger.dump();
+      Logger.cli('');
+      Logger.cli(
+        `${chalk.gray(`➜ A log file has been saved in ${chalk.reset(Logger.saveToFile())}`)}${chalk.gray('.')}`
+      );
     }
 
     return 0;

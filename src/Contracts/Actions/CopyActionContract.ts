@@ -1,4 +1,5 @@
 import { BaseActionContract } from './ActionContract';
+import { ContextAware } from '../GeneratorContract';
 
 export interface CopyActionContract extends BaseActionContract<'copy'> {
   /**

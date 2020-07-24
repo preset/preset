@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, CopyActionContract, copyConflictStrategies, ContextContract } from '@/Contracts';
+import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import path from 'path';
 import fg from 'fast-glob';
@@ -15,7 +16,9 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     skip: this.skip,
   };
 
-  async validate(action: Partial<CopyActionContract>): Promise<CopyActionContract> {
+  async validate(action: Partial<CopyActionContract>, context: ContextContract): Promise<CopyActionContract> {
+    action = contextualize(action, context);
+
     // Resolves strategy as a callable
     if (typeof action.strategy === 'function') {
       action.strategy = (<Function>action.strategy)();

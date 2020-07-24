@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 import { ActionHandlerContract, ContextContract, DeleteActionContract } from '@/Contracts';
 import { Logger } from '@/Logger';
+import { contextualize } from '@/Handlers';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import path from 'path';
@@ -9,7 +10,9 @@ import path from 'path';
 export class DeleteActionHandler implements ActionHandlerContract<'delete'> {
   for = 'delete' as const;
 
-  async validate(action: Partial<DeleteActionContract>): Promise<DeleteActionContract> {
+  async validate(action: Partial<DeleteActionContract>, context: ContextContract): Promise<DeleteActionContract> {
+    action = contextualize(action, context);
+
     if (!action.directories && !action.files) {
       Logger.info(`A ${this.for} action will not do anything because it has no target file nor directory..`);
     }
