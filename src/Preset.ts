@@ -330,7 +330,7 @@ class PendingCopy extends PendingObject {
 }
 
 class PendingDependencyInstallation extends PendingObject {
-  private ecosystem?: Ecosystem;
+  private ecosystem: Ecosystem = 'node';
   private mode?: InstallationMode;
   private ask: boolean = true;
 
