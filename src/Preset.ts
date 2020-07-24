@@ -111,8 +111,8 @@ export class Preset {
   /**
    * Copies files to the target directory.
    */
-  public copyTemplates(): Preset {
-    return new PendingCopy(this).chain();
+  public copyTemplates(strategy: CopyConflictStrategy = 'override'): Preset {
+    return new PendingCopy(this).whenConflict(strategy).chain();
   }
 
   /**
