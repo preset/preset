@@ -65,7 +65,9 @@ export class CommandLineInterface {
     });
 
     try {
+      Logger.info(`Running tasks.`);
       await new Listr(tasks).run();
+      Logger.info(`Successfully applied preset.`);
     } catch (error) {
       Logger.error(error);
       Logger.cli('');
@@ -78,10 +80,10 @@ export class CommandLineInterface {
 
     if (flags.debug) {
       Logger.cli('');
+      Logger.dump();
+      Logger.cli('');
       Logger.cli(
-        `${chalk.gray(
-          `➜ Since debug is enabled, a log file has been saved in ${chalk.reset(Logger.saveToFile())}`
-        )}${chalk.gray('.')}`
+        `${chalk.gray(`➜ A log file has been saved in ${chalk.reset(Logger.saveToFile())}`)}${chalk.gray('.')}`
       );
     }
 

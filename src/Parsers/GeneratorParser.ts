@@ -12,7 +12,7 @@ import { Binding } from '@/Container';
 import fs from 'fs-extra';
 import path from 'path';
 import simpleGit from 'simple-git';
-import { Preset, PendingObject } from '@/Preset';
+import { Preset, PendingObject, PendingEditionSearch } from '@/Preset';
 
 /**
  * Parses a preset that should have at least a "preset.js" file, or
@@ -68,6 +68,17 @@ export class GeneratorParser implements ParserContract {
       throw new Error(`${presetAbsolutePath} is not a valid preset file.`);
     }
 
+    if (generator instanceof PendingEditionSearch) {
+      Logger.info(`Converting from builder instance's pending edition object to builder instance.`);
+      generator = generator.end().chain();
+    }
+
+    // Convert it from pending object to generator
+    if (generator instanceof PendingObject) {
+      Logger.info(`Converting from builder instance's pending object to builder instance.`);
+      generator = generator.chain();
+    }
+
     // Convert it from builder to generator
     if (generator instanceof Preset) {
       Logger.info(`Converting from builder instance to plain generator object.`);
@@ -89,6 +100,16 @@ export class GeneratorParser implements ParserContract {
    * Ensures that the preset is valid.
    */
   protected async isPresetValid(generator: Partial<GeneratorContract>): Promise<boolean> {
+    if (!Reflect.has(generator, 'actions')) {
+      Logger.info('Generator is invalid because it does not have an "actions" property.');
+      return false;
+    }
+
+    if (typeof generator.actions !== 'function') {
+      Logger.info('Generator is invalid because its "actions" property is not a function.');
+      return false;
+    }
+
     return true;
   }
 

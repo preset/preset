@@ -1,4 +1,6 @@
 import fs from 'fs-extra';
+import tmp from 'tmp';
+import path from 'path';
 
 enum Level {
   info = 'info',
@@ -23,22 +25,32 @@ export class SLogger {
     });
   }
 
+  public dump(): void {
+    this.history
+      .filter(({ message }) => message.length > 0)
+      .forEach(({ level, message }) => {
+        console.log(`[${level}] ${message}`);
+      });
+  }
+
   public saveToFile(json: boolean = false): string {
     try {
-      const fileName = `preset-logs-${Date.now()}.log`;
-      const content = this.history.map(({ datetime, level, message }) =>
-        json
-          ? {
-              datetime: datetime.toISOString(),
-              level: level.toString(),
-              message: message,
-            }
-          : `[${datetime.toISOString()} / ${level}] ${message}`
-      );
+      const name = `preset-${new Date().toISOString().slice(0, 10)}-${Date.now()}.log`;
+      const temporaryFile = tmp.fileSync({ name });
+      const content = this.history
+        .filter(({ message }) => message.length > 0)
+        .map(({ datetime, level, message }) =>
+          json
+            ? {
+                datetime: datetime.toISOString(),
+                level: level.toString(),
+                message: message,
+              }
+            : `[${datetime.toISOString()} / ${level}] ${message}`
+        );
 
-      fs.writeFileSync(fileName, content.join('\n'));
-
-      return fileName;
+      fs.writeFileSync(path.join(temporaryFile.name), content.join('\n'));
+      return temporaryFile.name;
     } catch (error) {
       throw this.throw('Could not save log file.', error);
     }

@@ -1,14 +1,20 @@
 import {
-  BaseActionContract,
   HookFunction,
   GeneratorContract,
-  ContextContract,
   ParseObject,
   Actions,
   CopyConflictStrategy,
   ContextAware,
   InstallationMode,
   Ecosystem,
+  JsonEntry,
+  Searchable,
+  SearchableFunction,
+  Replacer,
+  ReplaceObject,
+  RemoveLineObject,
+  LineObject,
+  PromptOptions,
 } from './Contracts';
 
 export class Preset {
@@ -95,10 +101,16 @@ export class Preset {
 	|--------------------------------------------------------------------------
 	*/
 
+  /**
+   * Copies files to the target directory.
+   */
   public copyFiles(files: string | string[]): PendingCopy {
     return new PendingCopy(this).files(files);
   }
 
+  /**
+   * Copies directories to the target directory.
+   */
   public copyDirectories(
     directories:
       | string
@@ -110,12 +122,81 @@ export class Preset {
     return new PendingCopy(this).directories(directories);
   }
 
+  /**
+   * Install dependencies.
+   *
+   * @param mode The installation mode. Either 'install' or 'update'.
+   */
   public installDependencies(mode: InstallationMode = 'install'): PendingDependencyInstallation {
     return new PendingDependencyInstallation(this).withMode(mode);
   }
 
+  /**
+   * Updates dependencies.
+   */
   public updateDependencies(): PendingDependencyInstallation {
     return new PendingDependencyInstallation(this).withMode('update');
+  }
+
+  /**
+   * Executes custom code.
+   */
+  public execute(callback?: ContextAware<Function>): PendingCustomCode {
+    return new PendingCustomCode(this).code(callback);
+  }
+
+  /**
+   * Applies an external preset.
+   *
+   * @param resolvable The preset resolable.
+   */
+  public apply(resolvable: string): PendingPreset {
+    return new PendingPreset(this).resolve(resolvable);
+  }
+
+  /**
+   * Deletes file or directories.
+   */
+  public delete(files: string | string[] | false = false): PendingDeletion {
+    return new PendingDeletion(this).files(files);
+  }
+
+  /**
+   * Edits a JSON file.
+   */
+  public editJson(file?: string): PendingJSONEdition {
+    return new PendingJSONEdition(this).file(file);
+  }
+
+  /**
+   * Edits some files.
+   */
+  public edit(files?: string | string[]): PendingEdition {
+    return new PendingEdition(this).files(files);
+  }
+
+  /**
+   * Asks for user input.
+   */
+  public prompts(): PendingPrompts {
+    return new PendingPrompts(this);
+  }
+
+  /**
+   * Ask for confirmation.
+   */
+  public confirm(message: string, name: string, options: Partial<PromptOptions> = {}): this {
+    return this.addAction({
+      type: 'prompt',
+      prompts: [
+        {
+          ...options,
+          type: 'Toggle',
+          message,
+          name,
+        },
+      ],
+    });
   }
 }
 
@@ -124,41 +205,66 @@ export abstract class PendingObject {
   protected beforeHook?: HookFunction;
   protected afterHook?: HookFunction;
   protected actionTitle?: string;
-  protected keys: any = {};
+  protected customKeys: any = {};
 
   constructor(protected preset: Preset) {}
 
+  /**
+   * Sets a custom key for that object. Don't use unless you know what you are doing.
+   */
   setKey(key: string, value: any): this {
-    this.keys[key] = value;
+    this.customKeys[key] = value;
 
     return this;
   }
 
+  /**
+   * Sets the title for that action.
+   */
   title(title: string): this {
     this.actionTitle = title;
 
     return this;
   }
 
+  /**
+   * Pass the condition that determines if that action should run.
+   */
   if(condition: ContextAware<boolean>): this {
     this.condition = condition;
 
     return this;
   }
 
+  /**
+   * Runs custom code before the action starts.
+   */
   before(callback: HookFunction): this {
     this.beforeHook = callback;
 
     return this;
   }
 
+  /**
+   * Runs custom code after the action finished.
+   */
   after(callback: HookFunction): this {
     this.afterHook = callback;
 
     return this;
   }
 
-  abstract then(): Preset;
+  get keys() {
+    return {
+      ...this.customKeys,
+      if: this.condition,
+      before: this.beforeHook,
+      after: this.afterHook,
+      title: this.actionTitle,
+    };
+  }
+
+  abstract chain(): Preset;
 }
 
 class PendingCopy extends PendingObject {
@@ -200,7 +306,7 @@ class PendingCopy extends PendingObject {
     return this;
   }
 
-  then(): Preset {
+  chain(): Preset {
     return this.preset.addAction({
       type: 'copy',
       ...this.keys,
@@ -231,16 +337,322 @@ class PendingDependencyInstallation extends PendingObject {
     return this;
   }
 
-  then(): Preset {
+  chain(): Preset {
     return this.preset.addAction({
       type: 'install-dependencies',
       ...this.keys,
       for: this.ecosystem,
       mode: this.mode,
-      if: this.condition,
-      before: this.beforeHook,
-      after: this.afterHook,
-      title: this.actionTitle,
+    });
+  }
+}
+
+class PendingCustomCode extends PendingObject {
+  private callback?: ContextAware<Function>;
+
+  code(callback?: ContextAware<Function>): this {
+    this.callback = callback;
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'custom',
+      ...this.keys,
+      execute: this.callback,
+    });
+  }
+}
+
+class PendingPreset extends PendingObject {
+  private resolvable?: string;
+  private inherits?: boolean;
+  private args: string[] = [];
+
+  resolve(resolvable: string): this {
+    this.resolvable = resolvable;
+    return this;
+  }
+
+  inheritsArguments(inherits: boolean = true): this {
+    this.inherits = inherits;
+    return this;
+  }
+
+  with(args: string | string[]): this {
+    this.args.concat(args);
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'preset',
+      ...this.keys,
+      inherit: this.inherits,
+      preset: this.resolvable,
+      arguments: this.args,
+    });
+  }
+}
+
+class PendingDeletion extends PendingObject {
+  private directoriesToDelete: string | false | string[] = false;
+  private filesToDelete: string | false | string[] = false;
+
+  files(files: string | string[] | false): this {
+    this.filesToDelete = files;
+    return this;
+  }
+
+  directories(directories: string | string[] | false): this {
+    this.directoriesToDelete = directories;
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'delete',
+      ...this.keys,
+      directories: this.directoriesToDelete,
+      files: this.filesToDelete,
+    });
+  }
+}
+
+class PendingJSONEdition extends PendingObject {
+  private fileToEdit: string | string[] | undefined;
+  private objectToMerge: false | JsonEntry | undefined;
+  private pathsToDelete: string[] = [];
+
+  file(fileToEdit?: string | string[]): this {
+    this.fileToEdit = fileToEdit;
+    return this;
+  }
+
+  merge(object: any): this {
+    this.objectToMerge = object;
+    return this;
+  }
+
+  delete(path: string | string[]): this {
+    this.pathsToDelete.concat(path);
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'edit-json',
+      ...this.keys,
+      file: this.fileToEdit,
+      merge: this.objectToMerge,
+      delete: this.pathsToDelete,
+    });
+  }
+}
+
+class PendingPrompts extends PendingObject {
+  private prompts: (PromptOptions<true> & { name: string })[] = [];
+
+  confirm(message: string, name: string, options: Partial<PromptOptions> = {}): this {
+    this.prompts.push({
+      type: 'Toggle',
+      name,
+      message,
+      ...options,
+    } as PromptOptions);
+
+    return this;
+  }
+
+  input(message: string, name: string, options: Partial<PromptOptions> = {}): this {
+    this.prompts.push({
+      type: 'Input',
+      name,
+      message,
+      ...options,
+    } as PromptOptions);
+
+    return this;
+  }
+
+  add(name: string, prompt: PromptOptions): this {
+    this.prompts.push({
+      ...prompt,
+      name,
+    });
+
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'prompt',
+      ...this.keys,
+      prompts: this.prompts,
+    });
+  }
+}
+
+class PendingEdition extends PendingObject {
+  private replacements: ReplaceObject[] = [];
+  private removals: RemoveLineObject[] = [];
+  private additions: LineObject[] = [];
+  private filesToEdit?: string | string[] | false;
+
+  files(files?: string | string[] | false): this {
+    this.filesToEdit = files;
+    return this;
+  }
+
+  addFile(file: string): this {
+    if (false === this.filesToEdit) {
+      this.filesToEdit = [file];
+      return this;
+    }
+
+    if (!Array.isArray(this.filesToEdit)) {
+      this.filesToEdit = [this.filesToEdit!];
+    }
+
+    this.filesToEdit.push(file);
+
+    return this;
+  }
+
+  replace(search: any): PendingLineReplacement {
+    return new PendingLineReplacement(this, search);
+  }
+
+  makeReplacement(replacement: ReplaceObject): this {
+    this.replacements.push(replacement);
+    return this;
+  }
+
+  search(search: Searchable | SearchableFunction): PendingEditionSearch {
+    return new PendingEditionSearch(this, search);
+  }
+
+  add(addition: Partial<LineObject>): this {
+    const matches = this.additions.filter(({ search }) => search === addition.search);
+
+    if (matches.length) {
+      matches.forEach(match => {
+        if (addition.after) {
+          match.after = addition.after;
+        }
+
+        if (addition.before) {
+          match.before = addition.before;
+        }
+      });
+    }
+
+    this.additions.push(addition as LineObject);
+    return this;
+  }
+
+  remove(removal: Partial<RemoveLineObject>): this {
+    const matches = this.removals.filter(({ search }) => search === removal.search);
+
+    if (matches.length) {
+      matches.forEach(match => {
+        if (removal.after) {
+          match.after = removal.after;
+        }
+
+        if (removal.before) {
+          match.before = removal.before;
+        }
+
+        if (undefined !== removal.removeMatch) {
+          match.removeMatch = removal.removeMatch;
+        }
+
+        if (undefined === removal.removeMatch) {
+          match.removeMatch = removal.removeMatch ?? false;
+        }
+      });
+
+      this.removals = matches;
+      return this;
+    }
+
+    this.removals.push(removal as RemoveLineObject);
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'edit',
+      ...this.keys,
+      files: this.filesToEdit,
+      removeLines: this.removals,
+      addLines: this.additions,
+      replace: this.replacements,
+    });
+  }
+}
+
+export class PendingEditionSearch {
+  constructor(private edition: PendingEdition, protected search: Searchable | SearchableFunction) {}
+
+  addBefore(content: string | string[]): this {
+    this.edition.add({
+      search: this.search,
+      before: content,
+    });
+
+    return this;
+  }
+
+  addAfter(content: string | string[]): this {
+    this.edition.add({
+      search: this.search,
+      after: content,
+    });
+
+    return this;
+  }
+
+  removeBefore(count: number): this {
+    this.edition.remove({
+      search: this.search,
+      before: count,
+    });
+
+    return this;
+  }
+
+  removeAfter(count: number): this {
+    this.edition.remove({
+      search: this.search,
+      after: count,
+    });
+
+    return this;
+  }
+
+  remove(): this {
+    this.edition.remove({
+      search: this.search,
+      removeMatch: true,
+    });
+
+    return this;
+  }
+
+  end(): PendingEdition {
+    return this.edition;
+  }
+}
+
+class PendingLineReplacement {
+  constructor(private edition: PendingEdition, protected search: Searchable | SearchableFunction) {}
+
+  with(value: Replacer): PendingEdition {
+    return this.edition.makeReplacement({
+      search: this.search,
+      with: value,
     });
   }
 }
