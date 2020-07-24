@@ -42,6 +42,7 @@ it('finds each handler in the container', () => {
     Name.EditHandler,
     Name.PresetHandler,
     Name.InstallDependenciesHandler,
+    Name.RunHandler,
   ];
 
   types.forEach(type => {

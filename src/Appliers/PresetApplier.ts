@@ -155,7 +155,7 @@ export class PresetApplier implements ApplierContract {
           collapse: !context.debug,
           showSubtasks: context.debug,
           collapseSkips: !context.debug,
-          clearOutput: context.debug,
+          clearOutput: !context.debug,
         },
       });
 
@@ -337,7 +337,7 @@ export class PresetApplier implements ApplierContract {
     }
 
     if (typeof action.if === 'function') {
-      action.if = await action.if(context);
+      action.if = Boolean(await action.if(context));
     }
 
     if (!Array.isArray(action.if)) {
