@@ -120,12 +120,19 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
       const outputDirectory = path.join(context.targetDirectory, to);
 
       if (entry.endsWith('.dotfile')) {
-        entry = Text.make(entry)
-          .afterLast('/')
-          .prepend('.')
-          .beforeLast('.dotfile')
-          .prepend(Text.make(entry).beforeLast('/').append('/'))
-          .str();
+        if (entry.includes('/')) {
+          entry = Text.make(entry)
+            .afterLast('/')
+            .prepend('.')
+            .beforeLast('.dotfile')
+            .prepend(Text.make(entry).beforeLast('/').append('/'))
+            .str();
+        } else {
+          entry = Text.make(entry) //
+            .prepend('.')
+            .beforeLast('.dotfile')
+            .str();
+        }
       }
 
       const output = path.join(outputDirectory, entry);
