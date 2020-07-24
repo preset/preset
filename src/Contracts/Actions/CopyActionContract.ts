@@ -1,5 +1,6 @@
 import { BaseActionContract } from './ActionContract';
-import { ContextAware } from '../GeneratorContract';
+
+export type DirectoryCopyObject = string | string[] | { [source: string]: string };
 
 export interface CopyActionContract extends BaseActionContract<'copy'> {
   /**
@@ -12,12 +13,7 @@ export interface CopyActionContract extends BaseActionContract<'copy'> {
    * One or more paths to directories to be recursively copied to the target directory.
    * If an object is given, its keys will be used as the source and its values will be used as the targets.
    */
-  directories:
-    | string
-    | string[]
-    | {
-        [source: string]: string;
-      };
+  directories: DirectoryCopyObject;
 
   /**
    * A path relative to the target directory of where the preset will be applied.

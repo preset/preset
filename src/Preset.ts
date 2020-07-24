@@ -15,6 +15,7 @@ import {
   RemoveLineObject,
   LineObject,
   PromptOptions,
+  DirectoryCopyObject,
 } from './Contracts';
 
 export class Preset {
@@ -26,7 +27,7 @@ export class Preset {
   public beforeEachHook?: HookFunction;
   public afterHook?: HookFunction;
   public afterEachHook?: HookFunction;
-  public parseObject?: ParseObject;
+  public parseObject?: ContextAware<ParseObject>;
 
   public static make(generator: GeneratorContract): GeneratorContract;
   public static make(name: string): Preset;
@@ -74,6 +75,12 @@ export class Preset {
     return this;
   }
 
+  public parse(parseObject: ContextAware<ParseObject>): this {
+    this.parseObject = parseObject;
+
+    return this;
+  }
+
   public addAction(action: Partial<Actions>): this {
     Object.keys(action).forEach(key => Reflect.get(action, key) === undefined && Reflect.deleteProperty(action, key));
 
@@ -104,6 +111,13 @@ export class Preset {
   /**
    * Copies files to the target directory.
    */
+  public copyTemplates(): Preset {
+    return new PendingCopy(this).chain();
+  }
+
+  /**
+   * Copies files to the target directory.
+   */
   public copyFiles(files: string | string[]): PendingCopy {
     return new PendingCopy(this).files(files);
   }
@@ -111,15 +125,15 @@ export class Preset {
   /**
    * Copies directories to the target directory.
    */
-  public copyDirectories(
-    directories:
-      | string
-      | string[]
-      | {
-          [source: string]: string;
-        }
-  ): PendingCopy {
+  public copyDirectories(directories: ContextAware<DirectoryCopyObject>): PendingCopy {
     return new PendingCopy(this).directories(directories);
+  }
+
+  /**
+   * Copies a directory to the target directory.
+   */
+  public copyDirectory(directory: string): PendingDirectoryCopy {
+    return new PendingDirectoryCopy(this).directory(directory);
   }
 
   /**
@@ -267,26 +281,59 @@ export abstract class PendingObject {
   abstract chain(): Preset;
 }
 
+class PendingDirectoryCopy extends PendingObject {
+  private directoryToCopy?: string;
+  private target?: string;
+  private strategy?: CopyConflictStrategy;
+  private shouldIgnoreDotFiles: boolean = false;
+
+  directory(directory: string): this {
+    this.directoryToCopy = directory;
+    return this;
+  }
+
+  to(target: string): this {
+    this.target = target;
+    return this;
+  }
+
+  whenConflict(useStrategy: CopyConflictStrategy): this {
+    this.strategy = useStrategy;
+    return this;
+  }
+
+  ignoreDotFiles(ignore: boolean = true): this {
+    this.shouldIgnoreDotFiles = ignore;
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'copy',
+      ...this.keys,
+      files: false,
+      strategy: this.strategy,
+      ignoreDotfiles: this.shouldIgnoreDotFiles,
+      directories: {
+        [this.directoryToCopy!]: this.target,
+      },
+    });
+  }
+}
+
 class PendingCopy extends PendingObject {
   private target?: string;
   private strategy?: CopyConflictStrategy;
   private shouldIgnoreDotFiles: boolean = false;
   private filesToCopy?: string | string[];
-  private directoriesToCopy?: any;
+  private directoriesToCopy?: ContextAware<DirectoryCopyObject>;
 
   files(files: string | string[]): this {
     this.filesToCopy = files;
     return this;
   }
 
-  directories(
-    directories:
-      | string
-      | string[]
-      | {
-          [source: string]: string;
-        }
-  ): this {
+  directories(directories: ContextAware<DirectoryCopyObject>): this {
     this.directoriesToCopy = directories;
     return this;
   }
@@ -313,10 +360,6 @@ class PendingCopy extends PendingObject {
       target: this.target,
       files: this.filesToCopy,
       directories: this.directoriesToCopy,
-      if: this.condition,
-      before: this.beforeHook,
-      after: this.afterHook,
-      title: this.actionTitle,
       strategy: this.strategy,
       ignoreDotfiles: this.shouldIgnoreDotFiles,
     });
@@ -324,7 +367,7 @@ class PendingCopy extends PendingObject {
 }
 
 class PendingDependencyInstallation extends PendingObject {
-  private ecosystem?: Ecosystem;
+  private ecosystem: Ecosystem = 'node';
   private mode?: InstallationMode;
   private ask: boolean = true;
 

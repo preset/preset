@@ -67,6 +67,6 @@ export interface RemoveLineObject extends SearchableObject {
   after?: number;
 }
 
-export type Replacer = string | ((substring: string, ...args: any[]) => string);
+export type Replacer = string | { replacer: (substring: string, ...args: any[]) => string };
 export type Searchable = string | RegExp;
 export type SearchableFunction = (content: string, context: ContextContract) => Promise<Searchable>;

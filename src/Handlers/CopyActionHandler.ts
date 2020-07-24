@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { ActionHandlerContract, CopyActionContract, copyConflictStrategies, ContextContract } from '@/Contracts';
 import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
+import { Text } from '@supportjs/text';
 import path from 'path';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
@@ -114,13 +115,27 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
 
     // TODO - refactor to avoid repetition with copyFiles
     // For each found entry, copy according to the strategy.
-    for (const entry of entries) {
+    for (let entry of entries) {
       const input = path.join(context.presetTemplates, from, entry);
       const outputDirectory = path.join(context.targetDirectory, to);
-      const output = path.join(
-        outputDirectory,
-        entry.endsWith('.dotfile') ? `.${entry.replace('.dotfile', '')}` : entry
-      );
+
+      if (entry.endsWith('.dotfile')) {
+        if (entry.includes('/')) {
+          entry = Text.make(entry)
+            .afterLast('/')
+            .prepend('.')
+            .beforeLast('.dotfile')
+            .prepend(Text.make(entry).beforeLast('/').append('/'))
+            .str();
+        } else {
+          entry = Text.make(entry) //
+            .prepend('.')
+            .beforeLast('.dotfile')
+            .str();
+        }
+      }
+
+      const output = path.join(outputDirectory, entry);
 
       // Make sure the output directory exists.
       fs.ensureDirSync(outputDirectory);

@@ -19,6 +19,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
 
   async validate(action: Partial<EditActionContract>, context: ContextContract): Promise<EditActionContract> {
     action = contextualize(action, context);
+
     return {
       ...action,
       files: action.files ?? false,
@@ -34,6 +35,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     const entries = await fg(action.files, {
       dot: true,
       cwd: context.targetDirectory,
+      ignore: ['package-lock.json', 'yarn.lock', 'node_modules'],
     });
 
     Logger.info(`Editing ${entries.length} file(s).`);
@@ -177,9 +179,15 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     replacement: ReplaceObject,
     context: ContextContract
   ): Promise<string> {
+    replacement = contextualize(replacement, context);
+
     try {
       if (typeof replacement.search === 'function') {
         replacement.search = await replacement.search(content, context);
+      }
+
+      if (typeof replacement.with !== 'string' && Reflect.has(replacement.with!, 'replacer')) {
+        replacement.with = (replacement.with.replacer as unknown) as string;
       }
 
       content = content.replace(replacement.search, replacement.with as string);
