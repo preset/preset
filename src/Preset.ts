@@ -26,7 +26,7 @@ export class Preset {
   public beforeEachHook?: HookFunction;
   public afterHook?: HookFunction;
   public afterEachHook?: HookFunction;
-  public parseObject?: ParseObject;
+  public parseObject?: ContextAware<ParseObject>;
 
   public static make(generator: GeneratorContract): GeneratorContract;
   public static make(name: string): Preset;
@@ -70,6 +70,12 @@ export class Preset {
 
   public afterEach(hook: HookFunction): this {
     this.afterEachHook = hook;
+
+    return this;
+  }
+
+  public parse(parseObject: ContextAware<ParseObject>): this {
+    this.parseObject = parseObject;
 
     return this;
   }
