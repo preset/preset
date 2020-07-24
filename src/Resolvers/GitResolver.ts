@@ -53,7 +53,7 @@ export class GitResolver implements ResolverContract {
   }
 
   protected getRepositoryUrl({ organization, repository }: GitResolverResult): string {
-    return `git@github.com:${organization}/${repository}.git`;
+    return `git://github.com/${organization}/${repository}.git`;
   }
 
   /**
