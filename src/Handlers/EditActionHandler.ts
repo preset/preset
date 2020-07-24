@@ -35,7 +35,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     const entries = await fg(action.files, {
       dot: true,
       cwd: context.targetDirectory,
-      ignore: ['package-lock.json', 'yarn.lock', 'node_modules'],
+      ignore: ['package-lock.json', 'yarn.lock', 'node_modules', '.git'],
     });
 
     Logger.info(`Editing ${entries.length} file(s).`);
