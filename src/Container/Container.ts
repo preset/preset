@@ -21,9 +21,9 @@ import {
   EditJsonActionHandler,
   EditActionHandler,
   PresetActionHandler,
+  RunActionHandler,
 } from '@/Handlers';
 import { Listr } from 'listr2';
-import { Logger } from '@/Logger';
 import { InstallDependenciesActionHandler } from '@/Handlers/InstallDependenciesActionHandler';
 
 /**
@@ -107,5 +107,6 @@ container
   .bind<ActionHandlerContract<'install-dependencies'>>(Binding.Handler)
   .to(InstallDependenciesActionHandler)
   .whenTargetNamed(Name.InstallDependenciesHandler);
+container.bind<ActionHandlerContract<'run'>>(Binding.Handler).to(RunActionHandler).whenTargetNamed(Name.RunHandler);
 
 export { container };

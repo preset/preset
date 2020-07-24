@@ -9,6 +9,7 @@ import {
   PromptActionContract,
   PresetActionContract,
   InstallDependenciesActionContract,
+  RunActionContract,
 } from './Actions';
 
 export type ContextAware<T> = T | ((context: ContextContract) => Promise<T> | T);
@@ -63,7 +64,8 @@ export type Actions =
   | CustomActionContract
   | PromptActionContract
   | PresetActionContract
-  | InstallDependenciesActionContract;
+  | InstallDependenciesActionContract
+  | RunActionContract;
 
 export type HookResult = boolean | void | any;
 export type HookFunction = ContextAware<HookResult>;

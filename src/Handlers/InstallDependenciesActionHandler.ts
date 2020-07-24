@@ -9,13 +9,11 @@ import {
   Ecosystem,
   ActionHandlingResult,
 } from '@/Contracts';
-import { contextualize } from '@/Handlers';
+import { contextualize, promiseFromProcess } from '@/Handlers';
 import { Logger } from '@/Logger';
-import { Text } from '@supportjs/text';
 import fs from 'fs-extra';
 import path from 'path';
 import spawn from 'cross-spawn';
-import { ChildProcess } from 'child_process';
 
 @injectable()
 export class InstallDependenciesActionHandler implements ActionHandlerContract<'install-dependencies'> {
@@ -103,7 +101,7 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
       cwd: targetDirectory,
     });
 
-    return this.promiseFromProcess(process);
+    return promiseFromProcess(process);
   }
 
   async node(mode: InstallationMode, { targetDirectory }: ContextContract): Promise<ActionHandlingResult> {
@@ -148,28 +146,6 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
       cwd: targetDirectory,
     });
 
-    return this.promiseFromProcess(process);
-  }
-
-  protected promiseFromProcess(process: ChildProcess): Promise<ActionHandlingResult> {
-    return new Promise((resolve, reject) => {
-      process.stdout!.on('data', message => {
-        Logger.info(Text.make(message).beforeLast('\n').str());
-      });
-
-      process.stderr!.on('data', message => {
-        Logger.info(Text.make(message).beforeLast('\n').str());
-      });
-
-      process.on('error', error => {
-        Logger.error(error);
-        reject(error);
-      });
-
-      process.on('close', code => {
-        Logger.info(`Command terminated with code ${code}`);
-        resolve({ success: code === 0 });
-      });
-    });
+    return promiseFromProcess(process);
   }
 }

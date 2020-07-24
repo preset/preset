@@ -24,6 +24,7 @@ const Name = {
   CustomHandler: 'custom',
   PresetHandler: 'preset',
   InstallDependenciesHandler: 'install-dependencies',
+  RunHandler: 'run',
 };
 
 const Tag = {};

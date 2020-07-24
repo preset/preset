@@ -112,7 +112,7 @@ export class Preset {
    * Copies files to the target directory.
    */
   public copyTemplates(strategy: CopyConflictStrategy = 'override'): Preset {
-    return new PendingCopy(this).whenConflict(strategy).chain();
+    return new PendingCopy(this).title('Copy templates').whenConflict(strategy).chain();
   }
 
   /**
@@ -150,6 +150,20 @@ export class Preset {
    */
   public updateDependencies(): PendingDependencyInstallation {
     return new PendingDependencyInstallation(this).withMode('update');
+  }
+
+  /**
+   * Runs a command.
+   */
+  public run(command: ContextAware<string>): Preset {
+    return new PendingCommand(this).run(command).chain();
+  }
+
+  /**
+   * Runs a command.
+   */
+  public command(command: ContextAware<string>): PendingCommand {
+    return new PendingCommand(this).run(command);
   }
 
   /**
@@ -393,6 +407,23 @@ class PendingDependencyInstallation extends PendingObject {
       for: this.ecosystem,
       mode: this.mode,
       ask: this.ask,
+    });
+  }
+}
+
+class PendingCommand extends PendingObject {
+  private commandToRun?: ContextAware<string>;
+
+  run(command?: ContextAware<string>): this {
+    this.commandToRun = command;
+    return this;
+  }
+
+  chain(): Preset {
+    return this.preset.addAction({
+      type: 'run',
+      ...this.keys,
+      command: this.commandToRun,
     });
   }
 }
