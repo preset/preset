@@ -24,7 +24,7 @@ export class GithubResolver extends GitResolver {
 
   resolveUsePreset(input: string): GitResolverResult | false {
     Logger.info(`Trying to resolve the use-preset short syntax.`);
-    const [matches, repository, path] = input.match(/^([\w-]+)(?:\:+([\w-\/]+))?$/) ?? [];
+    const [matches, repository, path] = input.match(/^([a-zA-Z][\w-]+)(?:\:+([\w-\/]+))?$/) ?? [];
 
     if (!matches) {
       return false;
@@ -39,14 +39,14 @@ export class GithubResolver extends GitResolver {
 
   resolveShortSyntax(input: string): GitResolverResult | false {
     Logger.info(`Trying to resolve the GitHub short syntax.`);
-    const [matches, organization, repository, path] = input.match(/^([\w-]+)\/([\w-]+)(?:\:+([\w-\/]+))?$/) ?? [];
+    const [matches, org, repository, path] = input.match(/^([a-zA-Z][\w-]+)\/([\w-]+)(?:\:+([\w-\/]+))?$/) ?? [];
 
     if (!matches) {
       return false;
     }
 
     return {
-      organization,
+      organization: org,
       repository,
       path: path ?? '/',
     };
