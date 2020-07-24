@@ -183,7 +183,7 @@ describe('Replacements', () => {
         replace: [
           {
             search: /^line([0-9])$/gm,
-            with: (match, p1) => match.replace(p1, '-n'),
+            with: { replacer: (match, p1) => match.replace(p1, '-n') },
           },
         ],
       },

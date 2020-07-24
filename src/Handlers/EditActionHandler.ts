@@ -186,6 +186,10 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
         replacement.search = await replacement.search(content, context);
       }
 
+      if (typeof replacement.with !== 'string' && Reflect.has(replacement.with!, 'replacer')) {
+        replacement.with = (replacement.with.replacer as unknown) as string;
+      }
+
       content = content.replace(replacement.search, replacement.with as string);
     } catch (error) {
       throw Logger.throw(`Could not perform string replacement`, error);
