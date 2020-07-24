@@ -182,10 +182,10 @@ export class CopyActionHandler implements ActionHandlerContract<'copy'> {
     const replace = await context.task.prompt({
       type: 'Toggle',
       message: `${entry} already exists. Do you want to replace it?`,
-      initial: false,
+      initial: true,
     });
 
-    if (replace) {
+    if (!replace) {
       Logger.info(`User chosed not to repace ${entry}.`);
 
       return false;
