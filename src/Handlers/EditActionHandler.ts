@@ -19,6 +19,7 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
 
   async validate(action: Partial<EditActionContract>, context: ContextContract): Promise<EditActionContract> {
     action = contextualize(action, context);
+
     return {
       ...action,
       files: action.files ?? false,
@@ -177,6 +178,8 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     replacement: ReplaceObject,
     context: ContextContract
   ): Promise<string> {
+    replacement = contextualize(replacement, context);
+
     try {
       if (typeof replacement.search === 'function') {
         replacement.search = await replacement.search(content, context);
