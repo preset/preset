@@ -326,6 +326,7 @@ class PendingCopy extends PendingObject {
 class PendingDependencyInstallation extends PendingObject {
   private ecosystem?: Ecosystem;
   private mode?: InstallationMode;
+  private ask: boolean = true;
 
   for(ecosystem: Ecosystem): this {
     this.ecosystem = ecosystem;
@@ -337,12 +338,18 @@ class PendingDependencyInstallation extends PendingObject {
     return this;
   }
 
+  withoutAsking(): this {
+    this.ask = false;
+    return this;
+  }
+
   chain(): Preset {
     return this.preset.addAction({
       type: 'install-dependencies',
       ...this.keys,
       for: this.ecosystem,
       mode: this.mode,
+      ask: this.ask,
     });
   }
 }
