@@ -3,7 +3,6 @@ import { ActionHandlerContract, ContextContract, RunActionContract } from '@/Con
 import { Logger } from '@/Logger';
 import { contextualize, promiseFromProcess } from '.';
 import { spawn } from 'cross-spawn';
-import fs from 'fs-extra';
 
 @injectable()
 export class RunActionHandler implements ActionHandlerContract<'run'> {

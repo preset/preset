@@ -9,15 +9,19 @@ beforeEach(() => fs.emptyDirSync(TARGET_DIRECTORY));
 afterAll(() => fs.removeSync(TARGET_DIRECTORY));
 
 it('runs a command', async () => {
-  await handle<RunActionContract>(
-    Name.RunHandler,
-    {
-      command: 'node -v',
-    },
-    {
-      targetDirectory: TARGET_DIRECTORY,
-    }
-  );
+  try {
+    await handle<RunActionContract>(
+      Name.RunHandler,
+      {
+        command: 'node -v',
+      },
+      {
+        targetDirectory: TARGET_DIRECTORY,
+      }
+    );
+  } catch (error) {
+    Logger.error(error);
+  }
 
-  expect(Logger.history.pop()?.message).toBe('Command terminated with code 0');
+  expect(Logger.history.shift()?.message).toBe('Running command: node -v');
 });
