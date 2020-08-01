@@ -82,7 +82,12 @@ export class Preset {
   }
 
   public addAction(action: Partial<Actions>): this {
-    Object.keys(action).forEach(key => Reflect.get(action, key) === undefined && Reflect.deleteProperty(action, key));
+    // Delete undefined properties
+    Object.keys(action).forEach(key => {
+      if (Reflect.get(action, key) === undefined) {
+        Reflect.deleteProperty(action, key);
+      }
+    });
 
     this.actions.push(action);
 

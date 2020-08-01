@@ -6,6 +6,8 @@ import {
   ContextContract,
   GeneratorContract,
   ImporterContract,
+  ContextAware,
+  ParseObject,
 } from '@/Contracts';
 import { Logger } from '@/Logger';
 import { Binding } from '@/Container';
@@ -116,15 +118,20 @@ export class GeneratorParser implements ParserContract {
   /**
    * Parses the arguments and flags from the context thanks to @oclif/parser.
    */
-  protected parseArgumentsAndFlags(context: ContextContract): undefined | Output<any, any> {
+  protected async parseArgumentsAndFlags(context: ContextContract): Promise<undefined | Output<any, any>> {
     Logger.info(`Parsing arguments and flags.`);
     try {
+      let parseObject: ContextAware<ParseObject> | undefined = context.generator.parse;
+
       if (typeof context.generator.parse === 'function') {
-        return parse(context.argv ?? [], {
-          ...context.generator.parse(context),
-          strict: false,
-        });
+        Logger.info(`Applying context to the parse object.`);
+        parseObject = await context.generator.parse(context);
       }
+
+      return parse(context.argv ?? [], {
+        ...parseObject,
+        strict: false,
+      });
     } catch (error) {
       if (error?.oclif?.exit === 2) {
         Logger.info(`Could not parse extra arguments.`);
@@ -176,7 +183,7 @@ export class GeneratorParser implements ParserContract {
       },
     };
 
-    const parsed = this.parseArgumentsAndFlags(context);
+    const parsed = await this.parseArgumentsAndFlags(context);
 
     return <ContextContract>{
       ...context,
