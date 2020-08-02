@@ -3,7 +3,8 @@ import { container } from '@/Container';
 
 container //
   .resolve(CommandLineInterface)
-  .run(process.argv.slice(2))
+  .run(process.argv)
   .catch(error => {
-    console.log({ error });
+    console.error(`An uncaught error has occured. This should not happen, so feel free to report an issue.`);
+    console.error({ error });
   });

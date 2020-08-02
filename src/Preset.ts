@@ -1,7 +1,6 @@
 import {
   HookFunction,
   GeneratorContract,
-  ParseObject,
   Actions,
   CopyConflictStrategy,
   ContextAware,
@@ -16,10 +15,12 @@ import {
   LineObject,
   PromptOptions,
   DirectoryCopyObject,
+  ParseOption,
 } from './Contracts';
 
 export class Preset {
   public actions: Partial<Actions>[] = [];
+  public options: ParseOption[] = [];
 
   public name?: string;
   public templates?: string;
@@ -27,7 +28,6 @@ export class Preset {
   public beforeEachHook?: HookFunction;
   public afterHook?: HookFunction;
   public afterEachHook?: HookFunction;
-  public parseObject?: ContextAware<ParseObject>;
 
   public static make(generator: GeneratorContract): GeneratorContract;
   public static make(name: string): Preset;
@@ -75,14 +75,30 @@ export class Preset {
     return this;
   }
 
-  public parse(parseObject: ContextAware<ParseObject>): this {
-    this.parseObject = parseObject;
+  public option(name: string, def?: string | boolean): this;
+  public option(option: ParseOption): this;
+  public option(nameOrObject: string | ParseOption, def?: string | boolean): this {
+    if (typeof nameOrObject === 'object') {
+      this.options.push(nameOrObject);
+    }
+
+    if (typeof nameOrObject === 'string') {
+      this.options.push({
+        name: nameOrObject,
+        default: def,
+      });
+    }
 
     return this;
   }
 
   public addAction(action: Partial<Actions>): this {
-    Object.keys(action).forEach(key => Reflect.get(action, key) === undefined && Reflect.deleteProperty(action, key));
+    // Delete undefined properties
+    Object.keys(action).forEach(key => {
+      if (Reflect.get(action, key) === undefined) {
+        Reflect.deleteProperty(action, key);
+      }
+    });
 
     this.actions.push(action);
 
@@ -97,7 +113,7 @@ export class Preset {
       afterEach: this.afterEachHook,
       before: this.beforeHook,
       beforeEach: this.beforeEachHook,
-      parse: this.parseObject,
+      options: this.options,
       actions: () => this.actions,
     } as GeneratorContract;
   }

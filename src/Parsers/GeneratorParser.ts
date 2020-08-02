@@ -1,18 +1,19 @@
 import { injectable, inject } from 'inversify';
-import { parse, Output } from '@oclif/parser';
+import { Preset, PendingObject, PendingEditionSearch } from '@/Preset';
 import {
   ParserContract,
   ParserOptionsContract,
   ContextContract,
   GeneratorContract,
   ImporterContract,
+  ParsedArguments,
 } from '@/Contracts';
 import { Logger } from '@/Logger';
 import { Binding } from '@/Container';
 import fs from 'fs-extra';
 import path from 'path';
 import simpleGit from 'simple-git';
-import { Preset, PendingObject, PendingEditionSearch } from '@/Preset';
+import parseArguments from 'cac';
 
 /**
  * Parses a preset that should have at least a "preset.js" file, or
@@ -114,17 +115,26 @@ export class GeneratorParser implements ParserContract {
   }
 
   /**
-   * Parses the arguments and flags from the context thanks to @oclif/parser.
+   * Parses the arguments and flags from the context.
    */
-  protected parseArgumentsAndFlags(context: ContextContract): undefined | Output<any, any> {
+  protected parseArgumentsAndFlags(context: ContextContract): ParsedArguments | undefined {
     Logger.info(`Parsing arguments and flags.`);
+
+    if (!context.generator.options) {
+      Logger.info(`No options were given.`);
+      return;
+    }
+
     try {
-      if (typeof context.generator.parse === 'function') {
-        return parse(context.argv ?? [], {
-          ...context.generator.parse(context),
-          strict: false,
-        });
-      }
+      const parser = parseArguments();
+      context.generator.options.forEach(({ name, ...options }) => {
+        Logger.info(`Adding option "${name}" with parameters ${JSON.stringify(options)}`);
+        parser.option(name, '', options);
+      });
+
+      // Giving two extra empty arguments because the parser will splice them,
+      // according to the default argv argument structure
+      return parser.parse(Array(2).concat(context.argv));
     } catch (error) {
       if (error?.oclif?.exit === 2) {
         Logger.info(`Could not parse extra arguments.`);
@@ -134,7 +144,7 @@ export class GeneratorParser implements ParserContract {
       Logger.error(error);
     }
 
-    return undefined;
+    return;
   }
 
   /**
@@ -180,8 +190,8 @@ export class GeneratorParser implements ParserContract {
 
     return <ContextContract>{
       ...context,
-      args: parsed?.args ?? {},
-      flags: parsed?.flags ?? {},
+      args: parsed?.args ?? [],
+      flags: parsed?.options ?? {},
     };
   }
 }

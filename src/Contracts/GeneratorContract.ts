@@ -1,5 +1,4 @@
 import { ContextContract } from './ContextContract';
-import { flags, args } from '@oclif/parser';
 import {
   DeleteActionContract,
   CopyActionContract,
@@ -11,6 +10,7 @@ import {
   InstallDependenciesActionContract,
   RunActionContract,
 } from './Actions';
+import { ParseOption } from '.';
 
 export type ContextAware<T> = T | ((context: ContextContract) => Promise<T> | T);
 
@@ -31,9 +31,10 @@ export interface GeneratorContract {
   actions: ContextAware<Actions[]>;
 
   /**
-   * A method that indicates how to parse extra command line arguments.
+   * A list of additional command line options.
+   * @see https://github.com/cacjs/cac for syntax.
    */
-  parse?: ContextAware<ParseObject>;
+  options?: ParseOption[];
 
   /**
    * Execution hook that is executed at the very start of the preset.
@@ -69,32 +70,3 @@ export type Actions =
 
 export type HookResult = boolean | void | any;
 export type HookFunction = ContextAware<HookResult>;
-export type ParseObject = {
-  /**
-   * A pair of name <-> flag object.
-   *
-   * @see https://github.com/oclif/parser
-   * @example
-   * flags: {
-   * 		skip: flags.boolean({ char: 's' })
-   * }
-   *
-   * // Later in code, you can use context.flags
-   * context.flags.skip // true if --skip or -s was passed
-   */
-  flags?: flags.Input<any>;
-
-  /**
-   * A list of objects representing an argument.
-   *
-   * @see https://github.com/oclif/parser
-   * @example
-   * args: [
-   * 		{ name: 'input' }
-   * ]
-   *
-   * // Later in code, you can use context.args
-   * context.args.input // "test" if `use-preset <name> test` was called
-   */
-  args?: args.Input;
-};

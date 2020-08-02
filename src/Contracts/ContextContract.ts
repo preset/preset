@@ -1,8 +1,7 @@
-import { ConfigValues, SimpleGit } from 'simple-git';
 import { GeneratorContract } from './GeneratorContract';
-import { OutputArgs, OutputFlags } from '@oclif/parser';
+import { ConfigValues, SimpleGit } from 'simple-git';
 import { ListrTaskWrapper } from 'listr2';
-import { ActionContextContract, ApplicationContextContract } from './TaskContract';
+import { ParsedArguments, ParsedFlagObject, ParsedArgumentList } from '.';
 
 export interface ContextContract {
   /**
@@ -41,7 +40,7 @@ export interface ContextContract {
   presetFile: string;
 
   /**
-   * Raw additional command line arguments.
+   * Raw command line arguments.
    */
   argv: string[];
 
@@ -56,14 +55,14 @@ export interface ContextContract {
   task: ListrTaskWrapper<any, any>;
 
   /**
-   * Parsed additional arguments from the command line.
+   * Parsed arguments from the command line.
    */
-  args?: OutputFlags<any>;
+  args?: ParsedArgumentList;
 
   /**
-   * Parsed additional flags from the command line.
+   * Parsed flags from the command line.
    */
-  flags?: OutputArgs<any>;
+  flags?: ParsedFlagObject;
 
   /**
    * Prompt results. Names are what name are given for each prompt, value are Enquirer's results.
