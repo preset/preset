@@ -1,9 +1,7 @@
 import { container, Binding } from '@/Container';
 import { ParserContract, ContextContract, ImporterContract, GeneratorContract } from '@/Contracts';
-import { Logger } from '@/Logger';
 import { stubs } from '../constants';
 import { injectable } from 'inversify';
-import { flags } from '@oclif/parser';
 import path from 'path';
 
 function mockImporter(generator: Partial<GeneratorContract> | false) {
@@ -51,27 +49,22 @@ it('finds specified options in the given preset', async () => {
   });
 });
 
-it('parses arguments and flags and returns them in the context', async () => {
+it.only('parses arguments and flags and returns them in the context', async () => {
   mockImporter({
     name: 'custom-title',
-    parse: () => ({
-      args: [{ name: 'input' }],
-      flags: {
-        auth: flags.boolean({ char: 'c' }),
-      },
-    }),
+    options: [{ name: '-c, --auth' }],
     actions: () => [],
   });
 
   const context = (await container.get<ParserContract>(Binding.Parser).parse(stubs.emptyActionList, {
     applierOptions: {
-      argv: ['--auth', 'test'],
+      argv: ['--c', 'test'],
     },
   })) as ContextContract;
 
   expect(context).not.toBe(false);
   expect(context.flags?.auth).toBe(true);
-  expect(context.args?.input).toBe('test');
+  expect(context.args![0]).toBe('test');
 });
 
 it('adds git in the context', async () => {

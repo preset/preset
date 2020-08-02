@@ -1,29 +1,18 @@
 import { container, Binding } from '@/Container';
 import { CommandLineInterface } from '@/CommandLineInterface';
 import { NullApplier } from '@/Appliers';
-import { Logger } from '@/Logger';
 import { ApplierContract, ApplierOptionsContract } from '@/Contracts';
 import { injectable } from 'inversify';
+import path from 'path';
 
 beforeEach(() => {
+  process.argv = Array(2);
   container.rebind(Binding.Applier).to(NullApplier);
 });
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation());
 afterAll(() => jest.restoreAllMocks());
 
-it('send a message when no argument is passed', async () => {
-  const code = await container //
-    .resolve(CommandLineInterface)
-    .run([]);
-
-  // Instead of checking contents, which will change, we just assert
-  // that something was output.
-  // TODO
-  expect(Logger.history.length).not.toBe(0);
-  expect(code).toBe(1);
-});
-
-it('returns code 1 when no argument is passed', async () => {
+it('returns code 1 when no preset is given', async () => {
   const code = await container //
     .resolve(CommandLineInterface)
     .run([]);
@@ -31,16 +20,15 @@ it('returns code 1 when no argument is passed', async () => {
   expect(code).toBe(1);
 });
 
-it('returns code 0 when the help flag is passed', async () => {
+it('returns code 1 when the help flag is passed', async () => {
   const code = await container //
     .resolve(CommandLineInterface)
     .run(['--help']);
 
-  expect(code).toBe(0);
+  expect(code).toBe(1);
 });
 
 it('returns code 0 when an argument is passed and the help flag is not passed', async () => {
-  container.rebind<ApplierContract>(Binding.Applier).to(NullApplier);
   const code = await container //
     .resolve(CommandLineInterface)
     .run(['preset-name']);
@@ -48,7 +36,7 @@ it('returns code 0 when an argument is passed and the help flag is not passed', 
   expect(code).toBe(0);
 });
 
-it('handles the in command line parameter', async () => {
+it('handles the --in command line parameter', async () => {
   const args: string[] = [];
 
   container.rebind<ApplierContract>(Binding.Applier).to(
@@ -67,5 +55,5 @@ it('handles the in command line parameter', async () => {
     .run(['preset-name', '--in', 'subdirectory']);
 
   expect(code).toBe(0);
-  expect(args).toStrictEqual(['preset-name', 'subdirectory']);
+  expect(args).toStrictEqual(['preset-name', path.join(process.cwd(), 'subdirectory')]);
 });
