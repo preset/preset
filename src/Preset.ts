@@ -532,7 +532,12 @@ class PendingJSONEdition extends PendingObject {
   }
 
   delete(path: string | string[]): this {
-    this.pathsToDelete.concat(path);
+    if (!Array.isArray(path)) {
+      path = [path];
+    }
+
+    this.pathsToDelete.push(...path);
+
     return this;
   }
 
