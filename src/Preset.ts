@@ -477,7 +477,12 @@ class PendingPreset extends PendingObject {
   }
 
   with(args: string | string[]): this {
-    this.args.concat(args);
+    if (!Array.isArray(args)) {
+      args = [args];
+    }
+
+    this.args.push(...args);
+
     return this;
   }
 
