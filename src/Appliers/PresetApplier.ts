@@ -228,6 +228,7 @@ export class PresetApplier implements ApplierContract {
         } as any,
         task: async (local, task) => {
           const { context, handler, action } = local;
+          Logger.info(`Executing: ${JSON.stringify(action)}`);
 
           // Updates the nested task context
           context.task = task;
