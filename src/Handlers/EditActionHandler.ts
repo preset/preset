@@ -66,6 +66,8 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     context: ContextContract
   ): Promise<string> {
     if (action.removeLines) {
+      Logger.info(`Removing ${action.removeLines.length} line(s).`);
+
       for (const removal of action.removeLines) {
         content = await this.performLineEdition(content, removal.search, context, ({ lines, index }) => {
           // Handle the lines to remove before
@@ -92,6 +94,8 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     }
 
     if (action.addLines) {
+      Logger.info(`Adding ${action.addLines.length} line(s).`);
+
       for (const addition of action.addLines) {
         content = await this.performLineEdition(
           content,
@@ -155,7 +159,13 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
     }
 
     for (const line of lines) {
+      Logger.info(`Trying ${search} on ${line}`);
+
+      lastIndentation = (line.match(/^[\s]+/) ?? []).shift() ?? '';
+
       if (line.match(search)) {
+        Logger.info(`${search} matched ${line} (line ${lines.indexOf(line)}).`);
+
         transformer({
           lines,
           index: lines.indexOf(line),
@@ -164,8 +174,6 @@ export class EditActionHandler implements ActionHandlerContract<'edit'> {
         });
         break;
       }
-
-      lastIndentation = (line.match(/^[\s]+/) ?? []).shift() ?? '';
     }
 
     return lines.join('\n');
