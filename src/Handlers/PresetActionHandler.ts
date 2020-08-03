@@ -3,6 +3,7 @@ import { ActionHandlerContract, ContextContract, PresetActionContract, ApplierCo
 import { contextualize } from '@/Handlers';
 import { Logger } from '@/Logger';
 import { Binding } from '@/Container';
+import registerDeepClone from 'rfdc';
 
 @injectable()
 export class PresetActionHandler implements ActionHandlerContract<'preset'> {
@@ -43,14 +44,25 @@ export class PresetActionHandler implements ActionHandlerContract<'preset'> {
         (action.arguments as string[]).push(...context.argv);
       }
 
+      const deepClone = registerDeepClone({ circles: true, proto: true });
+      const previousContext = deepClone(context);
+      const tasks = await this.applier.run({
+        resolvable: action.preset,
+        argv: action.arguments as string[],
+        in: context.targetDirectory,
+        debug: context.debug,
+      });
+
+      tasks.push({
+        title: 'Reset context',
+        task: context => {
+          context.context = previousContext;
+        },
+      });
+
       return {
         success: true,
-        tasks: await this.applier.run({
-          resolvable: action.preset,
-          argv: action.arguments as string[],
-          in: context.targetDirectory,
-          debug: context.debug,
-        }),
+        tasks,
       };
     } catch (error) {
       throw Logger.throw(`Preset ${action.preset ?? 'unnamed'} could not be applied.`, error);

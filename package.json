@@ -48,6 +48,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^26.0.0",
     "@types/node-fetch": "^2.5.7",
+    "@types/rfdc": "^1.1.0",
     "@types/tmp": "^0.2.0",
     "jest": "^26.0.1",
     "jest-mock-extended": "^1.0.9",
@@ -70,6 +71,7 @@
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
     "reflect-metadata": "^0.1.13",
+    "rfdc": "^1.1.4",
     "simple-git": "^2.7.0",
     "tmp": "^0.2.1",
     "tslib": "^2.0.0"

@@ -30,6 +30,7 @@ export class PresetApplier implements ApplierContract {
   private parser!: ParserContract;
 
   async run(applierOptions: ApplierOptionsContract): Promise<ListrTask<ApplicationContextContract>[]> {
+    Logger.info(`Running applier with ${JSON.stringify(applierOptions)}`);
     const tasks: ListrTask<ApplicationContextContract>[] = [];
 
     tasks.push({
@@ -61,6 +62,16 @@ export class PresetApplier implements ApplierContract {
         if (!context) {
           throw new Error('Could not generate the preset context.');
         }
+
+        Logger.info(
+          `Current context is ${JSON.stringify({
+            args: context.args,
+            argv: context.argv,
+            debug: context.debug,
+            flags: context.flags,
+            prompts: context.prompts,
+          })}`
+        );
 
         local.context = context;
       },
@@ -228,7 +239,15 @@ export class PresetApplier implements ApplierContract {
         } as any,
         task: async (local, task) => {
           const { context, handler, action } = local;
-          Logger.info(`Executing: ${JSON.stringify(action)}`);
+          Logger.info(
+            `Executing: ${JSON.stringify(action)} with ${JSON.stringify({
+              args: context.args,
+              argv: context.argv,
+              debug: context.debug,
+              flags: context.flags,
+              prompts: context.prompts,
+            })}`
+          );
 
           // Updates the nested task context
           context.task = task;
