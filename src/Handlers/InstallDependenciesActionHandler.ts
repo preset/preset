@@ -126,7 +126,7 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
 
     Logger.info(`Spawning ${packageManager} into ${targetDirectory}.`);
 
-    const parameters = ['--verbose'];
+    const parameters = [];
 
     if (mode === 'install') {
       parameters.push('install');
