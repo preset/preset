@@ -399,7 +399,7 @@ class PendingCopy extends PendingObject {
 class PendingDependencyInstallation extends PendingObject {
   private ecosystem: Ecosystem = 'node';
   private mode?: InstallationMode;
-  private ask: boolean = true;
+  private ask: ContextAware<boolean> = true;
 
   for(ecosystem: Ecosystem): this {
     this.ecosystem = ecosystem;
@@ -411,8 +411,8 @@ class PendingDependencyInstallation extends PendingObject {
     return this;
   }
 
-  withoutAsking(): this {
-    this.ask = false;
+  withoutAsking(ask: ContextAware<boolean>): this {
+    this.ask = ask;
     return this;
   }
 
