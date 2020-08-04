@@ -315,7 +315,7 @@ class PendingDirectoryCopy extends PendingObject {
   private directoryToCopy?: string;
   private strategy?: CopyConflictStrategy;
   private shouldIgnoreDotFiles: boolean = false;
-  private target: string = '';
+  private target: string = '/';
 
   directory(directory: string): this {
     this.directoryToCopy = directory;
