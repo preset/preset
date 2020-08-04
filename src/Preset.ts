@@ -185,8 +185,8 @@ export class Preset {
   /**
    * Executes custom code.
    */
-  public execute(callback?: ContextAware<Function>): PendingCustomCode {
-    return new PendingCustomCode(this).code(callback);
+  public execute(callback?: ContextAware<Function>): Preset {
+    return new PendingCustomCode(this).code(callback).chain();
   }
 
   /**
