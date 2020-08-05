@@ -10,6 +10,7 @@ export interface GitResolverResult {
   organization: string;
   repository: string;
   path: string;
+  ssh?: boolean;
 }
 
 /**
@@ -17,11 +18,17 @@ export interface GitResolverResult {
  */
 @injectable()
 export class GitResolver implements ResolverContract {
-  public readonly urlRegex = /^(?:(?:https:\/\/)|(?:git@))(?:[\w\.]+)[\/|:]([\w-]+)\/([\w-]+)(?:\.git)?(?:\:([\w-\/]+))?$/;
+  public readonly urlRegex = /^(?:ssh\:)?(?:(?:https:\/\/)|(?:git@))(?:[\w\.]+)[\/|:]([\w-]+)\/([\w-]+)(?:\.git)?(?:\:([\w-\/]+))?$/;
   public readonly name: string = Name.GitResolver;
   public readonly prefix: string = 'git::';
 
   async resolve(input: string): Promise<ResolverResultContract> {
+    const ssh = this.hasSsh(input);
+
+    if (ssh) {
+      input = this.withoutSsh(input);
+    }
+
     if (!input.startsWith(this.prefix)) {
       return { success: false };
     }
@@ -34,7 +41,10 @@ export class GitResolver implements ResolverContract {
       return { success: false };
     }
 
-    return this.clone(data);
+    return this.clone({
+      ...data,
+      ssh,
+    });
   }
 
   protected resolveUrlSyntax(input: string): GitResolverResult | false {
@@ -52,7 +62,21 @@ export class GitResolver implements ResolverContract {
     };
   }
 
-  protected getRepositoryUrl({ organization, repository }: GitResolverResult): string {
+  protected hasSsh(input: string): boolean {
+    return input.startsWith('ssh:') || input.startsWith('git@');
+  }
+
+  protected withoutSsh(input: string): string {
+    return input.replace(/^ssh:/, '');
+  }
+
+  protected getRepositoryUrl({ organization, repository, ssh }: GitResolverResult): string {
+    if (ssh) {
+      Logger.info('Using SSH.');
+      return `git@github.com:${organization}/${repository}.git`;
+    }
+
+    Logger.info('Not using SSH.');
     return `git://github.com/${organization}/${repository}.git`;
   }
 

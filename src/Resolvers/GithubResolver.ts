@@ -9,17 +9,23 @@ import { Logger } from '@/Logger';
  */
 @injectable()
 export class GithubResolver extends GitResolver {
-  public readonly urlRegex = /^(?:(?:https:\/\/)|(?:git@))(?:(?:www\.)?github\.com)[\/|:]([\w-]+)\/([\w-]+)(?:\.git)?(?:\:([\w-\/]+))?$/;
+  public readonly urlRegex = /^(?:ssh\:)?(?:(?:https:\/\/)|(?:git@))(?:(?:www\.)?github\.com)[\/|:]([\w-]+)\/([\w-]+)(?:\.git)?(?:\:([\w-\/]+))?$/;
   public readonly name: string = Name.GithubResolver;
 
   async resolve(input: string): Promise<ResolverResultContract> {
+    const ssh = this.hasSsh(input);
+
+    if (ssh) {
+      input = this.withoutSsh(input);
+    }
+
     const data = this.resolveUsePreset(input) || this.resolveShortSyntax(input) || this.resolveUrlSyntax(input);
 
     if (!data) {
       return { success: false };
     }
 
-    return this.clone(data);
+    return this.clone({ ...data, ssh });
   }
 
   resolveUsePreset(input: string): GitResolverResult | false {
