@@ -55,7 +55,7 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
         const response = await context.task.prompt({
           type: 'Toggle',
           message: `Do you want to ${action.mode} your ${action.for} dependencies?`,
-          initial: false,
+          initial: true,
         });
 
         if (!response) {
