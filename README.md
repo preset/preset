@@ -11,7 +11,7 @@
   </p>
   <br />
   <p align="center">
-    <code>use-preset</code> is a scaffolding tool for developers. <a href="https://docs.usepreset.dev/">Read the documentation</a> for more informations.
+    <code>use-preset</code> is a scaffolding tool for developers. <a href="https://usepreset.dev/">Read the documentation</a> for more information.
   </p>
   <br />
   <pre align="center">npx use-preset your-preset</pre>
