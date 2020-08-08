@@ -15,6 +15,16 @@ export class RunActionHandler implements ActionHandlerContract<'run'> {
       throw Logger.throw('No command given');
     }
 
+    if (action.hook && typeof action.hook !== 'function') {
+      throw Logger.throw('Process hook must be a function.');
+    }
+
+    if (typeof action.options !== 'object') {
+      action.options = {
+        stdio: ['ignore', 'pipe', 'pipe'],
+      };
+    }
+
     return {
       ...action,
       command: action.command,
@@ -27,8 +37,13 @@ export class RunActionHandler implements ActionHandlerContract<'run'> {
       Logger.info(`Running command: ${action.command}`);
 
       const process = spawn(action.command, {
+        ...action.options,
         cwd: context.targetDirectory,
       });
+
+      if (action.hook) {
+        await action.hook(process);
+      }
 
       return promiseFromProcess(process, context);
     } catch (error) {

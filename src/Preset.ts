@@ -17,6 +17,7 @@ import {
   DirectoryCopyObject,
   ParseOption,
 } from './Contracts';
+import { CommonSpawnOptions, ChildProcess } from 'child_process';
 
 export class Preset {
   public actions: Partial<Actions>[] = [];
@@ -429,9 +430,21 @@ class PendingDependencyInstallation extends PendingObject {
 
 class PendingCommand extends PendingObject {
   private commandToRun?: ContextAware<string>;
+  private spawnOptions?: ContextAware<CommonSpawnOptions>;
+  private spawnHook?: Function;
 
   run(command?: ContextAware<string>): this {
     this.commandToRun = command;
+    return this;
+  }
+
+  withOptions(options: ContextAware<CommonSpawnOptions> = {}): this {
+    this.spawnOptions = options;
+    return this;
+  }
+
+  withHook(hook: (process: ChildProcess) => void): this {
+    this.spawnHook = hook;
     return this;
   }
 
@@ -440,6 +453,8 @@ class PendingCommand extends PendingObject {
       type: 'run',
       ...this.keys,
       command: this.commandToRun,
+      options: this.spawnOptions,
+      hook: this.spawnHook,
     });
   }
 }
