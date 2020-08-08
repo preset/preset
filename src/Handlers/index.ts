@@ -27,11 +27,11 @@ export function contextualize<T extends { [key: string]: any }>(action: T, conte
   return result as T;
 }
 
-export function promiseFromProcess(process: ChildProcess, context?: ContextContract): Promise<ActionHandlingResult> {
+export function promiseFromProcess(process?: ChildProcess, context?: ContextContract): Promise<ActionHandlingResult> {
   return new Promise((resolve, reject) => {
     let lastData: string | undefined = undefined;
 
-    process.stdout!.on('data', message => {
+    process?.stdout?.on('data', message => {
       message = Text.make(message).beforeLast('\n').str();
 
       if (context?.task) {
@@ -42,7 +42,7 @@ export function promiseFromProcess(process: ChildProcess, context?: ContextContr
       Logger.info(message);
     });
 
-    process.stderr!.on('data', message => {
+    process?.stderr?.on('data', message => {
       message = Text.make(message).beforeLast('\n').str();
 
       if (context?.task) {
@@ -53,12 +53,12 @@ export function promiseFromProcess(process: ChildProcess, context?: ContextContr
       Logger.info(Text.make(message).beforeLast('\n').str());
     });
 
-    process.on('error', error => {
+    process?.on('error', error => {
       Logger.error(error);
       reject(new Error(lastData));
     });
 
-    process.on('close', code => {
+    process?.on('close', code => {
       Logger.info(`Command terminated with code ${code}`);
       resolve({ success: code === 0 });
     });
