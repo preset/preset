@@ -45,7 +45,7 @@ export class RunActionHandler implements ActionHandlerContract<'run'> {
         await action.hook(process);
       }
 
-      return promiseFromProcess(process, context);
+      return await promiseFromProcess(process, context);
     } catch (error) {
       throw Logger.throw('Run action failed', error);
     }
