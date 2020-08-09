@@ -11,6 +11,11 @@ export interface RunActionContract extends BaseActionContract<'run'> {
   command: string;
 
   /**
+   * The arguments of the command.
+   */
+  arguments: string[];
+
+  /**
    * The spawn options.
    */
   options?: CommonSpawnOptions;

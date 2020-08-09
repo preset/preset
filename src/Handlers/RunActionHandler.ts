@@ -19,24 +19,27 @@ export class RunActionHandler implements ActionHandlerContract<'run'> {
       throw Logger.throw('Process hook must be a function.');
     }
 
-    if (typeof action.options !== 'object') {
-      action.options = {
-        stdio: ['ignore', 'pipe', 'pipe'],
-      };
+    if (action.options && typeof action.options !== 'object') {
+      throw Logger.throw('Options must be an object.');
+    }
+
+    if (action.arguments && !Array.isArray(action.arguments)) {
+      action.arguments = [action.arguments];
     }
 
     return {
       ...action,
       command: action.command,
+      arguments: action.arguments ?? [],
       type: 'run',
     };
   }
 
   async handle(action: RunActionContract, context: ContextContract) {
     try {
-      Logger.info(`Running command: ${action.command}`);
+      Logger.info(`Running command: ${action.command} ${action.arguments.join(' ')}`);
 
-      const process = spawn(action.command, {
+      const process = spawn(action.command, action.arguments, {
         ...action.options,
         cwd: context.targetDirectory,
       });

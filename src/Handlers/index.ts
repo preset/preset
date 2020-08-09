@@ -29,7 +29,7 @@ export function contextualize<T extends { [key: string]: any }>(action: T, conte
 
 export function promiseFromProcess(process?: ChildProcess, context?: ContextContract): Promise<ActionHandlingResult> {
   return new Promise((resolve, reject) => {
-    let lastData: string | undefined = undefined;
+    let lastData: string = '<no data>';
 
     process?.stdout?.on('data', message => {
       message = Text.make(message).beforeLast('\n').str();
@@ -40,6 +40,10 @@ export function promiseFromProcess(process?: ChildProcess, context?: ContextCont
 
       lastData = message;
       Logger.info(message);
+    });
+
+    process?.stdout?.on('error', err => {
+      Logger.error(err);
     });
 
     process?.stderr?.on('data', message => {
@@ -53,9 +57,14 @@ export function promiseFromProcess(process?: ChildProcess, context?: ContextCont
       Logger.info(Text.make(message).beforeLast('\n').str());
     });
 
-    process?.on('error', error => {
+    process?.stderr?.on('error', error => {
+      Logger.info('An error occured.');
       Logger.error(error);
       reject(new Error(lastData));
+    });
+
+    process?.on('error', error => {
+      Logger.error(error);
     });
 
     process?.on('close', code => {

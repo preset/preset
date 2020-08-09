@@ -172,15 +172,15 @@ export class Preset {
   /**
    * Runs a command.
    */
-  public run(command: ContextAware<string>): Preset {
-    return new PendingCommand(this).run(command).chain();
+  public run(command: ContextAware<string>, args: ContextAware<string[]> = []): Preset {
+    return new PendingCommand(this).run(command, args).chain();
   }
 
   /**
    * Runs a command.
    */
-  public command(command: ContextAware<string>): PendingCommand {
-    return new PendingCommand(this).run(command);
+  public command(command: ContextAware<string>, args: ContextAware<string[]> = []): PendingCommand {
+    return new PendingCommand(this).run(command, args);
   }
 
   /**
@@ -430,11 +430,13 @@ class PendingDependencyInstallation extends PendingObject {
 
 class PendingCommand extends PendingObject {
   private commandToRun?: ContextAware<string>;
+  private commandArguments?: ContextAware<string[]>;
   private spawnOptions?: ContextAware<CommonSpawnOptions>;
   private spawnHook?: Function;
 
-  run(command?: ContextAware<string>): this {
+  run(command?: ContextAware<string>, args: ContextAware<string[]> = []): this {
     this.commandToRun = command;
+    this.commandArguments = args;
     return this;
   }
 
@@ -455,6 +457,7 @@ class PendingCommand extends PendingObject {
       command: this.commandToRun,
       options: this.spawnOptions,
       hook: this.spawnHook,
+      arguments: this.commandArguments,
     });
   }
 }
