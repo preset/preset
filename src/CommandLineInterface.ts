@@ -65,19 +65,25 @@ export class CommandLineInterface {
         `${chalk.red('×')} Could not apply the preset. Check the logs in ${Logger.saveToFile()} for more information.`
       );
 
+      this.dumpIfDebug(debug);
+
       return 1;
     }
 
-    if (debug) {
-      Logger.cli('');
-      Logger.dump();
-      Logger.cli('');
-      Logger.cli(
-        `${chalk.gray(`➜ A log file has been saved in ${chalk.reset(Logger.saveToFile())}`)}${chalk.gray('.')}`
-      );
-    }
+    this.dumpIfDebug(debug);
 
     return 0;
+  }
+
+  dumpIfDebug(debug: boolean): void {
+    if (!debug) {
+      return;
+    }
+
+    Logger.cli('');
+    Logger.dump();
+    Logger.cli('');
+    Logger.cli(`${chalk.gray(`➜ A log file has been saved in ${chalk.reset(Logger.saveToFile())}`)}${chalk.gray('.')}`);
   }
 
   getHelpProcessor() {
