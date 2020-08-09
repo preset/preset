@@ -13,7 +13,8 @@ it('runs a command', async () => {
     await handle<RunActionContract>(
       Name.RunHandler,
       {
-        command: 'node -v',
+        command: 'node',
+        arguments: ['-v'],
       },
       {
         targetDirectory: TARGET_DIRECTORY,
