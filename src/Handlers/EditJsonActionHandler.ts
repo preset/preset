@@ -14,6 +14,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
   async validate(action: Partial<EditJsonActionContract>, context: ContextContract): Promise<EditJsonActionContract> {
     action = contextualize(action, context);
     action.title = action.title ?? 'Edit JSON file';
+    action.space = action.space ?? '\t';
 
     return {
       file: action.file ?? [],
@@ -56,7 +57,7 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
 
         Logger.info(`Writing back to ${file}.`);
         fs.writeJsonSync(targetFile, content, {
-          spaces: '\t',
+          spaces: action.space,
         });
       } catch (error) {
         throw Logger.throw(`Could not edit ${file}.`, error);

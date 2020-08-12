@@ -543,6 +543,12 @@ class PendingJSONEdition extends PendingObject {
   private fileToEdit: string | string[] | undefined;
   private objectToMerge: false | JsonEntry | undefined;
   private pathsToDelete: string[] = [];
+  private space?: string | number;
+
+  indentWith(space: string | number): this {
+    this.space = space;
+    return this;
+  }
 
   file(fileToEdit?: string | string[]): this {
     this.fileToEdit = fileToEdit;
@@ -571,6 +577,7 @@ class PendingJSONEdition extends PendingObject {
       file: this.fileToEdit,
       merge: this.objectToMerge,
       delete: this.pathsToDelete,
+      space: this.space,
     });
   }
 }

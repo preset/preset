@@ -28,6 +28,13 @@ export interface EditJsonActionContract extends BaseActionContract<'edit-json'> 
    * ['dependencies.vue']
    */
   delete?: string | string[] | false;
+
+  /**
+   * The `space` parameter for the `JSON.stringify` method.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#The_space_argument
+   */
+  space?: number | string;
 }
 
 export type JsonValue = string | number;
