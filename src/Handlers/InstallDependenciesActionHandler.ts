@@ -108,6 +108,7 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
     Logger.info(`Installing Node dependencies.`);
 
     const packageJson = path.join(targetDirectory, 'package.json');
+    const packageLock = path.join(targetDirectory, 'package-lock.json');
     let packageManager = 'npm';
 
     if (!fs.pathExistsSync(packageJson)) {
@@ -119,7 +120,7 @@ export class InstallDependenciesActionHandler implements ActionHandlerContract<'
       };
     }
 
-    if (spawn.sync('yarn', ['--version']).status === 0) {
+    if (!fs.pathExistsSync(packageLock) && spawn.sync('yarn', ['--version']).status === 0) {
       Logger.info(`${'yarn'} has been found. Using it.`);
       packageManager = 'yarn';
     }
