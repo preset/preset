@@ -4,6 +4,7 @@ import { TARGET_DIRECTORY } from '../constants';
 import { handle } from './handlers.test';
 import fs from 'fs-extra';
 import path from 'path';
+import detectIndent from 'detect-indent';
 
 beforeAll(() => fs.ensureDirSync(TARGET_DIRECTORY));
 afterAll(() => fs.removeSync(TARGET_DIRECTORY));
@@ -144,5 +145,44 @@ it('handles globs', async () => {
         'laravel-mix': '^4',
       },
     });
+  });
+});
+
+it('keeps indentation on a JSON file', async () => {
+  const jsonPath = path.join(TARGET_DIRECTORY, 'package.json');
+  fs.writeJsonSync(
+    jsonPath,
+    {
+      dependencies: {
+        'laravel-mix': '^4',
+      },
+    },
+    {
+      spaces: '   ', // yes I'm a psychopath
+    }
+  );
+
+  await handle<EditJsonActionContract>(
+    Name.EditJsonHandler,
+    {
+      file: 'package.json',
+      merge: {
+        license: 'MIT',
+        dependencies: {
+          vue: '^2',
+          'laravel-mix': '^5',
+          '@supportjs/text': '^1',
+        },
+      },
+    },
+    {
+      targetDirectory: TARGET_DIRECTORY,
+    }
+  );
+
+  expect(detectIndent(fs.readFileSync(jsonPath).toString())).toStrictEqual({
+    amount: 3,
+    type: 'space',
+    indent: '   ',
   });
 });
