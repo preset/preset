@@ -3,6 +3,7 @@ import { ActionHandlerContract, ContextContract, EditJsonActionContract, JsonEnt
 import { Logger } from '@/Logger';
 import { contextualize } from '@/Handlers';
 import { lodash } from '@poppinss/utils';
+import detectIndent from 'detect-indent';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import path from 'path';
@@ -14,7 +15,6 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
   async validate(action: Partial<EditJsonActionContract>, context: ContextContract): Promise<EditJsonActionContract> {
     action = contextualize(action, context);
     action.title = action.title ?? 'Edit JSON file';
-    action.space = action.space ?? '\t';
 
     return {
       file: action.file ?? [],
@@ -45,19 +45,23 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
 
       try {
         Logger.info(`Reading ${file}.`);
-        let content = fs.readJsonSync(targetFile);
+        let content = fs.readFileSync(targetFile).toString();
+        if (content.charCodeAt(0) === 0xFEFF) {
+          content = content.slice(1)
+        }
+        let json = JSON.parse(content);
 
         if (action.delete) {
-          content = await this.delete(content, action.delete);
+          json = await this.delete(json, action.delete);
         }
 
         if (action.merge) {
-          content = await this.merge(content, action.merge);
+          json = await this.merge(json, action.merge);
         }
 
         Logger.info(`Writing back to ${file}.`);
-        fs.writeJsonSync(targetFile, content, {
-          spaces: action.space,
+        fs.writeJsonSync(targetFile, json, {
+          spaces: action.space ?? detectIndent(content).indent,
         });
       } catch (error) {
         throw Logger.throw(`Could not edit ${file}.`, error);
