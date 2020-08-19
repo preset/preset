@@ -45,11 +45,8 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
 
       try {
         Logger.info(`Reading ${file}.`);
-        let content = fs.readFileSync(targetFile).toString();
-        if (content.charCodeAt(0) === 0xFEFF) {
-          content = content.slice(1)
-        }
-        let json = JSON.parse(content);
+        const content = fs.readFileSync(targetFile).toString();
+        let json = JSON.parse(content.charCodeAt(0) === 0xfeff ? content.slice(1) : content);
 
         if (action.delete) {
           json = await this.delete(json, action.delete);
@@ -59,10 +56,10 @@ export class EditJsonActionHandler implements ActionHandlerContract<'edit-json'>
           json = await this.merge(json, action.merge);
         }
 
-        Logger.info(`Writing back to ${file}.`);
-        fs.writeJsonSync(targetFile, json, {
-          spaces: action.space ?? detectIndent(content).indent,
-        });
+        const spaces = action.space || detectIndent(content).indent;
+
+        Logger.info(`Writing back to ${file} with "${spaces}" indentation.`);
+        fs.writeJsonSync(targetFile, json, { spaces });
       } catch (error) {
         throw Logger.throw(`Could not edit ${file}.`, error);
       }
