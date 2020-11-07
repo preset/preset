@@ -1,4 +1,4 @@
-import { ResolverContract, ResolverOptionsContract, ResolverResultContract } from '@/Contracts/ResolverContract';
+import { ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
 import { ResolutionError } from '@/Errors';
 import { injectable } from 'inversify';
 import fs from 'fs-extra';
@@ -6,17 +6,17 @@ import path from 'path';
 
 @injectable()
 export class LocalResolver implements ResolverContract {
-  async resolve(resolvable: string, options: ResolverOptionsContract): Promise<ResolverResultContract> {
+  async resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult> {
+    if (!this.ensurePathExists(resolvable)) {
+      return false;
+    }
+
     if (options.path) {
       resolvable = path.join(resolvable, options.path);
 
       if (!this.ensurePathExists(resolvable)) {
-        throw ResolutionError.subdirectoryNotFound(options.path, resolvable);
+        throw ResolutionError.localSubdirectoryNotFound(options.path);
       }
-    }
-
-    if (!this.ensurePathExists(resolvable)) {
-      throw ResolutionError.directoryNotFound(resolvable);
     }
 
     return {

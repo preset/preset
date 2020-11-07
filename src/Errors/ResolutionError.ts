@@ -4,19 +4,19 @@ export class ResolutionError extends Error {
     this.name = this.constructor.name;
   }
 
-  static subdirectoryNotFound(subdirectory: string, resolvable: string): ResolutionError {
+  static localSubdirectoryNotFound(subdirectory: string): ResolutionError {
     return new ResolutionError(`Subdirectory "${subdirectory}" does not exist in specified directory.`);
   }
 
-  static directoryNotFound(resolvable: string): ResolutionError {
-    return new ResolutionError(`"${resolvable}" could not be found.`);
+  static repositorySubdirectoryNotFound(subdirectory: string, repository: string): ResolutionError {
+    return new ResolutionError(`Subdirectory "${subdirectory}" does not exist in ${repository}.`);
   }
 
-  static invalidGitHubResolvable(resolvable: string): ResolutionError {
-    return new ResolutionError(`"${resolvable}" is not a valid GitHub resolvable.`);
+  static communityOrganizationNotFound(shorthand: string): ResolutionError {
+    return new ResolutionError(`The community organization "${shorthand}" is not registered.`);
   }
 
-  static couldNotResolve(resolvable: string): ResolutionError {
+  static resolutionFailed(resolvable: string): ResolutionError {
     return new ResolutionError(`"${resolvable}" could not be resolved.`);
   }
 }

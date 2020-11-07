@@ -16,7 +16,7 @@ export interface ApplierOptionsContract {
   resolvable: PresetResolvable;
 
   /**
-   * Target directory.=
+   * Target directory.
    */
   target: string;
 
@@ -30,6 +30,6 @@ export interface CommandLineOptions {
   /**
    * The path to a sub-directory in which to look for a preset.
    */
-  directory?: string;
+  path?: string;
   [k: string]: any;
 }

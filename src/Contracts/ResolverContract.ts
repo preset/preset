@@ -1,9 +1,10 @@
-export interface ResolverResultContract {
+export type ResolverResult = false | ResolverSuccessResult;
+export interface ResolverSuccessResult {
   /**
    * The absolute path to the resolved generator.
    */
   path: string;
-
+ 
   /**
    * A value indicating whether or not the resolved path is temporary. If yes, this path
    * should be deleted after processing.
@@ -14,11 +15,16 @@ export interface ResolverResultContract {
 /**
  * Available options for all resolvers.
  */
-export interface ResolverOptionsContract {
+export interface ResolverOptions {
   /**
    * The path to a sub-directory in which to look for a preset.
    */
   path?: string;
+
+  /**
+   * If defined, force whether or not repositories should be accessed via SSH.
+   */
+  shh?: boolean;
 }
 
 export interface ResolverContract {
@@ -27,14 +33,14 @@ export interface ResolverContract {
    *
    * @param resolvable Any input.
    */
-  resolve(resolvable: string, options: ResolverOptionsContract): Promise<ResolverResultContract>;
+  resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult>;
 }
 
 export interface GitResolverResult {
   /**
    * Whether or not to use SSH.
    */
-  ssh: boolean;
+  ssh?: boolean;
 
   /**
    * The organization (or user) name.

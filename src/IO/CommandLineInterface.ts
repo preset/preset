@@ -24,7 +24,7 @@ export class CommandLineInterface {
     // Creates a simple CLI
     const cli = createInterface('use-preset');
     const { args, options } = cli
-      .option('--directory [directory]', 'The path to a sub-directory in which to look for a preset.')
+      .option('-p, --path [path]', 'The path to a sub-directory in which to look for a preset.')
       .help(this.getHelpProcessor())
       .version(this.getVersion())
       .parse(process.argv.splice(0, 2).concat(argv));

@@ -12,7 +12,7 @@ export class PresetApplier implements ApplierContract {
   async run(options: ApplierOptionsContract): Promise<boolean> {
     // Resolves the preset resolvable.
     const result = await this.resolver.resolve(options.resolvable, {
-      path: options.options.directory,
+      path: options.options.path,
     });
 
     console.log(result);
