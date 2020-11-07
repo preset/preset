@@ -7,7 +7,7 @@ import { OutputContract } from '@/Contracts/OutputContract';
 import { ConsoleOutput } from '@/IO/ConsoleOutput';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { PresetApplier } from '@/Applier/PresetApplier';
-import { GitHubResolver } from '@/Resolver/Adapters/GitHubResolver';
+import { GitHubResolver, LocalResolver } from '@/Resolver/Resolvers';
 
 /**
  * The application container.
@@ -35,6 +35,6 @@ container.bind<ApplierContract>(Binding.Applier).to(PresetApplier);
 */
 container.bind<ResolverContract>(Binding.Resolver).to(Resolver).whenTargetIsDefault();
 container.bind<ResolverContract>(Binding.Resolver).to(GitHubResolver).whenTargetNamed(Name.GitHubResolver);
-// container.bind<ResolverContract>(Binding.Resolver).to(LocalResolver).whenTargetNamed(Name.LocalResolver);
+container.bind<ResolverContract>(Binding.Resolver).to(LocalResolver).whenTargetNamed(Name.LocalResolver);
 
 export { container };

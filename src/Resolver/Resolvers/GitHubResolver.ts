@@ -5,11 +5,11 @@ import {
   ResolverResultContract,
 } from '@/Contracts/ResolverContract';
 import { logger } from '@poppinss/cliui';
+import { CloneError, ResolutionError } from '@/Errors';
 import { injectable } from 'inversify';
 import git from 'simple-git';
 import tmp from 'tmp';
 import path from 'path';
-import { CloneError } from '@/Errors';
 
 @injectable()
 export class GitHubResolver implements ResolverContract {
@@ -17,7 +17,7 @@ export class GitHubResolver implements ResolverContract {
     const result = this.resolveGitHubUrl(resolvable);
 
     if (!result) {
-      return { success: false };
+      throw ResolutionError.invalidGitHubResolvable(resolvable);
     }
 
     return this.clone({
@@ -78,7 +78,6 @@ export class GitHubResolver implements ResolverContract {
         .then(() => logger.info(`Cloned ${repositoryUrl} into ${temporary.name}.`));
 
       return {
-        success: true,
         temporary: true,
         path: path.join(temporary.name, options.path ?? ''),
       };

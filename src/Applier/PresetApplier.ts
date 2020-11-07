@@ -2,6 +2,7 @@ import { inject, injectable } from 'inversify';
 import { ApplierContract, ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { ResolverContract } from '@/Contracts/ResolverContract';
 import { Binding } from '@/Container';
+import { logger } from '@poppinss/cliui';
 
 @injectable()
 export class PresetApplier implements ApplierContract {
@@ -15,10 +16,6 @@ export class PresetApplier implements ApplierContract {
     });
 
     console.log(result);
-
-    if (!result.success) {
-      return false;
-    }
 
     return true;
   }

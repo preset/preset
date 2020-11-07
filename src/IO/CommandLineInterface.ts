@@ -40,11 +40,16 @@ export class CommandLineInterface {
     }
 
     // Applies the preset
-    await this.applier.run({
-      resolvable,
-      target: getAbsolutePath(target),
-      options,
-    });
+    try {
+      await this.applier.run({
+        resolvable,
+        target: getAbsolutePath(target),
+        options,
+      });
+    } catch (error) {
+      logger.fatal(error);
+      return 1;
+    }
 
     return 0;
   }

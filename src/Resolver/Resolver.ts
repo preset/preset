@@ -1,6 +1,8 @@
 import { Binding, container, Name } from '@/Container';
 import { ResolverContract, ResolverOptionsContract, ResolverResultContract } from '@/Contracts/ResolverContract';
+import { ResolutionError } from '@/Errors';
 import { bus, resolveStarted } from '@/events';
+import { logger } from '@poppinss/cliui';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -9,20 +11,19 @@ export class Resolver implements ResolverContract {
     bus.publish(resolveStarted({ resolvable }));
 
     const resolvers = [
-      // container.getNamed<ResolverContract>(Binding.Resolver, Name.LocalResolver),
+      container.getNamed<ResolverContract>(Binding.Resolver, Name.LocalResolver),
       container.getNamed<ResolverContract>(Binding.Resolver, Name.GitHubResolver),
     ];
 
     for (const resolver of resolvers) {
-      const result = await resolver.resolve(resolvable, options);
-
-      if (result) {
-        return result;
+      try {
+        return await resolver.resolve(resolvable, options);
+      } catch (error) {
+        logger.debug(error.message);
+        // todo event
       }
     }
 
-    return {
-      success: false,
-    };
+    throw ResolutionError.couldNotResolve(resolvable);
   }
 }
