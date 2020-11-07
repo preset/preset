@@ -23,5 +23,13 @@ export interface ApplierOptionsContract {
   /**
    * List of command line options.
    */
-  options: { [k: string]: any };
+  options: CommandLineOptions;
+}
+
+export interface CommandLineOptions {
+  /**
+   * The path to a sub-directory in which to look for a preset.
+   */
+  directory?: string;
+  [k: string]: any;
 }
