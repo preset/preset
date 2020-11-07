@@ -12,6 +12,7 @@ import { GitHubResolver } from './GitHubResolver';
 export class CommunityResolver extends GitHubResolver implements ResolverContract {
   protected organizations = {
     laravel: 'laravel-presets',
+    inertia: 'inertia-presets',
   };
 
   async resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult> {
@@ -22,7 +23,7 @@ export class CommunityResolver extends GitHubResolver implements ResolverContrac
         throw ResolutionError.communityOrganizationNotFound(resolvable.split(':').shift()!);
       }
 
-      return false; 
+      return false;
     }
 
     return this.clone({
