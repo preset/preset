@@ -10,7 +10,7 @@ export class LocalResolver implements ResolverContract {
 
   async resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult> {
     if (!this.ensurePathExists(resolvable)) {
-      return false;
+      throw ResolutionError.localDirectoryNotFound(resolvable);
     }
 
     if (options.path) {

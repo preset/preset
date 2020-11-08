@@ -1,5 +1,4 @@
-export type ResolverResult = false | ResolverSuccessResult;
-export interface ResolverSuccessResult {
+export interface ResolverResult {
   /**
    * The absolute path to the resolved generator.
    */

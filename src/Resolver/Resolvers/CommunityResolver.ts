@@ -25,7 +25,7 @@ export class CommunityResolver extends GitHubResolver implements ResolverContrac
         throw ResolutionError.communityOrganizationNotFound(resolvable.split(':').shift()!);
       }
 
-      return false;
+      throw ResolutionError.notCommunityOrganization(resolvable);
     }
 
     return this.clone({

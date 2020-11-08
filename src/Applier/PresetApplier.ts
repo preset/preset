@@ -25,10 +25,6 @@ export class PresetApplier implements ApplierContract {
       path: options.options.path,
     });
 
-    if (!result) {
-      return false;
-    }
-
     const preset = await this.importer.import(result.path);
 
     console.log(preset);

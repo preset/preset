@@ -21,14 +21,16 @@ export class Resolver implements ResolverContract {
 
     for (const resolver of resolvers) {
       this.bus.debug(`Trying the ${resolver.name!} resolver...`);
-      const result = await resolver.resolve(resolvable, options);
 
-      if (result) {
-        this.bus.debug(color.gray(`Successfully resolved ${resolvable}.`));
-        return result;
+      try {
+        return await resolver.resolve(resolvable, options);
+      } catch (error) {
+        if (error.fatal) {
+          throw error;
+        }
+
+        this.bus.debug(color.gray(`The ${resolver.name!} resolver could not resolve ${resolvable}.`));
       }
-
-      this.bus.debug(color.gray(`The ${resolver.name!} resolver could not resolve ${resolvable}.`));
     }
 
     throw ResolutionError.resolutionFailed(resolvable);

@@ -1,5 +1,5 @@
 import { GitResolverResult, ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
-import { CloneError, ResolutionError } from '@/Errors';
+import { ResolutionError } from '@/Errors';
 import { inject, injectable } from 'inversify';
 import { Binding } from '@/Container';
 import { Bus } from '@/bus';
@@ -20,7 +20,7 @@ export class GitHubResolver implements ResolverContract {
     const result = this.resolveGitHubUrl(resolvable);
 
     if (!result) {
-      return false;
+      throw ResolutionError.notRepository(resolvable);
     }
 
     return this.clone({
@@ -109,11 +109,13 @@ export class GitHubResolver implements ResolverContract {
         path: clonedDirectoryWithPath,
       };
     } catch (error) {
-      if (error.name === 'ResolutionError') {
+      // Forward the resolution error if purposely thrown.
+      if (error instanceof ResolutionError) {
         throw error;
       }
 
-      throw new CloneError(options, error);
+      // Throw a fatal resolution error if the clone failed.
+      throw ResolutionError.cloneFailed(options, error);
     }
   }
 }
