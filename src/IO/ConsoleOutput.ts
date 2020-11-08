@@ -28,7 +28,15 @@ export class ConsoleOutput implements OutputContract {
     bus.subscribe(log, ({ payload: { level, content } }) => this.log(level, content));
   }
 
-  protected log(level: 'fatal' | 'error' | 'info' | 'debug', content: any): void {
+  protected log(level: 'fatal' | 'error' | 'warning' | 'info' | 'debug', content: any): void {
+    if (level === 'info' && this.verbosity < 1) {
+      return;
+    }
+
+    if (level === 'debug' && this.verbosity < 2) {
+      return;
+    }
+
     logger[level](content);
   }
 

@@ -1,10 +1,11 @@
 import createInterface from 'cac';
 import { inject, injectable } from 'inversify';
-import { Binding } from '@/Container/Binding';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
-import { ApplierContract } from '@/Contracts/ApplierContract';
-import { getAbsolutePath, getPackage } from '@/utils';
 import { bus, log, outputHelp, outputVersion } from '@/events';
+import { getAbsolutePath, getPackage } from '@/utils';
+import { ApplierContract } from '@/Contracts/ApplierContract';
+import { Binding } from '@/Container/Binding';
+import { logger } from '@/logger';
 
 /**
  * Command line interface for applying a preset.
@@ -25,7 +26,7 @@ export class CommandLineInterface {
   protected options: CommandLineInterfaceOption[] = [
     { definition: '-p, --path [path]', description: 'The path to a sub-directory in which to look for a preset.' },
     { definition: '-h, --help', description: 'Display this help message.' },
-    { definition: '-v', description: 'Define the verbosity level (eg. -vvv).', type: [] },
+    { definition: '-v', description: 'Define the verbosity level (eg. -vv).', type: [] },
     { definition: '--version', description: 'Display the version number.' },
   ];
 
@@ -40,7 +41,7 @@ export class CommandLineInterface {
     this.output.register(options.v?.length ?? 0);
 
     if (!resolvable) {
-      bus.publish(log({ level: 'fatal', content: 'The resolvable is missing. Please consult the usage below.' }));
+      logger.fatal('The resolvable is missing. Please consult the usage below.');
       bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
       return 1;
     }
@@ -63,7 +64,7 @@ export class CommandLineInterface {
         options,
       })
       .catch((error) => {
-        bus.publish(log({ level: 'fatal', content: error }));
+        logger.fatal(error);
       });
 
     return result ? 0 : 1;

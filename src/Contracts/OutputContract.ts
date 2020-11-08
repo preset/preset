@@ -1,4 +1,4 @@
-export type Verbosity = 0 | 1 | 2 | 3;
+export type Verbosity = 0 | 1 | 2;
 
 export interface OutputContract {
   /**

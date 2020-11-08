@@ -9,7 +9,7 @@ export const outputHelp = createEventDefinition<{
   options: CommandLineInterfaceOption[];
 }>()('output:help');
 export const log = createEventDefinition<{
-  level: 'fatal' | 'error' | 'info' | 'debug';
+  level: 'fatal' | 'error' | 'warning' | 'info' | 'debug';
   content: any;
 }>()('output:message');
 
