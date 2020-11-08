@@ -64,7 +64,6 @@ export class CommandLineInterface {
       })
       .catch((error) => {
         bus.publish(log({ level: 'fatal', content: error }));
-        return false;
       });
 
     return result ? 0 : 1;
