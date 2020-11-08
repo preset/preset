@@ -7,7 +7,7 @@ import {
   Verbosity,
 } from '@/Contracts/OutputContract';
 import { logger } from '@poppinss/cliui';
-import { getVersion } from '@/utils';
+import { getPackage, getVersion } from '@/utils';
 
 @injectable()
 export class ConsoleOutput implements OutputContract {
@@ -49,7 +49,7 @@ export class ConsoleOutput implements OutputContract {
     const usageBlock = {
       title: 'Usage',
       body:
-        '  $ ' +
+        `'  $ ${getPackage().name} '` +
         parameters
           .map((parameter) => {
             if (parameter.optional) {
