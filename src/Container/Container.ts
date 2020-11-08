@@ -8,6 +8,7 @@ import { ConsoleOutput } from '@/IO/ConsoleOutput';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { PresetApplier } from '@/Applier/PresetApplier';
 import { CommunityResolver, GitHubResolver, LocalResolver } from '@/Resolver/Resolvers';
+import { Bus, bus } from '@/bus';
 
 /**
  * The application container.
@@ -19,6 +20,7 @@ const container = new Container();
 | I/O
 |--------------------------------------------------------------------------
 */
+container.bind<Bus>(Binding.Bus).toConstantValue(bus); // TODO: create a contract
 container.bind<OutputContract>(Binding.Output).to(ConsoleOutput);
 
 /*
@@ -27,7 +29,7 @@ container.bind<OutputContract>(Binding.Output).to(ConsoleOutput);
 |--------------------------------------------------------------------------
 */
 container.bind<ApplierContract>(Binding.Applier).to(PresetApplier);
- 
+
 /*
 |--------------------------------------------------------------------------
 | Resolvers

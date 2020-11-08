@@ -4,7 +4,7 @@ export interface ResolverSuccessResult {
    * The absolute path to the resolved generator.
    */
   path: string;
- 
+
   /**
    * A value indicating whether or not the resolved path is temporary. If yes, this path
    * should be deleted after processing.
@@ -28,6 +28,11 @@ export interface ResolverOptions {
 }
 
 export interface ResolverContract {
+  /**
+   * The resolver name.
+   */
+  name?: string;
+
   /**
    * Resolves an input to a local preset path.
    *

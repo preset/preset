@@ -1,13 +1,8 @@
 import { injectable } from 'inversify';
-import { bus, log, outputHelp, outputVersion, resolveStarted } from '@/events';
-import {
-  CommandLineInterfaceParameter,
-  CommandLineInterfaceOption,
-  OutputContract,
-  Verbosity,
-} from '@/Contracts/OutputContract';
-import { logger } from '@poppinss/cliui';
+import { bus, outputHelp, outputVersion, outputMessage, LogLevel } from '@/bus';
+import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
 import { getPackage, getVersion } from '@/utils';
+import { logger } from '@poppinss/cliui';
 
 @injectable()
 export class ConsoleOutput implements OutputContract {
@@ -19,25 +14,21 @@ export class ConsoleOutput implements OutputContract {
   }
 
   protected subscribe(): void {
-    bus.subscribe(resolveStarted, ({ payload: { resolvable } }) => {
-      logger.debug(`Resolving "${resolvable}"`);
-    });
-
-    bus.subscribe(outputVersion, this.displayVersion);
-    bus.subscribe(outputHelp, ({ payload: { options, parameters } }) => this.displayHelp(options, parameters));
-    bus.subscribe(log, ({ payload: { level, content } }) => this.log(level, content));
+    bus.on(outputVersion, this.displayVersion);
+    bus.on(outputHelp, ({ payload: { options, parameters } }) => this.displayHelp(options, parameters));
+    bus.on(outputMessage, ({ payload: { level, content } }) => this.log(level, content));
   }
 
-  protected log(level: 'fatal' | 'error' | 'warning' | 'info' | 'debug', content: any): void {
-    if (level === 'info' && this.verbosity < 1) {
+  protected log(level: LogLevel, content: string | Error): void {
+    if (level === 'debug' && this.verbosity < 1) {
       return;
     }
 
-    if (level === 'debug' && this.verbosity < 2) {
-      return;
+    if (content instanceof Error) {
+      logger['fatal'](content);
+    } else {
+      logger[level](content);
     }
-
-    logger[level](content);
   }
 
   protected displayVersion(): void {

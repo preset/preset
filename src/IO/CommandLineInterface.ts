@@ -1,11 +1,10 @@
 import createInterface from 'cac';
 import { inject, injectable } from 'inversify';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
-import { bus, log, outputHelp, outputVersion } from '@/events';
+import { Bus, bus, outputHelp, outputVersion } from '@/bus';
 import { getAbsolutePath, getPackage } from '@/utils';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { Binding } from '@/Container/Binding';
-import { logger } from '@/logger';
 
 /**
  * Command line interface for applying a preset.
@@ -17,6 +16,9 @@ export class CommandLineInterface {
 
   @inject(Binding.Applier)
   protected applier!: ApplierContract;
+
+  @inject(Binding.Bus)
+  protected bus!: Bus;
 
   protected parameters: CommandLineInterfaceParameter[] = [
     { name: 'resolvable', description: 'A GitHub repository URL or a local path.', optional: false },
@@ -41,18 +43,18 @@ export class CommandLineInterface {
     this.output.register(options.v?.length ?? 0);
 
     if (options.help) {
-      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
+      bus.emit(outputHelp({ parameters: this.parameters, options: this.options }));
       return 0;
     }
 
     if (options.version) {
-      bus.publish(outputVersion());
+      bus.emit(outputVersion());
       return 0;
     }
 
     if (!resolvable) {
-      logger.fatal('The resolvable is missing. Please consult the usage below.');
-      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
+      this.bus.fatal('The resolvable is missing. Please consult the usage below.');
+      bus.emit(outputHelp({ parameters: this.parameters, options: this.options }));
       return 1;
     }
 
@@ -63,7 +65,7 @@ export class CommandLineInterface {
         options,
       })
       .catch((error) => {
-        logger.fatal(error);
+        this.bus.fatal(error);
       });
 
     return result ? 0 : 1;

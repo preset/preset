@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
+import { logger } from '@poppinss/cliui';
 
 /**
  * Gets the absolute path for the given directory.
@@ -25,3 +26,5 @@ export function getVersion(): string {
   const { name, version } = getPackage();
   return `${name}/${version} ${process.platform}-${process.arch} node-${process.version}`;
 }
+
+export const color = logger.colors;

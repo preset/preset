@@ -10,6 +10,8 @@ import { GitHubResolver } from './GitHubResolver';
  */
 @injectable()
 export class CommunityResolver extends GitHubResolver implements ResolverContract {
+  public name: string = 'community';
+
   protected organizations = {
     laravel: 'laravel-presets',
     inertia: 'inertia-presets',

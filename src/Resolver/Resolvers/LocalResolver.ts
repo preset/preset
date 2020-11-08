@@ -6,6 +6,8 @@ import path from 'path';
 
 @injectable()
 export class LocalResolver implements ResolverContract {
+  public name: string = 'local';
+
   async resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult> {
     if (!this.ensurePathExists(resolvable)) {
       return false;

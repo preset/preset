@@ -1,14 +1,21 @@
 import { GitResolverResult, ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
-import { logger } from '@poppinss/cliui';
 import { CloneError, ResolutionError } from '@/Errors';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
+import { Binding } from '@/Container';
+import { Bus } from '@/bus';
 import git from 'simple-git';
 import tmp from 'tmp';
 import path from 'path';
 import fs from 'fs-extra';
+import { color } from '@/utils';
 
 @injectable()
 export class GitHubResolver implements ResolverContract {
+  public name: string = 'GitHub';
+
+  @inject(Binding.Bus)
+  protected bus!: Bus;
+
   async resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult> {
     const result = this.resolveGitHubUrl(resolvable);
 
@@ -45,12 +52,16 @@ export class GitHubResolver implements ResolverContract {
 					return false;
 				}
 
-				return {
+				const result = {
 					organization,
 					repository,
 					tag,
 					ssh: !resolvable.includes('http')
-				};
+				}
+
+				this.bus.debug(`Match: ${color.gray(JSON.stringify(result))}.`)
+
+				return result;
 			})
 			.filter(Boolean)
 			?.shift() ?? false;
@@ -69,29 +80,28 @@ export class GitHubResolver implements ResolverContract {
         ? `git@github.com:${options.organization}/${options.repository}.git`
         : `https://github.com/${options.organization}/${options.repository}`;
 
+      this.bus.info(`Cloning ${color.magenta(repositoryUrl)}.`);
+
       await git()
         .clone(repositoryUrl, temporary.name, {
           '--single-branch': true,
           ...(options.tag && { '--branch': options.tag }),
         })
-        .then(() => logger.debug(`Cloned ${repositoryUrl} into ${temporary.name}.`));
+        .then(() => this.bus.debug(`Cloned ${color.magenta(repositoryUrl)} into ${color.underline(temporary.name)}.`));
 
       // Ensure the path exists
       const clonedDirectoryWithPath = path.join(temporary.name, options.path ?? '');
       if (!fs.pathExistsSync(clonedDirectoryWithPath) || !fs.statSync(clonedDirectoryWithPath).isDirectory()) {
         try {
-          logger.debug(`Removing "${temporary.name}"`);
+          this.bus.debug(`Deleting temporary directory at ${color.underline(temporary.name)}...`);
           fs.emptyDirSync(temporary.name);
           fs.rmdirSync(temporary.name);
         } catch (error) {
-          logger.warning('Could not remove temporary directory.');
-          logger.debug(error);
+          this.bus.warning('Could not remove temporary directory.');
+          this.bus.fatal(error);
         }
 
-        throw ResolutionError.repositorySubdirectoryNotFound(
-          options.path!,
-          `${options.organization}/${options.repository}`,
-        );
+        throw ResolutionError.repositorySubdirectoryNotFound(options.path!, `${options.organization}/${options.repository}`);
       }
 
       return {
