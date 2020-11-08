@@ -40,12 +40,6 @@ export class CommandLineInterface {
     // Registers the output, which is event-based
     this.output.register(options.v?.length ?? 0);
 
-    if (!resolvable) {
-      logger.fatal('The resolvable is missing. Please consult the usage below.');
-      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
-      return 1;
-    }
-
     if (options.help) {
       bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
       return 0;
@@ -56,7 +50,12 @@ export class CommandLineInterface {
       return 0;
     }
 
-    // Applies the preset
+    if (!resolvable) {
+      logger.fatal('The resolvable is missing. Please consult the usage below.');
+      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
+      return 1;
+    }
+
     const result = await this.applier
       .run({
         resolvable,
