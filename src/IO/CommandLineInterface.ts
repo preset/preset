@@ -1,12 +1,10 @@
-import fs from 'fs-extra';
-import path from 'path';
 import createInterface from 'cac';
 import { inject, injectable } from 'inversify';
-import { logger } from '@poppinss/cliui';
 import { Binding } from '@/Container/Binding';
-import { OutputContract } from '@/Contracts/OutputContract';
+import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { getAbsolutePath } from '@/utils';
+import { bus, log, outputHelp, outputVersion } from '@/events';
 
 @injectable()
 export class CommandLineInterface {
@@ -16,42 +14,58 @@ export class CommandLineInterface {
   @inject(Binding.Applier)
   protected applier!: ApplierContract;
 
+  protected parameters: CommandLineInterfaceParameter[] = [
+    { name: 'resolvable', description: 'A GitHub repository URL or a local path.', optional: false },
+    { name: 'target', description: 'The directory in which to apply the preset.', optional: true },
+  ];
+
+  protected options: CommandLineInterfaceOption[] = [
+    { definition: '-p, --path [path]', description: 'The path to a sub-directory in which to look for a preset.' },
+    { definition: '-h, --help', description: 'Display this help message.' },
+    { definition: '-v', description: 'Define the verbosity level (eg. -vvv).', type: [] },
+    { definition: '--version', description: 'Display the version number.' },
+  ];
+
   async run(argv: string[]): Promise<number> {
-    // Registers the output, which is event-based and decoupled from
-    // the application
-    this.output.register();
-
-    // Creates a simple CLI
     const cli = createInterface('use-preset');
-    const { args, options } = cli
-      .option('-p, --path [path]', 'The path to a sub-directory in which to look for a preset.')
-      .help(this.getHelpProcessor())
-      .version(this.getVersion())
-      .parse(process.argv.splice(0, 2).concat(argv));
+    this.options.forEach(({ definition, description, type }) => cli.option(definition, description, { type: type }));
 
-    // Extract the resolvable and the target directory from the arguments
+    const { args, options } = cli.parse(process.argv.splice(0, 2).concat(argv));
     const [resolvable, target] = args;
+    const verbosity = options.v?.length ?? 0;
 
-    // Ensures a resolvable is given, without it Preset can't apply anything
+    // Registers the output, which is event-based
+    this.output.register(verbosity);
+
     if (!resolvable) {
-      logger.fatal('The resolvable is missing. Please consult the usage below.');
-      cli.outputHelp();
+      bus.publish(log({ level: 'fatal', content: 'The resolvable is missing. Please consult the usage below.' }));
+      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
       return 1;
+    }
+
+    if (options.help) {
+      bus.publish(outputHelp({ parameters: this.parameters, options: this.options }));
+      return 0;
+    }
+
+    if (options.version) {
+      bus.publish(outputVersion());
+      return 0;
     }
 
     // Applies the preset
-    try {
-      await this.applier.run({
+    const result = await this.applier
+      .run({
         resolvable,
         target: getAbsolutePath(target),
         options,
+      })
+      .catch((error) => {
+        bus.publish(log({ level: 'fatal', content: error }));
+        return false;
       });
-    } catch (error) {
-      logger.fatal(error);
-      return 1;
-    }
 
-    return 0;
+    return result ? 0 : 1;
   }
 
   getHelpProcessor() {
@@ -88,9 +102,5 @@ export class CommandLineInterface {
         body,
       });
     };
-  }
-
-  getVersion(): string {
-    return fs.readJsonSync(path.join(__dirname, '../../package.json')).version;
   }
 }

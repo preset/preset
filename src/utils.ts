@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs-extra';
 
 /**
  * Gets the absolute path for the given directory.
@@ -8,4 +9,19 @@ import path from 'path';
  */
 export function getAbsolutePath(directory: string = process.cwd()): string {
   return path.isAbsolute(directory) ? directory : path.join(process.cwd(), directory);
+}
+
+/**
+ * Gets the content of the package.json file.
+ */
+export function getPackage(): any {
+  return fs.readJsonSync(path.join(__dirname, '../../package.json'));
+}
+
+/**
+ * Gets a string with the CLI name, its version and the current platform.
+ */
+export function getVersion(): string {
+  const { name, version } = getPackage();
+  return `${name}/${version} ${process.platform}-${process.arch} node-${process.version}`;
 }
