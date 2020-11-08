@@ -3,9 +3,12 @@ import { inject, injectable } from 'inversify';
 import { Binding } from '@/Container/Binding';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
 import { ApplierContract } from '@/Contracts/ApplierContract';
-import { getAbsolutePath } from '@/utils';
+import { getAbsolutePath, getPackage } from '@/utils';
 import { bus, log, outputHelp, outputVersion } from '@/events';
 
+/**
+ * Command line interface for applying a preset.
+ */
 @injectable()
 export class CommandLineInterface {
   @inject(Binding.Output)
@@ -26,16 +29,15 @@ export class CommandLineInterface {
     { definition: '--version', description: 'Display the version number.' },
   ];
 
+  /**
+   * Runs the CLI.
+   */
   async run(argv: string[]): Promise<number> {
-    const cli = createInterface('use-preset');
-    this.options.forEach(({ definition, description, type }) => cli.option(definition, description, { type: type }));
-
-    const { args, options } = cli.parse(process.argv.splice(0, 2).concat(argv));
+    const { args, options } = this.parse(argv);
     const [resolvable, target] = args;
-    const verbosity = options.v?.length ?? 0;
 
     // Registers the output, which is event-based
-    this.output.register(verbosity);
+    this.output.register(options.v?.length ?? 0);
 
     if (!resolvable) {
       bus.publish(log({ level: 'fatal', content: 'The resolvable is missing. Please consult the usage below.' }));
@@ -68,39 +70,20 @@ export class CommandLineInterface {
     return result ? 0 : 1;
   }
 
-  getHelpProcessor() {
-    return (sections: any[]) => {
-      // Define the list of custom parameters
-      const parameters = [
-        { name: 'resolvable', description: 'A GitHub repository URL or a local path.' },
-        { name: 'target', description: 'The directory in which to apply the preset.' },
-      ];
+  /**
+   * Parses the command line arguments.
+   */
+  parse(argv: string[]): ParsedArgv {
+    const cli = createInterface(getPackage().name);
+    this.options.forEach(({ definition, description, type }) => cli.option(definition, description, { type }));
 
-      // Replace "command" by "preset" in the usage text
-      const [, usage] = sections;
-      usage.body = usage.body.replace('<command>', parameters.map(({ name }) => `<${name}>`).join(' '));
-
-      // Find the index at which the description starts for options
-      // so we can align the arguments description with it
-      const index = sections[2].body.split('\n').reduce((a: string, b: string) => {
-        const seek = '  ';
-        const lastOfA = a.toString().lastIndexOf(seek);
-        const lastOfB = b.toString().lastIndexOf(seek);
-
-        return lastOfA > lastOfB ? lastOfA : lastOfB;
-      });
-
-      // Format the body for the parameter help
-      const body = parameters
-        .map(({ name, description }) => {
-          return `  ${name}${' '.repeat(index - name.length)}${description}`;
-        })
-        .join('\n');
-
-      sections.splice(2, 0, {
-        title: 'Arguments',
-        body,
-      });
-    };
+    return cli.parse(process.argv.splice(0, 2).concat(argv));
   }
+}
+
+interface ParsedArgv {
+  args: ReadonlyArray<string>;
+  options: {
+    [k: string]: any;
+  };
 }
