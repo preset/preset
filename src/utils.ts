@@ -15,7 +15,7 @@ export function getAbsolutePath(directory: string = process.cwd()): string {
  * Gets the content of the package.json file.
  */
 export function getPackage(): any {
-  return fs.readJsonSync(path.join(__dirname, '../../package.json'));
+  return fs.readJsonSync(path.join(__dirname, '../package.json'));
 }
 
 /**
