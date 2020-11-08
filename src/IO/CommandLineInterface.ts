@@ -1,5 +1,5 @@
 import createInterface from 'cac';
-import { inject, injectable } from 'inversify';
+import { ContainerModule, inject, injectable } from 'inversify';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
 import { Bus, bus, outputHelp, outputVersion } from '@/bus';
 import { getAbsolutePath, getPackage } from '@/utils';
@@ -58,17 +58,19 @@ export class CommandLineInterface {
       return 1;
     }
 
-    const result = await this.applier
+    const code = await this.applier
       .run({
         resolvable,
         target: getAbsolutePath(target),
         options,
       })
+      .then(() => 0)
       .catch((error) => {
         this.bus.fatal(error);
+        return 1;
       });
 
-    return result ? 0 : 1;
+    return code;
   }
 
   /**

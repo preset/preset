@@ -1,10 +1,13 @@
 import { Action } from '../Action';
 import { ContextAware } from '@/Contracts/PresetContract';
+import { Name } from '@/Container';
 
 /**
  * An action for applying another preset.
  */
 export class ApplyPreset extends Action {
+  public handler = Name.Handler.ApplyPreset;
+  public title = 'Applying a preset.';
   public resolvable?: ContextAware<string>;
   public shouldInheritArguments: ContextAware<boolean> = true;
   public args: ContextAware<string>[] = [];

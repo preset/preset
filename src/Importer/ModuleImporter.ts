@@ -16,7 +16,7 @@ export class ModuleImporter implements ImporterContract {
   protected bus!: Bus;
 
   async import(directory: string): Promise<StaticPreset> {
-    this.bus.info(`Importing preset at ${color.magenta(directory)}.`);
+    this.bus.debug(`Importing preset at ${color.magenta(directory)}.`);
 
     const script = fs.readFileSync(this.findConfiguration(directory)).toString();
     const sanitizedScript = this.removeSelfImportStatement(script);

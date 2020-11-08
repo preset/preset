@@ -6,6 +6,7 @@ import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
  * @todo interactions
  */
 export abstract class Action {
+  public abstract handler: string;
   public conditions!: ContextAware<boolean>[];
   public title?: ContextAware<string>;
   public preset: PresetContract;

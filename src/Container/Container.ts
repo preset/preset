@@ -11,6 +11,8 @@ import { CommunityResolver, GitHubResolver, LocalResolver } from '@/Resolver/Res
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
 import { Bus, bus } from '@/bus';
+import { ApplyPresetHandler } from '@/Handlers/ApplyPresetHandler';
+import { HandlerContract } from '@/Contracts/HandlerContract';
 
 /**
  * The application container.
@@ -32,5 +34,8 @@ container.bind<ResolverContract>(Binding.Resolver).to(GitHubResolver).whenTarget
 
 // Importers
 container.bind<ImporterContract>(Binding.Importer).to(ModuleImporter).whenTargetIsDefault();
+
+// Handlers
+container.bind<HandlerContract>(Binding.Handler).to(ApplyPresetHandler).whenTargetNamed(Name.Handler.ApplyPreset);
 
 export { container };

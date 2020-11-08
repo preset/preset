@@ -85,6 +85,13 @@ export class Bus {
   }
 
   /**
+   * Emits a message event of type success.
+   */
+  success(content: string | Error): this {
+    return this.log('success', content);
+  }
+
+  /**
    * Emits a message event of type info.
    */
   info(content: string | Error): this {

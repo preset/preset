@@ -6,7 +6,7 @@ export interface ApplierContract {
    *
    * @param preset A value that should resolve to a preset. A name, a git repository or a local path are exemples.
    */
-  run(options: ApplierOptionsContract): Promise<boolean>;
+  run(options: ApplierOptionsContract): Promise<void>;
 }
 
 export interface ApplierOptionsContract {
