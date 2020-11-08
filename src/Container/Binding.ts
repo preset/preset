@@ -1,6 +1,7 @@
 export const Binding = {
   Applier: Symbol.for('applier'),
   Resolver: Symbol.for('resolver'),
+  Importer: Symbol.for('importer'),
   Output: Symbol.for('output'),
   Bus: Symbol.for('bus'),
 };

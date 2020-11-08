@@ -9,8 +9,8 @@
     "url": "https://github.com/innocenzi"
   },
   "repository": "https://github.com/use-preset/use-preset",
-  "main": "dist/api.js",
-  "typings": "dist/api.d.ts",
+  "main": "dist/exports.js",
+  "typings": "dist/exports.d.ts",
   "bin": {
     "use-preset": "./bin/run"
   },
@@ -60,6 +60,7 @@
     "cross-spawn": "^7.0.3",
     "detect-indent": "^6.0.0",
     "enquirer": "^2.3.6",
+    "esbuild": "^0.8.5",
     "fast-glob": "^3.2.4",
     "fs-extra": "^9.0.1",
     "inversify": "^5.0.1",

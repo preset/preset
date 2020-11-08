@@ -2,6 +2,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import { logger } from '@poppinss/cliui';
 
+let packageContent: any;
+
 /**
  * Gets the absolute path for the given directory.
  * If empty or relative, the current working directory is prepended.
@@ -16,7 +18,11 @@ export function getAbsolutePath(directory: string = process.cwd()): string {
  * Gets the content of the package.json file.
  */
 export function getPackage(): any {
-  return fs.readJsonSync(path.join(__dirname, '../package.json'));
+  if (!packageContent) {
+    packageContent = fs.readJsonSync(path.join(__dirname, '../package.json'));
+  }
+
+  return packageContent;
 }
 
 /**
