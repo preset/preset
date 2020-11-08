@@ -49,7 +49,7 @@ export class ConsoleOutput implements OutputContract {
     const usageBlock = {
       title: 'Usage',
       body:
-        `'  $ ${getPackage().name} '` +
+        `  $ ${getPackage().name} ` +
         parameters
           .map((parameter) => {
             if (parameter.optional) {
