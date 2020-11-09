@@ -118,8 +118,13 @@ export class ExtractHandler implements HandlerContract {
    */
   protected async copyFile(inputFile: string, targetFile: string): Promise<void> {
     if (fs.pathExistsSync(targetFile)) {
-      // Ask
-      if (this.action.strategy === 'ask') {
+      // If the preset is not interactive, log
+      if (this.action.strategy === 'ask' && !this.action.preset.isInteractive()) {
+        this.bus.debug(`Silently overriding ${color.magenta(targetFile)} since interactions are disabled.`);
+      }
+
+      // Ask, but only if interactions are not specifically disabled
+      if (this.action.strategy === 'ask' && this.action.preset.isInteractive()) {
         const shouldReplace = await this.prompt.confirm(`${color.magenta(targetFile)} already exists. Replace it?`, {
           default: true,
         });

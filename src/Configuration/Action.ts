@@ -48,7 +48,7 @@ export abstract class Action {
    * Runs the action only if the --no-interaction flag is not given.
    */
   ifInteractive(): this {
-    return this.if(({ options }) => process.stdout.isTTY && options.interaction !== false);
+    return this.if((preset) => preset.isInteractive());
   }
 
   /**

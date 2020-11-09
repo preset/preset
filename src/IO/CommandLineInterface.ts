@@ -1,6 +1,6 @@
 import createInterface from 'cac';
 import { inject, injectable } from 'inversify';
-import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
+import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
 import { ExecutionError } from '@/Errors';
 import { getAbsolutePath, getPackage } from '@/utils';
 import { Bus, bus, outputHelp, outputVersion } from '@/bus';
@@ -29,7 +29,8 @@ export class CommandLineInterface {
   protected options: CommandLineInterfaceOption[] = [
     { definition: '-p, --path [path]', description: 'The path to a sub-directory in which to look for a preset.' },
     { definition: '-h, --help', description: 'Display this help message.' },
-    { definition: '-v', description: 'Define the verbosity level (eg. -vv).', type: [] },
+    { definition: '--no-interaction', description: 'Disable interactions.' },
+    { definition: '-v', description: 'Define the verbosity level (eg. -vv).', type: [Boolean] },
     { definition: '--version', description: 'Display the version number.' },
   ];
 
@@ -41,7 +42,7 @@ export class CommandLineInterface {
     const [resolvable, target] = args;
 
     // Registers the output, which is event-based
-    this.output.register(options.v?.length ?? 0);
+    this.output.register(((options.v as any[])?.filter(Boolean)?.length as Verbosity) ?? 0);
 
     if (options.help) {
       bus.emit(outputHelp({ parameters: this.parameters, options: this.options }));

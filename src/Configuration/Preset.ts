@@ -55,6 +55,13 @@ export class Preset implements PresetContract {
   public args: string[] = [];
 
   /**
+   * Checks if the preset instance is interactive.
+   */
+  isInteractive(): boolean {
+    return process.stdout.isTTY && this.options.interaction !== false;
+  }
+
+  /**
    * Sets the name of the preset.
    */
   setName(name: ContextAware<string>): this {
