@@ -9,6 +9,7 @@ import { Bus } from '@/bus';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import path from 'path';
+import { Prompt } from '@poppinss/prompts';
 
 @injectable()
 export class ExtractHandler implements HandlerContract {
@@ -16,6 +17,9 @@ export class ExtractHandler implements HandlerContract {
 
   @inject(Binding.Bus)
   protected bus!: Bus;
+
+  @inject(Binding.Prompt)
+  protected prompt!: Prompt;
 
   protected action!: Extract;
   protected applierOptions!: ApplierOptionsContract;
@@ -53,13 +57,13 @@ export class ExtractHandler implements HandlerContract {
     // If both the input and target are files, we can call the
     // copyFile method on them.
     if (this.isFile(templatePath) && this.isFile(targetPath)) {
-      this.copyFile(templatePath, targetPath);
+      await this.copyFile(templatePath, targetPath);
       return;
     }
 
     // If the input is a file, we assume the target is a directory.
     if (this.isFile(templatePath)) {
-      this.copyFile(templatePath, path.join(targetPath, this.renameDotFile(relativeTemplateOrGlob)));
+      await this.copyFile(templatePath, path.join(targetPath, this.renameDotFile(relativeTemplateOrGlob)));
       return;
     }
 
@@ -90,14 +94,14 @@ export class ExtractHandler implements HandlerContract {
       const targetDirectory = path.join(this.applierOptions.target, relativeTargetDirectory);
       fs.ensureDirSync(targetDirectory);
 
-      this.extractTemplateFile(relativeFilePath, relativeInputDirectory, targetDirectory);
+      await this.extractTemplateFile(relativeFilePath, relativeInputDirectory, targetDirectory);
     }
   }
 
   /**
    * Copies the given relative file to the given target directory.
    */
-  protected extractTemplateFile(relativeFilePath: string, relativeInputDirectory: string, targetDirectory: string): void {
+  protected async extractTemplateFile(relativeFilePath: string, relativeInputDirectory: string, targetDirectory: string): Promise<void> {
     const targetFile = path.join(targetDirectory, this.renameDotFile(relativeFilePath));
     const inputFile = path.join(
       this.action.preset.presetDirectory,
@@ -106,16 +110,34 @@ export class ExtractHandler implements HandlerContract {
       relativeFilePath,
     );
 
-    this.copyFile(inputFile, targetFile);
+    await this.copyFile(inputFile, targetFile);
   }
 
   /**
    * Copies the input file to the target file. Both are absolute paths.
    */
-  protected copyFile(inputFile: string, targetFile: string): void {
+  protected async copyFile(inputFile: string, targetFile: string): Promise<void> {
     if (fs.pathExistsSync(targetFile)) {
-      this.bus.warning('TODO: implement strategy');
-      // handle conflict
+      // Ask
+      if (this.action.strategy === 'ask') {
+        const shouldReplace = await this.prompt.confirm(`${color.magenta(targetFile)} already exists. Replace it?`, {
+          default: true,
+        });
+
+        if (!shouldReplace) {
+          this.bus.debug(`User chose not to replace ${color.magenta(targetFile)}.`);
+          return;
+        }
+      }
+
+      // Skip
+      if (this.action.strategy === 'skip') {
+        this.bus.debug(`Skipping copy to ${color.magenta(targetFile)}.`);
+        return;
+      }
+
+      // Override
+      this.bus.debug(`Overriding ${color.magenta(targetFile)}.`);
     }
 
     this.bus.debug(`Copying ${color.magenta(inputFile)} to ${color.magenta(targetFile)}.`);

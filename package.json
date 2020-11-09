@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "@poppinss/cliui": "^2.0.2",
+    "@poppinss/prompts": "^1.1.7",
     "cac": "^6.6.1",
     "cross-spawn": "^7.0.3",
     "detect-indent": "^6.0.0",

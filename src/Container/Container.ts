@@ -12,6 +12,7 @@ import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
 import { ExtractHandler, ApplyPresetHandler } from '@/Handlers';
 import { HandlerContract } from '@/Contracts/HandlerContract';
+import { Prompt, CustomPrompt } from '@/prompt';
 import { Bus, bus } from '@/bus';
 
 /**
@@ -20,7 +21,8 @@ import { Bus, bus } from '@/bus';
 const container = new Container();
 
 // I/O
-container.bind<Bus>(Binding.Bus).toConstantValue(bus); // TODO: create a contract
+container.bind<Bus>(Binding.Bus).toConstantValue(bus);
+container.bind<Prompt>(Binding.Prompt).toConstantValue(new CustomPrompt());
 container.bind<OutputContract>(Binding.Output).to(ConsoleOutput);
 
 // Appliers

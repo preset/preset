@@ -5,6 +5,7 @@ export const Binding = {
   Handler: Symbol.for('handler'),
   Output: Symbol.for('output'),
   Bus: Symbol.for('bus'),
+  Prompt: Symbol.for('prompt'),
 };
 
 export const Name = {
