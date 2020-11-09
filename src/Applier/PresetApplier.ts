@@ -5,11 +5,11 @@ import { ImporterContract } from '@/Contracts/ImporterContract';
 import { Binding, container, Name } from '@/Container';
 import { Bus } from '@/bus';
 import { color, contextualizeAction, contextualizeValue } from '@/utils';
-import { ApplyPresetHandler } from '@/Handlers/ApplyPresetHandler';
 import { HandlerContract } from '@/Contracts/HandlerContract';
 import { ExecutionError } from '@/Errors';
 import simpleGit from 'simple-git';
 import fs from 'fs-extra';
+import { Action } from '@/Configuration/Action';
 
 @injectable()
 export class PresetApplier implements ApplierContract {
@@ -21,11 +21,6 @@ export class PresetApplier implements ApplierContract {
 
   @inject(Binding.Bus)
   protected bus!: Bus;
-
-  protected handlers: HandlerContract[] = [
-    container.getNamed<ApplyPresetHandler>(Binding.Handler, Name.Handler.ApplyPreset),
-    // container.getNamed<ApplyPresetHandler>(Binding.Handler, Name.Handler.ApplyPreset),
-  ];
 
   async run(applierOptions: ApplierOptionsContract): Promise<void> {
     this.bus.info(`Applying preset ${color.magenta(applierOptions.resolvable)}.`);
@@ -47,22 +42,41 @@ export class PresetApplier implements ApplierContract {
       config: (await simpleGit().listConfig()).all,
     };
 
-    // Loops through the action to find their handler and
-    // run them, in the order they have been defined.
+    // Creates a map of the actions with their handlers.
+    const actions: Map<Action, HandlerContract> = new Map();
+
+    // Validates the actions before executing them.
+    // If an action has no handler, the preset won't be applied.
     for (const uncontextualizedAction of preset.actions) {
       const action = contextualizeAction(uncontextualizedAction);
-      const handler = this.handlers.find(({ name }) => name === action.handler);
+      const handler = container.getAll<HandlerContract>(Binding.Handler).find(({ name }) => name === action.handler);
 
       if (!handler) {
-        throw new ExecutionError(`Invalid action ${color.magenta(action.constructor.name)}.`) //
+        const name = action.name ?? action.constructor.name;
+        throw new ExecutionError(`Action at index ${color.magenta(actions.size.toString())} (${color.magenta(name)}) is not valid.`) //
           .stopsExecution()
           .withoutStack();
       }
 
-      this.bus.debug(`Handling a ${color.magenta(action.constructor.name)} action.`);
-      this.bus.info(action.title as string);
+      actions.set(action, handler);
+    }
 
-      await handler?.handle(action, applierOptions);
+    // Loops through the action to find their handler and
+    // run them, in the order they have been defined.
+    for (const [action, handler] of actions) {
+      const shouldRun = !action.conditions.some((condition) => {
+        return !Boolean(contextualizeValue(condition));
+      });
+
+      if (!shouldRun) {
+        this.bus.debug(`Skipped a ${color.magenta(action.name)} because one of the conditions did not pass.`);
+        continue;
+      }
+
+      this.bus.debug(`Handling a ${color.magenta(action.name)}.`);
+      // this.bus.info(action.title as string);
+
+      await handler.handle(action, applierOptions);
     }
 
     this.bus.success(`${color.magenta(contextualizeValue(preset.name) ?? applierOptions.resolvable)} has been applied.`);

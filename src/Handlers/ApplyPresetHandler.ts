@@ -36,8 +36,6 @@ export class ApplyPresetHandler implements HandlerContract {
       ...options,
     };
 
-    console.log(forwardOptions);
-
     await container.get<ApplierContract>(Binding.Applier).run({
       ...forwardOptions,
       resolvable: <string>action.resolvable,

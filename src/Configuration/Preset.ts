@@ -1,5 +1,5 @@
 import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
-import { ApplyPreset } from './Actions';
+import { ApplyPreset, Copy } from './Actions';
 import { Action } from './Action';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { CommandLineOptions } from '@/Contracts/ApplierContract';
@@ -65,12 +65,22 @@ export class Preset implements PresetContract {
     return this;
   }
 
+  addAction<T extends Action>(action: T): T {
+    this.actions.push(action);
+    return action;
+  }
+
   /**
    * Applies the given preset.
    */
   apply(resolvable: ContextAware<string>): ApplyPreset {
-    const action = new ApplyPreset(this).apply(resolvable);
-    this.actions.push(action);
-    return action;
+    return this.addAction(new ApplyPreset(this).apply(resolvable));
+  }
+
+  /**
+   * Copies files or directory from the preset to the target directory.
+   */
+  copy(input?: ContextAware<string[]>): Copy {
+    return this.addAction(new Copy(this).from(input));
   }
 }

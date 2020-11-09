@@ -7,6 +7,7 @@ import { Name } from '@/Container';
  */
 export class ApplyPreset extends Action {
   public handler = Name.Handler.ApplyPreset;
+  public name = 'preset application';
   public title = 'Applying a preset.';
   public resolvable?: string;
   public shouldInheritArguments: boolean = true;

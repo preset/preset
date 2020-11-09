@@ -10,8 +10,8 @@ import { PresetApplier } from '@/Applier/PresetApplier';
 import { CommunityResolver, GitHubResolver, LocalResolver } from '@/Resolver/Resolvers';
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
+import { CopyHandler, ApplyPresetHandler } from '@/Handlers';
 import { Bus, bus } from '@/bus';
-import { ApplyPresetHandler } from '@/Handlers/ApplyPresetHandler';
 import { HandlerContract } from '@/Contracts/HandlerContract';
 
 /**
@@ -37,5 +37,6 @@ container.bind<ImporterContract>(Binding.Importer).to(ModuleImporter).whenTarget
 
 // Handlers
 container.bind<HandlerContract>(Binding.Handler).to(ApplyPresetHandler).whenTargetNamed(Name.Handler.ApplyPreset);
+container.bind<HandlerContract>(Binding.Handler).to(CopyHandler).whenTargetNamed(Name.Handler.Copy);
 
 export { container };

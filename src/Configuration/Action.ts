@@ -7,7 +7,8 @@ import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
  */
 export abstract class Action {
   public abstract handler: string;
-  public conditions!: ContextAware<boolean>[];
+  public abstract name: string;
+  public conditions: ContextAware<boolean>[] = [];
   public title?: ContextAware<string>;
   public preset: PresetContract;
 
@@ -24,8 +25,29 @@ export abstract class Action {
       conditions = [conditions];
     }
 
-    this.conditions = conditions;
+    this.conditions.push(...conditions);
     return this;
+  }
+
+  /**
+   * Runs the action only if the specified option is truthy.
+   */
+  ifHasOption(option: string): this {
+    return this.if(({ options }) => Boolean(options[option]));
+  }
+
+  /**
+   * Runs the action only if the specified option is falsy.
+   */
+  ifNotOption(option: string): this {
+    return this.if(({ options }) => !Boolean(options[option]));
+  }
+
+  /**
+   * Runs the action only if the --no-interaction flag is not given.
+   */
+  ifInteractive(): this {
+    return this.if(({ options }) => process.stdout.isTTY && options.interaction !== false);
   }
 
   /**
