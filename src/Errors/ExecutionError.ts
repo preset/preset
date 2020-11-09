@@ -18,7 +18,12 @@ export class ExecutionError extends Error {
   }
 
   withCompleteStack(error: Error): this {
-    this.stack = error.message + '\n' + error.stack;
+    this.stack = error.stack;
+
+    if (error.message) {
+      this.stack = `    ${error.message}\n${error.stack}`;
+    }
+
     return this;
   }
 
