@@ -61,8 +61,9 @@ export class CommandLineInterface {
     const code = await this.applier
       .run({
         resolvable,
-        target: getAbsolutePath(target),
         options,
+        target: getAbsolutePath(target),
+        args: [...args],
       })
       .then(() => 0)
       .catch((error) => {

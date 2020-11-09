@@ -1,7 +1,7 @@
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ImportError } from '@/Errors/ImportError';
 import { inject, injectable } from 'inversify';
-import { color, getPackage } from '@/utils';
+import { color, getPackage, registerPreset } from '@/utils';
 import { Binding } from '@/Container';
 import { Bus } from '@/bus';
 import { Preset as StaticPreset } from '@/Configuration/Preset';
@@ -83,6 +83,7 @@ export class ModuleImporter implements ImporterContract {
       const { code } = transformSync(script, { format: 'cjs' });
       vm.runInContext(code, context);
 
+      registerPreset(context.Preset);
       return context.Preset as StaticPreset;
     } catch (error) {
       throw ImportError.evaluationFailed(error);

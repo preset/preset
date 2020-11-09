@@ -1,10 +1,5 @@
-import { Action } from '@/Configuration/Action';
+import { Preset } from '@/Configuration/Preset';
 
-export interface PresetContract {
-  actions: Action[];
-  // options: Option[];
-}
+export interface PresetContract {}
 
-export interface ContextContract {}
-
-export type ContextAware<T> = T | ((context: ContextContract) => Promise<T>);
+export type ContextAware<T> = T | ((preset: Preset) => T);

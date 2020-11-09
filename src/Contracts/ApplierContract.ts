@@ -24,6 +24,11 @@ export interface ApplierOptionsContract {
    * List of command line options.
    */
   options: CommandLineOptions;
+
+  /**
+   * List of command line arguments.
+   */
+  args: string[];
 }
 
 export interface CommandLineOptions {

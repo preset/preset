@@ -17,6 +17,11 @@ export class ExecutionError extends Error {
     return this;
   }
 
+  withCompleteStack(error: Error): this {
+    this.stack = error.message + '\n' + error.stack;
+    return this;
+  }
+
   withStack(stack?: string): this {
     this.stack = stack;
     return this;
