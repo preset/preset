@@ -15,6 +15,6 @@ export const Name = {
 
   Handler: {
     ApplyPreset: 'apply-preset-handler',
-    Copy: 'copy-handler',
+    Extract: 'extract-handler',
   } as const,
 };

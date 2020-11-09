@@ -68,7 +68,11 @@ export class CommandLineInterface {
       })
       .then(() => 0)
       .catch((error) => {
-        this.bus.fatal(new ExecutionError(`An error occured while applying the preset.`).withCompleteStack(error).stopsExecution());
+        if (error instanceof ExecutionError) {
+          this.bus.fatal(error);
+        } else {
+          this.bus.fatal(new ExecutionError(`An error occured while applying the preset.`).withCompleteStack(error).stopsExecution());
+        }
         return 1;
       });
 

@@ -7,18 +7,18 @@ export type ConflictHandlingStrategy = 'ask' | 'override' | 'skip';
 /**
  * Copies files or directory from the preset to the target directory.
  */
-export class Copy extends Action {
-  public handler = Name.Handler.Copy;
-  public name = 'copy';
-  public title = 'Copying files.';
+export class Extract extends Action {
+  public handler = Name.Handler.Extract;
+  public name = 'extraction';
+  public title = 'Extracting templates.';
   public strategy: ContextAware<ConflictHandlingStrategy> = 'override';
-  public input: ContextAware<string[]> = [];
+  public input: ContextAware<string | string[]> = [];
   public target: ContextAware<string> = '';
 
   /**
    * Defines the files or directory to copy.
    */
-  public from(input?: ContextAware<string[]>): this {
+  public from(input?: ContextAware<string | string[]>): this {
     this.input = input ?? [];
     return this;
   }

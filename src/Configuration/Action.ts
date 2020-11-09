@@ -1,4 +1,5 @@
-import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
+import { ContextAware } from '@/Contracts/PresetContract';
+import { Preset } from './Preset';
 
 /**
  * An action to be executed by the preset.
@@ -10,9 +11,9 @@ export abstract class Action {
   public abstract name: string;
   public conditions: ContextAware<boolean>[] = [];
   public title?: ContextAware<string>;
-  public preset: PresetContract;
+  public preset: Preset;
 
-  public constructor(preset: PresetContract) {
+  public constructor(preset: Preset) {
     this.preset = preset;
     this.if(true);
   }

@@ -35,6 +35,7 @@ export class PresetApplier implements ApplierContract {
     const preset = await this.importer.import(resolved.path);
 
     // Defines the preset's context
+    preset.presetDirectory = resolved.path;
     preset.options = applierOptions.options;
     preset.args = applierOptions.args;
     preset.git = {
