@@ -1,8 +1,9 @@
 import createInterface from 'cac';
-import { ContainerModule, inject, injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract } from '@/Contracts/OutputContract';
-import { Bus, bus, outputHelp, outputVersion } from '@/bus';
+import { ExecutionError } from '@/Errors';
 import { getAbsolutePath, getPackage } from '@/utils';
+import { Bus, bus, outputHelp, outputVersion } from '@/bus';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { Binding } from '@/Container/Binding';
 
@@ -67,7 +68,7 @@ export class CommandLineInterface {
       })
       .then(() => 0)
       .catch((error) => {
-        this.bus.fatal(error);
+        this.bus.fatal(new ExecutionError(`An error occured while applying the preset.`).withCompleteStack(error).stopsExecution());
         return 1;
       });
 
