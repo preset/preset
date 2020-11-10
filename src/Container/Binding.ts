@@ -17,5 +17,6 @@ export const Name = {
   Handler: {
     ApplyPreset: 'apply-preset-handler',
     Extract: 'extract-handler',
+    ExecuteCommand: 'execute-command-handler',
   } as const,
 };

@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { Binding, container, Name } from '@/Container';
 import { ApplierContract, ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { ExecutionError } from '@/Errors';
+import { Contextualized } from '@/Contracts/PresetContract';
 import { Bus } from '@/bus';
 import createClone from 'rfdc';
 import cac from 'cac';
@@ -15,7 +16,7 @@ export class ApplyPresetHandler implements HandlerContract {
   @inject(Binding.Bus)
   protected bus!: Bus;
 
-  async handle(action: ApplyPreset, applierOptions: ApplierOptionsContract): Promise<void> {
+  async handle(action: Contextualized<ApplyPreset>, applierOptions: ApplierOptionsContract): Promise<void> {
     if (!action.resolvable) {
       throw new ExecutionError().stopsExecution().withMessage(`No resolvable specified.`);
     }
@@ -29,7 +30,7 @@ export class ApplyPresetHandler implements HandlerContract {
     }
 
     // Parses the given arguments and forward them to the preset being applied.
-    const { args, options } = cac().parse(['', '', ...(<string[]>action.args)]);
+    const { args, options } = cac().parse(['', '', ...action.args]);
     forwardOptions.args.push(...args);
     forwardOptions.options = {
       interaction: false,
@@ -38,7 +39,7 @@ export class ApplyPresetHandler implements HandlerContract {
 
     await container.get<ApplierContract>(Binding.Applier).run({
       ...forwardOptions,
-      resolvable: <string>action.resolvable,
+      resolvable: action.resolvable,
     });
   }
 }

@@ -14,6 +14,7 @@ import { ExtractHandler, ApplyPresetHandler } from '@/Handlers';
 import { HandlerContract } from '@/Contracts/HandlerContract';
 import { Prompt, CustomPrompt } from '@/prompt';
 import { Bus, bus } from '@/bus';
+import { ExecuteCommandHandler } from '@/Handlers/ExecuteCommandHandler';
 
 /**
  * The application container.
@@ -40,5 +41,6 @@ container.bind<ImporterContract>(Binding.Importer).to(ModuleImporter).whenTarget
 // Handlers
 container.bind<HandlerContract>(Binding.Handler).to(ApplyPresetHandler).whenTargetNamed(Name.Handler.ApplyPreset);
 container.bind<HandlerContract>(Binding.Handler).to(ExtractHandler).whenTargetNamed(Name.Handler.Extract);
+container.bind<HandlerContract>(Binding.Handler).to(ExecuteCommandHandler).whenTargetNamed(Name.Handler.ExecuteCommand);
 
 export { container };

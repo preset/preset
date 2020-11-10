@@ -1,5 +1,5 @@
 import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
-import { ApplyPreset, Extract } from './Actions';
+import { ApplyPreset, ExecuteCommand, Extract } from './Actions';
 import { Action } from './Action';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { CommandLineOptions } from '@/Contracts/ApplierContract';
@@ -114,5 +114,12 @@ export class Preset implements PresetContract {
    */
   extract(input: ContextAware<string | string[]> = ''): Extract {
     return this.addAction(new Extract(this).from(input));
+  }
+
+  /**
+   * Executes a shell command.
+   */
+  run(command: ContextAware<string>, ...args: string[]): ExecuteCommand {
+    return this.addAction(new ExecuteCommand(this).run(command).withArguments(args));
   }
 }
