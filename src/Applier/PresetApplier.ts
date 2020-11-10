@@ -1,15 +1,16 @@
-import { inject, injectable } from 'inversify';
 import { ApplierContract, ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { ResolverContract, ResolverResult } from '@/Contracts/ResolverContract';
-import { ImporterContract } from '@/Contracts/ImporterContract';
-import { Binding, container, Name } from '@/Container';
-import { Bus } from '@/bus';
 import { color, contextualizeAction, contextualizeValue } from '@/utils';
+import { ImporterContract } from '@/Contracts/ImporterContract';
 import { HandlerContract } from '@/Contracts/HandlerContract';
+import { Contextualized } from '@/Contracts/PresetContract';
+import { Binding, container } from '@/Container';
+import { Action } from '@/Configuration/Action';
+import { inject, injectable } from 'inversify';
 import { ExecutionError } from '@/Errors';
 import simpleGit from 'simple-git';
+import { Bus } from '@/bus';
 import fs from 'fs-extra';
-import { Action } from '@/Configuration/Action';
 
 @injectable()
 export class PresetApplier implements ApplierContract {
@@ -44,7 +45,7 @@ export class PresetApplier implements ApplierContract {
     };
 
     // Creates a map of the actions with their handlers.
-    const actions: Map<Action, HandlerContract> = new Map();
+    const actions: Map<Contextualized<Action>, HandlerContract> = new Map();
 
     // Validates the actions before executing them.
     // If an action has no handler, the preset won't be applied.
