@@ -1,15 +1,16 @@
 import { HandlerContract } from '@/Contracts/HandlerContract';
 import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
+import { Contextualized } from '@/Contracts/PresetContract';
 import { Extract } from '@/Configuration/Actions';
 import { inject, injectable } from 'inversify';
 import { Binding, Name } from '@/Container';
+import { Prompt } from '@poppinss/prompts';
 import { ExecutionError } from '@/Errors';
 import { color } from '@/utils';
 import { Bus } from '@/bus';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import path from 'path';
-import { Prompt } from '@poppinss/prompts';
 
 @injectable()
 export class ExtractHandler implements HandlerContract {
@@ -21,19 +22,19 @@ export class ExtractHandler implements HandlerContract {
   @inject(Binding.Prompt)
   protected prompt!: Prompt;
 
-  protected action!: Extract;
+  protected action!: Contextualized<Extract>;
   protected applierOptions!: ApplierOptionsContract;
 
-  async handle(action: Extract, applierOptions: ApplierOptionsContract): Promise<void> {
+  async handle(action: Contextualized<Extract>, applierOptions: ApplierOptionsContract): Promise<void> {
     if (!Array.isArray(action.input)) {
-      action.input = [action.input as string];
+      action.input = [action.input];
     }
 
     this.action = action;
     this.applierOptions = applierOptions;
 
     for (const relativeTemplateOrGlob of action.input) {
-      await this.extract(relativeTemplateOrGlob, action.target as string);
+      await this.extract(relativeTemplateOrGlob, action.target);
     }
   }
 

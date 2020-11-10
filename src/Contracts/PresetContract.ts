@@ -2,4 +2,8 @@ import { Preset } from '@/Configuration/Preset';
 
 export interface PresetContract {}
 
-export type ContextAware<T> = T | ((preset: Preset) => T);
+export type PresetAware<T = any> = (preset: Preset) => T;
+export type ContextAware<T> = T | PresetAware<T>;
+
+export type Contextualized<T> = { [k in keyof T]: ContextualizedProperty<T[k]> };
+export type ContextualizedProperty<T> = T extends ContextAware<infer U> ? U : T;

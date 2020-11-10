@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { logger } from '@poppinss/cliui';
 import { Preset } from './Configuration/Preset';
-import { ContextAware } from './Contracts/PresetContract';
+import { ContextAware, Contextualized, PresetAware } from './Contracts/PresetContract';
 
 const cache = {
   packageContent: null as any | null,
@@ -43,20 +43,27 @@ export function registerPreset(preset: Preset): void {
 }
 
 /**
+ * Checks if the value can be contextualized.
+ */
+function canBeContextualized<T>(value: ContextAware<T>): value is PresetAware<T> {
+  return Boolean((<PresetAware<T>>value).constructor && (<PresetAware<T>>value).call && (<PresetAware<T>>value).apply);
+}
+
+/**
  * Contextualizes the given context aware value.
  */
-export function contextualizeValue<T extends any>(value: ContextAware<T> | any): T {
-  if (!!(value && value.constructor && value.call && value.apply)) {
-    return value(cache.preset);
+export function contextualizeValue<T>(value: ContextAware<T>): T {
+  if (canBeContextualized(value)) {
+    return value(cache.preset!);
   }
 
-  return value;
+  return value as T;
 }
 
 /**
  * Contextualizes every contextualizable property on the given action.
  */
-export function contextualizeAction<T extends { [key: string]: any }>(action: T): T {
+export function contextualizeAction<T extends { [key: string]: any }>(action: T): Contextualized<T> {
   const result = Object.entries(action)
     .map(([name, value]) => ({ [name]: contextualizeValue(value) }))
     .reduce((acc, val) => ({ ...acc, ...val }), {});
