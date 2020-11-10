@@ -9,7 +9,7 @@ export type ConflictHandlingStrategy = 'ask' | 'override' | 'skip';
  */
 export class Extract extends Action {
   public handler = Name.Handler.Extract;
-  public name = 'extraction';
+  public name = 'template extraction';
   public title = 'Extracting templates.';
   public strategy: ContextAware<ConflictHandlingStrategy> = 'override';
   public input: ContextAware<string | string[]> = [];
