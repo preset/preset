@@ -1,8 +1,12 @@
 import path from 'path';
 import fs from 'fs-extra';
+import execa, { CommonOptions } from 'execa';
 import { logger } from '@poppinss/cliui';
 import { Preset } from './Configuration/Preset';
 import { ContextAware, Contextualized, PresetAware } from './Contracts/PresetContract';
+import { Writable } from 'stream';
+import { Binding, container } from './Container';
+import { Bus } from './bus';
 
 const cache = {
   packageContent: null as any | null,
@@ -69,6 +73,33 @@ export function contextualizeAction<T extends { [key: string]: any }>(action: T)
     .reduce((acc, val) => ({ ...acc, ...val }), {});
 
   return result as T;
+}
+
+/**
+ * Executes the given command.
+ */
+export async function execute(command: string, args: string[] = [], options: CommonOptions<'utf8'> = {}): Promise<string[]> {
+  const log: string[] = [];
+  const result = execa(command, args, {
+    all: true,
+    ...options,
+  });
+
+  result.all?.on('data', (data: Int32Array) => {
+    const bus = container.get<Bus>(Binding.Bus);
+    const lines = Buffer.from(data)
+      .toString('utf-8')
+      .split('\n')
+      .filter((line) => line.trim().length > 0);
+
+    lines.forEach((line) => {
+      log.push(line);
+      bus.debug(color.gray(line));
+    });
+  });
+
+  await result;
+  return log;
 }
 
 export const color = logger.colors;

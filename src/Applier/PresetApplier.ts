@@ -76,8 +76,7 @@ export class PresetApplier implements ApplierContract {
       }
 
       this.bus.debug(`Handling a ${color.magenta(action.name)}.`);
-      // this.bus.info(action.title as string);
-
+      this.bus.info(action.title ?? `Performing a ${color.magenta(action.name)}...`);
       await handler.handle(action, applierOptions);
     }
 

@@ -5,9 +5,8 @@ import { ExecuteCommand } from '@/Configuration/Actions';
 import { inject, injectable } from 'inversify';
 import { Binding, Name } from '@/Container';
 import { ExecutionError } from '@/Errors';
-import { color } from '@/utils';
+import { color, execute } from '@/utils';
 import { Bus } from '@/bus';
-import execa from 'execa';
 
 @injectable()
 export class ExecuteCommandHandler implements HandlerContract {
@@ -30,13 +29,7 @@ export class ExecuteCommandHandler implements HandlerContract {
 
     try {
       this.bus.debug(`Executing command: ${color.bold().gray(action.command)} ${color.gray(action.args.join(' '))}.`);
-
-      const { all } = await execa(action.command, action.args, {
-        ...action.options,
-        all: true,
-      });
-
-      all?.split('\n').forEach((line) => this.bus.debug(color.italic().gray(line)));
+      await execute(action.command, action.args, action.options);
     } catch (error) {
       throw new ExecutionError() //
         .withMessage(`An error occured while executing ${color.magenta(action.command)}.`)

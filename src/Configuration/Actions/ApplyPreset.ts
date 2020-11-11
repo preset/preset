@@ -1,5 +1,5 @@
-import { Action } from '../Action';
 import { ContextAware } from '@/Contracts/PresetContract';
+import { Action } from '../Action';
 import { Name } from '@/Container';
 
 /**
@@ -8,7 +8,7 @@ import { Name } from '@/Container';
 export class ApplyPreset extends Action {
   public handler = Name.Handler.ApplyPreset;
   public name = 'preset application';
-  public title = 'Applying a preset.';
+  public title = 'Applying a preset...';
   public resolvable?: string;
   public shouldInheritArguments: boolean = true;
   public args: string[] = [];

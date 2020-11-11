@@ -1,12 +1,12 @@
-import { Action } from '@/Configuration/Action';
-import { Name } from '@/Container';
 import { ContextAware } from '@/Contracts/PresetContract';
+import { Action } from '../Action';
 import { CommonOptions } from 'execa';
+import { Name } from '@/Container';
 
 export class ExecuteCommand extends Action {
   public handler = Name.Handler.ExecuteCommand;
   public name = 'command execution';
-  public title = 'Executing a command.';
+  public title = 'Executing a command...';
   public command?: ContextAware<string>;
   public args: ContextAware<string | string[]> = [];
   public options: ContextAware<CommonOptions<'utf8'>> = {};

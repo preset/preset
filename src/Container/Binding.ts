@@ -18,5 +18,6 @@ export const Name = {
     ApplyPreset: 'apply-preset-handler',
     Extract: 'extract-handler',
     ExecuteCommand: 'execute-command-handler',
+    InstallDependencies: 'install-dependencies-handler',
   } as const,
 };

@@ -3,6 +3,7 @@ import { ApplyPreset, ExecuteCommand, Extract } from './Actions';
 import { Action } from './Action';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { CommandLineOptions } from '@/Contracts/ApplierContract';
+import { InstallDependencies } from './Actions/InstallDependencies';
 
 interface GitContext {
   config: ConfigValues;
@@ -118,8 +119,34 @@ export class Preset implements PresetContract {
 
   /**
    * Executes a shell command.
+   *
+   * @param command The program or command to execute.
+   * @param args A list of arguments to pass to the program.
+   *
+   * @example
+   * Preset.run('echo', 'hello world')
    */
   run(command: ContextAware<string>, ...args: string[]): ExecuteCommand {
     return this.addAction(new ExecuteCommand(this).run(command).withArguments(args));
+  }
+
+  /**
+   * Installs the dependencies for the given ecosystem (defaults to Node).
+   *
+   * @example
+   * Preset.installDependencies().for('php')
+   */
+  installDependencies(): InstallDependencies {
+    return this.addAction(new InstallDependencies(this).for('node'));
+  }
+
+  /**
+   * An alias for `installDependencies`, since they are basically the same.
+   *
+   * @example
+   * Preset.updateDependencies().for('php')
+   */
+  updateDependencies(): InstallDependencies {
+    return this.installDependencies();
   }
 }

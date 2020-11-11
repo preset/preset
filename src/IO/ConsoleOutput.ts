@@ -1,9 +1,12 @@
-import { injectable } from 'inversify';
-import { bus, outputHelp, outputVersion, outputMessage, LogLevel } from '@/bus';
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
+import { bus, outputHelp, outputVersion, outputMessage, LogLevel } from '@/bus';
 import { getPackage, getVersion } from '@/utils';
 import { logger } from '@poppinss/cliui';
+import { injectable } from 'inversify';
 
+/**
+ * This stuff may be greatly improved. It's not the priority though.
+ */
 @injectable()
 export class ConsoleOutput implements OutputContract {
   protected verbosity!: Verbosity;

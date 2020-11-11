@@ -78,6 +78,7 @@ export class ModuleImporter implements ImporterContract {
         require,
         module,
         Preset: new StaticPreset(),
+        color,
       });
 
       const { code } = transformSync(script, { format: 'cjs' });
@@ -97,7 +98,10 @@ export class ModuleImporter implements ImporterContract {
     return script
       .split(/\r\n|\r|\n/)
       .filter((line) => {
-        if (['import', 'require'].some((statement) => line.includes(statement)) && line.includes(getPackage().name)) {
+        const lineImports = ['import', 'require'].some((statement) => line.includes(statement));
+        const lineMentionsImportValue = [getPackage().name, 'color'].some((imp) => line.includes(imp));
+
+        if (lineImports && lineMentionsImportValue) {
           return false;
         }
 
