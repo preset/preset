@@ -37,7 +37,7 @@ export class PresetApplier implements ApplierContract {
 
     // Defines the preset's context
     preset.presetDirectory = resolved.path;
-    preset.options = applierOptions.options;
+    preset.options = { ...preset.options, ...applierOptions.options };
     preset.args = applierOptions.args;
     preset.git = {
       instance: simpleGit(process.cwd()),

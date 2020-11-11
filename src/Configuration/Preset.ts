@@ -74,6 +74,14 @@ export class Preset implements PresetContract {
   }
 
   /**
+   * Registers a default value for an option.
+   */
+  option<T>(key: string, value?: T): this {
+    this.options[key] = value;
+    return this;
+  }
+
+  /**
    * Groups a set of instructions together.
    */
   group(callback?: PresetAware<void>): PendingGroup {
