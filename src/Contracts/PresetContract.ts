@@ -1,4 +1,4 @@
-import { Preset } from '@/Configuration/Preset';
+import { Preset } from '../Configuration/Preset';
 
 export interface PresetContract {}
 

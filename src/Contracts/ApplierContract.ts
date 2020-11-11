@@ -1,3 +1,5 @@
+import { Preset } from '@/Configuration/Preset';
+
 type PresetResolvable = string;
 
 export interface ApplierContract {
@@ -7,6 +9,11 @@ export interface ApplierContract {
    * @param preset A value that should resolve to a preset. A name, a git repository or a local path are exemples.
    */
   run(options: ApplierOptionsContract): Promise<void>;
+
+  /**
+   * Performs the actions of the preset.
+   */
+  performActions(preset: Preset, applierOptions: ApplierOptionsContract, group: boolean): Promise<void>;
 }
 
 export interface ApplierOptionsContract {

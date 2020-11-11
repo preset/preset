@@ -24,5 +24,6 @@ export const Name = {
     Delete: 'delete-handler',
     EditJson: 'edit-json-handler',
     EditEnv: 'edit-env-handler',
+    Group: 'group-handler',
   } as const,
 };

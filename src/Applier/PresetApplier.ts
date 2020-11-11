@@ -11,6 +11,7 @@ import { ExecutionError } from '@/Errors';
 import simpleGit from 'simple-git';
 import { Bus } from '@/bus';
 import fs from 'fs-extra';
+import { Preset } from '@/Configuration/Preset';
 
 @injectable()
 export class PresetApplier implements ApplierContract {
@@ -44,6 +45,22 @@ export class PresetApplier implements ApplierContract {
       config: (await simpleGit().listConfig()).all,
     };
 
+    await this.performActions(preset, applierOptions);
+    this.bus.success(`${color.magenta(contextualizeValue(preset.name) ?? applierOptions.resolvable)} has been applied.`);
+
+    // Displays instructions
+    if (preset.instructions) {
+      this.bus.instruct(preset.instructions.messages, preset.instructions.heading);
+    }
+
+    // Cleans up temporary files
+    this.cleanUp(resolved);
+  }
+
+  /**
+   * Performs the actions.
+   */
+  public async performActions(preset: Preset, applierOptions: ApplierOptionsContract, group: boolean = false): Promise<void> {
     // Creates a map of the actions with their handlers.
     const actions: Map<Contextualized<Action>, HandlerContract> = new Map();
 
@@ -76,19 +93,13 @@ export class PresetApplier implements ApplierContract {
       }
 
       this.bus.debug(`Handling a ${color.magenta(action.name)}.`);
-      this.bus.info(action.title ?? `Performing a ${color.magenta(action.name)}...`);
+
+      if (!group) {
+        this.bus.info(action.title ?? `Performing a ${color.magenta(action.name)}...`);
+      }
+
       await handler.handle(action, applierOptions);
     }
-
-    this.bus.success(`${color.magenta(contextualizeValue(preset.name) ?? applierOptions.resolvable)} has been applied.`);
-
-    // Displays instructions
-    if (preset.instructions) {
-      this.bus.instruct(preset.instructions.messages, preset.instructions.heading);
-    }
-
-    // Cleans up temporary files
-    this.cleanUp(resolved);
   }
 
   /**

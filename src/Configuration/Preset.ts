@@ -1,9 +1,8 @@
 import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
 import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages } from './Actions';
+import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages, Group } from './Actions';
 import { ConfigValues, SimpleGit } from 'simple-git';
-import { PendingGroup } from './PendingGroup';
 import { PromptOptions } from '../prompt';
 import { Action } from './Action';
 import { Instruct } from './Instruct';
@@ -65,11 +64,6 @@ export class Preset implements PresetContract {
   public args: string[] = [];
 
   /**
-   * An action from which subsequent actions will inherit properties.
-   */
-  public inheritedAction?: Action;
-
-  /**
    * Checks if the preset instance is interactive.
    */
   isInteractive(): boolean {
@@ -87,8 +81,8 @@ export class Preset implements PresetContract {
   /**
    * Groups a set of instructions together.
    */
-  group(callback?: PresetAware<void>): PendingGroup {
-    return new PendingGroup(this).commit(callback);
+  group(callback?: PresetAware<void>): Group {
+    return this.addAction(new Group(this).chain(callback));
   }
 
   /**
@@ -119,9 +113,6 @@ export class Preset implements PresetContract {
    * Adds the given action.
    */
   addAction<T extends Action>(action: T): T {
-    action.if(this.inheritedAction?.conditions ?? []);
-    action.withTitle(this.inheritedAction?.title);
-
     this.actions.push(action);
     return action;
   }

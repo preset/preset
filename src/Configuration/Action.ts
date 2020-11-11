@@ -62,7 +62,7 @@ export abstract class Action {
    * Sets the title of the action.
    */
   withTitle(title?: ContextAware<string>): this {
-    this.title ??= title;
+    this.title = title ?? this.title;
     return this;
   }
 }
