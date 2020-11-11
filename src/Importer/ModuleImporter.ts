@@ -2,10 +2,10 @@ import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ImportError } from '@/Errors/ImportError';
 import { inject, injectable } from 'inversify';
 import { color, getPackage, registerPreset } from '@/utils';
-import { Binding } from '@/Container';
-import { Bus } from '@/bus';
-import { Preset as StaticPreset } from '@/Configuration/Preset';
+import { Binding, container } from '@/Container';
+import { Preset } from '@/Configuration/Preset';
 import { transformSync } from 'esbuild';
+import { Bus } from '@/bus';
 import fs from 'fs-extra';
 import path from 'path';
 import vm from 'vm';
@@ -15,7 +15,7 @@ export class ModuleImporter implements ImporterContract {
   @inject(Binding.Bus)
   protected bus!: Bus;
 
-  async import(directory: string): Promise<StaticPreset> {
+  async import(directory: string): Promise<Preset> {
     this.bus.debug(`Importing preset at ${color.magenta(directory)}.`);
 
     const script = fs.readFileSync(this.findConfiguration(directory)).toString();
@@ -71,13 +71,13 @@ export class ModuleImporter implements ImporterContract {
   /**
    * Evaluates the configuration and returns the preset.
    */
-  protected async evaluateConfiguration(script: string): Promise<StaticPreset> {
+  protected async evaluateConfiguration(script: string): Promise<Preset> {
     try {
       const context = vm.createContext({
         exports: {},
         require,
         module,
-        Preset: new StaticPreset(),
+        Preset: container.get<Preset>(Binding.Preset),
         color,
       });
 
@@ -85,7 +85,7 @@ export class ModuleImporter implements ImporterContract {
       vm.runInContext(code, context);
 
       registerPreset(context.Preset);
-      return context.Preset as StaticPreset;
+      return context.Preset as Preset;
     } catch (error) {
       throw ImportError.evaluationFailed(error);
     }

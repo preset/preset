@@ -12,6 +12,7 @@ import { ExtractHandler, ApplyPresetHandler, ExecuteCommandHandler, InstallDepen
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
 import { HandlerContract } from '@/Contracts/HandlerContract';
+import { Preset } from '@/Configuration/Preset';
 import { Prompt, CustomPrompt } from '@/prompt';
 import { Bus, bus } from '@/bus';
 
@@ -19,6 +20,9 @@ import { Bus, bus } from '@/bus';
  * The application container.
  */
 const container = new Container();
+
+// Preset
+container.bind<Preset>(Binding.Preset).toConstantValue(new Preset());
 
 // I/O
 container.bind<Bus>(Binding.Bus).toConstantValue(bus);

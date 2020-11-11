@@ -1,5 +1,9 @@
+import { Binding, container } from '@/Container';
 import { Preset as StaticPreset } from './Configuration/Preset';
 
-export * from './Contracts/PresetContract';
 export { color } from './utils';
-export const Preset = new StaticPreset();
+
+/**
+ * The singletone configuration object.
+ */
+export const Preset = container.get<StaticPreset>(Binding.Preset);

@@ -1,9 +1,10 @@
-import { ContextAware, PresetContract } from '@/Contracts/PresetContract';
+import { ContextAware, PresetAware, PresetContract } from '@/Contracts/PresetContract';
 import { ApplyPreset, ExecuteCommand, Extract } from './Actions';
 import { Action } from './Action';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { CommandLineOptions } from '@/Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
+import { PendingGroup } from './PendingGroup';
 
 interface GitContext {
   config: ConfigValues;
@@ -56,10 +57,22 @@ export class Preset implements PresetContract {
   public args: string[] = [];
 
   /**
+   * An action from which subsequent actions will inherit properties.
+   */
+  public inheritedAction?: Action;
+
+  /**
    * Checks if the preset instance is interactive.
    */
   isInteractive(): boolean {
     return process.stdout.isTTY && this.options.interaction !== false;
+  }
+
+  /**
+   * Groups a set of instructions together.
+   */
+  group(callback?: PresetAware<void>): PendingGroup {
+    return new PendingGroup(this).commit(callback);
   }
 
   /**
@@ -82,6 +95,9 @@ export class Preset implements PresetContract {
    * Adds the given action.
    */
   addAction<T extends Action>(action: T): T {
+    action.if(this.inheritedAction?.conditions ?? []);
+    action.withTitle(this.inheritedAction?.title);
+
     this.actions.push(action);
     return action;
   }

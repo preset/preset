@@ -50,7 +50,7 @@ export function registerPreset(preset: Preset): void {
  * Checks if the value can be contextualized.
  */
 function canBeContextualized<T>(value: ContextAware<T>): value is PresetAware<T> {
-  return Boolean((<PresetAware<T>>value).constructor && (<PresetAware<T>>value).call && (<PresetAware<T>>value).apply);
+  return Boolean((<PresetAware<T>>value)?.constructor && (<PresetAware<T>>value)?.call && (<PresetAware<T>>value)?.apply);
 }
 
 /**
