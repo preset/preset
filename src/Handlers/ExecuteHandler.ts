@@ -1,7 +1,7 @@
 import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { HandlerContract } from '@/Contracts/HandlerContract';
 import { Contextualized } from '@/Contracts/PresetContract';
-import { ExecuteCommand } from '@/Configuration/Actions';
+import { Execute } from '@/Configuration/Actions';
 import { inject, injectable } from 'inversify';
 import { Binding, Name } from '@/Container';
 import { ExecutionError } from '@/Errors';
@@ -9,13 +9,13 @@ import { color, execute } from '@/utils';
 import { Bus } from '@/bus';
 
 @injectable()
-export class ExecuteCommandHandler implements HandlerContract {
-  public name = Name.Handler.ExecuteCommand;
+export class ExecuteHandler implements HandlerContract {
+  public name = Name.Handler.Execute;
 
   @inject(Binding.Bus)
   protected bus!: Bus;
 
-  async handle(action: Contextualized<ExecuteCommand>, applierOptions: ApplierOptionsContract): Promise<void> {
+  async handle(action: Contextualized<Execute>, applierOptions: ApplierOptionsContract): Promise<void> {
     if (!action.commands) {
       throw new ExecutionError() //
         .withMessage(`No command provided for the ${color.magenta('execute')} action.`)

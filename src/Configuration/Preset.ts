@@ -1,5 +1,5 @@
 import { ContextAware, PresetAware, PresetContract } from '@/Contracts/PresetContract';
-import { ApplyPreset, ExecuteCommand, Extract } from './Actions';
+import { ApplyPreset, Execute, Extract } from './Actions';
 import { Action } from './Action';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { CommandLineOptions } from '@/Contracts/ApplierContract';
@@ -140,10 +140,10 @@ export class Preset implements PresetContract {
    * @param args A list of arguments to pass to the program.
    *
    * @example
-   * Preset.run('echo', 'hello world')
+   * Preset.execute('echo', 'hello world')
    */
-  run(command: ContextAware<string>, ...args: string[]): ExecuteCommand {
-    return this.addAction(new ExecuteCommand(this).run(command).withArguments(args));
+  execute(commands: ContextAware<string | string[]>, ...args: string[]): Execute {
+    return this.addAction(new Execute(this).setCommands(commands).withArguments(args));
   }
 
   /**

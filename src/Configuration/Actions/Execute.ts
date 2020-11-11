@@ -3,8 +3,8 @@ import { Action } from '../Action';
 import { CommonOptions } from 'execa';
 import { Name } from '@/Container';
 
-export class ExecuteCommand extends Action {
-  public handler = Name.Handler.ExecuteCommand;
+export class Execute extends Action {
+  public handler = Name.Handler.Execute;
   public name = 'command execution';
   public title = 'Executing a command...';
   public commands?: ContextAware<string | string[]>;
@@ -14,7 +14,7 @@ export class ExecuteCommand extends Action {
   /**
    * Executes the given command.
    */
-  public run(commands: ContextAware<string | string[]>): this {
+  public setCommands(commands: ContextAware<string | string[]>): this {
     this.commands = commands;
     return this;
   }

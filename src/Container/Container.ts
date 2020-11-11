@@ -8,7 +8,7 @@ import { ConsoleOutput } from '@/IO/ConsoleOutput';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { PresetApplier } from '@/Applier/PresetApplier';
 import { CommunityResolver, GitHubResolver, LocalResolver } from '@/Resolver/Resolvers';
-import { ExtractHandler, ApplyPresetHandler, ExecuteCommandHandler, InstallDependenciesHandler } from '@/Handlers';
+import { ExtractHandler, ApplyPresetHandler, ExecuteHandler, InstallDependenciesHandler } from '@/Handlers';
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
 import { HandlerContract } from '@/Contracts/HandlerContract';
@@ -44,7 +44,7 @@ container.bind<ImporterContract>(Binding.Importer).to(ModuleImporter).whenTarget
 // Handlers
 container.bind<HandlerContract>(Binding.Handler).to(ApplyPresetHandler).whenTargetNamed(Name.Handler.ApplyPreset);
 container.bind<HandlerContract>(Binding.Handler).to(ExtractHandler).whenTargetNamed(Name.Handler.Extract);
-container.bind<HandlerContract>(Binding.Handler).to(ExecuteCommandHandler).whenTargetNamed(Name.Handler.ExecuteCommand);
+container.bind<HandlerContract>(Binding.Handler).to(ExecuteHandler).whenTargetNamed(Name.Handler.Execute);
 container.bind<HandlerContract>(Binding.Handler).to(InstallDependenciesHandler).whenTargetNamed(Name.Handler.InstallDependencies);
 
 export { container };
