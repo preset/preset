@@ -7,15 +7,15 @@ export class ExecuteCommand extends Action {
   public handler = Name.Handler.ExecuteCommand;
   public name = 'command execution';
   public title = 'Executing a command...';
-  public command?: ContextAware<string>;
+  public commands?: ContextAware<string | string[]>;
   public args: ContextAware<string | string[]> = [];
   public options: ContextAware<CommonOptions<'utf8'>> = {};
 
   /**
    * Executes the given command.
    */
-  public run(command: ContextAware<string>): this {
-    this.command = command;
+  public run(commands: ContextAware<string | string[]>): this {
+    this.commands = commands;
     return this;
   }
 
