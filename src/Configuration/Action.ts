@@ -31,6 +31,13 @@ export abstract class Action {
   }
 
   /**
+   * Runs the action only if the specified option equals the specified value.
+   */
+  ifOptionEquals(option: string, value?: any): this {
+    return this.if(({ options }) => options[option] === value);
+  }
+
+  /**
    * Runs the action only if the specified option is truthy.
    */
   ifHasOption(option: string): this {
