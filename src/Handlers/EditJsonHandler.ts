@@ -5,7 +5,7 @@ import { Binding, Name } from '@/Container';
 import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { Contextualized } from '@/Contracts/PresetContract';
 import { ExecutionError } from '@/Errors';
-import { color } from '@/utils';
+import { color, contextualizeValue } from '@/utils';
 import { Bus } from '@/bus';
 import fs from 'fs-extra';
 import path from 'path';
@@ -40,11 +40,18 @@ export class EditJsonHandler implements HandlerContract {
     const updated = merge(content, action.json ?? {});
 
     // Deletion
-    if (!Array.isArray(action.pathsToDelete)) {
-      action.pathsToDelete = [action.pathsToDelete];
-    }
+    action.pathsToDelete.forEach((noContextPaths) => {
+      const contextualizedPaths = contextualizeValue(noContextPaths);
+      const paths: string[] = [];
 
-    action.pathsToDelete.forEach((path) => unset(updated, path));
+      if (!Array.isArray(contextualizedPaths)) {
+        paths.push(contextualizedPaths);
+      } else {
+        paths.push(...contextualizedPaths);
+      }
+
+      paths.forEach((path) => unset(updated, contextualizeValue(path)));
+    });
 
     // Write
     this.bus.debug(`Writing back to ${color.magenta(absolutePath)}.`);
