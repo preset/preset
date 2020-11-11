@@ -21,5 +21,6 @@ export const Name = {
     Execute: 'execute-command-handler',
     InstallDependencies: 'install-dependencies-handler',
     Prompt: 'prompt-handler',
+    Delete: 'delete-handler',
   } as const,
 };

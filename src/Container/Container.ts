@@ -8,7 +8,7 @@ import { ConsoleOutput } from '@/IO/ConsoleOutput';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { PresetApplier } from '@/Applier/PresetApplier';
 import { CommunityResolver, GitHubResolver, LocalResolver } from '@/Resolver/Resolvers';
-import { ExtractHandler, ApplyPresetHandler, ExecuteHandler, InstallDependenciesHandler, PromptHandler } from '@/Handlers';
+import { ExtractHandler, ApplyPresetHandler, ExecuteHandler, InstallDependenciesHandler, PromptHandler, DeleteHandler } from '@/Handlers';
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { ModuleImporter } from '@/Importer/ModuleImporter';
 import { HandlerContract } from '@/Contracts/HandlerContract';
@@ -47,5 +47,6 @@ container.bind<HandlerContract>(Binding.Handler).to(ExtractHandler).whenTargetNa
 container.bind<HandlerContract>(Binding.Handler).to(ExecuteHandler).whenTargetNamed(Name.Handler.Execute);
 container.bind<HandlerContract>(Binding.Handler).to(InstallDependenciesHandler).whenTargetNamed(Name.Handler.InstallDependencies);
 container.bind<HandlerContract>(Binding.Handler).to(PromptHandler).whenTargetNamed(Name.Handler.Prompt);
+container.bind<HandlerContract>(Binding.Handler).to(DeleteHandler).whenTargetNamed(Name.Handler.Delete);
 
 export { container };

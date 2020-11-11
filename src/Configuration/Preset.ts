@@ -1,7 +1,7 @@
 import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
 import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Execute, Extract } from './Actions';
+import { ApplyPreset, Delete, Execute, Extract } from './Actions';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { PendingGroup } from './PendingGroup';
 import { PromptOptions } from '../prompt';
@@ -155,6 +155,13 @@ export class Preset implements PresetContract {
    */
   extract(input: ContextAware<string | string[]> = ''): Extract {
     return this.addAction(new Extract(this).from(input));
+  }
+
+  /**
+   * Deletes the given paths. They must be relative from the target directory.
+   */
+  delete(paths?: ContextAware<string | string[]>): Delete {
+    return this.addAction(new Delete(this).setPaths(paths));
   }
 
   /**
