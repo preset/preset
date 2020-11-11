@@ -1,7 +1,7 @@
 import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
 import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackage } from './Actions';
+import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages } from './Actions';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { PendingGroup } from './PendingGroup';
 import { PromptOptions } from '../prompt';
@@ -215,8 +215,15 @@ export class Preset implements PresetContract {
   /**
    * Edits the package.json file.
    */
-  editNodePackage(): EditNodePackage {
-    return this.addAction(new EditNodePackage(this)).setFile('package.json');
+  editNodePackages(): EditNodePackages {
+    return this.addAction(new EditNodePackages(this)).setFile('package.json');
+  }
+
+  /**
+   * Edits the composer.json file.
+   */
+  editPhpPackages(): EditPhpPackages {
+    return this.addAction(new EditPhpPackages(this)).setFile('composer.json');
   }
 
   /**

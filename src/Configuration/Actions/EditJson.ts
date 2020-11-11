@@ -38,7 +38,7 @@ export class EditJson extends Action {
   }
 }
 
-export class EditNodePackage extends EditJson {
+export class EditNodePackages extends EditJson {
   /**
    * Removes the given dependency from the dependency lists.
    */
@@ -98,6 +98,58 @@ export class EditNodePackage extends EditJson {
   addDev(dependency: string, version: string): this {
     this.json.devDependencies = {
       ...this.json.devDependencies,
+      [dependency]: version,
+    };
+
+    return this;
+  }
+}
+
+export class EditPhpPackages extends EditJson {
+  /**
+   * Removes the given dependency from the dependency lists.
+   */
+  remove(dependency: string): this {
+    this.pathsToDelete.push([`require.${dependency}`, `require-dev.${dependency}`]);
+    return this;
+  }
+
+  /**
+   * Sets a property path of the package.json file.
+   *
+   * @example
+   * Preset.editNodePackage()
+   *   .set('author', 'Enzo Innocenzi')
+   */
+  set(key: string, value: string): this {
+    this.json[key] = value;
+    return this;
+  }
+
+  /**
+   * Adds a dependency.
+   *
+   * @param dependency The package name.
+   * @param version The package version.
+   */
+  add(dependency: string, version: string): this {
+    this.json.require = {
+      ...this.json.require,
+      [dependency]: version,
+    };
+
+    return this;
+  }
+
+  /**
+   * Adds a dev dependency.
+   *
+   * @param dependency The package name.
+   * @param version The package version.
+   */
+  addDev(dependency: string, version: string): this {
+    this.json['require-dev'] = {
+      ...this.json['require-dev'],
       [dependency]: version,
     };
 
