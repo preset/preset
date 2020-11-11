@@ -20,5 +20,6 @@ export const Name = {
     Extract: 'extract-handler',
     Execute: 'execute-command-handler',
     InstallDependencies: 'install-dependencies-handler',
+    Prompt: 'prompt-handler',
   } as const,
 };

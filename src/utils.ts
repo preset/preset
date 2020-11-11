@@ -67,7 +67,7 @@ export function contextualizeValue<T>(value: ContextAware<T>): T {
 /**
  * Contextualizes every contextualizable property on the given action.
  */
-export function contextualizeAction<T extends { [key: string]: any }>(action: T): Contextualized<T> {
+export function contextualizeObject<T extends { [key: string]: any }>(action: T): Contextualized<T> {
   const result = Object.entries(action)
     .map(([name, value]) => ({ [name]: contextualizeValue(value) }))
     .reduce((acc, val) => ({ ...acc, ...val }), {});

@@ -1,10 +1,13 @@
-import { ContextAware, PresetAware, PresetContract } from '@/Contracts/PresetContract';
-import { ApplyPreset, Execute, Extract } from './Actions';
-import { Action } from './Action';
-import { ConfigValues, SimpleGit } from 'simple-git';
-import { CommandLineOptions } from '@/Contracts/ApplierContract';
+import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
+import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
+import { ApplyPreset, Execute, Extract } from './Actions';
+import { ConfigValues, SimpleGit } from 'simple-git';
 import { PendingGroup } from './PendingGroup';
+import { PromptOptions } from '../prompt';
+import { Prompt } from './Actions/Prompt';
+import { Action } from './Action';
+import { Instruct } from './Instruct';
 
 interface GitContext {
   config: ConfigValues;
@@ -186,29 +189,58 @@ export class Preset implements PresetContract {
   updateDependencies(): InstallDependencies {
     return this.installDependencies();
   }
-}
-
-class Instruct {
-  public heading?: string;
-  public messages: string[] = [];
 
   /**
-   * Defines the instruction table's heading.
+   * Asks the user for something.
+   *
+   * @param name The value name that will be set in the prompts property.
+   * @param message The question to ask.
+   * @param initial The default value.
+   * @param options The prompt options. https://github.com/enquirer/enquirer#prompt-options
+   *
+   * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  withHeading(heading?: string): this {
-    this.heading = heading;
-    return this;
+  input(name: string, message: ContextAware<string>, initial?: ContextAware<string>, options: Partial<PromptOptions> = {}): Prompt {
+    return this.addAction(new Prompt(this).input(name, message, initial, options));
   }
 
   /**
-   * Adds the given messages to the instruction set.
+   * Asks the user for confirmation.
+   *
+   * @param name The value name that will be set in the prompts property.
+   * @param message The question to ask.
+   * @param initial The default value.
+   * @param options The prompt options. https://github.com/enquirer/enquirer#prompt-options
+   *
+   * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  to(messages: string | string[]): this {
-    if (!Array.isArray(messages)) {
-      messages = [messages];
-    }
+  confirm(
+    name: string,
+    message: ContextAware<string>,
+    initial: ContextAware<boolean> = false,
+    options: Partial<PromptOptions> = {},
+  ): Prompt {
+    return this.addAction(new Prompt(this).confirm(name, message, initial, options));
+  }
 
-    this.messages.push(...messages);
-    return this;
+  /**
+   * Asks the user for confirmation.
+   *
+   * @param name The value name that will be set in the prompts property.
+   * @param message The question to ask.
+   * @param choices A tuple which first value is the truthy one and the second the falsy.
+   * @param initial The default value.
+   * @param options The prompt options. https://github.com/enquirer/enquirer#prompt-options
+   *
+   * @see https://github.com/enquirer/enquirer#prompt-options
+   */
+  toggle(
+    name: string,
+    message: ContextAware<string>,
+    choices: [string, string],
+    initial: ContextAware<boolean> = false,
+    options: Partial<PromptOptions> = {},
+  ): Prompt {
+    return this.addAction(new Prompt(this).toggle(name, message, choices, initial, options));
   }
 }

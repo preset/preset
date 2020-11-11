@@ -1,6 +1,6 @@
 import { ApplierContract, ApplierOptionsContract } from '@/Contracts/ApplierContract';
 import { ResolverContract, ResolverResult } from '@/Contracts/ResolverContract';
-import { color, contextualizeAction, contextualizeValue } from '@/utils';
+import { color, contextualizeObject, contextualizeValue } from '@/utils';
 import { ImporterContract } from '@/Contracts/ImporterContract';
 import { HandlerContract } from '@/Contracts/HandlerContract';
 import { Contextualized } from '@/Contracts/PresetContract';
@@ -50,7 +50,7 @@ export class PresetApplier implements ApplierContract {
     // Validates the actions before executing them.
     // If an action has no handler, the preset won't be applied.
     for (const uncontextualizedAction of preset.actions) {
-      const action = contextualizeAction(uncontextualizedAction);
+      const action = contextualizeObject(uncontextualizedAction);
       const handler = container.getAll<HandlerContract>(Binding.Handler).find(({ name }) => name === action.handler);
 
       if (!handler) {
