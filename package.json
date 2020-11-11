@@ -58,6 +58,7 @@
     "@poppinss/cliui": "^2.0.2",
     "@poppinss/prompts": "^1.1.7",
     "cac": "^6.6.1",
+    "deepmerge": "^4.2.2",
     "detect-indent": "^6.0.0",
     "enquirer": "^2.3.6",
     "esbuild": "^0.8.5",
@@ -72,6 +73,7 @@
     "simple-git": "^2.18.0",
     "tmp": "^0.2.1",
     "ts-bus": "^2.3.1",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.1",
+    "unset-value": "^1.0.0"
   }
 }

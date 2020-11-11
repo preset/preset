@@ -1,11 +1,10 @@
 import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
 import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Delete, Execute, Extract } from './Actions';
+import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson } from './Actions';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { PendingGroup } from './PendingGroup';
 import { PromptOptions } from '../prompt';
-import { Prompt } from './Actions/Prompt';
 import { Action } from './Action';
 import { Instruct } from './Instruct';
 
@@ -195,6 +194,22 @@ export class Preset implements PresetContract {
    */
   updateDependencies(): InstallDependencies {
     return this.installDependencies();
+  }
+
+  /**
+   * Edits the given JSON file.
+   *
+   * @example
+   * Preset.editJson('package.json')
+   * 	.merge({
+   * 		devDependencies: {
+   * 			tailwindcss: '^2.0'
+   * 		}
+   * 	})
+   * 	.delete(['devDependencies.bootstrap'])
+   */
+  editJson(file: ContextAware<string | 'package.json' | 'composer.json'>): EditJson {
+    return this.addAction(new EditJson(this)).setFile(file);
   }
 
   /**

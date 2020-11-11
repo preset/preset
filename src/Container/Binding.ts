@@ -22,5 +22,6 @@ export const Name = {
     InstallDependencies: 'install-dependencies-handler',
     Prompt: 'prompt-handler',
     Delete: 'delete-handler',
+    EditJson: 'edit-json-handler',
   } as const,
 };
