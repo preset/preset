@@ -5,3 +5,4 @@ export * from './InstallDependencies';
 export * from './Prompt';
 export * from './Delete';
 export * from './EditJson';
+export * from './EditEnv';

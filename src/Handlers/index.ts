@@ -5,3 +5,4 @@ export * from './InstallDependenciesHandler';
 export * from './PromptHandler';
 export * from './DeleteHandler';
 export * from './EditJsonHandler';
+export * from './EditEnvHandler';

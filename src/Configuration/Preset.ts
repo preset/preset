@@ -7,6 +7,7 @@ import { PendingGroup } from './PendingGroup';
 import { PromptOptions } from '../prompt';
 import { Action } from './Action';
 import { Instruct } from './Instruct';
+import { EditEnv, EnvironmentAware } from './Actions/EditEnv';
 
 interface GitContext {
   config: ConfigValues;
@@ -224,6 +225,20 @@ export class Preset implements PresetContract {
    */
   editPhpPackages(): EditPhpPackages {
     return this.addAction(new EditPhpPackages(this)).setFile('composer.json');
+  }
+
+  /**
+   * Updates the environment file.
+   */
+  env(file: string = '.env'): EditEnv {
+    return this.addAction(new EditEnv(this).update(file));
+  }
+
+  /**
+   * Updates the environment file with the given values.
+   */
+  setEnv(key: string, value: EnvironmentAware<string>, file: string = '.env'): EditEnv {
+    return this.env(file).set(key, value);
   }
 
   /**

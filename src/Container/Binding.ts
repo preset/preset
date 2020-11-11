@@ -23,5 +23,6 @@ export const Name = {
     Prompt: 'prompt-handler',
     Delete: 'delete-handler',
     EditJson: 'edit-json-handler',
+    EditEnv: 'edit-env-handler',
   } as const,
 };
