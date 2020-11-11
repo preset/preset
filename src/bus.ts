@@ -30,6 +30,14 @@ export const outputMessage = createEventDefinition<{
   content: string | Error;
 }>()('output:message');
 
+/**
+ * An event definition for logging a instruction messages.
+ */
+export const outputInstructions = createEventDefinition<{
+  heading?: string;
+  instructions: string[];
+}>()('output:instructions');
+
 /*
 |--------------------------------------------------------------------------
 | Bus
@@ -103,6 +111,13 @@ export class Bus {
    */
   debug(content: string | Error): this {
     return this.log('debug', content);
+  }
+
+  /**
+   * Outputs instructions.
+   */
+  instruct(instructions: string[], heading?: string): this {
+    return this.emit(outputInstructions({ heading, instructions }));
   }
 }
 

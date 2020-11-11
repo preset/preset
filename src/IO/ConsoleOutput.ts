@@ -1,7 +1,7 @@
 import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
-import { bus, outputHelp, outputVersion, outputMessage, LogLevel } from '@/bus';
+import { bus, outputHelp, outputVersion, outputMessage, LogLevel, outputInstructions } from '@/bus';
 import { getPackage, getVersion } from '@/utils';
-import { logger } from '@poppinss/cliui';
+import { logger, instructions } from '@poppinss/cliui';
 import { injectable } from 'inversify';
 
 /**
@@ -20,6 +20,21 @@ export class ConsoleOutput implements OutputContract {
     bus.on(outputVersion, this.displayVersion);
     bus.on(outputHelp, ({ payload: { options, parameters } }) => this.displayHelp(options, parameters));
     bus.on(outputMessage, ({ payload: { level, content } }) => this.log(level, content));
+
+    bus.on(outputInstructions, ({ payload: { heading, instructions: instructionMessages } }) => {
+      console.log();
+      const instructionLogger = instructions();
+
+      if (heading) {
+        instructionLogger.heading(heading);
+      }
+
+      instructionMessages //
+        .filter(Boolean)
+        .forEach((instruction) => instructionLogger.add(instruction));
+
+      instructionLogger.render();
+    });
   }
 
   protected log(level: LogLevel, content: string | Error): void {

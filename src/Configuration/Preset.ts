@@ -37,6 +37,11 @@ export class Preset implements PresetContract {
   public actions: Action[] = [];
 
   /**
+   * A set of instructions to display after the preset is installed.
+   */
+  public instructions?: Instruct;
+
+  /**
    * The prompt results.
    */
   public prompts: Map<string, any> = new Map();
@@ -73,6 +78,14 @@ export class Preset implements PresetContract {
    */
   group(callback?: PresetAware<void>): PendingGroup {
     return new PendingGroup(this).commit(callback);
+  }
+
+  /**
+   * Adds instructions to be displayed at the end of the installation of the preset.
+   */
+  instruct(messages: string | string[] = []): Instruct {
+    this.instructions = new Instruct().to(messages);
+    return this.instructions;
   }
 
   /**
@@ -164,5 +177,30 @@ export class Preset implements PresetContract {
    */
   updateDependencies(): InstallDependencies {
     return this.installDependencies();
+  }
+}
+
+class Instruct {
+  public heading?: string;
+  public messages: string[] = [];
+
+  /**
+   * Defines the instruction table's heading.
+   */
+  withHeading(heading?: string): this {
+    this.heading = heading;
+    return this;
+  }
+
+  /**
+   * Adds the given messages to the instruction set.
+   */
+  to(messages: string | string[]): this {
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
+    this.messages.push(...messages);
+    return this;
   }
 }

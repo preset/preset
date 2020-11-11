@@ -81,6 +81,13 @@ export class PresetApplier implements ApplierContract {
     }
 
     this.bus.success(`${color.magenta(contextualizeValue(preset.name) ?? applierOptions.resolvable)} has been applied.`);
+
+    // Displays instructions
+    if (preset.instructions) {
+      this.bus.instruct(preset.instructions.messages, preset.instructions.heading);
+    }
+
+    // Cleans up temporary files
     this.cleanUp(resolved);
   }
 
