@@ -1,9 +1,9 @@
 import { ImporterContract } from '@/Contracts/ImporterContract';
-import { ImportError } from '@/Errors/ImportError';
 import { inject, injectable } from 'inversify';
 import { color, getPackage, registerPreset } from '@/utils';
 import { Binding, container } from '@/Container';
 import { Preset } from '@/Configuration/Preset';
+import { ExecutionError } from '@/Errors';
 import { transformSync } from 'esbuild';
 import { Bus } from '@/bus';
 import fs from 'fs-extra';
@@ -43,7 +43,10 @@ export class ModuleImporter implements ImporterContract {
           return preset;
         }
 
-        throw ImportError.specifiedConfigurationNotFound(presetPath);
+        throw new ExecutionError()
+          .withMessage(`The specified configuration file does not exist (${color.magenta(presetPath)}).`)
+          .withoutStack()
+          .stopsExecution();
       }
     }
 
@@ -65,7 +68,10 @@ export class ModuleImporter implements ImporterContract {
       }
     }
 
-    throw ImportError.configurationNotFound(directory);
+    throw new ExecutionError()
+      .withMessage(`The configuration file could not be found (tried in ${color.magenta(directory)}).`)
+      .withoutStack()
+      .stopsExecution();
   }
 
   /**
@@ -87,7 +93,10 @@ export class ModuleImporter implements ImporterContract {
       registerPreset(context.Preset);
       return context.Preset as Preset;
     } catch (error) {
-      throw ImportError.evaluationFailed(error);
+      throw new ExecutionError() //
+        .withMessage(`The preset could not be evaluated.`)
+        .withCompleteStack(error)
+        .stopsExecution();
     }
   }
 
