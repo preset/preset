@@ -22,7 +22,7 @@ export class EditHandler implements HandlerContract {
     const relativeFileNames = wrap(action.files!)
       .map((globOrFileName) =>
         fg.sync(globOrFileName, {
-          ignore: ['node_modules', 'vendors', 'yarn.lock', 'package-lock.json'],
+          ignore: ['node_modules', 'vendors', 'yarn.lock', 'package-lock.json', '.git'],
           cwd: applierOptions.target,
           dot: true,
         }),
