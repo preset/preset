@@ -88,8 +88,10 @@ export class ExtractHandler implements HandlerContract {
 
     const entries = await fg(glob ?? '**/**', {
       dot: false, // TODO - Make this optional?
-      cwd: path.join(this.action.preset.templateDirectory, relativeInputDirectory),
+      cwd: path.join(this.action.preset.presetDirectory, this.action.preset.templateDirectory, relativeInputDirectory),
     });
+
+    this.bus.debug(`Found ${color.magenta(entries.length.toString())} entries.`);
 
     for (const relativeFilePath of entries) {
       const targetDirectory = path.join(this.applierOptions.target, relativeTargetDirectory);
