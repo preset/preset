@@ -80,6 +80,19 @@ export class Preset implements PresetContract {
 
   /**
    * Groups a set of instructions together.
+   *
+   * @example
+   * Preset.group((preset) => {
+   * 	preset.edit('AppServiceProvider.php')
+   * 		.find(/use Illuminate\\Support\\ServiceProvider;/)
+   * 		.addAfter('use Illuminate\\Pagination\\Paginator;');
+   *
+   * 	preset.edit('AppServiceProvider.php') //
+   * 		.find('public function boot')
+   * 		.addAfter('Paginator::useTailwind();')
+   * 		.withIndent('double')
+   * 		.skipLines(1);
+   * }).withTitle('Updating AppServiceProvider...');
    */
   group(callback?: PresetAware<void>): Group {
     return this.addAction(new Group(this).chain(callback));
