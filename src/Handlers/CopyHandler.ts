@@ -157,7 +157,10 @@ export class ExtractHandler implements HandlerContract {
    */
   protected renameDotFile(input: string): string {
     if (input.endsWith('.dotfile')) {
-      return `.${input.replace('.dotfile', '')}`;
+      // Input is a relative path, so the dot has to be added before the last slash.
+      return input.includes('/')
+        ? input.replace(/(.+\/)(.+).dotfile$/, (_, slash, file) => `${slash ?? ''}.${file}`)
+        : input.replace(/^(.+)\.dotfile$/, (_, file) => `.${file}`);
     }
 
     return input;
