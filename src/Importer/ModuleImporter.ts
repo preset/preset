@@ -39,8 +39,8 @@ export class ModuleImporter implements ImporterContract {
       if (preset) {
         const presetPath = path.join(directory, preset);
 
-        if (fs.existsSync(presetPath)) {
-          return preset;
+        if (fs.statSync(presetPath).isFile()) {
+          return presetPath;
         }
 
         throw new ExecutionError()
