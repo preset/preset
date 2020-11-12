@@ -9,6 +9,7 @@ import { color, contextualizeValue, wrap } from '@/utils';
 import detectIndent from 'detect-indent';
 import fs from 'fs-extra';
 import path from 'path';
+import fg from 'fast-glob';
 
 @injectable()
 export class EditHandler implements HandlerContract {
@@ -18,11 +19,19 @@ export class EditHandler implements HandlerContract {
   protected bus!: Bus;
 
   async handle(action: Contextualized<Edit>, applierOptions: ApplierOptionsContract): Promise<void> {
-    const fileNames = wrap(action.files);
+    const relativeFileNames = wrap(action.files!)
+      .map((globOrFileName) =>
+        fg.sync(globOrFileName, {
+          ignore: ['node_modules', 'vendors', 'yarn.lock', 'package-lock.json'],
+          cwd: applierOptions.target,
+          dot: true,
+        }),
+      )
+      .flat();
 
     // Loops through the given files.
-    for (const fileName of fileNames) {
-      const filePath = path.join(applierOptions.target, fileName ?? '');
+    for (const fileName of relativeFileNames) {
+      const filePath = path.join(applierOptions.target, fileName);
 
       // Ensures the file exists.
       if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {

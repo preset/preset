@@ -72,7 +72,7 @@ export class Edit extends Action {
   public additions: LineAddition[] = [];
 
   /**
-   * Defines the file to update.
+   * Defines the files to update. Supports globs, but the globs ignore node_modules, vendors, and lock files.
    */
   setFiles(files?: ContextAware<string | string[]>): this {
     this.files = files;

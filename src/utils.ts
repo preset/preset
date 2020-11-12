@@ -79,6 +79,10 @@ export function contextualizeObject<T extends { [key: string]: any }>(action: T)
  * Wraps the thing in an array if it's not already.
  */
 export function wrap<T>(thing: T | T[]): T[] {
+  if (!thing) {
+    return [];
+  }
+
   if (!Array.isArray(thing)) {
     thing = [thing];
   }
