@@ -30,7 +30,5 @@ export class PromptHandler implements HandlerContract {
         action.preset.prompts.set(name, contextualizeObject(options).initial);
       }
     }
-
-    console.log(action.preset.prompts);
   }
 }
