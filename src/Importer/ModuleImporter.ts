@@ -87,7 +87,10 @@ export class ModuleImporter implements ImporterContract {
         color,
       });
 
-      const { code } = transformSync(script, { format: 'cjs' });
+      const { code } = transformSync(script, {
+        loader: 'ts',
+        format: 'cjs',
+      });
       vm.runInContext(code, context);
 
       registerPreset(context.Preset);
