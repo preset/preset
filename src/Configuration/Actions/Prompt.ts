@@ -1,7 +1,6 @@
 import { Name } from '@/Container';
 import { ContextAware } from '@/Contracts/PresetContract';
 import { PromptOptions } from '@/prompt';
-import { color } from '@/utils';
 import { Action } from '../Action';
 
 /**
@@ -10,7 +9,7 @@ import { Action } from '../Action';
 export class Prompt extends Action {
   public handler = Name.Handler.Prompt;
   public name = 'prompt';
-  public title = 'Asking information...';
+  public title = false as false;
   public prompts: Map<string, Partial<PromptOptions>> = new Map();
 
   /**

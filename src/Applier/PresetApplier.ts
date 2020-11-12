@@ -60,7 +60,7 @@ export class PresetApplier implements ApplierContract {
   /**
    * Performs the actions.
    */
-  public async performActions(preset: Preset, applierOptions: ApplierOptionsContract, group: boolean = false): Promise<void> {
+  public async performActions(preset: Preset, applierOptions: ApplierOptionsContract): Promise<void> {
     // Creates a map of the actions with their handlers.
     const actions: Map<Contextualized<Action>, HandlerContract> = new Map();
 
@@ -94,7 +94,7 @@ export class PresetApplier implements ApplierContract {
 
       this.bus.debug(`Handling a ${color.magenta(action.name)}.`);
 
-      if (!group) {
+      if (action.title !== false) {
         this.bus.info(action.title ?? `Performing a ${color.magenta(action.name)}...`);
       }
 

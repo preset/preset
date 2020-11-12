@@ -10,7 +10,7 @@ export abstract class Action {
   public abstract handler: string;
   public abstract name: string;
   public conditions: ContextAware<boolean>[] = [];
-  public title?: ContextAware<string>;
+  public title?: ContextAware<string | false>;
   public preset: Preset;
 
   public constructor(preset: Preset) {
@@ -61,8 +61,16 @@ export abstract class Action {
   /**
    * Sets the title of the action.
    */
-  withTitle(title?: ContextAware<string>): this {
+  withTitle(title?: ContextAware<string | false>): this {
     this.title = title ?? this.title;
+    return this;
+  }
+
+  /**
+   * Hides the title of the action.
+   */
+  withoutTitle(): this {
+    this.title = false;
     return this;
   }
 }

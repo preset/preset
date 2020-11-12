@@ -30,8 +30,9 @@ export class GroupHandler implements HandlerContract {
     preset.templateDirectory = action.preset.templateDirectory;
     preset.actions = [];
     action.actions.callback(preset);
+    preset.actions.map((action) => action.withTitle(false));
 
     this.bus.debug(`Perfoming a group of ${color.magenta(String(preset.actions.length))} actions.`);
-    await container.get<ApplierContract>(Binding.Applier).performActions(preset, applierOptions, true);
+    await container.get<ApplierContract>(Binding.Applier).performActions(preset, applierOptions);
   }
 }

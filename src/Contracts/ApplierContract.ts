@@ -13,7 +13,7 @@ export interface ApplierContract {
   /**
    * Performs the actions of the preset.
    */
-  performActions(preset: Preset, applierOptions: ApplierOptionsContract, group: boolean): Promise<void>;
+  performActions(preset: Preset, applierOptions: ApplierOptionsContract): Promise<void>;
 }
 
 export interface ApplierOptionsContract {
