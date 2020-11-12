@@ -30,6 +30,7 @@ export class CommandLineInterface {
     { definition: '-p, --path [path]', description: 'The path to a sub-directory in which to look for a preset.' },
     { definition: '-h, --help', description: 'Display this help message.' },
     { definition: '--no-interaction', description: 'Disable interactions.' },
+    { definition: '--init', description: 'Initialize a preset.' },
     { definition: '-v', description: 'Define the verbosity level (eg. -vv).', type: [Boolean] },
     { definition: '--version', description: 'Display the version number.' },
   ];
@@ -54,13 +55,22 @@ export class CommandLineInterface {
       return 0;
     }
 
+    if (options.init) {
+      this.bus.debug(`Initializing a preset.`);
+      return await this.apply('presets/preset', target, options, args);
+    }
+
     if (!resolvable) {
       this.bus.fatal('The resolvable is missing. Please consult the usage below.');
       bus.emit(outputHelp({ parameters: this.parameters, options: this.options }));
       return 1;
     }
 
-    const code = await this.applier
+    return await this.apply(resolvable, target, options, args);
+  }
+
+  async apply(resolvable: string, target: string, options: Record<string, any>, args: readonly string[]): Promise<number> {
+    return await this.applier
       .run({
         resolvable,
         options,
@@ -76,8 +86,6 @@ export class CommandLineInterface {
         }
         return 1;
       });
-
-    return code;
   }
 
   /**
