@@ -46,7 +46,7 @@ export class Preset implements PresetContract {
   /**
    * The prompt results.
    */
-  public prompts: Map<string, any> = new Map();
+  public prompts: Record<string, any> = {};
 
   /**
    * The context of the preset.

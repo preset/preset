@@ -25,9 +25,9 @@ export class PromptHandler implements HandlerContract {
       this.bus.debug(`Prompting for value ${color.magenta(name)}.`);
 
       if (action.preset.isInteractive()) {
-        action.preset.prompts.set(name, await this.prompt.prompt(contextualizeObject(options)));
+        action.preset.prompts[name] = await this.prompt.prompt(contextualizeObject(options));
       } else {
-        action.preset.prompts.set(name, contextualizeObject(options).initial);
+        action.preset.prompts[name] = contextualizeObject(options).initial;
       }
     }
   }
