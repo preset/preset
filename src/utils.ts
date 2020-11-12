@@ -76,6 +76,17 @@ export function contextualizeObject<T extends { [key: string]: any }>(action: T)
 }
 
 /**
+ * Wraps the thing in an array if it's not already.
+ */
+export function wrap<T>(thing: T | T[]): T[] {
+  if (!Array.isArray(thing)) {
+    thing = [thing];
+  }
+
+  return thing;
+}
+
+/**
  * Executes the given command.
  */
 export async function execute(command: string, args: string[] = [], options: CommonOptions<'utf8'> = {}): Promise<string[]> {

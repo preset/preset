@@ -6,4 +6,5 @@ export * from './Prompt';
 export * from './Delete';
 export * from './EditJson';
 export * from './EditEnv';
+export * from './Edit';
 export * from './Group';

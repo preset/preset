@@ -1,7 +1,7 @@
 import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
 import { CommandLineOptions } from '../Contracts/ApplierContract';
 import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages, Group } from './Actions';
+import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages, Group, Edit } from './Actions';
 import { ConfigValues, SimpleGit } from 'simple-git';
 import { PromptOptions } from '../prompt';
 import { Action } from './Action';
@@ -284,5 +284,12 @@ export class Preset implements PresetContract {
     options: Partial<PromptOptions> = {},
   ): Prompt {
     return this.addAction(new Prompt(this).toggle(name, message, choices, initial, options));
+  }
+
+  /**
+   * Edits the given files.
+   */
+  edit(files: ContextAware<string | string[]>): Edit {
+    return this.addAction(new Edit(this).setFiles(files));
   }
 }

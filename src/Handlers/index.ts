@@ -6,4 +6,5 @@ export * from './PromptHandler';
 export * from './DeleteHandler';
 export * from './EditJsonHandler';
 export * from './EditEnvHandler';
+export * from './EditHandler';
 export * from './GroupHandler';

@@ -23,6 +23,7 @@ import {
   DeleteHandler,
   EditJsonHandler,
   EditEnvHandler,
+  EditHandler,
   GroupHandler,
 } from '@/Handlers';
 
@@ -60,6 +61,7 @@ container.bind<HandlerContract>(Binding.Handler).to(PromptHandler).whenTargetNam
 container.bind<HandlerContract>(Binding.Handler).to(DeleteHandler).whenTargetNamed(Name.Handler.Delete);
 container.bind<HandlerContract>(Binding.Handler).to(EditJsonHandler).whenTargetNamed(Name.Handler.EditJson);
 container.bind<HandlerContract>(Binding.Handler).to(EditEnvHandler).whenTargetNamed(Name.Handler.EditEnv);
+container.bind<HandlerContract>(Binding.Handler).to(EditHandler).whenTargetNamed(Name.Handler.Edit);
 container.bind<HandlerContract>(Binding.Handler).to(GroupHandler).whenTargetNamed(Name.Handler.Group);
 
 export { container };
