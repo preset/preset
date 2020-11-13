@@ -1,6 +1,4 @@
-import { ContextAware } from '@/Contracts/PresetContract';
-import { Name } from '@/Container';
-import { Action } from '../Action';
+import { Action, ContextAware, Name } from '@/exports';
 
 export type ConflictHandlingStrategy = 'ask' | 'override' | 'skip';
 

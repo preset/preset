@@ -1,18 +1,22 @@
-import { HandlerContract } from '@/Contracts/HandlerContract';
-import { EditJson } from '@/Configuration/Actions';
-import { inject, injectable } from 'inversify';
-import { Binding, Name } from '@/Container';
-import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
-import { Contextualized } from '@/Contracts/PresetContract';
-import { ExecutionError } from '@/Errors';
-import { color, contextualizeValue } from '@/utils';
-import { Bus } from '@/bus';
+// @ts-ignore - TODO: maybe update this
+import unset from 'unset-value';
 import fs from 'fs-extra';
 import path from 'path';
 import merge from 'deepmerge';
 import detectIndent from 'detect-indent';
-// @ts-ignore
-import unset from 'unset-value';
+import { inject, injectable } from 'inversify';
+import {
+  ApplierOptionsContract,
+  Binding,
+  Bus,
+  color,
+  Contextualized,
+  contextualizeValue,
+  EditJson,
+  ExecutionError,
+  HandlerContract,
+  Name,
+} from '@/exports';
 
 @injectable()
 export class EditJsonHandler implements HandlerContract {

@@ -1,6 +1,4 @@
-import { PresetAware } from '../../Contracts/PresetContract';
-import { Action } from '../Action';
-import { Name } from '@/Container';
+import { Action, Name, PresetAware } from '@/exports';
 
 export class Group extends Action {
   public handler = Name.Handler.Group;

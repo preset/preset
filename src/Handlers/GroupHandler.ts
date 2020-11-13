@@ -1,12 +1,17 @@
-import { HandlerContract } from '@/Contracts/HandlerContract';
-import { Group } from '@/Configuration/Actions';
 import { inject, injectable } from 'inversify';
-import { Binding, container, Name } from '@/Container';
-import { ApplierContract, ApplierOptionsContract } from '@/Contracts/ApplierContract';
-import { Contextualized } from '@/Contracts/PresetContract';
-import { Bus } from '@/bus';
-import { color } from '@/utils';
-import { Preset } from '@/Configuration/Preset';
+import {
+  ApplierContract,
+  ApplierOptionsContract,
+  Binding,
+  Bus,
+  color,
+  container,
+  Contextualized,
+  Group,
+  HandlerContract,
+  Name,
+  Preset,
+} from '@/exports';
 
 @injectable()
 export class GroupHandler implements HandlerContract {

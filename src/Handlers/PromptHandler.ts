@@ -1,12 +1,5 @@
-import { HandlerContract } from '@/Contracts/HandlerContract';
 import { inject, injectable } from 'inversify';
-import { Binding, Name } from '@/Container';
-import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
-import { Contextualized } from '@/Contracts/PresetContract';
-import { Prompt } from '@/Configuration/Actions/Prompt';
-import { PromptContract } from '@/prompt';
-import { color, contextualizeObject, contextualizeValue } from '@/utils';
-import { Bus } from '@/bus';
+import { HandlerContract, Binding, Name, Contextualized, Prompt, Bus, color, contextualizeObject, PromptContract } from '@/exports';
 
 @injectable()
 export class PromptHandler implements HandlerContract {

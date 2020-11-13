@@ -1,6 +1,4 @@
-import { GitResolverResult } from '@/Contracts/ResolverContract';
-import { ExecutionError } from '@/Errors/ExecutionError';
-import { color } from '@/utils';
+import { color, ExecutionError, GitResolverResult } from '@/exports';
 
 export class ResolutionError extends ExecutionError {
   static localSubdirectoryNotFound(subdirectory: string): ResolutionError {

@@ -1,8 +1,19 @@
-import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
-import { bus, outputHelp, outputVersion, outputMessage, LogLevel, outputInstructions } from '@/bus';
-import { getPackage, getVersion } from '@/utils';
-import { logger, instructions } from '@poppinss/cliui';
 import { injectable } from 'inversify';
+import { logger, instructions } from '@poppinss/cliui';
+import {
+  bus,
+  CommandLineInterfaceOption,
+  CommandLineInterfaceParameter,
+  getPackage,
+  getVersion,
+  LogLevel,
+  OutputContract,
+  outputHelp,
+  outputInstructions,
+  outputMessage,
+  outputVersion,
+  Verbosity,
+} from '@/exports';
 
 /**
  * This stuff may be greatly improved. It's not the priority though.

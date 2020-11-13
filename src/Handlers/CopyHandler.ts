@@ -1,16 +1,19 @@
-import { HandlerContract } from '@/Contracts/HandlerContract';
-import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
-import { Contextualized } from '@/Contracts/PresetContract';
-import { Extract } from '@/Configuration/Actions';
-import { inject, injectable } from 'inversify';
-import { Binding, Name } from '@/Container';
-import { ExecutionError } from '@/Errors';
-import { Prompt } from '@/prompt';
-import { color } from '@/utils';
-import { Bus } from '@/bus';
-import fg from 'fast-glob';
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
+import fg from 'fast-glob';
+import { injectable, inject } from 'inversify';
+import {
+  ApplierOptionsContract,
+  Binding,
+  Bus,
+  color,
+  Contextualized,
+  ExecutionError,
+  Extract,
+  HandlerContract,
+  Name,
+  PromptContract,
+} from '@/exports';
 
 @injectable()
 export class ExtractHandler implements HandlerContract {
@@ -20,7 +23,7 @@ export class ExtractHandler implements HandlerContract {
   protected bus!: Bus;
 
   @inject(Binding.Prompt)
-  protected prompt!: Prompt;
+  protected prompt!: PromptContract;
 
   protected action!: Contextualized<Extract>;
   protected applierOptions!: ApplierOptionsContract;

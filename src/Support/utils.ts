@@ -1,11 +1,8 @@
-import execa, { CommonOptions } from 'execa';
-import { ContextAware, Contextualized, PresetAware } from './Contracts/PresetContract';
-import { Binding, container } from './Container';
-import { Preset } from './Configuration/Preset';
-import { logger } from '@poppinss/cliui';
-import { Bus } from './bus';
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
+import { logger } from '@poppinss/cliui';
+import execa, { CommonOptions } from 'execa';
+import { Binding, Bus, container, ContextAware, Contextualized, Preset, PresetAware } from '@/exports';
 
 const cache = {
   packageContent: null as any | null,
@@ -27,7 +24,7 @@ export function getAbsolutePath(directory: string = process.cwd()): string {
  */
 export function getPackage(): any {
   if (!cache.packageContent) {
-    cache.packageContent = fs.readJsonSync(path.join(__dirname, '../package.json'));
+    cache.packageContent = fs.readJsonSync(path.join(__dirname, '../../package.json'));
   }
 
   return cache.packageContent;

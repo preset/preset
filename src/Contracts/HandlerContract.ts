@@ -1,6 +1,4 @@
-import { Action } from '@/Configuration/Action';
-import { ApplierOptionsContract } from './ApplierContract';
-import { Contextualized } from './PresetContract';
+import { Contextualized, ApplierOptionsContract, Action } from '@/exports';
 
 export interface HandlerContract {
   name: string;

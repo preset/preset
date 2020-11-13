@@ -1,12 +1,21 @@
+import path from 'path';
 import createInterface from 'cac';
 import { inject, injectable } from 'inversify';
-import { CommandLineInterfaceParameter, CommandLineInterfaceOption, OutputContract, Verbosity } from '@/Contracts/OutputContract';
-import { ExecutionError } from '@/Errors';
-import { getAbsolutePath, getPackage } from '@/utils';
-import { Bus, bus, outputHelp, outputVersion } from '@/bus';
-import { ApplierContract } from '@/Contracts/ApplierContract';
-import { Binding } from '@/Container/Binding';
-import path from 'path';
+import {
+  ApplierContract,
+  Binding,
+  Bus,
+  bus,
+  CommandLineInterfaceOption,
+  CommandLineInterfaceParameter,
+  ExecutionError,
+  getAbsolutePath,
+  getPackage,
+  OutputContract,
+  outputHelp,
+  outputVersion,
+  Verbosity,
+} from '@/exports';
 
 /**
  * Command line interface for applying a preset.

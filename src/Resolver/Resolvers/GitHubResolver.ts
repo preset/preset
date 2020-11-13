@@ -1,13 +1,9 @@
-import { GitResolverResult, ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
-import { ResolutionError } from '@/Errors';
-import { inject, injectable } from 'inversify';
-import { Binding } from '@/Container';
-import { Bus } from '@/bus';
-import git from 'simple-git';
 import tmp from 'tmp';
 import path from 'path';
 import fs from 'fs-extra';
-import { color } from '@/utils';
+import git from 'simple-git';
+import { injectable, inject } from 'inversify';
+import { Binding, Bus, color, GitResolverResult, ResolutionError, ResolverContract, ResolverOptions, ResolverResult } from '@/exports';
 
 @injectable()
 export class GitHubResolver implements ResolverContract {

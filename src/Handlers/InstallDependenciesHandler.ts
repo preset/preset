@@ -1,15 +1,20 @@
-import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
-import { Ecosystem, InstallDependencies } from '@/Configuration/Actions';
-import { HandlerContract } from '@/Contracts/HandlerContract';
-import { Contextualized } from '@/Contracts/PresetContract';
-import { inject, injectable } from 'inversify';
-import { Binding, Name } from '@/Container';
-import { ExecutionError } from '@/Errors';
-import { color, execute } from '@/utils';
-import { Prompt } from '@/prompt';
-import { Bus } from '@/bus';
 import path from 'path';
 import fs from 'fs-extra';
+import { injectable, inject } from 'inversify';
+import {
+  ApplierOptionsContract,
+  Binding,
+  Bus,
+  color,
+  Contextualized,
+  Ecosystem,
+  execute,
+  ExecutionError,
+  HandlerContract,
+  InstallDependencies,
+  Name,
+  PromptContract,
+} from '@/exports';
 
 interface PackageManager {
   bin: string;
@@ -26,7 +31,7 @@ export class InstallDependenciesHandler implements HandlerContract {
   protected bus!: Bus;
 
   @inject(Binding.Prompt)
-  protected prompt!: Prompt;
+  protected prompt!: PromptContract;
 
   protected applierOptions!: ApplierOptionsContract;
 

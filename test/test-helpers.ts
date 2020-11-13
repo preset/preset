@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { ApplierOptionsContract } from '@/Contracts/ApplierContract';
+import { ApplierOptionsContract } from '@/exports';
 
 export const STUB_DIRECTORY = path.join(__dirname, '__stubs__');
 export const TARGET_DIRECTORY = path.join(__dirname, '__target__');

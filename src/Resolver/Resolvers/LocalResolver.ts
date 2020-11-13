@@ -1,8 +1,7 @@
-import { ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
-import { ResolutionError } from '@/Errors';
-import { injectable } from 'inversify';
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
+import { injectable } from 'inversify';
+import { ResolutionError, ResolverContract, ResolverOptions, ResolverResult } from '@/exports';
 
 @injectable()
 export class LocalResolver implements ResolverContract {

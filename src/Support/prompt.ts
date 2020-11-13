@@ -1,13 +1,12 @@
+import Enquirer from 'enquirer';
 import { Prompt } from '@poppinss/prompts/build/src/Base';
-import enq from 'enquirer';
-import { ContextAware } from './Contracts/PresetContract';
-import { color } from './utils';
+import { ContextAware, color } from '@/exports';
 
 /**
  * Since the typings for `enquirer` package is badly broken, we
  * need to cast it to any to make it usable
  */
-const enquirer = enq as any;
+const enquirer = Enquirer as any;
 
 /**
  * Uses the `enquirer` package to prompt user for input. The `$prompt`
@@ -25,6 +24,8 @@ export class CustomPrompt extends Prompt {
 
 export interface PromptContract {
   prompt(options: any): Promise<any>;
+  toggle<Result extends any = boolean>(title: string, choices: [string, string], options?: any): Promise<Result>;
+  confirm<Result extends any = boolean>(title: string, options?: any): Promise<Result>;
 }
 
 interface BasePromptOptions {
@@ -37,8 +38,8 @@ interface BasePromptOptions {
   result?(value: string): string | Promise<string>;
   skip?: ((state: object) => boolean | Promise<boolean>) | boolean;
   validate?(value: string): boolean | Promise<boolean> | string | Promise<string>;
-  onSubmit?(name: string, value: any, prompt: enq.Prompt): boolean | Promise<boolean>;
-  onCancel?(name: string, value: any, prompt: enq.Prompt): boolean | Promise<boolean>;
+  onSubmit?(name: string, value: any, prompt: Enquirer.Prompt): boolean | Promise<boolean>;
+  onCancel?(name: string, value: any, prompt: Enquirer.Prompt): boolean | Promise<boolean>;
   stdin?: NodeJS.ReadStream;
   stdout?: NodeJS.WriteStream;
 }
@@ -118,5 +119,3 @@ export type PromptOptions =
   | NumberPromptOptions
   | SnippetPromptOptions
   | SortPromptOptions;
-
-export { Prompt };

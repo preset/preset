@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { createEventDefinition, EventBus } from 'ts-bus';
 import { BusEvent, EventCreatorFn } from 'ts-bus/types';
-import { CommandLineInterfaceParameter, CommandLineInterfaceOption } from './Contracts/OutputContract';
+import { CommandLineInterfaceParameter, CommandLineInterfaceOption } from '@/exports';
 
 /*
 |--------------------------------------------------------------------------

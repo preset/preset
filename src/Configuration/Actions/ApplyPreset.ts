@@ -1,6 +1,4 @@
-import { ContextAware } from '@/Contracts/PresetContract';
-import { Action } from '../Action';
-import { Name } from '@/Container';
+import { Action, ContextAware, Name } from '@/exports';
 
 /**
  * An action for applying another preset.

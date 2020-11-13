@@ -1,14 +1,28 @@
-import { ContextAware, PresetAware, PresetContract } from '../Contracts/PresetContract';
-import { CommandLineOptions } from '../Contracts/ApplierContract';
-import { InstallDependencies } from './Actions/InstallDependencies';
-import { ApplyPreset, Delete, Execute, Extract, Prompt, EditJson, EditNodePackages, EditPhpPackages, Group, Edit } from './Actions';
-import { ConfigValues, SimpleGit } from 'simple-git';
-import { PromptOptions } from '../prompt';
-import { Action } from './Action';
-import { Instruct } from './Instruct';
-import { EditEnv, EnvironmentAware } from './Actions/EditEnv';
 import fs from 'fs-extra';
 import path from 'path';
+import { ConfigValues, SimpleGit } from 'simple-git';
+import {
+  Action,
+  ApplyPreset,
+  CommandLineOptions,
+  ContextAware,
+  Delete,
+  Edit,
+  EditEnv,
+  EditJson,
+  EditNodePackages,
+  EditPhpPackages,
+  EnvironmentAware,
+  Execute,
+  Extract,
+  Group,
+  InstallDependencies,
+  Instruct,
+  PresetAware,
+  PresetContract,
+  Prompt,
+  PromptOptions,
+} from '@/exports';
 
 interface GitContext {
   config: ConfigValues;

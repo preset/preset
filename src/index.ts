@@ -1,6 +1,5 @@
 import { logger } from '@poppinss/cliui';
-import { container } from '@/Container';
-import { CommandLineInterface } from '@/IO/CommandLineInterface';
+import { CommandLineInterface, container } from '@/exports';
 
 container
   .resolve(CommandLineInterface)

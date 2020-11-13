@@ -1,7 +1,4 @@
-import { ContextAware } from '../../Contracts/PresetContract';
-import { Action } from '../Action';
-import { Name } from '@/Container';
-import { Preset } from '../Preset';
+import { Action, ContextAware, Name, Preset } from '@/exports';
 
 export type EditionCallback = (content: string, preset: Preset) => string;
 

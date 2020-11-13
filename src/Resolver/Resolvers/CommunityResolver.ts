@@ -1,9 +1,5 @@
-import { ResolverContract, ResolverOptions, ResolverResult } from '@/Contracts/ResolverContract';
-import { ResolutionError } from '@/Errors';
 import { injectable } from 'inversify';
-import fs from 'fs-extra';
-import path from 'path';
-import { GitHubResolver } from './GitHubResolver';
+import { GitHubResolver, ResolutionError, ResolverContract, ResolverOptions, ResolverResult } from '@/exports';
 
 /**
  * Resolves using a short syntax.

@@ -1,5 +1,4 @@
-import { ContextAware } from '@/Contracts/PresetContract';
-import { Preset } from './Preset';
+import { Preset, ContextAware } from '@/exports';
 
 /**
  * An action to be executed by the preset.
