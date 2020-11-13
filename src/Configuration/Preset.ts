@@ -7,6 +7,8 @@ import { PromptOptions } from '../prompt';
 import { Action } from './Action';
 import { Instruct } from './Instruct';
 import { EditEnv, EnvironmentAware } from './Actions/EditEnv';
+import fs from 'fs-extra';
+import path from 'path';
 
 interface GitContext {
   config: ConfigValues;
@@ -73,6 +75,20 @@ export class Preset implements PresetContract {
    */
   isInteractive(): boolean {
     return process.stdout.isTTY && this.options.interaction !== false;
+  }
+
+  /**
+   * Checks if the target directory is a Git repository.
+   */
+  isRepository(): boolean {
+    return fs.existsSync(path.join(this.targetDirectory, '.git'));
+  }
+
+  /**
+   * Checks if the target directory is empty.
+   */
+  isTargetDirectoryEmpty(): boolean {
+    return fs.readdirSync(path.join(this.targetDirectory, '.git')).length === 0;
   }
 
   /**

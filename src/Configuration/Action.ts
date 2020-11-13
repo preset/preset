@@ -59,6 +59,34 @@ export abstract class Action {
   }
 
   /**
+   * Runs the action only if the target directory is a Git repository.
+   */
+  ifRepository(): this {
+    return this.if((preset) => preset.isRepository());
+  }
+
+  /**
+   * Runs the action only if the target directory is not a Git repository.
+   */
+  ifNotRepository(): this {
+    return this.if((preset) => !preset.isRepository());
+  }
+
+  /**
+   * Runs the action only if the target directory is empty.
+   */
+  ifDirectoryEmpty(): this {
+    return this.if((preset) => preset.isTargetDirectoryEmpty());
+  }
+
+  /**
+   * Runs the action only if the target directory is not empty.
+   */
+  ifDirectoryNotEmpty(): this {
+    return this.if((preset) => !preset.isTargetDirectoryEmpty());
+  }
+
+  /**
    * Sets the title of the action.
    */
   withTitle(title?: ContextAware<string | false>): this {
