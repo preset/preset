@@ -1,12 +1,11 @@
-import path from 'path';
-import fs from 'fs-extra';
 import execa, { CommonOptions } from 'execa';
-import { logger } from '@poppinss/cliui';
-import { Preset } from './Configuration/Preset';
 import { ContextAware, Contextualized, PresetAware } from './Contracts/PresetContract';
-import { Writable } from 'stream';
 import { Binding, container } from './Container';
+import { Preset } from './Configuration/Preset';
+import { logger } from '@poppinss/cliui';
 import { Bus } from './bus';
+import fs from 'fs-extra';
+import path from 'path';
 
 const cache = {
   packageContent: null as any | null,
