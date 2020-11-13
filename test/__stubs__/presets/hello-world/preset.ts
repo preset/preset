@@ -1,3 +1,4 @@
-import { Preset } from '@/exports';
+import { Preset } from '@/api';
 
-Preset.extract();
+Preset.option('extract', true);
+Preset.extract().ifHasOption('extract');
