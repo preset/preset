@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # - name: Perform tests
-      #   run: yarn test:ci
+      - name: Perform tests
+        run: yarn test:ci
