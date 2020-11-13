@@ -54,8 +54,20 @@ export function sandboxPath(...paths: string[]): string {
   return path.join(TARGET_DIRECTORY, ...paths);
 }
 
-export function writeInSandbox(path: string, content: string): void {
+export function writeToSandbox(path: string, content: string): void {
   fs.writeFileSync(sandboxPath(path), content, { encoding: 'utf-8' });
+}
+
+export function readFromSandbox(path: string): string | undefined {
+  if (!sandboxHasFile(path)) {
+    return;
+  }
+
+  return fs.readFileSync(sandboxPath(path), { encoding: 'utf-8' });
+}
+
+export function sandboxHasFile(path: string): boolean {
+  return fs.existsSync(sandboxPath(path));
 }
 
 export async function handleInSandbox(
@@ -63,8 +75,10 @@ export async function handleInSandbox(
   action: Action,
   options: ApplierOptionsContract,
   test: (result?: any) => Promise<void> | void,
+  before?: () => Promise<void> | void,
 ) {
   return await sandbox(async () => {
+    await before?.();
     const result = await container.getNamed<HandlerContract>(Binding.Handler, handlerName).handle(contextualizeObject(action), options);
     await test(result);
   });
