@@ -42,8 +42,9 @@ export function getVersion(): string {
   return `${name}/${version} ${process.platform}-${process.arch} node-${process.version}`;
 }
 
-export function registerPreset(preset: Preset): void {
+export function registerPreset(preset: Preset): Preset {
   cache.preset = preset;
+  return preset;
 }
 
 /**
