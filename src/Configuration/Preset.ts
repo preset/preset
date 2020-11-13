@@ -28,9 +28,14 @@ export class Preset implements PresetContract {
   public templateDirectory: string = 'templates';
 
   /**
-   * The directory in which the preset is in.
+   * The directory in which the preset is.
    */
   public presetDirectory!: string;
+
+  /**
+   * The directory in which the preset is applied.
+   */
+  public targetDirectory!: string;
 
   /**
    * The list of actions.

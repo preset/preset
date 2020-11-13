@@ -38,6 +38,7 @@ export class PresetApplier implements ApplierContract {
 
     // Defines the preset's context
     preset.presetDirectory = resolved.path;
+    preset.targetDirectory = applierOptions.target;
     preset.options = { ...preset.options, ...applierOptions.options };
     preset.args = applierOptions.args;
     preset.git = {
