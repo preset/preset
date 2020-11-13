@@ -6,6 +6,7 @@ import { getAbsolutePath, getPackage } from '@/utils';
 import { Bus, bus, outputHelp, outputVersion } from '@/bus';
 import { ApplierContract } from '@/Contracts/ApplierContract';
 import { Binding } from '@/Container/Binding';
+import path from 'path';
 
 /**
  * Command line interface for applying a preset.
@@ -55,9 +56,10 @@ export class CommandLineInterface {
       return 0;
     }
 
+    // Uses a preset shipped with the CLI, in the "init" directory at the root
     if (options.init) {
       this.bus.debug(`Initializing a preset.`);
-      return await this.apply('presets/preset', target, options, args);
+      return await this.apply(path.join(__dirname, '..', '..', 'init'), target, options, args);
     }
 
     if (!resolvable) {
