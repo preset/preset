@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Binding, Bus, Contextualized, Hook, HandlerContract, Name } from '@/exports';
 import { color, contextualizeValue, wrap } from '@/Support/utils';
+import { ExecutionError } from '@/Errors/ExecutionError';
 
 @injectable()
 export class HookHandler implements HandlerContract {
@@ -15,7 +16,14 @@ export class HookHandler implements HandlerContract {
 
     for (const hook of hooks) {
       this.bus.debug(`Running callabck #${color.magenta(hooks.indexOf(hook).toString())}.`);
-      await contextualizeValue(hook).callback?.(action.preset);
+      try {
+        await contextualizeValue(hook).callback?.(action.preset);
+      } catch (error) {
+        throw new ExecutionError() //
+          .withMessage(error.message)
+          .withoutStack()
+          .stopsExecution();
+      }
     }
   }
 }
