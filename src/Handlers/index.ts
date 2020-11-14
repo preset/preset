@@ -1,5 +1,5 @@
 export * from './ApplyPresetHandler';
-export * from './CopyHandler';
+export * from './ExtractHandler';
 export * from './DeleteHandler';
 export * from './EditEnvHandler';
 export * from './EditHandler';
