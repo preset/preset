@@ -105,6 +105,7 @@ export async function execute(command: string, args: string[] = [], options: Com
       .filter((line) => line.trim().length > 0);
 
     lines.forEach((line) => {
+      line = line.replace('\r', '');
       log.push(line);
       bus.debug(color.gray(line));
     });
