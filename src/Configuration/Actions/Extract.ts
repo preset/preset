@@ -5,18 +5,18 @@ export type ConflictHandlingStrategy = 'ask' | 'override' | 'skip';
 /**
  * Copies files or directory from the preset to the target directory.
  */
-export class Extract extends Action {
+export class Extract<Context = any> extends Action {
   public handler = Name.Handler.Extract;
   public name = 'template extraction';
   public title = 'Extracting templates...';
-  public strategy: ContextAware<ConflictHandlingStrategy> = 'override';
-  public input: ContextAware<string | string[]> = [];
-  public target: ContextAware<string> = '';
+  public strategy: ContextAware<ConflictHandlingStrategy, Context> = 'override';
+  public input: ContextAware<string | string[], Context> = [];
+  public target: ContextAware<string, Context> = '';
 
   /**
    * Defines the files or directory to copy.
    */
-  public from(input?: ContextAware<string | string[]>): this {
+  public from(input?: ContextAware<string | string[], Context>): Extract<Context> {
     this.input = input ?? [];
     return this;
   }
@@ -24,7 +24,7 @@ export class Extract extends Action {
   /**
    * Defines the target directory.
    */
-  public to(target: ContextAware<string>): this {
+  public to(target: ContextAware<string, Context>): Extract<Context> {
     this.target = target;
     return this;
   }
@@ -35,7 +35,7 @@ export class Extract extends Action {
    * - skip: Will skip these files.
    * - override: Will override these files.
    */
-  public whenConflict(strategy: ContextAware<ConflictHandlingStrategy>): this {
+  public whenConflict(strategy: ContextAware<ConflictHandlingStrategy, Context>): Extract<Context> {
     this.strategy = strategy;
     return this;
   }

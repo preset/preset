@@ -12,6 +12,7 @@ import {
   ExecutionError,
   HandlerContract,
   Name,
+  wrap,
 } from '@/exports';
 
 @injectable()
@@ -35,7 +36,7 @@ export class ApplyPresetHandler implements HandlerContract {
     }
 
     // Parses the given arguments and forward them to the preset being applied.
-    const { args, options } = cac().parse(['', '', ...action.args]);
+    const { args, options } = cac().parse(['', '', ...wrap(action.args)]);
     forwardOptions.args.push(...args);
     forwardOptions.options = {
       interaction: false,

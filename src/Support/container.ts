@@ -14,6 +14,7 @@ import {
   ExtractHandler,
   GitHubResolver,
   GroupHandler,
+  HookHandler,
   InstallDependenciesHandler,
   LocalResolver,
   ModuleImporter,
@@ -60,5 +61,6 @@ container.bind(Binding.Handler).to(EditJsonHandler).whenTargetNamed(Name.Handler
 container.bind(Binding.Handler).to(EditEnvHandler).whenTargetNamed(Name.Handler.EditEnv);
 container.bind(Binding.Handler).to(EditHandler).whenTargetNamed(Name.Handler.Edit);
 container.bind(Binding.Handler).to(GroupHandler).whenTargetNamed(Name.Handler.Group);
+container.bind(Binding.Handler).to(HookHandler).whenTargetNamed(Name.Handler.Hook);
 
 export { container };

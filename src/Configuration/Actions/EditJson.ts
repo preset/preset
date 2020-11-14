@@ -3,18 +3,18 @@ import { Action, ContextAware, Name } from '@/exports';
 /**
  * An action for editing a JSON file.
  */
-export class EditJson extends Action {
+export class EditJson<Context = any> extends Action {
   public handler = Name.Handler.EditJson;
   public name = 'JSON file edition';
   public title = 'Updating JSON file...';
-  public file?: ContextAware<string>;
-  public json: ContextAware<any> = {};
-  public pathsToDelete: ContextAware<string | string[]>[] = [];
+  public file?: ContextAware<string, Context>;
+  public json: ContextAware<any, Context> = {};
+  public pathsToDelete: ContextAware<string | string[], Context>[] = [];
 
   /**
    * Sets the path to the file that will be edited.
    */
-  setFile(file: ContextAware<string | 'package.json' | 'composer.json'>): this {
+  setFile(file: ContextAware<string | 'package.json' | 'composer.json', Context>): this {
     this.file = file;
     return this;
   }
@@ -22,7 +22,7 @@ export class EditJson extends Action {
   /**
    * Deeply merges the given content into the JSON file.
    */
-  merge(json: ContextAware<any> = {}): this {
+  merge(json: ContextAware<any, Context> = {}): EditJson<Context> {
     this.json = json;
     return this;
   }
@@ -30,7 +30,7 @@ export class EditJson extends Action {
   /**
    * Deletes the given paths from the JSON file.
    */
-  delete(paths: ContextAware<string | string[]>): this {
+  delete(paths: ContextAware<string | string[], Context>): EditJson<Context> {
     this.pathsToDelete.push(paths);
     return this;
   }

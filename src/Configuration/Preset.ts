@@ -16,6 +16,8 @@ import {
   Execute,
   Extract,
   Group,
+  HookCallback,
+  Hook,
   InstallDependencies,
   Instruct,
   PresetAware,
@@ -32,7 +34,7 @@ interface GitContext {
 /**
  * Create a preset.
  */
-export class Preset implements PresetContract {
+export class Preset<CustomContext = any> implements PresetContract {
   /**
    * The preset's name.
    */
@@ -85,6 +87,11 @@ export class Preset implements PresetContract {
   public args: string[] = [];
 
   /**
+   * A special object meant to save whatever the preset developer needs.
+   */
+  public context?: CustomContext;
+
+  /**
    * Checks if the preset instance is interactive.
    */
   isInteractive(): boolean {
@@ -129,14 +136,14 @@ export class Preset implements PresetContract {
    * 		.skipLines(1);
    * }).withTitle('Updating AppServiceProvider...');
    */
-  group(callback?: PresetAware<void>): Group {
+  group<Context = CustomContext>(callback?: PresetAware<void, Context>): Group<Context> {
     return this.addAction(new Group(this).chain(callback));
   }
 
   /**
    * Adds instructions to be displayed at the end of the installation of the preset.
    */
-  instruct(messages: string | string[] = []): Instruct {
+  instruct<Context = CustomContext>(messages: ContextAware<string | string[]> = []): Instruct<Context> {
     this.instructions = new Instruct().to(messages);
     return this.instructions;
   }
@@ -144,7 +151,7 @@ export class Preset implements PresetContract {
   /**
    * Sets the name of the preset.
    */
-  setName(name: ContextAware<string>): this {
+  setName<Context = CustomContext>(name: ContextAware<string, Context>): this {
     this.name = name as string;
     return this;
   }
@@ -152,7 +159,7 @@ export class Preset implements PresetContract {
   /**
    * Sets the template directory.
    */
-  setTemplateDirectory(templateDirectory: ContextAware<string>): this {
+  setTemplateDirectory<Context = CustomContext>(templateDirectory: ContextAware<string, Context>): this {
     this.templateDirectory = templateDirectory as string;
     return this;
   }
@@ -172,7 +179,7 @@ export class Preset implements PresetContract {
    * // Applies the Laravel "tailwindcss" community preset
    * Preset.apply('laravel:tailwindcss')
    */
-  apply(resolvable: ContextAware<string>): ApplyPreset {
+  apply<Context = CustomContext>(resolvable: ContextAware<string, Context>): ApplyPreset<Context> {
     return this.addAction(new ApplyPreset(this).apply(resolvable));
   }
 
@@ -192,14 +199,14 @@ export class Preset implements PresetContract {
    * // extracts gitignore.dotfile to target's root as .gitignore
    * Preset.extract('gitignore.dotfile')
    */
-  extract(input: ContextAware<string | string[]> = ''): Extract {
+  extract<Context = CustomContext>(input: ContextAware<string | string[], Context> = ''): Extract<Context> {
     return this.addAction(new Extract(this).from(input));
   }
 
   /**
    * Deletes the given paths. They must be relative from the target directory.
    */
-  delete(paths?: ContextAware<string | string[]>): Delete {
+  delete<Context = CustomContext>(paths?: ContextAware<string | string[], Context>): Delete<Context> {
     return this.addAction(new Delete(this).setPaths(paths));
   }
 
@@ -212,8 +219,15 @@ export class Preset implements PresetContract {
    * @example
    * Preset.execute('echo', 'hello world')
    */
-  execute(command: ContextAware<string>, ...args: string[]): Execute {
+  execute<Context = CustomContext>(command: ContextAware<string, Context>, ...args: string[]): Execute<Context> {
     return this.addAction(new Execute(this).run(command).withArguments(args));
+  }
+
+  /**
+   * Executes a custom command. Useful for storing custom context.
+   */
+  hook<Context = CustomContext>(callback: HookCallback<Context>): Hook<Context> {
+    return this.addAction(new Hook(this).run(callback));
   }
 
   /**
@@ -222,7 +236,7 @@ export class Preset implements PresetContract {
    * @example
    * Preset.installDependencies().for('php')
    */
-  installDependencies(): InstallDependencies {
+  installDependencies<Context = CustomContext>(): InstallDependencies<Context> {
     return this.addAction(new InstallDependencies(this).for('node'));
   }
 
@@ -232,7 +246,7 @@ export class Preset implements PresetContract {
    * @example
    * Preset.updateDependencies().for('php')
    */
-  updateDependencies(): InstallDependencies {
+  updateDependencies<Context = CustomContext>(): InstallDependencies<Context> {
     return this.installDependencies();
   }
 
@@ -248,7 +262,7 @@ export class Preset implements PresetContract {
    * 	})
    * 	.delete(['devDependencies.bootstrap'])
    */
-  editJson(file: ContextAware<string | 'package.json' | 'composer.json'>): EditJson {
+  editJson<Context = CustomContext>(file: ContextAware<string | 'package.json' | 'composer.json', Context>): EditJson<Context> {
     return this.addAction(new EditJson(this)).setFile(file);
   }
 
@@ -269,14 +283,18 @@ export class Preset implements PresetContract {
   /**
    * Updates the environment file.
    */
-  env(file: string = '.env'): EditEnv {
+  env<Context = CustomContext>(file: ContextAware<string, Context> = '.env'): EditEnv<Context> {
     return this.addAction(new EditEnv(this).update(file));
   }
 
   /**
    * Updates the environment file with the given values.
    */
-  setEnv(key: string, value: EnvironmentAware<string>, file: string = '.env'): EditEnv {
+  setEnv<Context = CustomContext>(
+    key: string,
+    value: EnvironmentAware<string>,
+    file: ContextAware<string, Context> = '.env',
+  ): EditEnv<Context> {
     return this.env(file).set(key, value);
   }
 
@@ -290,7 +308,12 @@ export class Preset implements PresetContract {
    *
    * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  input(name: string, message: ContextAware<string>, initial?: ContextAware<string>, options: Partial<PromptOptions> = {}): Prompt {
+  input<Context = CustomContext>(
+    name: string,
+    message: ContextAware<string, Context>,
+    initial?: ContextAware<string, Context>,
+    options: Partial<PromptOptions> = {},
+  ): Prompt<Context> {
     return this.addAction(new Prompt(this).input(name, message, initial, options));
   }
 
@@ -304,12 +327,12 @@ export class Preset implements PresetContract {
    *
    * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  confirm(
+  confirm<Context = CustomContext>(
     name: string,
-    message: ContextAware<string>,
-    initial: ContextAware<boolean> = false,
+    message: ContextAware<string, Context>,
+    initial: ContextAware<boolean, Context> = false,
     options: Partial<PromptOptions> = {},
-  ): Prompt {
+  ): Prompt<Context> {
     return this.addAction(new Prompt(this).confirm(name, message, initial, options));
   }
 
@@ -324,20 +347,20 @@ export class Preset implements PresetContract {
    *
    * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  toggle(
+  toggle<Context = CustomContext>(
     name: string,
-    message: ContextAware<string>,
+    message: ContextAware<string, Context>,
     choices: [string, string],
-    initial: ContextAware<boolean> = false,
+    initial: ContextAware<boolean, Context> = false,
     options: Partial<PromptOptions> = {},
-  ): Prompt {
+  ): Prompt<Context> {
     return this.addAction(new Prompt(this).toggle(name, message, choices, initial, options));
   }
 
   /**
    * Edits the given files.
    */
-  edit(files: ContextAware<string | string[]>): Edit {
+  edit<Context = CustomContext>(files: ContextAware<string | string[], Context>): Edit<Context> {
     return this.addAction(new Edit(this).setFiles(files));
   }
 }

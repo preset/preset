@@ -18,6 +18,7 @@ import {
   Preset,
   ResolverContract,
   ResolverResult,
+  wrap,
 } from '@/exports';
 
 @injectable()
@@ -60,7 +61,7 @@ export class PresetApplier implements ApplierContract {
 
     // Displays instructions
     if (preset.instructions) {
-      this.bus.instruct(preset.instructions.messages, preset.instructions.heading);
+      this.bus.instruct(wrap(contextualizeValue(preset.instructions.messages)), contextualizeValue(preset.instructions.heading));
     }
 
     // Cleans up temporary files

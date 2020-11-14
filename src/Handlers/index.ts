@@ -8,3 +8,4 @@ export * from './ExecuteHandler';
 export * from './GroupHandler';
 export * from './InstallDependenciesHandler';
 export * from './PromptHandler';
+export * from './HookHandler';

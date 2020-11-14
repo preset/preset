@@ -5,18 +5,18 @@ export type EnvironmentAware<T> = ((env: Record<string, string>) => T) | T;
 /**
  * An action for updating a dotenv file.
  */
-export class EditEnv extends Action {
+export class EditEnv<Context = any> extends Action {
   public handler = Name.Handler.EditEnv;
   public name = 'modification of environment files';
   public title = 'Updating environment files...';
-  public file: ContextAware<string> = '.env';
+  public file: ContextAware<string, Context> = '.env';
   public setters: Map<string, EnvironmentAware<string>> = new Map();
-  public shouldCreate: ContextAware<boolean> = true;
+  public shouldCreate: ContextAware<boolean, Context> = true;
 
   /**
    * Defines the environment file to update.
    */
-  update(file: ContextAware<string>): this {
+  update(file: ContextAware<string, Context>): EditEnv<Context> {
     this.file = file;
     return this;
   }
@@ -24,7 +24,7 @@ export class EditEnv extends Action {
   /**
    * Creates the specified environent file if it's missing.
    */
-  createIfMissing(shouldCreate: ContextAware<boolean> = true): this {
+  createIfMissing(shouldCreate: ContextAware<boolean, Context> = true): EditEnv<Context> {
     this.shouldCreate = shouldCreate;
     return this;
   }
@@ -32,7 +32,7 @@ export class EditEnv extends Action {
   /**
    * Do not create the file if it's missing.
    */
-  skipIfMissing(): this {
+  skipIfMissing(): EditEnv<Context> {
     this.shouldCreate = false;
     return this;
   }
@@ -43,7 +43,7 @@ export class EditEnv extends Action {
    * @example
    * Preset.setEnv('APP_URL', (env) => env.APP_URL.replace('http:', 'https:')));
    */
-  set(key: string, value: EnvironmentAware<string>): this {
+  set(key: string, value: EnvironmentAware<string>): EditEnv<Context> {
     this.setters.set(key, value);
     return this;
   }

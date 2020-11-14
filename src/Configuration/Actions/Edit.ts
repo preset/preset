@@ -2,19 +2,19 @@ import { Action, ContextAware, Name, Preset } from '@/exports';
 
 export type EditionCallback = (content: string, preset: Preset) => string;
 
-export class LineAddition {
+export class LineAddition<Context = any> {
   public direction: 'above' | 'below' = 'above';
   public amountOfLinesToSkip: ContextAware<number> = 0;
-  public search?: ContextAware<string | RegExp>;
-  public content: ContextAware<string | string[]> = [];
-  public indent?: ContextAware<number | string | 'double'>;
+  public search?: ContextAware<string | RegExp, Context>;
+  public content: ContextAware<string | string[], Context> = [];
+  public indent?: ContextAware<number | string | 'double', Context>;
 
   /**
    * Sets the term of the search.
    *
    * @param search The search term. Can be a string or a regular expression.
    */
-  find(search?: ContextAware<string | RegExp>): this {
+  find(search?: ContextAware<string | RegExp, Context>): LineAddition<Context> {
     this.search = search;
     return this;
   }
@@ -22,7 +22,7 @@ export class LineAddition {
   /**
    * Sets the direction in which to add the content.
    */
-  setDirection(position: 'above' | 'below'): this {
+  setDirection(position: 'above' | 'below'): LineAddition<Context> {
     this.direction = position;
     return this;
   }
@@ -30,7 +30,7 @@ export class LineAddition {
   /**
    * Skips the given amount of lines before adding the content.
    */
-  skipLines(amountOfLinesToSkip: ContextAware<number>): this {
+  skipLines(amountOfLinesToSkip: ContextAware<number, Context>): LineAddition<Context> {
     this.amountOfLinesToSkip = amountOfLinesToSkip;
     return this;
   }
@@ -38,7 +38,7 @@ export class LineAddition {
   /**
    * Defines the content to add.
    */
-  setContent(content: ContextAware<string | string[]>): this {
+  setContent(content: ContextAware<string | string[], Context>): LineAddition<Context> {
     this.content = content;
     return this;
   }
@@ -50,7 +50,7 @@ export class LineAddition {
    * - number: use the given amount of spaces
    * - string: use the given string to indent
    */
-  withIndent(indent: ContextAware<number | string | 'double'>): this {
+  withIndent(indent: ContextAware<number | string | 'double', Context>): LineAddition<Context> {
     this.indent = indent;
     return this;
   }
@@ -59,19 +59,19 @@ export class LineAddition {
 /**
  * An action for updating a dotenv file.
  */
-export class Edit extends Action {
+export class Edit<Context = any> extends Action {
   public handler = Name.Handler.Edit;
   public name = 'modification of a file';
   public title = 'Updating files...';
-  public files?: ContextAware<string | string[]>;
-  public search?: ContextAware<string | RegExp>;
+  public files?: ContextAware<string | string[], Context>;
+  public search?: ContextAware<string | RegExp, Context>;
   public edition: EditionCallback[] = [];
   public additions: LineAddition[] = [];
 
   /**
    * Defines the files to update. Supports globs, but the globs ignore node_modules, vendors, and lock files.
    */
-  setFiles(files?: ContextAware<string | string[]>): this {
+  setFiles(files?: ContextAware<string | string[], Context>): Edit<Context> {
     this.files = files;
     return this;
   }
@@ -81,7 +81,7 @@ export class Edit extends Action {
    *
    * @param search The search term. Can be a string or a regular expression.
    */
-  find(search: ContextAware<string | RegExp>): this {
+  find(search: ContextAware<string | RegExp, Context>): Edit<Context> {
     this.search = search;
     return this;
   }
@@ -89,7 +89,7 @@ export class Edit extends Action {
   /**
    * Updates the file content with the given callback.
    */
-  update(callback: EditionCallback): this {
+  update(callback: EditionCallback): Edit<Context> {
     this.edition.push(callback);
     return this;
   }
@@ -103,7 +103,7 @@ export class Edit extends Action {
    * 		namespace: options.namespace
    * 	}))
    */
-  replaceVariables(replacer: ContextAware<Record<string, string>>): this {
+  replaceVariables(replacer: ContextAware<Record<string, string>, Context>): Edit<Context> {
     this.edition.push((content, preset) => {
       if (typeof replacer === 'function') {
         replacer = replacer?.(preset);
@@ -122,7 +122,7 @@ export class Edit extends Action {
   /**
    * Adds the given content after the match.
    */
-  addAfter(content: ContextAware<string | string[]>): LineAddition {
+  addAfter(content: ContextAware<string | string[], Context>): LineAddition {
     const addition = new LineAddition() //
       .find(this.search)
       .setContent(content)
@@ -136,7 +136,7 @@ export class Edit extends Action {
   /**
    * Adds the given content before the match.
    */
-  addBefore(content: ContextAware<string | string[]>): LineAddition {
+  addBefore(content: ContextAware<string | string[], Context>): LineAddition {
     const addition = new LineAddition() //
       .find(this.search)
       .setContent(content)

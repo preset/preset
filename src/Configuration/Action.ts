@@ -5,11 +5,11 @@ import { Preset, ContextAware } from '@/exports';
  *
  * @todo interactions
  */
-export abstract class Action {
+export abstract class Action<Context = any> {
   public abstract handler: string;
   public abstract name: string;
-  public conditions: ContextAware<boolean>[] = [];
-  public title?: ContextAware<string | false>;
+  public conditions: ContextAware<boolean, Context>[] = [];
+  public title?: ContextAware<string | false, Context>;
   public preset: Preset;
 
   public constructor(preset: Preset) {
@@ -20,7 +20,7 @@ export abstract class Action {
   /**
    * Defines the condition required for the action to be run.
    */
-  if(conditions: ContextAware<boolean> | ContextAware<boolean>[]): this {
+  if(conditions: ContextAware<boolean, Context> | ContextAware<boolean, Context>[]): this {
     if (!Array.isArray(conditions)) {
       conditions = [conditions];
     }
@@ -88,7 +88,7 @@ export abstract class Action {
   /**
    * Sets the title of the action.
    */
-  withTitle(title?: ContextAware<string | false>): this {
+  withTitle(title?: ContextAware<string | false, Context>): this {
     this.title = title ?? this.title;
     return this;
   }

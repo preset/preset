@@ -26,5 +26,6 @@ export const Name = {
     EditEnv: 'edit-env-handler',
     Edit: 'edit-handler',
     Group: 'group-handler',
+    Hook: 'hook-handler',
   } as const,
 };

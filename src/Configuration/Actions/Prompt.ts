@@ -3,7 +3,7 @@ import { Action, ContextAware, Name, PromptOptions } from '@/exports';
 /**
  * Prompts the user for information.
  */
-export class Prompt extends Action {
+export class Prompt<Context = any> extends Action {
   public handler = Name.Handler.Prompt;
   public name = 'prompt';
   public title = false as false;
@@ -17,7 +17,7 @@ export class Prompt extends Action {
    *
    * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  public add(name: string, options: Partial<PromptOptions> = {}): this {
+  public add(name: string, options: Partial<PromptOptions> = {}): Prompt<Context> {
     this.prompts.set(name, options);
     return this;
   }
@@ -32,7 +32,12 @@ export class Prompt extends Action {
    *
    * @see https://github.com/enquirer/enquirer#prompt-options
    */
-  input(name: string, message: ContextAware<string>, initial?: ContextAware<string>, options: Partial<PromptOptions> = {}): Prompt {
+  input(
+    name: string,
+    message: ContextAware<string, Context>,
+    initial?: ContextAware<string, Context>,
+    options: Partial<PromptOptions> = {},
+  ): Prompt<Context> {
     return this.add(name, {
       type: 'input',
       initial,
@@ -53,10 +58,10 @@ export class Prompt extends Action {
    */
   confirm(
     name: string,
-    message: ContextAware<string>,
-    initial: ContextAware<boolean> = false,
+    message: ContextAware<string, Context>,
+    initial: ContextAware<boolean, Context> = false,
     options: Partial<PromptOptions> = {},
-  ): Prompt {
+  ): Prompt<Context> {
     return this.add(name, {
       type: 'confirm',
       initial,
@@ -78,11 +83,11 @@ export class Prompt extends Action {
    */
   toggle(
     name: string,
-    message: ContextAware<string>,
+    message: ContextAware<string, Context>,
     choices: [string, string],
-    initial: ContextAware<boolean> = false,
+    initial: ContextAware<boolean, Context> = false,
     options: Partial<PromptOptions> = {},
-  ): Prompt {
+  ): Prompt<Context> {
     return this.add(name, {
       // @ts-ignore // I have no clue
       type: 'toggle',

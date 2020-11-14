@@ -1,18 +1,18 @@
 import { CommonOptions } from 'execa';
 import { Action, ContextAware, Name } from '@/exports';
 
-export class Execute extends Action {
+export class Execute<Context = any> extends Action<Context> {
   public handler = Name.Handler.Execute;
   public name = 'command execution';
   public title = 'Executing a command...';
   public command?: ContextAware<string>;
-  public args: ContextAware<string | string[]> = [];
-  public options: ContextAware<CommonOptions<'utf8'>> = {};
+  public args: ContextAware<string | string[], Context> = [];
+  public options: ContextAware<CommonOptions<'utf8'>, Context> = {};
 
   /**
    * Executes the given command.
    */
-  public run(command: ContextAware<string>): this {
+  public run(command: ContextAware<string, Context>): Execute<Context> {
     this.command = command;
     return this;
   }
@@ -20,7 +20,7 @@ export class Execute extends Action {
   /**
    * Defines the command line arguments to pass to the command.
    */
-  public withArguments(args: ContextAware<string | string[]>): this {
+  public withArguments(args: ContextAware<string | string[], Context>): Execute<Context> {
     this.args = args;
     return this;
   }
@@ -30,7 +30,7 @@ export class Execute extends Action {
    *
    * @see https://github.com/sindresorhus/execa#options
    */
-  public withOptions(options: ContextAware<CommonOptions<'utf8'>>): this {
+  public withOptions(options: ContextAware<CommonOptions<'utf8'>, Context>): Execute<Context> {
     this.options = options;
     return this;
   }

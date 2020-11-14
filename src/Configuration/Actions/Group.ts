@@ -1,11 +1,11 @@
 import { Action, Name, PresetAware } from '@/exports';
 
-export class Group extends Action {
+export class Group<Context = any> extends Action {
   public handler = Name.Handler.Group;
   public name = 'grouped action';
   public title = 'Performing a group action...';
   public actions?: {
-    callback: PresetAware<void>;
+    callback: PresetAware<void, Context>;
   };
 
   /**
@@ -18,7 +18,7 @@ export class Group extends Action {
    * 	preset.setEnv('APP_URL', ({ APP_NAME }) => `https://${APP_NAME.toLowerCase()}.test`)
    * }).withTitle('Setting up environment')
    */
-  chain(callback?: PresetAware<void>): this {
+  chain(callback?: PresetAware<void, Context>): Group<Context> {
     if (callback) {
       this.actions = { callback };
     }
