@@ -68,7 +68,7 @@ export class CommandLineInterface {
     // Uses a preset shipped with the CLI, in the "init" directory at the root
     if (options.init) {
       this.bus.debug(`Initializing a preset.`);
-      return await this.apply(path.join(__dirname, '..', '..', 'init'), target, options, args);
+      return await this.apply(path.join(__dirname, '..', '..', 'init'), args[0], options, args);
     }
 
     if (!resolvable) {
