@@ -212,8 +212,8 @@ export class Preset implements PresetContract {
    * @example
    * Preset.execute('echo', 'hello world')
    */
-  execute(commands: ContextAware<string | string[]>, ...args: string[]): Execute {
-    return this.addAction(new Execute(this).setCommands(commands).withArguments(args));
+  execute(command: ContextAware<string>, ...args: string[]): Execute {
+    return this.addAction(new Execute(this).run(command).withArguments(args));
   }
 
   /**

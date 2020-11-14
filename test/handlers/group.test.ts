@@ -5,8 +5,8 @@ import stripAnsi from 'strip-ansi';
 it('runs grouped actions', async () => {
   const { preset, options } = makePreset();
   const action = preset.group((preset) => {
-    preset.execute('echo hello');
-    preset.execute('echo world');
+    preset.execute('echo', 'hello');
+    preset.execute('echo', 'world');
   });
   const logs: string[] = [];
 

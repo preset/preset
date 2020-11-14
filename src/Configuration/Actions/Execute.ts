@@ -5,15 +5,15 @@ export class Execute extends Action {
   public handler = Name.Handler.Execute;
   public name = 'command execution';
   public title = 'Executing a command...';
-  public commands?: ContextAware<string | string[]>;
+  public command?: ContextAware<string>;
   public args: ContextAware<string | string[]> = [];
   public options: ContextAware<CommonOptions<'utf8'>> = {};
 
   /**
    * Executes the given command.
    */
-  public setCommands(commands: ContextAware<string | string[]>): this {
-    this.commands = commands;
+  public run(command: ContextAware<string>): this {
+    this.command = command;
     return this;
   }
 
