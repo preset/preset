@@ -6,7 +6,7 @@ interface HookCallbackWrapper {
 }
 
 export class Hook<Context = any> extends Action {
-  public handler = Name.Handler.Execute;
+  public handler = Name.Handler.Hook;
   public name = 'custom code block';
   public title = 'Executing additionnal logic...';
   public hooks: ContextAware<HookCallbackWrapper, Context>[] = [];
