@@ -23,7 +23,7 @@ export interface ApplierOptionsContract {
   resolvable: PresetResolvable;
 
   /**
-   * Target directory.
+   * Absolute path to target directory.
    */
   target: string;
 

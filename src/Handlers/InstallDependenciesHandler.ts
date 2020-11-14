@@ -98,7 +98,7 @@ export class InstallDependenciesHandler implements HandlerContract {
 
     // Filters the available managers.
     for (const manager of this.nodePackageManagers) {
-      if (await execute(...manager.check)) {
+      if (await execute(this.applierOptions.target, ...manager.check)) {
         managers.push(manager);
       }
     }
@@ -115,7 +115,7 @@ export class InstallDependenciesHandler implements HandlerContract {
     // use the corresponding manager if found
     for (const { bin, args, lockFile } of managers) {
       if (fs.pathExistsSync(path.join(this.applierOptions.target, lockFile))) {
-        await execute(bin, args);
+        await execute(this.applierOptions.target, bin, args);
         return;
       }
     }
@@ -123,7 +123,7 @@ export class InstallDependenciesHandler implements HandlerContract {
     // If no lockfile was found, install the dependencies with the first
     // manager of the list, which is ordered by likeliness or preference.
     const { bin, args } = managers.shift()!;
-    await execute(bin, args);
+    await execute(this.applierOptions.target, bin, args);
   }
 
   /**
@@ -131,13 +131,13 @@ export class InstallDependenciesHandler implements HandlerContract {
    * there is only one package manager.
    */
   protected async installPhpDependencies(): Promise<void> {
-    const hasComposer = await execute('composer', ['--version']).catch(() => false);
+    const hasComposer = await execute(this.applierOptions.target, 'composer', ['--version']).catch(() => false);
     if (!hasComposer) {
       throw new ExecutionError() //
         .withMessage(`Can not install dependencies because ${color.magenta('composer')} is not available.`)
         .withoutStack();
     }
 
-    await execute('composer update -vv');
+    await execute(this.applierOptions.target, 'composer', ['update', '-vv']);
   }
 }

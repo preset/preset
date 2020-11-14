@@ -28,13 +28,13 @@ export class ExecuteHandler implements HandlerContract {
         .stopsExecution();
     }
 
-    await this.execute(action.command, wrap(action.args), action.options);
+    await this.execute(applierOptions.target, action.command, wrap(action.args), action.options);
   }
 
-  protected async execute(command: string, args: string[] = [], options: any = {}): Promise<void> {
+  protected async execute(cwd: string, command: string, args: string[] = [], options: any = {}): Promise<void> {
     try {
       this.bus.debug(`Executing command: ${color.bold().gray(command)} ${color.gray(args.join(' '))}.`);
-      await execute(command, args, options);
+      await execute(cwd, command, args, options);
     } catch (error) {
       throw new ExecutionError() //
         .withMessage(`An error occured while executing ${color.magenta(command)}.`)

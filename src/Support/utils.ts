@@ -90,9 +90,10 @@ export function wrap<T>(thing: T | T[]): T[] {
 /**
  * Executes the given command.
  */
-export async function execute(command: string, args: string[] = [], options: CommonOptions<'utf8'> = {}): Promise<string[]> {
+export async function execute(cwd: string, command: string, args: string[] = [], options: CommonOptions<'utf8'> = {}): Promise<string[]> {
   const log: string[] = [];
   const result = execa(command, args, {
+    cwd,
     all: true,
     ...options,
   });
