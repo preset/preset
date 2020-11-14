@@ -54,7 +54,11 @@ export function sandboxPath(...paths: string[]): string {
   return path.join(TARGET_DIRECTORY, ...paths);
 }
 
-export function writeToSandbox(path: string, content: string): void {
+export function writeToSandbox(path: string, content: string | string[]): void {
+  if (Array.isArray(content)) {
+    content = content.join('\n');
+  }
+
   fs.writeFileSync(sandboxPath(path), content, { encoding: 'utf-8' });
 }
 
