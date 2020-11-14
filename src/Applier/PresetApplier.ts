@@ -33,7 +33,9 @@ export class PresetApplier implements ApplierContract {
 
   async run(applierOptions: ApplierOptionsContract): Promise<void> {
     this.bus.info(`Applying preset ${color.magenta(applierOptions.resolvable)}.`);
+    this.bus.debug(`Target directory: ${color.gray(JSON.stringify(applierOptions.target))}`);
     this.bus.debug(`Command line options: ${color.gray(JSON.stringify(applierOptions.options))}`);
+    this.bus.debug(`Command line arguments: ${color.gray(JSON.stringify(applierOptions.args))}`);
 
     // Resolves the given preset resolvable.
     const resolved = await this.resolver.resolve(applierOptions.resolvable, {
