@@ -1,7 +1,5 @@
-import { Preset, color } from '../src/exports';
+import { Preset, color } from '../dist/api';
 import path from 'path';
-import process from 'process';
-import fs from 'fs';
 
 Preset.setName('Preset');
 Preset.option('install', true);
@@ -34,7 +32,11 @@ Preset.edit('**/**')
 Preset.installDependencies().ifHasOption('install');
 
 // Creates the repository
-Preset.execute(['git init', 'git add .', 'git commit -m "chore: initialize repository"'])
+Preset.group((preset) => {
+  preset.execute('git', 'init');
+  preset.execute('git', 'add', '.');
+  preset.execute('git', 'commit', '-m', '"chore: initialize repository"');
+})
   .withTitle('Initializing repository...')
   .ifNotRepository();
 

@@ -14,12 +14,12 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@test/*": ["test/*"],
-      "*": ["src/*", "*"]
-    }
+      "@/*": ["./src/*"],
+      "@test/*": ["./test/*"]
+    },
+    "plugins": [{ "transform": "typescript-transform-paths" }]
   },
   "include": ["src/**/*"]
 }

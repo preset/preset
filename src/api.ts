@@ -6,10 +6,10 @@
 | this package.
 */
 
-import { Binding, color, container, Preset as StaticPreset } from '@/exports';
+import { Binding, color, container, Preset as StaticPreset } from './exports';
 
 /**
- * The singletone configuration object.
+ * The singleton configuration object.
  */
 export const Preset = container.get<StaticPreset>(Binding.Preset);
 

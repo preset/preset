@@ -9,8 +9,8 @@
     "url": "https://github.com/innocenzi"
   },
   "repository": "https://github.com/use-preset/use-preset",
-  "main": "dist/exports.js",
-  "typings": "dist/exports.d.ts",
+  "main": "dist/api.js",
+  "typings": "dist/api.d.ts",
   "bin": {
     "use-preset": "./bin/run"
   },
@@ -20,7 +20,8 @@
   "files": [
     "bin",
     "dist",
-    "src"
+    "src",
+    "init"
   ],
   "keywords": [
     "scaffolding",
@@ -28,7 +29,7 @@
     "productivity"
   ],
   "scripts": {
-    "prepare": "rimraf dist && tsc -b src",
+    "prepare": "rimraf dist && ttsc -b src",
     "build": "yarn prepare",
     "test": "jest --runInBand",
     "test:ci": "jest --verbose --expand",
@@ -52,7 +53,9 @@
     "standard-version": "^9.0.0",
     "ts-jest": "^26.2.0",
     "ts-node": "^8.10.2",
-    "typescript": "^4.0.5"
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.0.5",
+    "typescript-transform-paths": "^2.0.2"
   },
   "dependencies": {
     "@poppinss/cliui": "^2.0.2",
