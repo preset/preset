@@ -74,16 +74,16 @@ export class PresetApplier implements ApplierContract {
    */
   public async performActions(preset: Preset, applierOptions: ApplierOptionsContract): Promise<void> {
     // Creates a map of the actions with their handlers.
-    const actions: Map<Contextualized<Action>, HandlerContract> = new Map();
+    const actions: Map<Action, HandlerContract> = new Map();
 
     // Validates the actions before executing them.
     // If an action has no handler, the preset won't be applied.
     for (const uncontextualizedAction of preset.actions) {
-      const action = contextualizeObject(uncontextualizedAction);
+      const action = uncontextualizedAction;
       const handler = container.getAll<HandlerContract>(Binding.Handler).find(({ name }) => name === action.handler);
 
       if (!handler) {
-        const name = action.name ?? action.constructor.name;
+        const name = contextualizeValue(action.name) ?? action.constructor.name;
         throw new ExecutionError(`Action at index ${color.magenta(actions.size.toString())} (${color.magenta(name)}) is not valid.`) //
           .stopsExecution()
           .withoutStack();
@@ -94,7 +94,9 @@ export class PresetApplier implements ApplierContract {
 
     // Loops through the action to find their handler and
     // run them, in the order they have been defined.
-    for (const [action, handler] of actions) {
+    for (const [uncontextualizedAction, handler] of actions) {
+      const action = contextualizeObject(uncontextualizedAction);
+
       const shouldRun = !action.conditions.some((condition) => {
         return !Boolean(contextualizeValue(condition));
       });
