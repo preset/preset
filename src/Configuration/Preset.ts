@@ -38,12 +38,12 @@ export class Preset<CustomContext = any> implements PresetContract {
   /**
    * The preset's name.
    */
-  public name?: string;
+  public name?: ContextAware<string, any>;
 
   /**
    * The template directory.
    */
-  public templateDirectory: string = 'templates';
+  public templateDirectory: ContextAware<string, any> = 'templates';
 
   /**
    * The directory in which the preset is.
@@ -152,7 +152,7 @@ export class Preset<CustomContext = any> implements PresetContract {
    * Sets the name of the preset.
    */
   setName<Context = CustomContext>(name: ContextAware<string, Context>): this {
-    this.name = name as string;
+    this.name = name;
     return this;
   }
 
@@ -160,7 +160,7 @@ export class Preset<CustomContext = any> implements PresetContract {
    * Sets the template directory.
    */
   setTemplateDirectory<Context = CustomContext>(templateDirectory: ContextAware<string, Context>): this {
-    this.templateDirectory = templateDirectory as string;
+    this.templateDirectory = templateDirectory;
     return this;
   }
 

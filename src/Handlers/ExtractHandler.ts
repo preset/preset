@@ -8,6 +8,7 @@ import {
   Bus,
   color,
   Contextualized,
+  contextualizeValue,
   ExecutionError,
   Extract,
   HandlerContract,
@@ -45,7 +46,7 @@ export class ExtractHandler implements HandlerContract {
    * Extracts the given input to the given relative target.
    */
   protected async extract(relativeTemplateOrGlob: string, relativeTarget: string): Promise<void> {
-    const templateBase = path.join(this.action.preset.presetDirectory, this.action.preset.templateDirectory);
+    const templateBase = path.join(this.action.preset.presetDirectory, contextualizeValue(this.action.preset.templateDirectory));
     const templatePath = path.join(templateBase, relativeTemplateOrGlob);
     const targetBase = this.applierOptions.target;
     const targetPath = path.join(targetBase, relativeTarget);
@@ -91,7 +92,7 @@ export class ExtractHandler implements HandlerContract {
 
     const entries = await fg(glob ?? '**/**', {
       dot: false, // TODO - Make this optional?
-      cwd: path.join(this.action.preset.presetDirectory, this.action.preset.templateDirectory, relativeInputDirectory),
+      cwd: path.join(this.action.preset.presetDirectory, contextualizeValue(this.action.preset.templateDirectory), relativeInputDirectory),
     });
 
     this.bus.debug(`Found ${color.magenta(entries.length.toString())} entries.`);
@@ -111,7 +112,7 @@ export class ExtractHandler implements HandlerContract {
     const targetFile = path.join(targetDirectory, this.renameDotFile(relativeFilePath));
     const inputFile = path.join(
       this.action.preset.presetDirectory,
-      this.action.preset.templateDirectory,
+      contextualizeValue(this.action.preset.templateDirectory),
       relativeInputDirectory,
       relativeFilePath,
     );
