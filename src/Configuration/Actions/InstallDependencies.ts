@@ -20,8 +20,8 @@ export class InstallDependencies<Context = any> extends Action {
   /**
    * Asks the user before installing.
    */
-  public ifUserApproves(): InstallDependencies<Context> {
-    this.shouldAsk = true;
+  public ifUserApproves(shouldAsk: ContextAware<boolean, Context> = true): InstallDependencies<Context> {
+    this.shouldAsk = shouldAsk;
     return this;
   }
 }
