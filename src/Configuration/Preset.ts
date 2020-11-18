@@ -319,6 +319,13 @@ export class Preset<CustomContext = any> implements PresetContract {
   }
 
   /**
+   * Asks the user for information.
+   */
+  prompt<Context = CustomContext>(): Prompt<Context> {
+    return this.addAction(new Prompt(this));
+  }
+
+  /**
    * Asks the user for confirmation.
    *
    * @param name The value name that will be set in the prompts property.
