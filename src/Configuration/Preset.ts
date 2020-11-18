@@ -24,6 +24,7 @@ import {
   PresetContract,
   Prompt,
   PromptOptions,
+  Ecosystem,
 } from '@/exports';
 
 interface GitContext {
@@ -234,20 +235,20 @@ export class Preset<CustomContext = any> implements PresetContract {
    * Installs the dependencies for the given ecosystem (defaults to Node).
    *
    * @example
-   * Preset.installDependencies().for('php')
+   * Preset.installDependencies('php')
    */
-  installDependencies<Context = CustomContext>(): InstallDependencies<Context> {
-    return this.addAction(new InstallDependencies(this).for('node'));
+  installDependencies<Context = CustomContext>(ecosystem: ContextAware<Ecosystem, Context> = 'node'): InstallDependencies<Context> {
+    return this.addAction(new InstallDependencies(this).for(ecosystem));
   }
 
   /**
    * An alias for `installDependencies`, since they are basically the same.
    *
    * @example
-   * Preset.updateDependencies().for('php')
+   * Preset.updateDependencies('node')
    */
-  updateDependencies<Context = CustomContext>(): InstallDependencies<Context> {
-    return this.installDependencies();
+  updateDependencies<Context = CustomContext>(ecosystem: ContextAware<Ecosystem, Context> = 'node'): InstallDependencies<Context> {
+    return this.installDependencies(ecosystem);
   }
 
   /**
