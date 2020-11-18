@@ -1,4 +1,5 @@
 import { Action, ContextAware, Name } from '@/exports';
+import { wrap } from '@/Support/utils';
 
 /**
  * An action for editing a JSON file.
@@ -40,8 +41,11 @@ export class EditNodePackages extends EditJson {
   /**
    * Removes the given dependency from the dependency lists.
    */
-  remove(dependency: string): this {
-    this.pathsToDelete.push([`devDependencies.${dependency}`, `peerDependencies.${dependency}`, `dependencies.${dependency}`]);
+  remove(dependencies: string | string[]): this {
+    wrap(dependencies).forEach((dependency) => {
+      this.pathsToDelete.push([`devDependencies.${dependency}`, `peerDependencies.${dependency}`, `dependencies.${dependency}`]);
+    });
+
     return this;
   }
 
@@ -107,8 +111,10 @@ export class EditPhpPackages extends EditJson {
   /**
    * Removes the given dependency from the dependency lists.
    */
-  remove(dependency: string): this {
-    this.pathsToDelete.push([`require.${dependency}`, `require-dev.${dependency}`]);
+  remove(dependencies: string | string[]): this {
+    wrap(dependencies).forEach((dependency) => {
+      this.pathsToDelete.push([`require.${dependency}`, `require-dev.${dependency}`]);
+    });
     return this;
   }
 
