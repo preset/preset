@@ -56,7 +56,7 @@ export class EditNodePackages extends EditJson {
    * Preset.editNodePackage()
    *   .set('author', 'Enzo Innocenzi')
    */
-  set(key: string, value: string): this {
+  set(key: string, value: any): this {
     this.json[key] = value;
     return this;
   }
@@ -125,7 +125,7 @@ export class EditPhpPackages extends EditJson {
    * Preset.editNodePackage()
    *   .set('author', 'Enzo Innocenzi')
    */
-  set(key: string, value: string): this {
+  set(key: string, value: any): this {
     this.json[key] = value;
     return this;
   }
