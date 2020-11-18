@@ -24,17 +24,17 @@ async function testEditHandler(initialFile: string | string[], expectedFile: str
 
 it('adds a line before and after a match', async () => {
   await testEditHandler('First line', ['First line', 'second line'], (action) => {
-    action.find('First line').addAfter('second line');
+    action.addAfter('First line', 'second line');
   });
 
   await testEditHandler('First line', ['Haha prank this is the actual first line', 'First line'], (action) => {
-    action.find('First line').addBefore('Haha prank this is the actual first line');
+    action.addBefore('First line', 'Haha prank this is the actual first line');
   });
 });
 
 it('does not edit the file when there is no match', async () => {
   await testEditHandler('Initial file.txt content', 'Initial file.txt content', (action) => {
-    action.find('string-that-does-not-exist').addAfter('This should not be in the file');
+    action.addAfter('string-that-does-not-exist', 'This should not be in the file');
   });
 });
 
@@ -56,8 +56,7 @@ it('detects indentation when adding a line', async () => {
       'A second normal line',
     ],
     (action) => {
-      action.find('An indented line');
-      action.addAfter('A second line with the same indentation');
+      action.addAfter('An indented line', 'A second line with the same indentation');
     },
   );
 });
@@ -80,8 +79,7 @@ it('doubles indentation', async () => {
       'A second normal line',
     ],
     (action) => {
-      action.find('An indented line');
-      action.addAfter('A second line with twice the indentation').withIndent('double');
+      action.addAfter('An indented line', 'A second line with twice the indentation').withIndent('double');
     },
   );
 });
@@ -102,7 +100,7 @@ it('skips the given amount of lines', async () => {
       'A line after the third line',
     ],
     (action) => {
-      action.find('A first line').addAfter('A line after the third line').skipLines(2);
+      action.addAfter('A first line', 'A line after the third line').skipLines(2);
     },
   );
 
@@ -121,7 +119,7 @@ it('skips the given amount of lines', async () => {
       'A third line',
     ],
     (action) => {
-      action.find('A third line').addBefore('A line before the first line').skipLines(2);
+      action.addBefore('A third line', 'A line before the first line').skipLines(2);
     },
   );
 });
