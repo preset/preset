@@ -17,7 +17,7 @@ export class CommunityResolver extends GitHubResolver implements ResolverContrac
     const [matches, shorthand, repository, tag] = resolvable.match(this.getResolutionRegex()) ?? [];
 
     if (!matches) {
-      if (resolvable.includes(':')) {
+      if (resolvable.match(/^([a-zA-Z][\w-]+):([a-zA-Z][\w-]+)(?:@([\w-\\.]+))?$/)) {
         throw ResolutionError.communityOrganizationNotFound(resolvable.split(':').shift()!);
       }
 
