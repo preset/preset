@@ -64,7 +64,6 @@ export class Edit<Context = any> extends Action {
   public name = 'modification of a file';
   public title = 'Updating files...';
   public files?: ContextAware<string | string[], Context>;
-  public search?: ContextAware<string | RegExp, Context>;
   public edition: EditionCallback[] = [];
   public additions: LineAddition[] = [];
 
@@ -73,16 +72,6 @@ export class Edit<Context = any> extends Action {
    */
   setFiles(files?: ContextAware<string | string[], Context>): Edit<Context> {
     this.files = files;
-    return this;
-  }
-
-  /**
-   * Sets the term of the search.
-   *
-   * @param search The search term. Can be a string or a regular expression.
-   */
-  find(search: ContextAware<string | RegExp, Context>): Edit<Context> {
-    this.search = search;
     return this;
   }
 
@@ -122,9 +111,9 @@ export class Edit<Context = any> extends Action {
   /**
    * Adds the given content after the match.
    */
-  addAfter(content: ContextAware<string | string[], Context>): LineAddition {
+  addAfter(search: ContextAware<string | RegExp, Context>, content: ContextAware<string | string[], Context>): LineAddition {
     const addition = new LineAddition() //
-      .find(this.search)
+      .find(search)
       .setContent(content)
       .setDirection('below')
       .skipLines(0);
@@ -136,9 +125,9 @@ export class Edit<Context = any> extends Action {
   /**
    * Adds the given content before the match.
    */
-  addBefore(content: ContextAware<string | string[], Context>): LineAddition {
+  addBefore(search: ContextAware<string | RegExp, Context>, content: ContextAware<string | string[], Context>): LineAddition {
     const addition = new LineAddition() //
-      .find(this.search)
+      .find(search)
       .setContent(content)
       .setDirection('above')
       .skipLines(0);
