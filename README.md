@@ -27,7 +27,7 @@
   </a>
   <br />
   <br />
-  <pre align="center">npx use-preset &lt;your-preset&gt;</pre>
+  <pre align="center">npx use-preset &lt;your-username/your-preset&gt;</pre>
 </p>
 
 <br />
