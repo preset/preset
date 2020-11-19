@@ -50,7 +50,7 @@ export class InstallDependenciesHandler implements HandlerContract {
     {
       bin: 'npm',
       lockFile: 'package-lock.json',
-      args: ['install', '--verbose'],
+      args: ['install'],
       check: ['npm', ['-v']],
     },
   ];
