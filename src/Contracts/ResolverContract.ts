@@ -23,7 +23,7 @@ export interface ResolverOptions {
   /**
    * If defined, force whether or not repositories should be accessed via SSH.
    */
-  shh?: boolean;
+  ssh?: boolean;
 }
 
 export interface ResolverContract {

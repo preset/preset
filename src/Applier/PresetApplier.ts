@@ -41,6 +41,7 @@ export class PresetApplier implements ApplierContract {
     // Resolves the given preset resolvable.
     const resolved = await this.resolver.resolve(applierOptions.resolvable, {
       path: applierOptions.options.path,
+      ssh: applierOptions.options.ssh,
     });
 
     // Imports the preset configuration.

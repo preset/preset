@@ -26,7 +26,7 @@ export class CommunityResolver extends GitHubResolver implements ResolverContrac
 
     return this.clone({
       organization: Reflect.get(this.organizations, shorthand),
-      ssh: options.shh,
+      ssh: options.ssh,
       path: options.path,
       repository,
       tag,

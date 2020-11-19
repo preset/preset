@@ -43,5 +43,11 @@ export interface CommandLineOptions {
    * The path to a sub-directory in which to look for a preset.
    */
   path?: string;
+
+  /**
+   * Whether to use SSH.
+   */
+  ssh?: boolean;
+
   [k: string]: any;
 }

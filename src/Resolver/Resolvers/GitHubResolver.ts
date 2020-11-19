@@ -21,6 +21,7 @@ export class GitHubResolver implements ResolverContract {
 
     return this.clone({
       ...result,
+      ssh: options.ssh === false ? false : result.ssh,
       path: options.path,
     });
   }
