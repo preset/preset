@@ -1,6 +1,6 @@
 {
   "name": "use-preset",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
   "license": "MIT",
   "author": {
