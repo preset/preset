@@ -44,7 +44,7 @@ export class InstallDependenciesHandler implements HandlerContract {
     {
       bin: 'yarn',
       lockFile: 'yarn.lock',
-      args: ['install', '--verbose'],
+      args: ['install'],
       check: ['yarn', ['-v']],
     },
     {
