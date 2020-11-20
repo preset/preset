@@ -83,6 +83,10 @@ export class InstallDependenciesHandler implements HandlerContract {
     try {
       await this.ecosystems[action.ecosystem].call(this);
     } catch (error) {
+      if (error instanceof ExecutionError) {
+        throw error;
+      }
+
       throw new ExecutionError() //
         .withMessage(`Could not install dependencies for the ${color.magenta(action.ecosystem)} ecosystem.`)
         .withCompleteStack(error)
@@ -98,8 +102,12 @@ export class InstallDependenciesHandler implements HandlerContract {
 
     // Filters the available managers.
     for (const manager of this.nodePackageManagers) {
-      if (await execute(this.applierOptions.target, ...manager.check)) {
-        managers.push(manager);
+      try {
+        if (await execute(this.applierOptions.target, ...manager.check)) {
+          managers.push(manager);
+        }
+      } catch {
+        this.bus.debug(`${color.magenta(manager.bin)} is not available.`);
       }
     }
 
