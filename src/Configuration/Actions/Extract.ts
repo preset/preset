@@ -12,6 +12,7 @@ export class Extract<Context = any> extends Action {
   public strategy: ContextAware<ConflictHandlingStrategy, Context> = 'override';
   public input: ContextAware<string | string[], Context> = [];
   public target: ContextAware<string, Context> = '';
+  public shouldExtractDotfiles: ContextAware<boolean> = false;
 
   /**
    * Defines the files or directory to copy.
@@ -37,6 +38,15 @@ export class Extract<Context = any> extends Action {
    */
   public whenConflict(strategy: ContextAware<ConflictHandlingStrategy, Context>): Extract<Context> {
     this.strategy = strategy;
+    return this;
+  }
+
+  /**
+   * Allows extractions of files and directories starting with a dot.`
+   * Files ending with .dotfile are always renamed as dotfiles.
+   */
+  public withDots(withDots: ContextAware<boolean>): Extract<Context> {
+    this.shouldExtractDotfiles = withDots;
     return this;
   }
 }

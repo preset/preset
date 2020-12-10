@@ -91,7 +91,7 @@ export class ExtractHandler implements HandlerContract {
     );
 
     const entries = await fg(glob ?? '**/**', {
-      dot: false, // TODO - Make this optional?
+      dot: this.action.shouldExtractDotfiles,
       cwd: path.join(this.action.preset.presetDirectory, contextualizeValue(this.action.preset.templateDirectory), relativeInputDirectory),
     });
 
