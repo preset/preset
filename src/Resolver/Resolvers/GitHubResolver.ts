@@ -79,9 +79,10 @@ export class GitHubResolver implements ResolverContract {
 
       this.bus.info(`Cloning ${color.magenta(repositoryUrl)}.`);
 
+      // @ts-ignore
       await git()
         .clone(repositoryUrl, temporary.name, {
-          '--single-branch': 'true',
+          '--single-branch': true,
           ...(options.tag && { '--branch': options.tag }),
         })
         .then(() => this.bus.debug(`Cloned ${color.magenta(repositoryUrl)} into ${color.underline(temporary.name)}.`));
