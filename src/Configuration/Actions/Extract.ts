@@ -45,7 +45,7 @@ export class Extract<Context = any> extends Action {
    * Allows extractions of files and directories starting with a dot.`
    * Files ending with .dotfile are always renamed as dotfiles.
    */
-  public withDots(withDots: ContextAware<boolean>): Extract<Context> {
+  public withDots(withDots: ContextAware<boolean> = true): Extract<Context> {
     this.shouldExtractDotfiles = withDots;
     return this;
   }
