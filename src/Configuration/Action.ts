@@ -38,8 +38,17 @@ export abstract class Action<Context = any> {
 
   /**
    * Runs the action only if the specified option is truthy.
+   *
+   * @deprecated Use `ifOption` instead.
    */
   ifHasOption(option: string): this {
+    return this.ifOption(option);
+  }
+
+  /**
+   * Runs the action only if the specified option is truthy.
+   */
+  ifOption(option: string): this {
     return this.if(({ options }) => Boolean(options[option]));
   }
 
@@ -48,6 +57,20 @@ export abstract class Action<Context = any> {
    */
   ifNotOption(option: string): this {
     return this.if(({ options }) => !Boolean(options[option]));
+  }
+
+  /**
+   * Runs the action only if the specified prompt is truthy.
+   */
+  ifPrompt(prompt: string): this {
+    return this.if(({ prompts }) => Boolean(prompts[prompt]));
+  }
+
+  /**
+   * Runs the action only if the specified prompt is falsy.
+   */
+  ifNotPrompt(prompt: string): this {
+    return this.if(({ prompts }) => !Boolean(prompts[prompt]));
   }
 
   /**
