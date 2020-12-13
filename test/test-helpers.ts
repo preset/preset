@@ -76,7 +76,7 @@ export async function handleInSandbox(
     await before?.();
     const result = await container
       .getNamed<HandlerContract>(Binding.Handler, handlerName)
-      .handle(contextualizeObject(action.preset.presetDirectory, action), options);
+      .handle(contextualizeObject(action.preset, action), options);
 
     await test(result);
   });
