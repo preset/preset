@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { transformSync } from 'esbuild';
 import { inject, injectable } from 'inversify';
-import { Binding, Bus, color, container, ExecutionError, getPackage, ImporterContract, Preset, registerPreset } from '@/exports';
+import { Binding, Bus, color, ExecutionError, getPackage, ImporterContract, Preset } from '@/exports';
 
 @injectable()
 export class ModuleImporter implements ImporterContract {
@@ -59,6 +59,7 @@ export class ModuleImporter implements ImporterContract {
 
     for (const file of files) {
       if (fs.existsSync(file)) {
+        this.bus.debug(`Found preset file at ${color.underline(file)}.`);
         return file;
       }
     }
@@ -78,7 +79,7 @@ export class ModuleImporter implements ImporterContract {
         exports: {},
         require,
         module,
-        Preset: container.get<Preset>(Binding.Preset),
+        Preset: new Preset(),
         color,
       });
 
@@ -88,7 +89,6 @@ export class ModuleImporter implements ImporterContract {
       });
       vm.runInContext(code, context);
 
-      registerPreset(context.Preset);
       return context.Preset as Preset;
     } catch (error) {
       throw new ExecutionError() //
@@ -106,7 +106,7 @@ export class ModuleImporter implements ImporterContract {
       .split(/\r\n|\r|\n/)
       .filter((line) => {
         const lineImports = ['import', 'require'].some((statement) => line.includes(statement));
-        const lineMentionsImportValue = [getPackage().name, 'color'].some((imp) => line.includes(imp));
+        const lineMentionsImportValue = [getPackage().name, 'color', '@/api'].some((imp) => line.includes(imp));
 
         if (lineImports && lineMentionsImportValue) {
           return false;

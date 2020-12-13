@@ -17,7 +17,7 @@ export class HookHandler implements HandlerContract {
     for (const hook of hooks) {
       this.bus.debug(`Running callabck #${color.magenta(hooks.indexOf(hook).toString())}.`);
       try {
-        await contextualizeValue(hook).callback?.(action.preset);
+        await contextualizeValue(action.preset, hook).callback?.(action.preset);
       } catch (error) {
         throw new ExecutionError() //
           .withMessage(error.message)

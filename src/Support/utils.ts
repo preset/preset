@@ -6,7 +6,7 @@ import { Binding, Bus, container, ContextAware, Contextualized, Preset, PresetAw
 
 const cache = {
   packageContent: null as any | null,
-  preset: null as Preset | null,
+  preset: {} as Record<string, Preset>,
 };
 
 /**
@@ -38,9 +38,13 @@ export function getVersion(): string {
   return `${name}/${version} ${process.platform}-${process.arch} node-${process.version}`;
 }
 
-export function registerPreset(preset: Preset): Preset {
-  cache.preset = preset;
+export function cachePreset(id: string, preset: Preset): Preset {
+  cache.preset[id] = preset;
   return preset;
+}
+
+export function getPreset(id: string): Preset {
+  return cache.preset[id];
 }
 
 /**
@@ -53,9 +57,9 @@ function canBeContextualized<T>(value: ContextAware<T>): value is PresetAware<T>
 /**
  * Contextualizes the given context aware value.
  */
-export function contextualizeValue<T>(value: ContextAware<T>): T {
+export function contextualizeValue<T>(preset: Preset, value: ContextAware<T>): T {
   if (canBeContextualized(value)) {
-    return value(cache.preset!);
+    return value(getPreset(preset.presetDirectory));
   }
 
   return value as T;
@@ -64,9 +68,9 @@ export function contextualizeValue<T>(value: ContextAware<T>): T {
 /**
  * Contextualizes every contextualizable property on the given action.
  */
-export function contextualizeObject<T extends { [key: string]: any }>(action: T): Contextualized<T> {
+export function contextualizeObject<T extends { [key: string]: any }>(preset: Preset, action: T): Contextualized<T> {
   const result = Object.entries(action)
-    .map(([name, value]) => ({ [name]: contextualizeValue(value) }))
+    .map(([name, value]) => ({ [name]: contextualizeValue(preset, value) }))
     .reduce((acc, val) => ({ ...acc, ...val }), {});
 
   return result as T;

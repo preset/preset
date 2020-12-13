@@ -45,7 +45,7 @@ export class EditJsonHandler implements HandlerContract {
 
     // Deletion
     action.pathsToDelete.forEach((noContextPaths) => {
-      const contextualizedPaths = contextualizeValue(noContextPaths);
+      const contextualizedPaths = contextualizeValue(action.preset, noContextPaths);
       const paths: string[] = [];
 
       if (!Array.isArray(contextualizedPaths)) {
@@ -54,7 +54,7 @@ export class EditJsonHandler implements HandlerContract {
         paths.push(...contextualizedPaths);
       }
 
-      paths.forEach((path) => unset(updated, contextualizeValue(path)));
+      paths.forEach((path) => unset(updated, contextualizeValue(action.preset, path)));
     });
 
     // Write

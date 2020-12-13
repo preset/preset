@@ -102,6 +102,8 @@ export class GitHubResolver implements ResolverContract {
         throw ResolutionError.repositorySubdirectoryNotFound(options.path!, `${options.organization}/${options.repository}`);
       }
 
+      this.bus.debug(`Final preset path is ${color.underline(clonedDirectoryWithPath)}.`);
+
       return {
         temporary: true,
         path: clonedDirectoryWithPath,

@@ -9,13 +9,13 @@ import {
   Bus,
   color,
   container,
-  Contextualized,
   contextualizeObject,
   contextualizeValue,
   ExecutionError,
   HandlerContract,
   ImporterContract,
   Preset,
+  cachePreset,
   ResolverContract,
   ResolverResult,
   wrap,
@@ -45,7 +45,7 @@ export class PresetApplier implements ApplierContract {
     });
 
     // Imports the preset configuration.
-    const preset = await this.importer.import(resolved.path);
+    const preset = cachePreset(resolved.path, await this.importer.import(resolved.path));
 
     // Defines the preset's context
     preset.context ??= {};
@@ -58,12 +58,17 @@ export class PresetApplier implements ApplierContract {
       config: (await simpleGit().listConfig()).all,
     };
 
+    this.bus.debug('Steps: ' + color.gray(preset.actions.map(({ name }) => name).join(', ')));
+
     await this.performActions(preset, applierOptions);
-    this.bus.success(`${color.magenta(contextualizeValue(preset.name) ?? applierOptions.resolvable)} has been applied.`);
+    this.bus.success(`${color.magenta(contextualizeValue(preset, preset.name) ?? applierOptions.resolvable)} has been applied.`);
 
     // Displays instructions
     if (preset.instructions && preset.isInteractive()) {
-      this.bus.instruct(wrap(contextualizeValue(preset.instructions.messages)), contextualizeValue(preset.instructions.heading));
+      this.bus.instruct(
+        wrap(contextualizeValue(preset, preset.instructions.messages)),
+        contextualizeValue(preset, preset.instructions.heading),
+      );
     }
 
     // Cleans up temporary files
@@ -84,7 +89,7 @@ export class PresetApplier implements ApplierContract {
       const handler = container.getAll<HandlerContract>(Binding.Handler).find(({ name }) => name === action.handler);
 
       if (!handler) {
-        const name = contextualizeValue(action.name) ?? action.constructor.name;
+        const name = contextualizeValue(preset, action.name) ?? action.constructor.name;
         throw new ExecutionError(`Action at index ${color.magenta(actions.size.toString())} (${color.magenta(name)}) is not valid.`) //
           .stopsExecution()
           .withoutStack();
@@ -96,10 +101,10 @@ export class PresetApplier implements ApplierContract {
     // Loops through the action to find their handler and
     // run them, in the order they have been defined.
     for (const [uncontextualizedAction, handler] of actions) {
-      const action = contextualizeObject(uncontextualizedAction);
+      const action = contextualizeObject(preset, uncontextualizedAction);
 
       const shouldRun = !action.conditions.some((condition) => {
-        return !Boolean(contextualizeValue(condition));
+        return !Boolean(contextualizeValue(preset, condition));
       });
 
       if (!shouldRun) {

@@ -19,7 +19,6 @@ import {
   LocalResolver,
   ModuleImporter,
   Name,
-  Preset,
   PresetApplier,
   PromptHandler,
   Resolver,
@@ -29,9 +28,6 @@ import {
  * The application container.
  */
 const container = new Container();
-
-// Preset
-container.bind(Binding.Preset).toConstantValue(new Preset());
 
 // I/O
 container.bind(Binding.Bus).toConstantValue(bus);

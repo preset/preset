@@ -1,15 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import {
-  ApplierOptionsContract,
-  HandlerContract,
-  Binding,
-  container,
-  Action,
-  Preset,
-  registerPreset,
-  contextualizeObject,
-} from '@/exports';
+import { ApplierOptionsContract, HandlerContract, Binding, container, Action, Preset, cachePreset, contextualizeObject } from '@/exports';
 
 export const STUB_DIRECTORY = path.join(__dirname, '__stubs__');
 export const TARGET_DIRECTORY = path.join(__dirname, '__target__');
@@ -24,7 +15,7 @@ export function makePreset(options: Partial<ApplierOptionsContract> = {}) {
   options.resolvable ??= stubs.HELLO_WORLD;
   options.target ??= TARGET_DIRECTORY;
 
-  const preset = registerPreset(new Preset());
+  const preset = cachePreset(options.resolvable, new Preset());
   preset.targetDirectory = options.target;
   preset.args = options.args;
   preset.options = options.options;
@@ -83,7 +74,10 @@ export async function handleInSandbox(
 ) {
   return await sandbox(async () => {
     await before?.();
-    const result = await container.getNamed<HandlerContract>(Binding.Handler, handlerName).handle(contextualizeObject(action), options);
+    const result = await container
+      .getNamed<HandlerContract>(Binding.Handler, handlerName)
+      .handle(contextualizeObject(action.preset.presetDirectory, action), options);
+
     await test(result);
   });
 }

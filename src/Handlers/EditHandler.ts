@@ -14,6 +14,7 @@ import {
   HandlerContract,
   LineAddition,
   Name,
+  Preset,
   wrap,
 } from '@/exports';
 
@@ -24,7 +25,11 @@ export class EditHandler implements HandlerContract {
   @inject(Binding.Bus)
   protected bus!: Bus;
 
+  protected preset!: Preset;
+
   async handle(action: Contextualized<Edit>, applierOptions: ApplierOptionsContract): Promise<void> {
+    this.preset = action.preset;
+
     const relativeFileNames = wrap(action.files!)
       .map((globOrFileName) =>
         fg.sync(globOrFileName, {
@@ -67,14 +72,14 @@ export class EditHandler implements HandlerContract {
    * Adds lines to the content.
    */
   async performLineAddition(content: string, addition: LineAddition): Promise<string> {
-    const search = contextualizeValue(addition.search);
-    const direction = contextualizeValue(addition.direction);
-    const contentToAdd = wrap(contextualizeValue(addition.content));
+    const search = contextualizeValue(this.preset, addition.search);
+    const direction = contextualizeValue(this.preset, addition.direction);
+    const contentToAdd = wrap(contextualizeValue(this.preset, addition.content));
     const orderedContentToAdd = direction === 'above' ? contentToAdd.reverse() : contentToAdd;
-    const additionIndent = contextualizeValue(addition.indent);
+    const additionIndent = contextualizeValue(this.preset, addition.indent);
     const initialLines = direction === 'above' ? content.split('\n').reverse() : content.split('\n');
     const finalLines: string[] = [];
-    let amountOfLinesBeforeAdding = contextualizeValue(addition.amountOfLinesToSkip);
+    let amountOfLinesBeforeAdding = contextualizeValue(this.preset, addition.amountOfLinesToSkip);
     let previousLine: string = '';
     let hasMatch: boolean = false;
 
