@@ -1,5 +1,5 @@
 {
-  "name": "use-preset",
+  "name": "apply",
   "version": "0.2.11",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
   "license": "MIT",
@@ -8,11 +8,11 @@
     "email": "enzo@innocenzi.dev",
     "url": "https://github.com/innocenzi"
   },
-  "repository": "https://github.com/use-preset/use-preset",
+  "repository": "https://github.com/preset/cli",
   "main": "dist/api.js",
   "typings": "dist/api.d.ts",
   "bin": {
-    "use-preset": "./bin/run"
+    "apply": "./bin/run"
   },
   "engines": {
     "node": ">=12"

@@ -10,12 +10,12 @@
 
 <p align="center">
   <br />
-  <a href="https://github.com/use-preset/use-preset/actions?query=workflow%3Atests">
-    <img alt="Status" src="https://github.com/use-preset/use-preset/workflows/tests/badge.svg">
+  <a href="https://github.com/preset/cli/actions?query=workflow%3Atests">
+    <img alt="Status" src="https://github.com/preset/cli/workflows/tests/badge.svg">
   </a>
   <span>&nbsp;</span>
-  <a href="https://www.npmjs.com/package/use-preset">
-    <img alt="npm" src="https://img.shields.io/npm/v/use-preset">
+  <a href="https://www.npmjs.com/package/apply">
+    <img alt="npm" src="https://img.shields.io/npm/v/apply">
   </a>
   <span>&nbsp;</span>
   <a href="https://discord.gg/XWwzc45KZu">
@@ -27,7 +27,7 @@
   </a>
   <br />
   <br />
-  <pre align="center">npx use-preset &lt;your-username/your-preset&gt;</pre>
+  <pre align="center">npx apply &lt;your-username/your-preset&gt;</pre>
 </p>
 
 <br />

@@ -1,4 +1,4 @@
-import { Preset } from 'use-preset';
+import { Preset } from 'apply';
 
 Preset.setName('{{ presetName }}');
 Preset.extract();
