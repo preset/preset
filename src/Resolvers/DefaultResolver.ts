@@ -3,6 +3,7 @@ import git from 'simple-git';
 import path from 'path';
 import tmp from 'tmp';
 import fs from 'fs-extra';
+import { homedir } from 'os';
 import {
   Binding,
   Bus,
@@ -13,6 +14,7 @@ import {
   ResolverContract,
   ResolverOptions,
   PresetLocation,
+  AliasResolver,
   RepositoryPreset,
   LocatedPreset,
 } from '@/exports';
@@ -23,8 +25,13 @@ export class DefaultResolver implements ResolverContract {
   @inject(Binding.Bus)
   protected bus!: Bus;
 
-  async resolve(resolvable: string, options: ResolverOptions): Promise<PresetLocation> {
-    this.bus.debug(`Resolving ${color.magenta(resolvable)}.`);
+  @inject(Binding.AliasResolver)
+  protected aliasResolver!: AliasResolver;
+
+  async resolve(initialResolvable: string, initalOptions: ResolverOptions): Promise<PresetLocation> {
+    this.bus.debug(`Resolving ${color.magenta(initialResolvable)}.`);
+
+    const { resolvable, options } = await this.aliasResolver.resolve(initialResolvable, initalOptions);
 
     const locators = [
       container.getNamed<LocatorContract>(Binding.Locator, Name.DiskLocator),
@@ -41,7 +48,7 @@ export class DefaultResolver implements ResolverContract {
           throw error;
         }
 
-        this.bus.debug(color.gray(`The ${locator.name!} locator could not locate ${resolvable}.`));
+        this.bus.debug(`The ${locator.name!} locator could not locate ${resolvable}.`);
       }
     }
 

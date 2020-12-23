@@ -58,7 +58,7 @@ export class PresetApplier implements ApplierContract {
       config: (await simpleGit().listConfig()).all,
     };
 
-    this.bus.debug('Steps: ' + color.gray(preset.actions.map(({ name }) => name).join(', ')));
+    this.bus.debug('Steps: ' + color.gray(preset.actions.map(({ name }) => name).join(', ')) || color.red('none'));
 
     await this.performActions(preset, applierOptions);
     this.bus.success(`${color.magenta(contextualizeValue(preset, preset.name) ?? applierOptions.resolvable)} has been applied.`);

@@ -20,6 +20,7 @@ export * from './Importer';
 export * from './Locators/GitLocator';
 export * from './Locators/DiskLocator';
 export * from './Resolvers/DefaultResolver';
+export * from './Resolvers/AliasResolver';
 
 export * from './Applier';
 

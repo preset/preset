@@ -1,3 +1,4 @@
+import { homedir } from 'os';
 import { Container } from 'inversify';
 import {
   ApplyPresetHandler,
@@ -22,6 +23,7 @@ import {
   PresetApplier,
   PromptHandler,
 } from '@/exports';
+import { AliasResolver } from '@/Resolvers/AliasResolver';
 
 /**
  * The application container.
@@ -37,6 +39,9 @@ container.bind(Binding.Output).to(ConsoleOutput);
 container.bind(Binding.Applier).to(PresetApplier);
 
 // Resolvers
+container.bind(Binding.AliasResolver).to(AliasResolver).whenTargetIsDefault();
+container.bind(Binding.AliasResolverPath).toConstantValue(homedir());
+
 container.bind(Binding.Resolver).to(DefaultResolver).whenTargetIsDefault();
 container.bind(Binding.Locator).to(DiskLocator).whenTargetNamed(Name.DiskLocator);
 container.bind(Binding.Locator).to(GitLocator).whenTargetNamed(Name.GitLocator);

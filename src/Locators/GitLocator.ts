@@ -49,7 +49,7 @@ export class GitLocator implements LocatorContract {
 					ssh: !resolvable.includes('http')
 				}
 
-				this.bus.debug(`Match: ${color.gray(JSON.stringify(result))}.`)
+				this.bus.debug(`Resolved Git repository: ${color.gray(JSON.stringify(result))}.`)
 
 				return result;
 			})
