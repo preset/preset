@@ -89,7 +89,7 @@ export class DefaultResolver implements ResolverContract {
         ? `git@github.com:${preset.organization}/${preset.repository}.git`
         : `https://github.com/${preset.organization}/${preset.repository}`;
 
-      this.bus.info(`Cloning ${color.magenta(repositoryUrl)}.`);
+      this.bus.debug(`Cloning ${color.magenta(repositoryUrl)}.`);
 
       // Clones the repository
       await git()
