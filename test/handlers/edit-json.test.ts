@@ -105,12 +105,12 @@ it('updates dependencies from a package.json', async () => {
   await testEditJsonHandler(
     {
       dependencies: {
-        'use-preset': '^0.2',
+        apply: '^0.2',
       },
     },
     {
       dependencies: {
-        'use-preset': '^0.2',
+        apply: '^0.2',
         'inertia-vue': '^0.4',
       },
       devDependencies: {

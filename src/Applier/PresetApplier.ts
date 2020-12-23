@@ -17,7 +17,7 @@ import {
   Preset,
   cachePreset,
   ResolverContract,
-  ResolverResult,
+  PresetLocation,
   wrap,
 } from '@/exports';
 
@@ -125,7 +125,7 @@ export class PresetApplier implements ApplierContract {
   /**
    * Cleans up the temporary directory if needed.
    */
-  protected cleanUp({ path, temporary }: ResolverResult): void {
+  protected cleanUp({ path, temporary }: PresetLocation): void {
     if (!temporary) {
       return;
     }

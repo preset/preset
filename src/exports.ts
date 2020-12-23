@@ -17,10 +17,9 @@ export * from './Errors/ResolutionError';
 export * from './Handlers';
 export * from './Importer';
 
-export * from './Resolver/Resolvers/GitHubResolver';
-export * from './Resolver/Resolvers/CommunityResolver';
-export * from './Resolver/Resolvers/LocalResolver';
-export * from './Resolver/Resolver';
+export * from './Locators/GitLocator';
+export * from './Locators/DiskLocator';
+export * from './Resolvers/DefaultResolver';
 
 export * from './Applier';
 

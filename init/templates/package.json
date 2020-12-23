@@ -1,10 +1,10 @@
 {
-	"name": "{{ kebabPresetName }}",
-	"version": "0.1",
-	"author": "{{ author }}",
-	"license": "MIT",
-	"preset": "preset.ts",
-	"devDependencies": {
-		"use-preset": "^0.2"
-	}
+  "name": "{{ kebabPresetName }}",
+  "version": "0.1",
+  "author": "{{ author }}",
+  "license": "MIT",
+  "preset": "preset.ts",
+  "devDependencies": {
+    "apply": "^0.2"
+  }
 }
