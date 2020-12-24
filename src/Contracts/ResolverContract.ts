@@ -1,13 +1,52 @@
-export interface ResolverResult {
-  /**
-   * The absolute path to the resolved generator.
-   */
-  path: string;
+/**
+ * Information about a preset hosted on the local disk.
+ */
+export interface LocalPreset {
+  type: 'local';
 
   /**
-   * A value indicating whether or not the resolved path is temporary. If yes, this path
-   * should be deleted after processing.
+   * The absolute path to the preset on the local disk.
    */
+  path: string;
+}
+
+/**
+ * Information about a preset hosted on Git.
+ */
+export interface RepositoryPreset {
+  type: 'repository';
+
+  /**
+   * Whether or not to use SSH.
+   */
+  ssh?: boolean;
+
+  /**
+   * The organization (or user) name.
+   */
+  organization: string;
+
+  /**
+   * The repository name.
+   */
+  repository: string;
+
+  /**
+   * The Git tag or branch to check out.
+   */
+  tag?: string;
+}
+
+/**
+ * Information about a preset that was resolved from the user input.
+ */
+export type LocatedPreset = LocalPreset | RepositoryPreset;
+
+/**
+ * Information about the location of a preset after being persisted.
+ */
+export interface PresetLocation {
+  path: string;
   temporary: boolean;
 }
 
@@ -37,32 +76,19 @@ export interface ResolverContract {
    *
    * @param resolvable Any input.
    */
-  resolve(resolvable: string, options: ResolverOptions): Promise<ResolverResult>;
+  resolve(resolvable: string, options: ResolverOptions): Promise<PresetLocation>;
 }
 
-export interface GitResolverResult {
+export interface LocatorContract {
   /**
-   * Whether or not to use SSH.
+   * The locator name.
    */
-  ssh?: boolean;
+  name?: string;
 
   /**
-   * The organization (or user) name.
+   * Determines where a preset is hosted thanks to its resolvable string.
+   *
+   * @param resolvable Any input.
    */
-  organization: string;
-
-  /**
-   * The repository name.
-   */
-  repository: string;
-
-  /**
-   * The Git tag to check out.
-   */
-  tag?: string;
-
-  /**
-   * The path to the subdirectory in the resolved directory.
-   */
-  path?: string;
+  locate(resolvable: string): Promise<LocatedPreset>;
 }

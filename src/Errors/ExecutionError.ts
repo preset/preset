@@ -37,8 +37,8 @@ export class ExecutionError extends Error {
     return this;
   }
 
-  withMessage(message: string): this {
-    this.message = message;
+  withMessage(...message: string[]): this {
+    this.message = message.join(' ');
     return this;
   }
 }

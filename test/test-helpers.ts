@@ -9,6 +9,20 @@ export const stubs = {
   HELLO_WORLD: path.join(STUB_DIRECTORY, 'presets', 'hello-world'),
 };
 
+export const resolvables = {
+  GITHUB: [
+    { test: 'organization/repository', organization: 'organization', repository: 'repository' },
+    { test: 'org-with-dashes/repository-with-dashes', organization: 'org-with-dashes', repository: 'repository-with-dashes' },
+    { test: 'https://github.com/org/repo', organization: 'org', repository: 'repo' },
+    { test: 'git@github.com:org/repo', organization: 'org', repository: 'repo' },
+    { test: 'git@github.com:org/repo.git', organization: 'org', repository: 'repo' },
+  ],
+
+  DISK: [{ test: stubs.HELLO_WORLD, path: stubs.HELLO_WORLD }],
+
+  OTHERS: [{ test: 'some random string' }],
+};
+
 export function makePreset(options: Partial<ApplierOptionsContract> = {}) {
   options.args ??= [];
   options.options ??= {};

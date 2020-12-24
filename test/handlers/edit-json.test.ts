@@ -123,7 +123,7 @@ it('updates dependencies from a package.json', async () => {
   );
 });
 
-it.only('updates dependencies from a composer.json', async () => {
+it('updates dependencies from a composer.json', async () => {
   await testEditJsonHandler(
     {
       require: {

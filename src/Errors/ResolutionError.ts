@@ -1,4 +1,4 @@
-import { color, ExecutionError, GitResolverResult } from '@/exports';
+import { color, ExecutionError, RepositoryPreset } from '@/exports';
 
 export class ResolutionError extends ExecutionError {
   static localSubdirectoryNotFound(subdirectory: string): ResolutionError {
@@ -13,9 +13,9 @@ export class ResolutionError extends ExecutionError {
       .recoverable();
   }
 
-  static repositorySubdirectoryNotFound(subdirectory: string, repository: string): ResolutionError {
+  static subdirectoryNotFound(subdirectory: string, path: string): ResolutionError {
     return new ResolutionError() //
-      .withMessage(`Subdirectory ${color.underline(subdirectory)} does not exist in ${color.magenta(repository)}.`)
+      .withMessage(`Subdirectory ${color.underline(subdirectory)} does not exist in ${color.underline(path)}.`)
       .recoverable();
   }
 
@@ -44,17 +44,28 @@ export class ResolutionError extends ExecutionError {
       .withoutStack();
   }
 
-  static cloneFailed(options: GitResolverResult, error: Error): ResolutionError {
-    const repository = color.magenta(`${options.organization}/${options.repository}`);
+  static cloneFailed(preset: RepositoryPreset, error: Error): ResolutionError {
+    const repository = color.magenta(`${preset.organization}/${preset.repository}`);
 
-    if (error.stack?.includes('Could not find remote branch')) {
+    if (error.stack?.includes('Remote branch')) {
       return new ResolutionError()
         .stopsExecution()
-        .withMessage(`The ${color.magenta(options.tag ?? '<undefined>')}" branch does not exist in the remote repository.`)
+        .withMessage(`The ${color.magenta(preset.tag ?? '<undefined>')} branch does not exist in the remote repository.`)
         .withoutStack();
     }
 
-    if (error.stack?.includes('ERROR: Repository not found')) {
+    if (error.stack?.includes('Permission denied (publickey)')) {
+      return new ResolutionError()
+        .stopsExecution()
+        .withMessage(
+          `Access to ${color.magenta(repository)} denied.`,
+          `If you think it's an error, make sure you have an SSH key set up and linked to your Git account.`,
+          `If the repository is public and you don't want to configure SSH, use the ${color.magenta('--no-ssh')} flag.`,
+        )
+        .withoutStack();
+    }
+
+    if (['fatal: could not read Username', 'ERROR: Repository not found'].some((message) => error.stack?.includes(message))) {
       return new ResolutionError()
         .stopsExecution()
         .withMessage(`Repository ${repository} could not be found. Make sure it exists and you have read access to it.`)

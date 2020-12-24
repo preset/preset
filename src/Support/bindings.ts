@@ -1,6 +1,9 @@
 export const Binding = {
   Applier: Symbol.for('applier'),
   Resolver: Symbol.for('resolver'),
+  AliasResolver: Symbol.for('resolver-configuration'),
+  AliasResolverPath: Symbol.for('resolver-configuration-path'),
+  Locator: Symbol.for('locator'),
   Importer: Symbol.for('importer'),
   Handler: Symbol.for('handler'),
   Output: Symbol.for('output'),
@@ -10,10 +13,10 @@ export const Binding = {
 };
 
 export const Name = {
-  Resolver: 'resolver',
-  LocalResolver: 'local-resolver',
-  CommunityResolver: 'community-resolver',
-  GitHubResolver: 'github-resolver',
+  ResolverConfiguration: 'resolver-configuration',
+  DefaultResolver: 'resolver',
+  DiskLocator: 'disk-locator',
+  GitLocator: 'git-locator',
 
   Handler: {
     ApplyPreset: 'apply-preset-handler',

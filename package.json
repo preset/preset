@@ -1,6 +1,6 @@
 {
   "name": "apply",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
   "license": "MIT",
   "author": {
@@ -61,6 +61,7 @@
     "@poppinss/cliui": "^2.0.2",
     "@poppinss/prompts": "^1.1.7",
     "cac": "^6.6.1",
+    "cosmiconfig": "^7.0.0",
     "debug": "4.2.0",
     "deepmerge": "^4.2.2",
     "detect-indent": "^6.0.0",

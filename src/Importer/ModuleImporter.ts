@@ -106,7 +106,7 @@ export class ModuleImporter implements ImporterContract {
       .split(/\r\n|\r|\n/)
       .filter((line) => {
         const lineImports = ['import', 'require'].some((statement) => line.includes(statement));
-        const lineMentionsImportValue = [getPackage().name, 'color', '@/api'].some((imp) => line.includes(imp));
+        const lineMentionsImportValue = [getPackage().name, 'color', '@/api', 'use-preset'].some((imp) => line.includes(imp));
 
         if (lineImports && lineMentionsImportValue) {
           return false;

@@ -1,9 +1,9 @@
+import { homedir } from 'os';
 import { Container } from 'inversify';
 import {
   ApplyPresetHandler,
   Binding,
   bus,
-  CommunityResolver,
   ConsoleOutput,
   CustomPrompt,
   DeleteHandler,
@@ -12,17 +12,18 @@ import {
   EditJsonHandler,
   ExecuteHandler,
   ExtractHandler,
-  GitHubResolver,
   GroupHandler,
   HookHandler,
   InstallDependenciesHandler,
-  LocalResolver,
+  DefaultResolver,
+  DiskLocator,
+  GitLocator,
   ModuleImporter,
   Name,
   PresetApplier,
   PromptHandler,
-  Resolver,
 } from '@/exports';
+import { AliasResolver } from '@/Resolvers/AliasResolver';
 
 /**
  * The application container.
@@ -38,10 +39,12 @@ container.bind(Binding.Output).to(ConsoleOutput);
 container.bind(Binding.Applier).to(PresetApplier);
 
 // Resolvers
-container.bind(Binding.Resolver).to(Resolver).whenTargetIsDefault();
-container.bind(Binding.Resolver).to(LocalResolver).whenTargetNamed(Name.LocalResolver);
-container.bind(Binding.Resolver).to(CommunityResolver).whenTargetNamed(Name.CommunityResolver);
-container.bind(Binding.Resolver).to(GitHubResolver).whenTargetNamed(Name.GitHubResolver);
+container.bind(Binding.AliasResolver).to(AliasResolver).whenTargetIsDefault();
+container.bind(Binding.AliasResolverPath).toConstantValue(homedir());
+
+container.bind(Binding.Resolver).to(DefaultResolver).whenTargetIsDefault();
+container.bind(Binding.Locator).to(DiskLocator).whenTargetNamed(Name.DiskLocator);
+container.bind(Binding.Locator).to(GitLocator).whenTargetNamed(Name.GitLocator);
 
 // Importers
 container.bind(Binding.Importer).to(ModuleImporter).whenTargetIsDefault();
