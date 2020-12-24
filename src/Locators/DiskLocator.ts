@@ -7,13 +7,15 @@ export class DiskLocator implements LocatorContract {
   public name: string = 'local';
 
   async locate(resolvable: string): Promise<LocalPreset> {
-    if (!fs.statSync(resolvable)?.isDirectory()) {
-      throw ResolutionError.localDirectoryNotFound(resolvable);
-    }
+    try {
+      if (fs.statSync(resolvable)?.isDirectory()) {
+        return {
+          type: 'local',
+          path: resolvable,
+        };
+      }
+    } catch {}
 
-    return {
-      type: 'local',
-      path: resolvable,
-    };
+    throw ResolutionError.localDirectoryNotFound(resolvable);
   }
 }
