@@ -1,6 +1,6 @@
 {
   "name": "apply",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
   "license": "MIT",
   "author": {
