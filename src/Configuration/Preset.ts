@@ -110,7 +110,7 @@ export class Preset<CustomContext = any> implements PresetContract {
    * Checks if the target directory is empty.
    */
   isTargetDirectoryEmpty(): boolean {
-    return fs.readdirSync(path.join(this.targetDirectory, '.git')).length === 0;
+    return fs.readdirSync(path.resolve(this.targetDirectory)).length === 0;
   }
 
   /**
