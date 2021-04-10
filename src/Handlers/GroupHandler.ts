@@ -34,6 +34,7 @@ export class GroupHandler implements HandlerContract {
     preset.presetDirectory = action.preset.presetDirectory;
     preset.prompts = action.preset.prompts;
     preset.templateDirectory = action.preset.templateDirectory;
+    preset.targetDirectory = action.preset.targetDirectory;
     preset.actions = [];
     action.actions.callback(preset);
     preset.actions.map((action) => action.withTitle(false));
