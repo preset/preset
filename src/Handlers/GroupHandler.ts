@@ -29,10 +29,12 @@ export class GroupHandler implements HandlerContract {
     const preset = new Preset();
     preset.args = action.preset.args;
     preset.options = action.preset.options;
+    preset.context = action.preset.context;
     preset.git = action.preset.git;
     preset.presetDirectory = action.preset.presetDirectory;
     preset.prompts = action.preset.prompts;
     preset.templateDirectory = action.preset.templateDirectory;
+    preset.targetDirectory = action.preset.targetDirectory;
     preset.actions = [];
     action.actions.callback(preset);
     preset.actions.map((action) => action.withTitle(false));
