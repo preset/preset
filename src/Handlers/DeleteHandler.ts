@@ -20,7 +20,7 @@ export class DeleteHandler implements HandlerContract {
       }
 
       this.bus.debug(`Deleting ${color.magenta(absolutePath)}.`);
-      fs.rmdirSync(absolutePath, {
+      fs.rmSync(absolutePath, {
         recursive: true,
       });
     }
