@@ -23,10 +23,9 @@
   </a>
   <br />
   <br />
-  <pre align="center">npx apply &lt;your-username/your-preset&gt;</pre>
+<pre><div align="center">npx apply &lt;your-username/your-preset&gt;</div></pre>
 </p>
 
-<br />
 <br />
 
 <div align="center">
