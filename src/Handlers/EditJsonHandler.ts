@@ -40,8 +40,13 @@ export class EditJsonHandler implements HandlerContract {
 
     const { content, indent } = this.getContent(absolutePath);
 
+    const combineMerge = (destinationArray: any[], sourceArray: any[]) => {
+      const mergedArray = destinationArray.concat(sourceArray)
+      return [...new Set(mergedArray)]
+    }
+
     // Merge
-    const updated = merge(content, action.json ?? {});
+    const updated = merge(content, action.json ?? {}, { arrayMerge: combineMerge });
 
     // Deletion
     action.pathsToDelete.forEach((noContextPaths) => {

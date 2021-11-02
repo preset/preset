@@ -26,30 +26,94 @@ async function testEditJsonHandler(
   );
 }
 
-it('deeply merges the given content', async () => {
-  await testEditJsonHandler(
-    {
-      manga: 'Komi-san Cannot Communicate',
-      protagonists: {
-        Komi: 'Goddess',
-      },
-    },
-    {
-      manga: 'Komi-san Cannot Communicate',
-      protagonists: {
-        Komi: 'Goddess',
-        Tadano: 'Average guy',
-      },
-    },
-    (preset) => {
-      return preset.editJson('file.json').merge({
+describe('merge', () => {
+  it('deeply merges the given content', async () => {
+    await testEditJsonHandler(
+      {
+        manga: 'Komi-san Cannot Communicate',
         protagonists: {
+          Komi: 'Goddess',
+        },
+      }, {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: {
+          Komi: 'Goddess',
           Tadano: 'Average guy',
         },
-      });
-    },
-  );
-});
+      },
+      (preset) => {
+        return preset.editJson('file.json').merge({
+          protagonists: {
+            Tadano: 'Average guy',
+          },
+        });
+      },
+    );
+  });
+
+  it('merges content only once when merge is called twice with the same object key values', async () => {
+    await testEditJsonHandler(
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: {
+          Komi: 'Goddess',
+        },
+      },
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: {
+          Komi: 'Goddess',
+          Tadano: 'Average guy',
+        },
+      },
+      (preset) => {
+        const jsonMergeContent = {
+          protagonists: {
+            Tadano: 'Average guy',
+          },
+        }
+        return preset.editJson('file.json').merge(jsonMergeContent).merge(jsonMergeContent);
+      },
+    );
+  });
+
+  it('does not delete existing values in array', async () => {
+    await testEditJsonHandler(
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: ['Komi']
+      },
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: ['Komi', 'Elaina']
+      },
+      (preset) => {
+        return preset.editJson('file.json').merge({
+          protagonists: ['Elaina']
+        });
+      },
+    );
+  });
+
+
+  it('merges content only once when content is already existing in array', async () => {
+    await testEditJsonHandler(
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: ['Komi']
+      },
+      {
+        manga: 'Komi-san Cannot Communicate',
+        protagonists: ['Komi', 'Tadano']
+      },
+      (preset) => {
+        return preset.editJson('file.json').merge({
+          protagonists: ['Komi', 'Tadano']
+        });
+      },
+    );
+  });
+})
 
 it('deletes the properties at the given path', async () => {
   await testEditJsonHandler(
