@@ -3,6 +3,7 @@ import path from 'path';
 
 Preset.setName('Preset');
 Preset.option('install', true);
+Preset.option('git', true);
 
 // Asks for the preset name, defaulting to a name based on
 // the current Git configuration
@@ -38,6 +39,7 @@ Preset.group((preset) => {
   preset.execute('git', 'commit', '-m', '"chore: initialize repository"');
 })
   .withTitle('Initializing repository...')
+	.ifOption('git')
   .ifNotRepository();
 
 // Instruct
