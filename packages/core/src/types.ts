@@ -98,3 +98,39 @@ export interface PresetContext {
 		instance: SimpleGit
 	}
 }
+
+export interface ApplyOptions {
+	/**
+	 * A string that resolves to a preset.
+	 *
+	 * @see the-docs
+	 */
+	resolvable: string
+
+	/**
+	 * The *absolute* path to the directory in which to apply the preset.
+	 */
+	targetDirectory: string
+
+	/**
+	 * The command-line arguments, without the first two from argv.
+	 */
+	args: string[]
+
+	/**
+   * List of command line options.
+   */
+	options: {
+		/**
+		 * The path to a sub-directory in which to look for a preset.
+		 */
+		path?: string
+
+		/**
+		 * Whether to use SSH.
+		 */
+		ssh?: boolean
+
+		[k: string]: any
+	}
+}
