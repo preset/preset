@@ -9,7 +9,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/preset/preset.git"
+    "url": "git+https://github.com/preset/preset.git",
+    "directory": "packages/core"
   },
   "exports": {
     ".": {
