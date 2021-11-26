@@ -1,124 +1,7 @@
-import { Promisable } from 'type-fest'
+import { debug } from './utils'
 import { emitter } from './events'
-import { makeDebugger, makeDynamicDebugger } from './utils'
-
-export type ActionResult = boolean
-export type ActionHandlerParameters<T = void> = {
-	context: PresetContext
-	options: T
-}
-export type ActionHandler<T = void> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
-export type Action<T = void> = (options: T) => Promise<void>
-
-export type PresetResult = boolean | void
-export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
-export interface Preset {
-	name: string
-	apply: (context?: PresetContext) => Promise<void>
-}
-
-/**
- * Represents the context of a preset.
- */
-export interface PresetContext {
-	/**
-	 * The preset name.
-	 */
-	name: string
-
-	/**
-	 * Parsed command-line flags.
-	 */
-	flags: {
-		[name: string]: any
-	}
-
-	/**
-	 * @internal
-	 */
-	errors: Array<{ action: string; error: Error }>
-}
-
-/**
- * Represents the options that define a preset.
- */
-export interface PresetOptions {
-	/**
-	 * The preset name.
-	 */
-	name: string
-
-	/**
-	 * Definitions of command line flags.
-	 */
-	flags: {
-		[name: string]: any
-	}
-
-	/**
-	 * The preset's script handler.
-	 */
-	handler: PresetHandler
-}
-
-const debug = {
-	core: makeDebugger('preset:core'),
-	action: makeDynamicDebugger('preset:action'),
-	preset: makeDynamicDebugger('preset:execution'),
-	// action: (name: string, formatter: any, ...args: any[]) => createDebugger(`preset:action:${name}`)(formatter, ...args),
-	// preset: (name: string, formatter: any, ...args: any[]) => createDebugger(`preset:execution:${name}`)(formatter, ...args),
-}
-
-/**
- * Context map, in order of execution.
- */
-const contexts: PresetContext[] = []
-
-/**
- * Creates the context for the given preset.
- */
-function createPresetContext(options: PresetOptions): PresetContext {
-	debug.core(`Creating a new context for "${options.name}".`)
-
-	const context = {
-		name: options.name,
-		flags: options.flags, // TODO
-		errors: [],
-	}
-
-	debug.core('Adding context to the stack:', context)
-	contexts.push(context)
-
-	return context
-}
-
-/**
- * Gets the context for the current preset.
- */
-function getCurrentContext(): PresetContext | undefined {
-	debug.core('Retrieving the current context.')
-
-	const context = contexts.at(-1)
-
-	if (!context) {
-		debug.core('Context could not be found in the context stack. This might cause issues.')
-	}
-
-	debug.core('Current context:', context)
-
-	return context
-}
-
-/**
- * Removes the current context from the context stacks.
- */
-function destroyCurrentContext(): void {
-	debug.core('Destroying the current context.')
-
-	if (!contexts.pop()) {
-		debug.core('No context found to destroy')
-	}
-}
+import { destroyCurrentContext, getCurrentContext } from './context'
+import type { PresetOptions, Preset, ActionHandler, Action, PresetContext } from './types'
 
 /**
  * Defines a preset.
@@ -134,9 +17,6 @@ export function definePreset(options: PresetOptions): Preset {
 			emitter.emit('preset:start', options.name)
 
 			try {
-				// Creates context if needed
-				context ??= createPresetContext(options)
-
 				debug.preset(options.name, 'Preset context:', context)
 				debug.preset(options.name, 'Executing handler.')
 

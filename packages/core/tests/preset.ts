@@ -1,20 +1,31 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
-import { PresetHandler, defineAction, definePreset, emitter } from '../src'
+import { defineAction, definePreset, emitter } from '../src'
+import { createPresetContext } from '../src/context'
+import type { PresetHandler } from '../src/types'
 
 const successfulAction = defineAction('successful-action', () => true)
 const failingAction = defineAction('failing-action', () => false)
-const makeTestPreset = (handler: PresetHandler) => definePreset({
-	name: 'test-preset',
-	flags: {
-		auth: true,
-	},
-	handler,
-})
+const makeTestPreset = async(handler: PresetHandler) => {
+	const preset = definePreset({
+		name: 'test-preset',
+		flags: {
+			auth: true,
+		},
+		handler,
+	})
+
+	const context = await createPresetContext(preset, {
+		args: [],
+		targetDirectory: '',
+	})
+
+	return { preset, context }
+}
 
 test('it runs a preset and its actions', async() => {
 	const result = { name: '', successful: false, successfulActions: 0 }
-	const preset = makeTestPreset(async() => {
+	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
 		await successfulAction()
 	})
@@ -23,7 +34,7 @@ test('it runs a preset and its actions', async() => {
 	emitter.on('action:success', () => result.successfulActions += 1)
 	emitter.on('preset:success', () => result.successful = true)
 
-	await preset.apply()
+	await preset.apply(context)
 
 	assert.is(result.name, 'test-preset')
 	assert.is(result.successful, true)
@@ -32,7 +43,7 @@ test('it runs a preset and its actions', async() => {
 
 test('it runs a preset and its actions and fails gracefully', async() => {
 	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0 }
-	const preset = makeTestPreset(async() => {
+	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
 		await failingAction()
 		await successfulAction()
@@ -43,7 +54,7 @@ test('it runs a preset and its actions and fails gracefully', async() => {
 	emitter.on('action:failed', () => result.failedActions += 1)
 	emitter.on('preset:success', () => result.successful = true)
 
-	await preset.apply()
+	await preset.apply(context)
 
 	assert.is(result.name, 'test-preset')
 	assert.is(result.successful, false)
@@ -59,7 +70,7 @@ test('it runs actions with parameters', async() => {
 		return true
 	})
 
-	const preset = makeTestPreset(async() => {
+	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
 		await parameterizedAction({ flag: 'flagged' })
 	})
@@ -67,7 +78,7 @@ test('it runs actions with parameters', async() => {
 	emitter.on('preset:start', (name) => result.name = name)
 	emitter.on('preset:success', () => result.successful = true)
 
-	await preset.apply()
+	await preset.apply(context)
 
 	assert.is(result.name, 'test-preset')
 	assert.is(result.actionFlag, 'flagged')
