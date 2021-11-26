@@ -1,4 +1,4 @@
-import { definePreset, extractTemplate } from '@preset/core'
+import { definePreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
 	name: '%presetName%',
@@ -6,7 +6,7 @@ export default definePreset({
 		// ...
 	},
 	handler: async() => {
-		await extractTemplate()
+		await extractTemplates()
 		// ...
 	},
 })

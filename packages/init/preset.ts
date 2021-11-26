@@ -1,4 +1,4 @@
-import { definePreset, extractTemplate, editFiles } from '@preset/core'
+import { definePreset, extractTemplates, editFiles } from '@preset/core'
 
 export default definePreset({
 	name: 'laravel:inertia',
@@ -15,7 +15,7 @@ export default definePreset({
 			.join('-')
 			.replace(/'/, "\\'")
 
-		await extractTemplate()
+		await extractTemplates({})
 		await editFiles({
 			files: '**/**',
 			replaceVariables: {
@@ -25,11 +25,11 @@ export default definePreset({
 			},
 		})
 
-		if (context.flags.install) {
+		if (context.options.install) {
 			await installDependencies()
 		}
 
-		if (context.flags.git) {
+		if (context.options.git) {
 			await shell('git init')
 			await shell('git add .')
 			await shell('git commit -m "chore: initialize preset"')
