@@ -1,0 +1,50 @@
+{
+  "name": "@preset/core",
+  "version": "0.3.0",
+  "license": "MIT",
+  "author": "Enzo Innocenzi",
+  "description": "Elegant, ecosystem-agnostic preset mechanism",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/preset/preset.git"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bugs": "https://github.com/preset/preset/issues",
+  "homepage": "https://preset.dev",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "test": "uvu -r esbuild-register tests",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/fs-extra": "^9.0.13",
+    "esbuild": "^0.13.5",
+    "esbuild-register": "^3.0.0",
+    "standard-version": "^9.3.1",
+    "tsup": "^5.4.0",
+    "type-fest": "^2.5.1",
+    "typescript": "^4.4.4",
+    "uvu": "^0.5.2"
+  },
+  "dependencies": {
+    "bundle-require": "^1.3.0",
+    "cac": "^6.7.11",
+    "debug": "4.3.2",
+    "fs-extra": "^10.0.0",
+    "nanoevents": "^6.0.2",
+    "simple-git": "^2.46.0"
+  }
+}
