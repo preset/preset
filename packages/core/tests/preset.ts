@@ -62,17 +62,26 @@ test('it runs a preset and its actions and fails gracefully', async() => {
 	assert.is(result.failedActions, 1)
 })
 
-test('it runs actions with parameters', async() => {
-	const result = { name: '', actionFlag: '', successful: false }
+test('it runs actions with parameters and default parameters', async() => {
+	const result = { name: '', actionFlag: '', actionDefaultFlag: '', successful: false }
 	const parameterizedAction = defineAction<{ flag: string }>('parameterized-action', ({ options }) => {
 		result.actionFlag = options.flag
 
 		return true
 	})
 
+	const parameterizedActionWithDefault = defineAction<{ flag?: string }>('parameterized-action-with-default', ({ options }) => {
+		result.actionDefaultFlag = options.flag
+
+		return true
+	}, {
+		flag: 'default-flag',
+	})
+
 	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
 		await parameterizedAction({ flag: 'flagged' })
+		await parameterizedActionWithDefault({})
 	})
 
 	emitter.on('preset:start', (name) => result.name = name)
@@ -82,6 +91,7 @@ test('it runs actions with parameters', async() => {
 
 	assert.is(result.name, 'test-preset')
 	assert.is(result.actionFlag, 'flagged')
+	assert.is(result.actionDefaultFlag, 'default-flag')
 	assert.is(result.successful, true)
 })
 

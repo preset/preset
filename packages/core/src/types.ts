@@ -1,10 +1,10 @@
 import { ConfigValues, SimpleGit } from 'simple-git'
-import { Promisable } from 'type-fest'
+import { Promisable, ReadonlyDeep } from 'type-fest'
 
 export type ActionResult = boolean
 export type ActionHandlerParameters<T = void> = {
 	context: PresetContext
-	options: T
+	options: ReadonlyDeep<Required<T>>
 }
 
 export type ActionHandler<T = void> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>

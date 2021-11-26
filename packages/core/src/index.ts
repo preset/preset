@@ -1,3 +1,4 @@
+import { ReadonlyDeep } from 'type-fest'
 import { debug } from './utils'
 import { emitter } from './events'
 import { destroyCurrentContext, getCurrentContext } from './context'
@@ -53,15 +54,20 @@ export function definePreset(options: PresetOptions): Preset {
  * @param name The action name.
  * @param preset The action's script.
  */
-export function defineAction<T = void>(name: string, action: ActionHandler<T>): Action<T> {
-	return async(options: T) => {
+export function defineAction<T = void>(name: string, action: ActionHandler<T>, defaultOptions?: Required<T>): Action<T> {
+	return async(options) => {
 		debug.action(name, `Running action "${name}".`)
 		emitter.emit('action:start', name)
 
 		const context = getCurrentContext()
 
 		try {
-			if (!await action({ options, context: context as PresetContext })) {
+			const resolved = {
+				...defaultOptions ?? {},
+				...options ?? {},
+			} as ReadonlyDeep<Required<T>>
+
+			if (!await action({ options: resolved, context: context as PresetContext })) {
 				debug.action(name, 'Action handler returned false, throwing.')
 				throw new Error('Action failed without throwing.')
 			}
