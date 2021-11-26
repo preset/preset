@@ -1,0 +1,9 @@
+{
+	"private": true,
+  "author": "%author%",
+  "license": "MIT",
+  "preset": "preset.ts",
+  "devDependencies": {
+    "@preset/core": "*"
+  }
+}
