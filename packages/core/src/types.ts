@@ -14,6 +14,7 @@ export type PresetResult = boolean | void
 export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
 export interface Preset {
 	name: string
+	flags: { [name: string]: any }
 	apply: (context: PresetContext) => Promise<void>
 }
 

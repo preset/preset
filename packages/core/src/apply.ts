@@ -1,23 +1,26 @@
+import type { ApplyOptions } from './types'
 import { createPresetContext } from './context'
-import type { Preset, ApplyOptions } from './types'
+import { importPresetFile } from './import'
+import { resolvePreset } from './resolve'
+import { debug } from './utils'
 
+/**
+ * Applies the given preset.
+ */
 export async function applyPreset(options: ApplyOptions) {
-	// resolve
-	// TODO
+	try {
+		debug.apply(`Applying preset ${options.resolvable} into ${options.targetDirectory}.`)
 
-	// cache
-	// TODO
+		const presetFile = await resolvePreset(options.resolvable)
+		const preset = await importPresetFile(presetFile)
+		const context = await createPresetContext(preset, {
+			args: options.args,
+			targetDirectory: options.targetDirectory,
+		})
 
-	// import
-	// TODO
-	const preset = null as unknown as Preset
-
-	// create context
-	const context = await createPresetContext(preset, {
-		args: options.args,
-		targetDirectory: options.targetDirectory,
-	})
-
-	// apply
-	await preset.apply(context)
+		await preset.apply(context)
+	} catch (error) {
+		debug.apply('Preset application failed.')
+		debug.apply(error)
+	}
 }

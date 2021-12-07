@@ -1,6 +1,9 @@
 import createDebugger from 'debug'
 
 export const debug = {
+	apply: makeDebugger('preset:core:apply'),
+	resolve: makeDebugger('preset:core:resolve'),
+	import: makeDebugger('preset:core:import'),
 	context: makeDebugger('preset:core:context'),
 	action: makeDynamicDebugger('preset:core:action'),
 	preset: makeDynamicDebugger('preset:core:execution'),

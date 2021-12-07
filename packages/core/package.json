@@ -26,7 +26,7 @@
   "homepage": "https://preset.dev",
   "scripts": {
     "build": "tsup src/index.ts --dts --format cjs,esm",
-    "test": "uvu -r esbuild-register tests",
+    "test": "uvu -r esbuild-register -i fixtures tests",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
@@ -46,6 +46,7 @@
     "debug": "4.3.2",
     "fs-extra": "^10.0.0",
     "nanoevents": "^6.0.2",
+    "pkg-types": "^0.3.2",
     "simple-git": "^2.46.0"
   }
 }

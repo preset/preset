@@ -4,7 +4,7 @@ import { debug } from './utils'
 import type { ContextCreationOptions, Preset, PresetContext } from './types'
 
 /**
- * Context map, in order of execution.
+ * Context list, in order of execution.
  */
 const contexts: PresetContext[] = []
 

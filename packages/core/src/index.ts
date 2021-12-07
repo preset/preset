@@ -13,6 +13,7 @@ import type { PresetOptions, Preset, ActionHandler, Action, PresetContext } from
 export function definePreset(options: PresetOptions): Preset {
 	return {
 		name: options.name,
+		flags: options.flags,
 		apply: async(context) => {
 			debug.preset(options.name, `Applying preset "${options.name}".`)
 			emitter.emit('preset:start', options.name)
