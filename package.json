@@ -3,7 +3,8 @@
   "scripts": {
     "build": "pnpm -r --filter ./packages run build",
     "lint": "eslint **/*.ts",
-		"test": "pnpm -r --filter ./packages run test"
+		"test": "pnpm -r --filter ./packages run test",
+		"test:core": "pnpm --filter *core run test"
   },
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.4.0",
