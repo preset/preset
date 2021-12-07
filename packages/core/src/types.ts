@@ -30,7 +30,7 @@ export interface PresetOptions {
 	/**
 	 * Definitions of command line flags.
 	 */
-	flags: {
+	flags?: {
 		[name: string]: any
 	}
 
