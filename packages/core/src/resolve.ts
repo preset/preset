@@ -1,9 +1,12 @@
 import * as fsp from 'fs/promises'
+import path from 'path'
 import { findNearestFile, readPackageJSON } from 'pkg-types'
 import { debug } from './utils'
 
 /**
  * Resolves the preset and returns its path.
+ *
+ * TODO: support other resolvables than paths to a directory or preset file.
  */
 export async function resolvePreset(resolvable: string) {
 	// if relative path -> use it
@@ -12,7 +15,7 @@ export async function resolvePreset(resolvable: string) {
 
 	// https://github.com/tiged/tiged
 
-	return ''
+	return resolveFromFilesystem(resolvable)
 }
 
 async function resolveFromGitHub(resolvable: string) {
@@ -22,16 +25,24 @@ async function resolveFromGitHub(resolvable: string) {
 
 async function resolveFromFilesystem(resolvable: string) {
 	debug.resolve(`Resolving from filesystem: ${resolvable}`)
-	const access = await fsp.stat(resolvable).catch(() => undefined)
+
+	// if exists + is absolute
+	// if exists + starts with '/' or './' or '../'
+
+	const access = await fsp.stat(resolvable).catch((e) => {
+		debug.resolve(e)
+	})
 
 	if (!access) {
 		debug.resolve(`${resolvable} does not exist on disk.`)
-		throw new Error(`Could not resolve ${resolvable}.`)
+		throw new Error(`Could not resolve "${resolvable}".`)
 	}
 
-	return access.isDirectory()
-		? resolvePresetFile(resolvable)
+	const file = access.isDirectory()
+		? await resolvePresetFile(resolvable)
 		: resolvable
+
+	return path.resolve(file)
 }
 
 /**
