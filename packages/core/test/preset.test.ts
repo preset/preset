@@ -1,5 +1,4 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { it, assert } from 'vitest'
 import { defineAction, definePreset, emitter } from '../src'
 import { createPresetContext } from '../src/context'
 import type { PresetHandler } from '../src/types'
@@ -23,7 +22,7 @@ const makeTestPreset = async(handler: PresetHandler) => {
 	return { preset, context }
 }
 
-test('it runs a preset and its actions', async() => {
+it('runs a preset and its actions', async() => {
 	const result = { name: '', successful: false, successfulActions: 0 }
 	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
@@ -36,12 +35,12 @@ test('it runs a preset and its actions', async() => {
 
 	await preset.apply(context)
 
-	assert.is(result.name, 'test-preset')
-	assert.is(result.successful, true)
-	assert.is(result.successfulActions, 2)
+	assert.equal(result.name, 'test-preset')
+	assert.equal(result.successful, true)
+	assert.equal(result.successfulActions, 2)
 })
 
-test('it runs a preset and its actions and fails gracefully', async() => {
+it('runs a preset and its actions and fails gracefully', async() => {
 	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0 }
 	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
@@ -56,13 +55,13 @@ test('it runs a preset and its actions and fails gracefully', async() => {
 
 	await preset.apply(context)
 
-	assert.is(result.name, 'test-preset')
-	assert.is(result.successful, false)
-	assert.is(result.successfulActions, 2)
-	assert.is(result.failedActions, 1)
+	assert.equal(result.name, 'test-preset')
+	assert.equal(result.successful, false)
+	assert.equal(result.successfulActions, 2)
+	assert.equal(result.failedActions, 1)
 })
 
-test('it runs actions with parameters and default parameters', async() => {
+it('runs actions with parameters and default parameters', async() => {
 	const result = { name: '', actionFlag: '', actionDefaultFlag: '', successful: false }
 	const parameterizedAction = defineAction<{ flag: string }>('parameterized-action', ({ options }) => {
 		result.actionFlag = options.flag
@@ -89,10 +88,8 @@ test('it runs actions with parameters and default parameters', async() => {
 
 	await preset.apply(context)
 
-	assert.is(result.name, 'test-preset')
-	assert.is(result.actionFlag, 'flagged')
-	assert.is(result.actionDefaultFlag, 'default-flag')
-	assert.is(result.successful, true)
+	assert.equal(result.name, 'test-preset')
+	assert.equal(result.actionFlag, 'flagged')
+	assert.equal(result.actionDefaultFlag, 'default-flag')
+	assert.equal(result.successful, true)
 })
-
-test.run()

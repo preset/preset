@@ -1,5 +1,4 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { test, assert } from 'vitest'
 import { defineAction, emitter } from '../src'
 
 test('an action emits a fail event', async() => {
@@ -17,12 +16,12 @@ test('an action emits a fail event', async() => {
 	await failingAction()
 	await throwingAction()
 
-	assert.equal(result.names, [
+	assert.sameOrderedMembers(result.names, [
 		'failing-action',
 		'throwing-action',
 	])
 
-	assert.equal(result.errors, [
+	assert.sameOrderedMembers(result.errors, [
 		'Action failed without throwing.',
 		'Action failed with throwing.',
 	])
@@ -57,11 +56,9 @@ test('all actions emit an end event', async() => {
 	await failingAction()
 	await throwingAction()
 
-	assert.equal(result.names, [
+	assert.sameOrderedMembers(result.names, [
 		'successful-action',
 		'failing-action',
 		'throwing-action',
 	])
 })
-
-test.run()

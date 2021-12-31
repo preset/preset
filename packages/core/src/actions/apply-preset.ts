@@ -1,4 +1,4 @@
-import { defineAction } from '..'
+import { defineAction } from '../api'
 
 interface ApplyPresetOptions {
 	resolvable: string

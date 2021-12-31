@@ -1,13 +1,12 @@
 import path from 'path'
-import * as assert from 'uvu/assert'
-import { test } from 'uvu'
+import { it, assert } from 'vitest'
 import { importPresetFile } from '../src/import'
 
-test('typescript presets can be imported', async() => {
+it('imports typescript presets', async() => {
 	const presetPath = path.resolve(__dirname, './fixtures/basic-preset.ts')
 	const preset = await importPresetFile(presetPath)
 
-	assert.fixture(JSON.stringify(preset), JSON.stringify({
+	assert.equal(JSON.stringify(preset), JSON.stringify({
 		name: 'basic-preset',
 		flags: {
 			install: true,
@@ -16,5 +15,3 @@ test('typescript presets can be imported', async() => {
 		apply: async() => {},
 	}))
 })
-
-test.run()

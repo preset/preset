@@ -3,19 +3,21 @@
   "scripts": {
     "build": "pnpm -r --filter ./packages run build",
     "lint": "eslint **/*.ts",
-		"test": "pnpm -r --filter ./packages run test",
-		"test:core": "pnpm --filter *core run test"
+    "test": "pnpm -r --filter ./packages run test",
+    "test:core": "pnpm -C ./packages/core run test"
   },
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
     "eslint": "^7.32.0",
-    "@types/node": "^16.10.8",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.4",
+    "vite": "^2.7.6",
+    "vitest": "^0.0.112"
   },
-	"pnpm": {
-		"overrides": {
-			"eslint": "^7.32.0"
-		}
-	}
+  "pnpm": {
+    "overrides": {
+      "eslint": "^7.32.0"
+    }
+  }
 }

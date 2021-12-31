@@ -1,9 +1,8 @@
 import path from 'path'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { it, assert } from 'vitest'
 import { resolvePreset } from '../src/resolve'
 
-test('a file preset can be resolved', async() => {
+it.skip('resolves file presets', async() => {
 	const resolveMap = [
 		['./tests/fixtures/basic-preset.ts', path.resolve(__dirname, './fixtures/basic-preset.ts')],
 		['./tests/fixtures/preset-with-root-file', path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],
@@ -13,5 +12,3 @@ test('a file preset can be resolved', async() => {
 		assert.equal(await resolvePreset(input), output)
 	}
 })
-
-test.run()

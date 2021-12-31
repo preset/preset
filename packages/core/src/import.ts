@@ -10,7 +10,10 @@ export async function importPresetFile(filepath: string) {
 	debug.import(`Importing "${filepath}" with bundle-require."`)
 
 	// https://github.com/antfu/local-pkg
-	const result = await bundleRequire({ filepath })
+	const result = await bundleRequire({
+		filepath,
+		require: (id: string) => import(id),
+	})
 
-	return result.default ?? result
+	return result.mod.default ?? result.mod
 }
