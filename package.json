@@ -1,4 +1,5 @@
 {
+  "name": "@preset/monorepo",
   "private": true,
   "scripts": {
     "build": "pnpm -r --filter ./packages run build",
@@ -13,7 +14,9 @@
     "eslint": "^7.32.0",
     "typescript": "^4.5.4",
     "vite": "^2.7.6",
-    "vitest": "^0.0.112"
+    "vitest": "^0.0.112",
+		"@preset/core": "workspace:*",
+		"@preset/init": "workspace:*"
   },
   "pnpm": {
     "overrides": {

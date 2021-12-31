@@ -1,4 +1,4 @@
-import { definePreset, extractTemplates } from '../../../src/index'
+import { definePreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
 	name: 'preset-with-root-file',
