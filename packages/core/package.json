@@ -26,7 +26,7 @@
   "homepage": "https://preset.dev",
   "scripts": {
     "build": "tsup src/index.ts --dts --format cjs,esm",
-    "test": "vitest --run --reporter=verbose",
+    "test": "vitest --run --reporter=verbose --no-threads",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
@@ -43,7 +43,6 @@
     "vitest": "0.0.112"
   },
   "dependencies": {
-    "bundle-require": "^2.2.0",
     "cac": "^6.7.12",
     "debug": "4.3.3",
     "fs-extra": "^10.0.0",

@@ -3,7 +3,6 @@ lockfileVersion: 5.3
 specifiers:
   '@types/debug': ^4.1.7
   '@types/fs-extra': ^9.0.13
-  bundle-require: ^2.2.0
   cac: ^6.7.12
   debug: 4.3.3
   esbuild: ^0.14.9
@@ -20,7 +19,6 @@ specifiers:
   vitest: 0.0.112
 
 dependencies:
-  bundle-require: 2.2.0_esbuild@0.14.9
   cac: 6.7.12
   debug: 4.3.3
   fs-extra: 10.0.0
@@ -239,6 +237,7 @@ packages:
       esbuild: '>=0.13'
     dependencies:
       esbuild: 0.14.9
+    dev: true
 
   /cac/6.7.12:
     resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
