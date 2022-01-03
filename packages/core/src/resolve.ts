@@ -172,6 +172,7 @@ export async function resolvePresetFile(directory: string) {
  */
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
 	const targetDirectory = path.resolve(tmp, 'presets', preset.repository)
+	const useCache = options?.commandLine?.cache === undefined ? true : options?.commandLine?.cache
 	const cloneWithSsh = options?.commandLine?.ssh === undefined ? preset.ssh : options.commandLine.ssh
 	const repositoryUrl = cloneWithSsh
 		? `git@github.com:${preset.organization}/${preset.repository}.git`
@@ -181,20 +182,24 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 	if (fs.statSync(targetDirectory, { throwIfNoEntry: false })?.isDirectory()) {
 		debug.resolve(`${repositoryUrl} already exists, checking if up-to-date.`)
 
-		const remoteLatest = await git().listRemote([repositoryUrl, preset.tag ?? 'HEAD'])
-		debug.resolve(`Remote latest commit: ${remoteLatest}.`)
+		const remoteLatest = (await git().listRemote([repositoryUrl, tag ?? 'HEAD'])).replace('HEAD', '').trim()
+		debug.resolve(`Remote latest commit: ${remoteLatest} (${tag ?? 'HEAD'}).`)
 
-		const localLatest = await git().revparse(preset.tag ?? 'HEAD')
-		debug.resolve(`Local latest commit: ${localLatest}.`)
+		const localLatest = await git(targetDirectory).revparse(tag ?? 'HEAD')
+		debug.resolve(`Local latest commit: ${localLatest} (${tag ?? 'HEAD'}).`)
 
-		// If it doesn't match, remove the target directory
-		if (remoteLatest.startsWith(localLatest)) {
+		// If it doesn't match, remove the target directory - unless we don't want to use the cache
+		if (useCache && remoteLatest === localLatest) {
 			debug.resolve('Local repository is up-to-date, skipping cloning.')
 
 			return targetDirectory
 		}
 
-		debug.resolve('Local repository is outdated, removing directory and cloning again.')
+		debug.resolve(
+			!useCache
+				? '--no-cache has been used, removing directory and cloning again.'
+				: 'Local repository is outdated, removing directory and cloning again.',
+		)
 		await fs.promises.rm(targetDirectory, { recursive: true, force: true })
 	}
 

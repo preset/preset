@@ -130,6 +130,11 @@ export interface ApplyOptions {
 		 */
 		ssh?: boolean
 
+		/**
+		 * Whether to use cache.
+		 */
+		cache?: boolean
+
 		[k: string]: any
 	}
 }
