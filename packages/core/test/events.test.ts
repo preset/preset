@@ -8,7 +8,7 @@ test('an action emits a fail event', async() => {
 		throw new Error('Action failed with throwing.')
 	})
 
-	emitter.on('action:failed', (name, error) => {
+	emitter.on('action:fail', (name, context, error) => {
 		result.names.push(name)
 		result.errors.push(error.message)
 	})

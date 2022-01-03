@@ -6,11 +6,11 @@ export const emitter = createNanoEvents<{
 	'preset:start': (context: PresetContext) => void
 	'preset:end': (context: PresetContext) => void
 	'preset:success': (context: PresetContext) => void
-	'preset:failed': (context: PresetContext, error: Error) => void
+	'preset:fail': (context: PresetContext, error: Error) => void
 
 	// Actions
-	'action:start': (context: PresetContext) => void
-	'action:end': (context: PresetContext) => void
-	'action:success': (context: PresetContext) => void
-	'action:failed': (context: PresetContext, error: Error) => void
+	'action:start': (name: string, context: PresetContext) => void
+	'action:end': (name: string, context: PresetContext) => void
+	'action:success': (name: string, context: PresetContext) => void
+	'action:fail': (name: string, context: PresetContext, error: Error) => void
 }>()

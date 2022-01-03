@@ -2,7 +2,7 @@ import cac from 'cac'
 import simpleGit from 'simple-git'
 import { randomUUID } from 'node:crypto'
 import { debug } from './utils'
-import type { ContextCreationOptions, Preset, PresetContext } from './types'
+import type { Preset, PresetContext, ApplyOptions } from './types'
 
 /**
  * Context list, in order of execution.
@@ -12,11 +12,11 @@ const contexts: PresetContext[] = []
 /**
   * Creates the context for the given preset.
   */
-export async function createPresetContext(preset: Preset, options: ContextCreationOptions): Promise<PresetContext> {
+export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions): Promise<PresetContext> {
 	debug.context(`Creating a new context for "${preset.name}".`)
 
 	const context: PresetContext = {
-		...cac().parse(['', '', ...options.args]),
+		...cac().parse(['', '', ...applyOptions.args]),
 		id: randomUUID(),
 		name: preset.name,
 		errors: [],
@@ -24,6 +24,7 @@ export async function createPresetContext(preset: Preset, options: ContextCreati
 			instance: simpleGit(process.cwd()),
 			config: (await simpleGit().listConfig()).all,
 		},
+		applyOptions,
 	}
 
 	debug.context('Adding context to the stack:', context)

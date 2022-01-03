@@ -1,4 +1,4 @@
-import { it, assert } from 'vitest'
+import { it, assert, expect } from 'vitest'
 import { defineAction, definePreset, emitter } from '../src'
 import { createPresetContext } from '../src/context'
 import type { PresetHandler } from '../src/types'
@@ -15,6 +15,7 @@ const makeTestPreset = async(handler: PresetHandler) => {
 	})
 
 	const context = await createPresetContext(preset, {
+		resolvable: '',
 		args: [],
 		targetDirectory: '',
 	})
@@ -29,7 +30,7 @@ it('runs a preset and its actions', async() => {
 		await successfulAction()
 	})
 
-	emitter.on('preset:start', (name) => result.name = name)
+	emitter.on('preset:start', ({ name }) => result.name = name)
 	emitter.on('action:success', () => result.successfulActions += 1)
 	emitter.on('preset:success', () => result.successful = true)
 
@@ -40,25 +41,29 @@ it('runs a preset and its actions', async() => {
 	assert.equal(result.successfulActions, 2)
 })
 
-it('runs a preset and its actions and fails gracefully', async() => {
-	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0 }
+it('runs a preset and its actions and fails at the end', async() => {
+	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0, ended: false }
 	const { preset, context } = await makeTestPreset(async() => {
 		await successfulAction()
 		await failingAction()
 		await successfulAction()
 	})
 
-	emitter.on('preset:start', (name) => result.name = name)
+	emitter.on('preset:start', ({ name }) => result.name = name)
 	emitter.on('action:success', () => result.successfulActions += 1)
-	emitter.on('action:failed', () => result.failedActions += 1)
+	emitter.on('action:fail', () => result.failedActions += 1)
 	emitter.on('preset:success', () => result.successful = true)
+	emitter.on('preset:end', () => result.ended = true)
 
 	await preset.apply(context)
 
-	assert.equal(result.name, 'test-preset')
-	assert.equal(result.successful, false)
-	assert.equal(result.successfulActions, 2)
-	assert.equal(result.failedActions, 1)
+	expect(result).toMatchObject({
+		name: 'test-preset',
+		successful: false,
+		ended: true,
+		successfulActions: 2,
+		failedActions: 1,
+	})
 })
 
 it('runs actions with parameters and default parameters', async() => {
@@ -83,7 +88,7 @@ it('runs actions with parameters and default parameters', async() => {
 		await parameterizedActionWithDefault({})
 	})
 
-	emitter.on('preset:start', (name) => result.name = name)
+	emitter.on('preset:start', ({ name }) => result.name = name)
 	emitter.on('preset:success', () => result.successful = true)
 
 	await preset.apply(context)

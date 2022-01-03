@@ -3,8 +3,18 @@ import { Promisable, ReadonlyDeep } from 'type-fest'
 
 export type ActionResult = boolean
 export type ActionHandlerParameters<T = void> = {
+	/**
+	 * The current preset's context.
+	 */
 	context: PresetContext
+	/**
+	 * Options given to this action.
+	 */
 	options: ReadonlyDeep<Required<T>>
+	/**
+	 * The current action's name.
+	 */
+	name: string
 }
 
 export type ActionHandler<T = void> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
@@ -15,7 +25,7 @@ export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
 export interface Preset {
 	name: string
 	flags: { [name: string]: any }
-	apply: (context: PresetContext) => Promise<void>
+	apply: (context: PresetContext) => Promise<boolean>
 }
 
 /**
@@ -103,6 +113,11 @@ export interface PresetContext {
 		 */
 		instance: SimpleGit
 	}
+
+	/**
+	 * Apply options.
+	 */
+	applyOptions: ApplyOptions
 }
 
 export interface ApplyOptions {
@@ -119,7 +134,7 @@ export interface ApplyOptions {
 	/**
 	 * The raw command-line arguments, without the first two from argv.
 	 */
-	args: string[]
+	args: readonly string[]
 
 	/**
    * List of command line options.

@@ -25,7 +25,7 @@
   "bugs": "https://github.com/preset/preset/issues",
   "homepage": "https://preset.dev",
   "scripts": {
-    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "build": "tsup src/index.ts --dts --format cjs,esm --external esbuild",
     "test": "vitest",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
@@ -34,9 +34,6 @@
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
     "esbuild": "^0.14.9",
-    "esbuild-register": "^3.3.1",
-    "standard-version": "^9.3.2",
-    "tsup": "^5.11.10",
     "type-fest": "^2.8.0",
     "typescript": "^4.5.4"
   },
