@@ -1,0 +1,4 @@
+{
+	"private": true,
+	"preset": "./my-preset.ts"
+}

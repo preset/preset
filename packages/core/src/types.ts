@@ -103,8 +103,6 @@ export interface PresetContext {
 export interface ApplyOptions {
 	/**
 	 * A string that resolves to a preset.
-	 *
-	 * @see the-docs
 	 */
 	resolvable: string
 
@@ -121,7 +119,7 @@ export interface ApplyOptions {
 	/**
    * List of command line options.
    */
-	options: {
+	commandLine: {
 		/**
 		 * The path to a sub-directory in which to look for a preset.
 		 */
@@ -134,4 +132,36 @@ export interface ApplyOptions {
 
 		[k: string]: any
 	}
+}
+
+/**
+ * Represents a resolved preset.
+ */
+export type ResolvedPreset = RepositoryPreset | LocalFilePreset | LocalDirectoryPreset
+
+/**
+ * Represents a preset in a distant repository.
+ */
+export interface RepositoryPreset {
+	type: 'repository'
+	organization: string
+	repository: string
+	ssh: boolean
+	tag?: string
+}
+
+/**
+ * Represents a preset in a local directory.
+ */
+export interface LocalDirectoryPreset {
+	type: 'directory'
+	path: string
+}
+
+/**
+ * Represents a local file preset.
+ */
+export interface LocalFilePreset {
+	type: 'file'
+	path: string
 }

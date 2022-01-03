@@ -26,7 +26,7 @@
   "homepage": "https://preset.dev",
   "scripts": {
     "build": "tsup src/index.ts --dts --format cjs,esm",
-    "test": "vitest --run --reporter=verbose --no-threads",
+    "test": "vitest",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
@@ -38,16 +38,14 @@
     "standard-version": "^9.3.2",
     "tsup": "^5.11.10",
     "type-fest": "^2.8.0",
-    "typescript": "^4.5.4",
-    "vite": "^2.7.10",
-    "vitest": "0.0.112"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "cac": "^6.7.12",
     "debug": "4.3.3",
     "fs-extra": "^10.0.0",
     "nanoevents": "^6.0.2",
-    "pkg-types": "^0.3.2",
-    "simple-git": "^2.48.0"
+    "simple-git": "^2.48.0",
+    "temp-dir": "^2.0.0"
   }
 }

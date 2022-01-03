@@ -2,7 +2,7 @@ import vm from 'vm'
 import fs from 'fs'
 import path from 'path'
 import { buildSync } from 'esbuild'
-import { Preset } from './types'
+import type { Preset } from './types'
 import { debug } from './utils'
 import * as preset from './index'
 
@@ -35,6 +35,7 @@ async function evaluateConfiguration(script: string, directory: string, filepath
 		const result = context[defaultExportKey] as Preset
 
 		if (!result.name || !result.apply) {
+			debug.import(result)
 			throw new Error('Preset configuration is missing a name or an apply handler.')
 		}
 

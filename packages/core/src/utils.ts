@@ -31,3 +31,7 @@ export function wrap<T>(value: T | T[]): T[] {
 
 	return value
 }
+
+export function invoke(fn: Function) {
+	return fn()
+}
