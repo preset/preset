@@ -39,6 +39,12 @@ it('parses repository presets', async() => {
 	])
 })
 
+it('parses namespaced preset aliases', async() => {
+	ensureParses([
+		['laravel:inertia', { organization: 'laravel-presets', repository: 'inertia', ssh: true, type: 'repository', tag: undefined }],
+	])
+})
+
 it('resolves preset files in a directory', async() => {
 	const map = [
 		['./test/fixtures/preset-with-root-file', path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],

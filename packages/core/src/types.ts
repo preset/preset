@@ -126,6 +126,11 @@ export interface ApplyOptions {
 		path?: string
 
 		/**
+		 * The tag of the repository.
+		 */
+		tag?: string
+
+		/**
 		 * Whether to use SSH.
 		 */
 		ssh?: boolean

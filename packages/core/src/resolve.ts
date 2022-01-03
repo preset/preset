@@ -32,7 +32,11 @@ export async function resolvePreset(options: ApplyOptions) {
 export async function parseResolvable(resolvable: string): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
 	debug.resolve('Working directory:', process.cwd())
 	debug.resolve('Parsing resolvable:', resolvable)
-	const resolved = await resolveLocalFile(resolvable) || await resolveLocalDirectory(resolvable) || await resolveGitHubRepository(resolvable)
+	const resolved
+		= await resolveNamespacedAlias(resolvable)
+		|| await resolveLocalFile(resolvable)
+		|| await resolveLocalDirectory(resolvable)
+		|| await resolveGitHubRepository(resolvable)
 
 	if (!resolved) {
 		throw new Error(`Could not resolve ${resolvable} as a local file, local directory or a repository.`)
@@ -128,6 +132,28 @@ export async function resolveLocalFile(resolvable: string): Promise<LocalFilePre
 }
 
 /**
+ * Resolves namespaced aliases.
+ *
+ * @example laravel:inertia => laravel-presets/inertia
+ */
+export async function resolveNamespacedAlias(resolvable: string): Promise<RepositoryPreset | false> {
+	debug.resolve('Trying to resolve an alias.')
+
+	if (!resolvable.match(/^([a-zA-Z][\w-]+):([a-zA-Z][\w-]+)$/)) {
+		return false
+	}
+
+	const [namespace, repository] = resolvable.split(':')
+
+	return {
+		type: 'repository',
+		ssh: true,
+		organization: `${namespace}-presets`,
+		repository,
+	}
+}
+
+/**
  * Resolves the preset file in the given directory.
  *
  * @param directory Absolute path to the directory in which to find the preset file.
@@ -174,6 +200,7 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 	const targetDirectory = path.resolve(tmp, 'presets', preset.repository)
 	const useCache = options?.commandLine?.cache === undefined ? true : options?.commandLine?.cache
 	const cloneWithSsh = options?.commandLine?.ssh === undefined ? preset.ssh : options.commandLine.ssh
+	const tag = (options?.commandLine?.tag === undefined ? preset.tag : options.commandLine.tag)
 	const repositoryUrl = cloneWithSsh
 		? `git@github.com:${preset.organization}/${preset.repository}.git`
 		: `https://github.com/${preset.organization}/${preset.repository}`
@@ -200,6 +227,7 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 				? '--no-cache has been used, removing directory and cloning again.'
 				: 'Local repository is outdated, removing directory and cloning again.',
 		)
+
 		await fs.promises.rm(targetDirectory, { recursive: true, force: true })
 	}
 
@@ -209,7 +237,7 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 	await git()
 		.clone(repositoryUrl, targetDirectory, {
 			'--depth': 1,
-			...(preset.tag && { '--branch': preset.tag }),
+			...(tag && { '--branch': tag }),
 		})
 
 	return targetDirectory
