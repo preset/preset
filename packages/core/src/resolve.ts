@@ -187,8 +187,11 @@ export async function resolvePresetFile(directory: string) {
 	const filepath = await ensureFile(pkg?.preset) ?? await ensureFile('preset.ts') ?? await ensureFile('src/preset.ts')
 
 	if (!filepath) {
+		debug.resolve(`Could not find the preset file in "${directory}".`)
 		throw new Error(`Could not find a preset file in "${directory}".`)
 	}
+
+	debug.resolve(`Found "${filepath}".`)
 
 	return filepath
 }

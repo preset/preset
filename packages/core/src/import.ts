@@ -88,6 +88,8 @@ function transformScript(contents: string, resolveDir: string, sourcefile: strin
 		write: false,
 	})
 
+	debug.import(`Transformed ${outputFiles.length}.`)
+
 	return outputFiles[0].text
 }
 

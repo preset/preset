@@ -1,15 +1,16 @@
 import { createNanoEvents } from 'nanoevents'
+import type { PresetContext } from './types'
 
 export const emitter = createNanoEvents<{
 	// Presets
-	'preset:start': (name: string) => void
-	'preset:end': (name: string) => void
-	'preset:success': (name: string) => void
-	'preset:failed': (name: string, error: Error) => void
+	'preset:start': (context: PresetContext) => void
+	'preset:end': (context: PresetContext) => void
+	'preset:success': (context: PresetContext) => void
+	'preset:failed': (context: PresetContext, error: Error) => void
 
 	// Actions
-	'action:start': (name: string) => void
-	'action:end': (name: string) => void
-	'action:success': (name: string) => void
-	'action:failed': (name: string, error: Error) => void
+	'action:start': (context: PresetContext) => void
+	'action:end': (context: PresetContext) => void
+	'action:success': (context: PresetContext) => void
+	'action:failed': (context: PresetContext, error: Error) => void
 }>()
