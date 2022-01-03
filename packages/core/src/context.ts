@@ -1,5 +1,6 @@
 import cac from 'cac'
 import simpleGit from 'simple-git'
+import { randomUUID } from 'node:crypto'
 import { debug } from './utils'
 import type { ContextCreationOptions, Preset, PresetContext } from './types'
 
@@ -16,6 +17,7 @@ export async function createPresetContext(preset: Preset, options: ContextCreati
 
 	const context: PresetContext = {
 		...cac().parse(['', '', ...options.args]),
+		id: randomUUID(),
 		name: preset.name,
 		errors: [],
 		git: {

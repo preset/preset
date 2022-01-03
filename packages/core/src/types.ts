@@ -65,6 +65,11 @@ export interface ContextCreationOptions {
  */
 export interface PresetContext {
 	/**
+	 * A unique (almost!) identifier.
+	 */
+	id: string
+
+	/**
 	 * The preset name.
 	 */
 	name: string
