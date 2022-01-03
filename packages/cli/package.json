@@ -1,0 +1,25 @@
+{
+	"name": "preset",
+	"version": "0.0.1",
+  "license": "MIT",
+  "author": "Enzo Innocenzi",
+  "description": "Elegant, ecosystem-agnostic preset mechanism",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/preset/preset.git",
+    "directory": "packages/cli"
+  },
+  "bin": {
+    "preset": "dist/cli.js"
+  },
+	"scripts": {
+		"prepublishOnly": "build",
+    "build": "tsup src/cli.ts"
+	},
+  "devDependencies": {
+    "@preset/core": "workspace:*"
+  }
+}

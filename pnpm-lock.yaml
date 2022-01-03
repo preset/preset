@@ -26,6 +26,12 @@ importers:
       vite: 2.7.10
       vitest: 0.0.128
 
+  packages/cli:
+    specifiers:
+      '@preset/core': workspace:*
+    devDependencies:
+      '@preset/core': link:../core
+
   packages/core:
     specifiers:
       '@types/debug': ^4.1.7
