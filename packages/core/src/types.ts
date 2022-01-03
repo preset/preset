@@ -112,14 +112,14 @@ export interface ApplyOptions {
 	targetDirectory: string
 
 	/**
-	 * The command-line arguments, without the first two from argv.
+	 * The raw command-line arguments, without the first two from argv.
 	 */
 	args: string[]
 
 	/**
    * List of command line options.
    */
-	commandLine: {
+	commandLine?: {
 		/**
 		 * The path to a sub-directory in which to look for a preset.
 		 */

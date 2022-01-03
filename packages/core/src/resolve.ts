@@ -73,15 +73,13 @@ export async function resolveGitHubRepository(resolvable: string): Promise<Repos
 				ssh: !resolvable.includes('http'),
 			}
 
-			debug.resolve('Resolved Git repository.', result)
-
 			return result
 		})
 		.filter(Boolean)
 		?.shift()
 
 	if (repository) {
-		debug.resolve('Successfully resolved as a local directory.')
+		debug.resolve('Successfully resolved as a repository.')
 
 		return repository
 	}
@@ -135,7 +133,7 @@ export async function resolveLocalFile(resolvable: string): Promise<LocalFilePre
  * @param directory Absolute path to the directory in which to find the preset file.
  */
 export async function resolvePresetFile(directory: string) {
-	debug.resolve(`Resolving preset file in "${directory}"."`)
+	debug.resolve(`Resolving preset file in "${directory}".`)
 
 	const pkg = invoke(() => {
 		try {
@@ -173,14 +171,14 @@ export async function resolvePresetFile(directory: string) {
  * Clones the repository to the disk.
  */
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
-	const targetDirectory = path.resolve(tmp, preset.repository)
-	const cloneWithSsh = options.commandLine.ssh === undefined ? preset.ssh : options.commandLine.ssh
+	const targetDirectory = path.resolve(tmp, 'presets', preset.repository)
+	const cloneWithSsh = options?.commandLine?.ssh === undefined ? preset.ssh : options.commandLine.ssh
 	const repositoryUrl = cloneWithSsh
 		? `git@github.com:${preset.organization}/${preset.repository}.git`
 		: `https://github.com/${preset.organization}/${preset.repository}`
 
 	// Checks if already cloned
-	if (fs.statSync(targetDirectory).isDirectory()) {
+	if (fs.statSync(targetDirectory, { throwIfNoEntry: false })?.isDirectory()) {
 		debug.resolve(`${repositoryUrl} already exists, checking if up-to-date.`)
 
 		const remoteLatest = await git().listRemote([repositoryUrl, preset.tag ?? 'HEAD'])
@@ -201,15 +199,13 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 	}
 
 	// Clones the repository
-	debug.resolve(`Cloning ${repositoryUrl} with${cloneWithSsh ? '' : 'out'} SSH.`)
+	debug.resolve(`Cloning ${repositoryUrl} with${cloneWithSsh ? '' : 'out'} SSH into ${targetDirectory}.`)
 
 	await git()
 		.clone(repositoryUrl, targetDirectory, {
 			'--depth': 1,
 			...(preset.tag && { '--branch': preset.tag }),
 		})
-
-	debug.resolve(`Successfully cloned ${repositoryUrl} into ${targetDirectory}.`)
 
 	return targetDirectory
 }
