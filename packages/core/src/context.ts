@@ -24,6 +24,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 			instance: simpleGit(process.cwd()),
 			config: (await simpleGit().listConfig()).all,
 		},
+		count: contexts.length,
 		applyOptions,
 	}
 

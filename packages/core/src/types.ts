@@ -118,6 +118,11 @@ export interface PresetContext {
 	 * Apply options.
 	 */
 	applyOptions: ApplyOptions
+
+	/**
+	 * Context count.
+	 */
+	count: Readonly<number>
 }
 
 export interface ApplyOptions {
