@@ -39,12 +39,15 @@ importers:
       '@preset/core': workspace:*
       cac: ^6.7.12
       chalk: ^5.0.0
+      debug: 4.3.3
       log-update: ^5.0.0
     dependencies:
       '@preset/core': link:../core
       cac: 6.7.12
       chalk: 5.0.0
       log-update: 5.0.0
+    devDependencies:
+      debug: 4.3.3
 
   packages/core:
     specifiers:

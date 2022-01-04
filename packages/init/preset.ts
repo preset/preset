@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { definePreset, applyNestedPreset } from '@preset/core'
+import { definePreset, applyNestedPreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
 	name: 'preset:initialize',
@@ -8,7 +8,8 @@ export default definePreset({
 		git: true,
 	},
 	handler: async(context) => {
-		await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts') })
+		await extractTemplates({ to: 'config' })
+		await applyNestedPreset({ title: 'nested preset', resolvable: path.resolve(__dirname, './nested-preset.ts') })
 		await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts'), args: ['fail'] })
 		await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts'), args: ['nest'] })
 		// const presetName = 'test' // await prompt('What is the name of the preset', ({ targetDirectory }) => path.basename(targetDirectory))

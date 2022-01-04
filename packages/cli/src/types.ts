@@ -1,8 +1,8 @@
-export interface Renderer {
+export interface Reporter {
 	name: string
 	registerEvents: () => void
 }
 
-export function makeRenderer(renderer: Renderer) {
+export function makeReporter(renderer: Reporter) {
 	return renderer
 }

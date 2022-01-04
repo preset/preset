@@ -29,5 +29,8 @@
     "cac": "^6.7.12",
     "chalk": "^5.0.0",
     "log-update": "^5.0.0"
+  },
+  "devDependencies": {
+    "debug": "4.3.3"
   }
 }

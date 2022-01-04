@@ -1,16 +1,16 @@
 import c from 'chalk'
 import { emitter } from '@preset/core'
-import { makeRenderer } from '../types'
+import { makeReporter } from '../types'
 import { contexts, getParentContext } from '../state'
 import { time, formatResult } from '../utils'
 
 // eslint-disable-next-line no-console
-const log = (...args: any[]) => console.log(' ', ...args)
+const logToConsole = (...args: any[]) => console.log(' ', ...args)
 
 // https://github.com/vitest-dev/vitest/blob/f2caced25fb0c5ac33368a8a64329467b796089e/packages/vitest/src/reporters/renderers/figures.ts
 const format = {
-	log,
-	indent: (indent: number, ...args: any[]) => log('  '.repeat(indent), ...args),
+	log: logToConsole,
+	indent: (indent: number, ...args: any[]) => logToConsole('  '.repeat(indent), ...args),
 	dim: (text: string)	=> c.gray(text),
 	highlight: (text: string)	=> c.bold(`${text}`),
 	fail: (text: string)	=> c.red.bold(text),
@@ -21,7 +21,7 @@ const format = {
 	cross: c.red.bold('×'),
 }
 
-export const logRenderer = makeRenderer({
+export const log = makeReporter({
 	name: 'log',
 	registerEvents: () => {
 		format.log()

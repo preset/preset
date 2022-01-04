@@ -1,7 +1,7 @@
 import { enable } from 'debug'
-import { makeRenderer } from '../types'
+import { makeReporter } from '../types'
 
-export const debugRenderer = makeRenderer({
+export const debug = makeReporter({
 	name: 'debug',
 	registerEvents: () => enable('preset:*'),
 })

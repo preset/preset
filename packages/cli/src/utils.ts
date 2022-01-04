@@ -17,7 +17,7 @@ interface Part {
 }
 
 export function formatResult(...parts: Part[]) {
-	const text = parts.map((part) => part.color(`${part.count} ${part.text}`)).join(' | ')
+	const text = parts.filter((part) => part.count > 0).map((part) => part.color(`${part.count} ${part.text}`)).join(' | ')
 	const count = parts.reduce((total, { count }) => total + count, 0)
 
 	return `${text} ${c.gray(`(${count})`)}`
