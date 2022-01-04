@@ -1,16 +1,16 @@
-import { createNanoEvents } from 'nanoevents'
+import createEvents from 'mitt'
 import type { PresetContext, ActionContext } from './types'
 
-export const emitter = createNanoEvents<{
+export const emitter = createEvents<{
 	// Presets
-	'preset:start': (context: PresetContext) => void
-	'preset:end': (context: PresetContext) => void
-	'preset:success': (context: PresetContext) => void
-	'preset:fail': (context: PresetContext, error: Error) => void
+	'preset:start': PresetContext
+	'preset:end': PresetContext
+	'preset:success': PresetContext
+	'preset:fail': PresetContext
 
 	// Actions
-	'action:start': (context: ActionContext) => void
-	'action:end': (context: ActionContext) => void
-	'action:success': (context: ActionContext) => void
-	'action:fail': (context: ActionContext, error: Error) => void
+	'action:start': ActionContext
+	'action:end': ActionContext
+	'action:success': ActionContext
+	'action:fail': ActionContext
 }>()

@@ -54,7 +54,7 @@ importers:
       debug: 4.3.3
       esbuild: ^0.14.9
       fs-extra: ^10.0.0
-      nanoevents: ^6.0.2
+      mitt: ^3.0.0
       simple-git: ^2.48.0
       temp-dir: ^2.0.0
       type-fest: ^2.8.0
@@ -63,7 +63,7 @@ importers:
       cac: 6.7.12
       debug: 4.3.3
       fs-extra: 10.0.0
-      nanoevents: 6.0.2
+      mitt: 3.0.0
       simple-git: 2.48.0
       temp-dir: 2.0.0
     devDependencies:
@@ -2434,6 +2434,10 @@ packages:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==}
     dev: true
 
+  /mitt/3.0.0:
+    resolution: {integrity: sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==}
+    dev: false
+
   /mlly/0.2.10:
     resolution: {integrity: sha512-xfyW6c2QBGArtctzNnTV5leOKX8nOMz2simeubtXofdsdSJFSNw+Ncvrs8kxcN3pBrQLXuYBHNFV6NgZ5Ryf4A==}
     dependencies:
@@ -2462,11 +2466,6 @@ packages:
       object-assign: 4.1.1
       thenify-all: 1.6.0
     dev: true
-
-  /nanoevents/6.0.2:
-    resolution: {integrity: sha512-FRS2otuFcPPYDPYViNWQ42+1iZqbXydinkRHTHFxrF4a1CpBfmydR9zkI44WSXAXCyPrkcGtPk5CnpW6Y3lFKQ==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-    dev: false
 
   /nanoid/3.1.30:
     resolution: {integrity: sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==}

@@ -42,7 +42,7 @@ export function definePreset(preset: PresetOptions): Preset {
 				finishPresetContext(context, 'failed')
 
 				debug.preset(preset.name, 'Preset handler threw an error:', error)
-				emitter.emit('preset:fail', context, error)
+				emitter.emit('preset:fail', context)
 
 				return false
 			} finally {
@@ -89,7 +89,7 @@ export function defineAction<T = void>(name: string, action: ActionHandler<T>, d
 			finishActionContext(actionContext, 'failed', error)
 
 			debug.action(name, 'Action handler threw an error:', error)
-			emitter.emit('action:fail', actionContext, error)
+			emitter.emit('action:fail', actionContext)
 		}
 
 		emitter.emit('action:end', actionContext)

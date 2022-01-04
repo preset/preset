@@ -38,7 +38,7 @@ export const listRenderer = makeRenderer({
 			contexts.forEach((context, i) => {
 				if (i === 0) {
 					text += '\n'
-					text += `${format.run} ${format.dim(`Applying preset: ${format.highlight(context.name)}...`)}`
+					text += `  ${format.run} ${format.dim(`Applying preset: ${format.highlight(context.name)}...`)}`
 					text += '\n\n'
 				}
 
@@ -49,30 +49,9 @@ export const listRenderer = makeRenderer({
 			updateLog(text)
 		}
 
-		// --
-
-		emitter.on('preset:end', (context) => {
-			render()
-		})
-
-		emitter.on('preset:fail', (context) => {
-			render()
-		})
-
-		emitter.on('preset:success', (context) => {
-			render()
-		})
-
-		emitter.on('action:start', (name, context) => {
+		emitter.on('*', () => render())
+		emitter.on('preset:start', (context) => {
 			contexts.push(context)
-			render()
-		})
-
-		emitter.on('action:fail', (name, context) => {
-			render()
-		})
-
-		emitter.on('action:success', (name, context) => {
 			render()
 		})
 	},
