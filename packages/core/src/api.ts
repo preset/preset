@@ -66,7 +66,7 @@ export function defineAction<T = void>(name: string, action: ActionHandler<T>, d
 		debug.action(name, `Running action "${name}".`)
 
 		const presetContext = getCurrentPresetContext()!
-		const actionContext = createActionContext(presetContext, name)
+		const actionContext = createActionContext<T>(presetContext, name, options)
 
 		emitter.emit('action:start', actionContext)
 
@@ -76,7 +76,7 @@ export function defineAction<T = void>(name: string, action: ActionHandler<T>, d
 				...options ?? {},
 			} as ReadonlyDeep<Required<T>>
 
-			if (!await action({ options: resolved, context: presetContext, name })) {
+			if (!await action({ options: resolved, presetContext, actionContext, name })) {
 				debug.action(name, 'Action handler returned false, throwing.')
 				throw new Error('Action failed without throwing.')
 			}

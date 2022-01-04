@@ -6,7 +6,11 @@ export type ActionHandlerParameters<T = void> = {
 	/**
 	 * The current preset's context.
 	 */
-	context: PresetContext
+	presetContext: PresetContext
+	/**
+	 * The current action's context.
+	 */
+	actionContext: ActionContext
 	/**
 	 * Options given to this action.
 	 */
@@ -14,11 +18,12 @@ export type ActionHandlerParameters<T = void> = {
 	/**
 	 * The current action's name.
 	 */
-	name: string
+	name: Readonly<string>
 }
 
+export type ActionOptions<T = void> = T & Pick<ActionContext, 'title'>
 export type ActionHandler<T = void> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
-export type Action<T = void> = (options: T) => Promise<void>
+export type Action<T = void> = (options: ActionOptions<T>) => Promise<void>
 
 export type PresetResult = boolean | void
 export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
@@ -78,11 +83,16 @@ export type Status = 'applying' | 'applied' | 'failed'
 /**
  * Represents the context of an action.
  */
-export interface ActionContext {
+export interface ActionContext<T = any> {
 	/**
 	 * A unique identifier.
 	 */
 	id: string
+
+	/**
+	 * Action options
+	 */
+	options: T
 
 	/**
 	 * The ID of its context.
@@ -113,6 +123,11 @@ export interface ActionContext {
 	 * Potential error.
 	 */
 	error?: Error
+
+	/**
+	 * Optional title to display in the logs.
+	 */
+	title?: string
 }
 
 /**

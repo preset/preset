@@ -3,7 +3,7 @@ import simpleGit from 'simple-git'
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import type { LastArrayElement } from 'type-fest'
-import type { Preset, PresetContext, ActionContext, ApplyOptions, Status } from './types'
+import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, ActionOptions } from './types'
 import { debug } from './utils'
 
 /**
@@ -42,14 +42,16 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 /**
  * Adds an action to the context.
  */
-export function createActionContext(presetContext: PresetContext, name: string) {
+export function createActionContext<T>(presetContext: PresetContext, name: string, options: ActionOptions<T>) {
 	const context: ActionContext = {
 		name,
+		options,
 		id: randomUUID(),
 		presetContextId: presetContext.id,
 		start: performance.now(),
 		end: 0,
 		status: 'applying',
+		title: options.title,
 	}
 
 	debug.context(`Adding action context to ${presetContext.id}:`, context)
