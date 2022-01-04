@@ -5,11 +5,13 @@ import createCli from 'cac'
 import { applyPreset } from '@preset/core'
 import { version } from '../package.json'
 import { patch } from './patch'
-import { listRenderer, logRenderer } from './renderer'
+import { listRenderer, logRenderer, debugRenderer, nullRenderer } from './renderer'
 
 export const renderers = {
 	list: listRenderer,
 	log: logRenderer,
+	debug: debugRenderer,
+	null: nullRenderer,
 }
 
 // Creates the base CLI
