@@ -1,7 +1,7 @@
 import c from 'chalk'
 import { emitter } from '@preset/core'
 import { makeRenderer } from '../types'
-import { getPresetState, markPresetFinished, registerPresetContext, state } from '../state'
+import { contexts } from '../state'
 
 // eslint-disable-next-line no-console
 const log = (...args: any[]) => console.log(' ', ...args)
@@ -26,7 +26,7 @@ export const logRenderer = makeRenderer({
 		format.log()
 
 		emitter.on('preset:start', (context) => {
-			registerPresetContext(context)
+			contexts.push(context)
 
 			if (context.count > 0) {
 				format.indent(context.count, `${format.arrow} Applying nested preset: ${format.highlight(context.name)}...`)
@@ -37,8 +37,6 @@ export const logRenderer = makeRenderer({
 		})
 
 		emitter.on('preset:end', (context) => {
-			const preset = getPresetState(context)
-
 			if (context.count === 0) {
 				format.log()
 
@@ -70,11 +68,11 @@ export const logRenderer = makeRenderer({
 					return `${Math.round(time)}ms`
 				}
 
-				const executionTime = preset.end - preset.start
-				const actionsFailed = state.presets.reduce((failed, { actions }) => failed += actions.failed, 0)
-				const actionsSucceeded = state.presets.reduce((succeeded, { actions }) => succeeded += actions.succeeded, 0)
-				const presetsFailed = state.presets.reduce((failed, { state }) => failed += (state === 'failed' ? 1 : 0), 0)
-				const presetsSucceeded = state.presets.reduce((failed, { state }) => failed += (state === 'applied' ? 1 : 0), 0)
+				const executionTime = context.end - context.start
+				const actionsFailed = contexts.reduce((failed, { actions }) => failed += actions.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0), 0)
+				const actionsSucceeded = contexts.reduce((succeeded, { actions }) => succeeded += actions.reduce((succeeded, { status }) => succeeded += (status === 'applied' ? 1 : 0), 0), 0)
+				const presetsFailed = contexts.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0)
+				const presetsSucceeded = contexts.reduce((failed, { status }) => failed += (status === 'applied' ? 1 : 0), 0)
 
 				format.log(`Presets  ${formatResult(presetsSucceeded, presetsFailed)}`)
 				format.log(`Actions  ${formatResult(actionsSucceeded, actionsFailed)}`)
@@ -84,34 +82,23 @@ export const logRenderer = makeRenderer({
 		})
 
 		emitter.on('preset:fail', (context) => {
-			markPresetFinished(context, 'failed')
-
 			if (context.count === 0) {
 				format.indent(context.count, `${format.cross} ${format.dim(`Failed applying preset ${format.highlight(context.name)}`)}.`)
 			}
 		})
 
 		emitter.on('preset:success', (context) => {
-			markPresetFinished(context, 'applied')
 			format.indent(context.count, `${format.check} Applied preset ${format.highlight(context.name)}.`)
 		})
 
 		emitter.on('action:start', (name, context) => {
 			format.indent(context.count, `${format.arrow} Running action: ${format.highlight(name)}...`)
-
-			getPresetState(context).actions.succeeded++
 		})
 
 		emitter.on('action:fail', (name, context) => {
 			if (context.count > 0) {
 				format.indent(context.count, `${format.cross} ${format.dim(`Failed running action ${format.highlight(name)}`)}.`)
 			}
-
-			getPresetState(context).actions.failed++
 		})
-
-		// emitter.on('action:success', (name, context) => {
-		// 	format.indent(context.count, `${format.success} ${format.dim(`Finished action ${format.highlight(name)}`)}.`)
-		// })
 	},
 })
