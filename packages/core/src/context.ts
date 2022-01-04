@@ -46,6 +46,7 @@ export function createActionContext(presetContext: PresetContext, name: string) 
 	const context: ActionContext = {
 		name,
 		id: randomUUID(),
+		presetContextId: presetContext.id,
 		start: performance.now(),
 		end: 0,
 		status: 'applying',

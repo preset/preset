@@ -85,6 +85,11 @@ export interface ActionContext {
 	id: string
 
 	/**
+	 * The ID of its context.
+	 */
+	presetContextId: string
+
+	/**
 	 * The action name.
 	 */
 	name: string
@@ -222,6 +227,11 @@ export interface ApplyOptions {
 
 		[k: string]: any
 	}
+
+	/**
+	 * Context ID of the action that called this preset, if the preset is nested.
+	 */
+	actionContextId?: string
 }
 
 /**
