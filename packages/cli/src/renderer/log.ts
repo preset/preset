@@ -1,7 +1,8 @@
 import c from 'chalk'
 import { emitter } from '@preset/core'
 import { makeRenderer } from '../types'
-import { contexts } from '../state'
+import { contexts, getParentContext } from '../state'
+import { time, formatResult } from '../utils'
 
 // eslint-disable-next-line no-console
 const log = (...args: any[]) => console.log(' ', ...args)
@@ -40,43 +41,14 @@ export const logRenderer = makeRenderer({
 			if (context.count === 0) {
 				format.log()
 
-				function formatResult(succeeded: number, failed: number) {
-					let presetText = ''
-
-					if (succeeded > 0) {
-						presetText += format.success(`${succeeded} applied`)
-					}
-
-					if (succeeded && failed) {
-						presetText += ' | '
-					}
-
-					if (failed > 0) {
-						presetText += format.fail(`${failed} failed`)
-					}
-
-					presetText += ` ${format.dim(`(${failed + succeeded})`)}`
-
-					return presetText
-				}
-
-				const time = (time: number) => {
-					if (time > 1000) {
-						return `${(time / 1000).toFixed(2)}s`
-					}
-
-					return `${Math.round(time)}ms`
-				}
-
-				const executionTime = context.end - context.start
 				const actionsFailed = contexts.reduce((failed, { actions }) => failed += actions.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0), 0)
 				const actionsSucceeded = contexts.reduce((succeeded, { actions }) => succeeded += actions.reduce((succeeded, { status }) => succeeded += (status === 'applied' ? 1 : 0), 0), 0)
 				const presetsFailed = contexts.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0)
 				const presetsSucceeded = contexts.reduce((failed, { status }) => failed += (status === 'applied' ? 1 : 0), 0)
 
-				format.log(`Presets  ${formatResult(presetsSucceeded, presetsFailed)}`)
-				format.log(`Actions  ${formatResult(actionsSucceeded, actionsFailed)}`)
-				format.log(`   Time  ${time(executionTime)}`)
+				format.log(`Presets  ${formatResult({ count: presetsSucceeded, color: c.green.bold, text: 'applied' }, { count: presetsFailed, color: c.green.red, text: 'failed' })}`)
+				format.log(`Actions  ${formatResult({ count: actionsSucceeded, color: c.green.bold, text: 'ran' }, { count: actionsFailed, color: c.green.red, text: 'failed' })}`)
+				format.log(`   Time  ${time(context.start, context.end)}`)
 				format.log()
 			}
 		})
@@ -91,13 +63,17 @@ export const logRenderer = makeRenderer({
 			format.indent(context.count, `${format.check} Applied preset ${format.highlight(context.name)}.`)
 		})
 
-		emitter.on('action:start', (name, context) => {
-			format.indent(context.count, `${format.arrow} Running action: ${format.highlight(name)}...`)
+		emitter.on('action:start', (context) => {
+			const main = getParentContext(context)!
+
+			format.indent(main.count, `${format.arrow} Running action: ${format.highlight(context.name)}...`)
 		})
 
-		emitter.on('action:fail', (name, context) => {
-			if (context.count > 0) {
-				format.indent(context.count, `${format.cross} ${format.dim(`Failed running action ${format.highlight(name)}`)}.`)
+		emitter.on('action:fail', (context) => {
+			const main = getParentContext(context)!
+
+			if (main.count > 0) {
+				format.indent(main.count, `${format.cross} ${format.dim(`Failed running action ${format.highlight(context.name)}`)}.`)
 			}
 		})
 	},
