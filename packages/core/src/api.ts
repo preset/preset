@@ -1,7 +1,7 @@
 import { ReadonlyDeep } from 'type-fest'
 import { debug } from './utils'
 import { emitter } from './events'
-import { destroyCurrentContext, getCurrentContext } from './context'
+import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
 import type { PresetOptions, Preset, ActionHandler, Action } from './types'
 
 /**
@@ -29,21 +29,25 @@ export function definePreset(preset: PresetOptions): Preset {
 				}
 
 				// If there was errors during the execution
-				if (context.errors.length) {
+				if (context.actions.some(({ error }) => Boolean(error))) {
 					debug.preset(preset.name, 'One or more actions failed.')
 					throw new Error('One or more actions failed.')
 				}
 
+				finishPresetContext(context, 'applied')
+
 				debug.preset(preset.name, 'Preset handler executed without throwing.')
 				emitter.emit('preset:success', context)
 			} catch (error: any) {
+				finishPresetContext(context, 'failed')
+
 				debug.preset(preset.name, 'Preset handler threw an error:', error)
 				emitter.emit('preset:fail', context, error)
 
 				return false
 			} finally {
 				emitter.emit('preset:end', context)
-				destroyCurrentContext()
+				popCurrentContext()
 			}
 
 			return true
@@ -61,9 +65,10 @@ export function defineAction<T = void>(name: string, action: ActionHandler<T>, d
 	return async(options) => {
 		debug.action(name, `Running action "${name}".`)
 
-		const context = getCurrentContext()!
+		const presetContext = getCurrentPresetContext()!
+		const actionContext = createActionContext(presetContext, name)
 
-		emitter.emit('action:start', name, context)
+		emitter.emit('action:start', actionContext)
 
 		try {
 			const resolved = {
@@ -71,23 +76,22 @@ export function defineAction<T = void>(name: string, action: ActionHandler<T>, d
 				...options ?? {},
 			} as ReadonlyDeep<Required<T>>
 
-			if (!await action({ options: resolved, context, name })) {
+			if (!await action({ options: resolved, context: presetContext, name })) {
 				debug.action(name, 'Action handler returned false, throwing.')
 				throw new Error('Action failed without throwing.')
 			}
 
+			finishActionContext(actionContext, 'applied')
+
 			debug.action(name, 'Action handler executed without throwing.')
-			emitter.emit('action:success', name, context)
+			emitter.emit('action:success', actionContext)
 		} catch (error: any) {
-			context?.errors.push({
-				action: name,
-				error,
-			})
+			finishActionContext(actionContext, 'failed', error)
 
 			debug.action(name, 'Action handler threw an error:', error)
-			emitter.emit('action:fail', name, context, error)
+			emitter.emit('action:fail', actionContext, error)
 		}
 
-		emitter.emit('action:end', name, context)
+		emitter.emit('action:end', actionContext)
 	}
 }

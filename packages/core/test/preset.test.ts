@@ -1,27 +1,9 @@
 import { it, assert, expect } from 'vitest'
-import { defineAction, definePreset, emitter } from '../src'
-import { createPresetContext } from '../src/context'
-import type { PresetHandler } from '../src/types'
+import { defineAction, emitter } from '../src'
+import { makeTestPreset } from './utils'
 
 const successfulAction = defineAction('successful-action', () => true)
 const failingAction = defineAction('failing-action', () => false)
-const makeTestPreset = async(handler: PresetHandler) => {
-	const preset = definePreset({
-		name: 'test-preset',
-		flags: {
-			auth: true,
-		},
-		handler,
-	})
-
-	const context = await createPresetContext(preset, {
-		resolvable: '',
-		args: [],
-		targetDirectory: '',
-	})
-
-	return { preset, context }
-}
 
 it('runs a preset and its actions', async() => {
 	const result = { name: '', successful: false, successfulActions: 0 }

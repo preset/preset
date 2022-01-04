@@ -71,18 +71,63 @@ export interface ContextCreationOptions {
 }
 
 /**
- * Represents the context of a preset.
+ * Represents the status of an action or a preset.
  */
-export interface PresetContext {
+export type Status = 'applying' | 'applied' | 'failed'
+
+/**
+ * Represents the context of an action.
+ */
+export interface ActionContext {
 	/**
-	 * A unique (almost!) identifier.
+	 * A unique identifier.
 	 */
 	id: string
 
 	/**
-	 * The preset name.
+	 * The action name.
 	 */
 	name: string
+
+	/**
+	 * When the action started.
+	 */
+	start: number
+
+	/**
+	 * When the action ended.
+	 */
+	end: number
+
+	/**
+	 * Action status.
+	 */
+	status: Status
+
+	/**
+	 * Potential error.
+	 */
+	error?: Error
+}
+
+/**
+ * Represents the context of a preset.
+ */
+export interface PresetContext {
+	/**
+	 * A unique identifier.
+	 */
+	id: string
+
+	/**
+	 * Preset name.
+	 */
+	name: string
+
+	/**
+	 * Preset status.
+	 */
+	status: Status
 
 	/**
 	 * Parsed command-line flags.
@@ -93,11 +138,6 @@ export interface PresetContext {
 	 * Parsed command-line args.
 	 */
 	args: readonly string[]
-
-	/**
-	 * @internal
-	 */
-	errors: Array<{ action: string; error: Error }>
 
 	/**
 	 * Git context.
@@ -123,6 +163,21 @@ export interface PresetContext {
 	 * Context count.
 	 */
 	count: Readonly<number>
+
+	/**
+	 * When the preset started.
+	 */
+	start: number
+
+	/**
+	 * When the preset ended.
+	 */
+	end: number
+
+	/**
+	 * Action context log.
+	 */
+	actions: ActionContext[]
 }
 
 export interface ApplyOptions {

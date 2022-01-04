@@ -1,62 +1,71 @@
 import { test, assert } from 'vitest'
 import { defineAction, emitter } from '../src'
+import type { ActionContext } from '../src/types'
+import { makeTestPreset } from './utils'
 
 test('an action emits a fail event', async() => {
-	const result = { names: [] as string[], errors: [] as string[] }
+	const contexts: ActionContext[] = []
 	const failingAction = defineAction('failing-action', () => false)
 	const throwingAction = defineAction('throwing-action', () => {
 		throw new Error('Action failed with throwing.')
 	})
 
-	emitter.on('action:fail', (name, context, error) => {
-		result.names.push(name)
-		result.errors.push(error.message)
+	emitter.on('action:fail', (context) => contexts.push(context))
+
+	const { preset, context } = await makeTestPreset(async() => {
+		await failingAction()
+		await throwingAction()
 	})
 
-	await failingAction()
-	await throwingAction()
+	await preset.apply(context)
 
-	assert.sameOrderedMembers(result.names, [
+	assert.sameOrderedMembers(contexts.map(({ name }) => name), [
 		'failing-action',
 		'throwing-action',
 	])
 
-	assert.sameOrderedMembers(result.errors, [
+	assert.sameOrderedMembers(contexts.map(({ error }) => error!.message), [
 		'Action failed without throwing.',
 		'Action failed with throwing.',
 	])
 })
 
 test('an action emits a success event', async() => {
-	const result = { name: '' }
+	const actionNames: string[] = []
 	const successfulAction = defineAction('successful-action', () => true)
 
-	emitter.on('action:success', (name) => {
-		result.name = name
+	emitter.on('action:success', (context) => actionNames.push(context.name))
+
+	const { preset, context } = await makeTestPreset(async() => {
+		await successfulAction()
 	})
 
-	await successfulAction()
+	await preset.apply(context)
 
-	assert.equal(result.name, 'successful-action')
+	assert.sameOrderedMembers(actionNames, [
+		'successful-action',
+	])
 })
 
 test('all actions emit an end event', async() => {
-	const result = { names: [] as string[] }
+	const actionNames: string[] = []
 	const successfulAction = defineAction('successful-action', () => true)
 	const failingAction = defineAction('failing-action', () => false)
 	const throwingAction = defineAction('throwing-action', () => {
 		throw new Error('throw')
 	})
 
-	emitter.on('action:end', (name) => {
-		result.names.push(name)
+	emitter.on('action:end', (context) => actionNames.push(context.name))
+
+	const { preset, context } = await makeTestPreset(async() => {
+		await successfulAction()
+		await failingAction()
+		await throwingAction()
 	})
 
-	await successfulAction()
-	await failingAction()
-	await throwingAction()
+	await preset.apply(context)
 
-	assert.sameOrderedMembers(result.names, [
+	assert.sameOrderedMembers(actionNames, [
 		'successful-action',
 		'failing-action',
 		'throwing-action',

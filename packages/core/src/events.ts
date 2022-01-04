@@ -1,5 +1,5 @@
 import { createNanoEvents } from 'nanoevents'
-import type { PresetContext } from './types'
+import type { PresetContext, ActionContext } from './types'
 
 export const emitter = createNanoEvents<{
 	// Presets
@@ -9,8 +9,8 @@ export const emitter = createNanoEvents<{
 	'preset:fail': (context: PresetContext, error: Error) => void
 
 	// Actions
-	'action:start': (name: string, context: PresetContext) => void
-	'action:end': (name: string, context: PresetContext) => void
-	'action:success': (name: string, context: PresetContext) => void
-	'action:fail': (name: string, context: PresetContext, error: Error) => void
+	'action:start': (context: ActionContext) => void
+	'action:end': (context: ActionContext) => void
+	'action:success': (context: ActionContext) => void
+	'action:fail': (context: ActionContext, error: Error) => void
 }>()
