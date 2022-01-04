@@ -57,11 +57,14 @@ export const list = makeReporter({
 				// Render actions
 				preset.actions.forEach((action) => {
 					text += format.indent(preset.count)
-					text += {
-						applying: `${symbol[action.status]} Running ${format.highlight(action.options.title || action.name)}`,
-						applied: `${symbol[action.status]} Ran ${format.highlight(action.options.title || action.name)}`,
-						failed: `${symbol[action.status]} Failed ${format.highlight(action.options.title || action.name)}`,
-					}[action.status]
+					text += symbol[action.status]
+					text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} `
+
+					if (action.options.title) {
+						text += format.highlight(action.options.title)
+					} else {
+						text += `action: ${format.highlight(action.name)}`
+					}
 
 					// Depending on action, print additional logging
 					switch (action.name) {
