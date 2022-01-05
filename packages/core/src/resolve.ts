@@ -40,13 +40,13 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 /**
  * Parses the given resolvable.
  */
-export async function parseResolvable(resolvable: string): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
-	debug.resolve('Working directory:', process.cwd())
+export async function parseResolvable(resolvable: string, cwd: string = process.cwd()): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
+	debug.resolve('Working directory:', cwd)
 	debug.resolve('Parsing resolvable:', resolvable)
 	const resolved
 		= await resolveNamespacedAlias(resolvable)
-		|| await resolveLocalFile(resolvable)
-		|| await resolveLocalDirectory(resolvable)
+		|| await resolveLocalFile(resolvable, cwd)
+		|| await resolveLocalDirectory(resolvable, cwd)
 		|| await resolveGitHubRepository(resolvable)
 
 	if (!resolved) {
@@ -105,16 +105,18 @@ export async function resolveGitHubRepository(resolvable: string): Promise<Repos
 /**
  * Resolves a local directory.
  */
-export async function resolveLocalDirectory(resolvable: string): Promise<LocalDirectoryPreset | false> {
+export async function resolveLocalDirectory(resolvable: string, cwd: string): Promise<LocalDirectoryPreset | false> {
 	debug.resolve('Trying to resolve as a local directory.')
 
+	const absolute = path.resolve(cwd, resolvable)
+
 	try {
-		if ((fs.statSync(resolvable)).isDirectory()) {
+		if ((fs.statSync(absolute)).isDirectory()) {
 			debug.resolve('Successfully resolved as a local directory.')
 
 			return {
 				type: 'directory',
-				path: path.resolve(resolvable),
+				path: absolute,
 			}
 		}
 	} catch {}
@@ -125,16 +127,18 @@ export async function resolveLocalDirectory(resolvable: string): Promise<LocalDi
 /**
  * Resolves a local file.
  */
-export async function resolveLocalFile(resolvable: string): Promise<LocalFilePreset | false> {
+export async function resolveLocalFile(resolvable: string, cwd: string): Promise<LocalFilePreset | false> {
 	debug.resolve('Trying to resolve as a local file.')
 
+	const absolute = path.resolve(cwd, resolvable)
+
 	try {
-		if ((fs.statSync(resolvable)).isFile()) {
+		if ((fs.statSync(absolute)).isFile()) {
 			debug.resolve('Successfully resolved as a local file.')
 
 			return {
 				type: 'file',
-				path: path.resolve(resolvable),
+				path: absolute,
 			}
 		}
 	} catch {}
@@ -169,12 +173,12 @@ export async function resolveNamespacedAlias(resolvable: string): Promise<Reposi
  *
  * @param directory Absolute path to the directory in which to find the preset file.
  */
-export async function resolvePresetFile(directory: string) {
-	debug.resolve(`Resolving preset file in "${directory}".`)
+export async function resolvePresetFile(directory: string, cwd: string = process.cwd()) {
+	debug.resolve(`Resolving preset file in "${directory}" with working directory "${cwd}".`)
 
 	const pkg = invoke(() => {
 		try {
-			return JSON.parse(fs.readFileSync(path.resolve(directory, 'package.json')) as any)
+			return JSON.parse(fs.readFileSync(path.resolve(cwd, directory, 'package.json')) as any)
 		} catch (error) {}
 
 		return false
@@ -186,7 +190,7 @@ export async function resolvePresetFile(directory: string) {
 		}
 
 		try {
-			const filepath = path.resolve(directory, file)
+			const filepath = path.resolve(cwd, directory, file)
 			if ((fs.statSync(filepath)).isFile()) {
 				return filepath
 			}

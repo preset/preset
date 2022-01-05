@@ -4,11 +4,13 @@ import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset } from '../src/types'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
+	const cwd = path.resolve(__dirname, '..')
+
 	for (const [input, output] of map) {
 		if (output === false) {
-			await expect(async() => await parseResolvable(input)).rejects.toThrow()
+			await expect(async() => await parseResolvable(input, cwd)).rejects.toThrow()
 		} else {
-			expect(await parseResolvable(input)).toMatchObject(output)
+			expect(await parseResolvable(input, cwd)).toMatchObject(output)
 		}
 	}
 }
@@ -50,11 +52,12 @@ it('parses namespaced preset aliases', async() => {
 
 it('resolves preset files in a directory', async() => {
 	const map = [
+		[path.resolve(__dirname, './fixtures/preset-with-root-file'), path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],
 		['./test/fixtures/preset-with-root-file', path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],
 		['./test/fixtures/preset-with-preset-in-pkg', path.resolve(__dirname, './fixtures/preset-with-preset-in-pkg/my-preset.ts')],
 	]
 
 	for (const [input, output] of map) {
-		expect(await resolvePresetFile(input)).toBe(output)
+		expect(await resolvePresetFile(input, path.resolve(__dirname, '..'))).toBe(output)
 	}
 })
