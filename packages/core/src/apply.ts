@@ -10,9 +10,9 @@ import { debug } from './utils'
 export async function applyPreset(options: ApplyOptions) {
 	debug.apply(`Applying preset ${options.resolvable} into ${options.targetDirectory}.`)
 
-	const presetFile = await resolvePreset(options)
+	const { presetFile, rootDirectory } = await resolvePreset(options)
 	const preset = await importPresetFile(presetFile)
-	const context = await createPresetContext(preset, options)
+	const context = await createPresetContext(preset, options, { presetFile, rootDirectory })
 
 	return await preset.apply(context)
 }

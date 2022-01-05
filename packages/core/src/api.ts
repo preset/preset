@@ -1,4 +1,3 @@
-import { ReadonlyDeep } from 'type-fest'
 import { debug } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
@@ -61,21 +60,27 @@ export function definePreset(preset: PresetOptions): Preset {
  * @param name The action name.
  * @param preset The action's script.
  */
-export function defineAction<T = void>(name: string, action: ActionHandler<T>, defaultOptions?: Required<T>): Action<T> {
-	return async(options) => {
+export function defineAction<Options extends Object, OptionsWithDefault extends Options = Options>(
+	name: string,
+	action: ActionHandler<OptionsWithDefault>,
+	defaultOptions?: OptionsWithDefault,
+): Action<Options> {
+	return async(options: any) => {
 		debug.action(name, `Running action "${name}".`)
 
+		const resolved: OptionsWithDefault = {
+			...defaultOptions ?? {},
+			...options ?? {},
+		}
+
+		debug.action(name, 'Resolved options:', resolved)
+
 		const presetContext = getCurrentPresetContext()!
-		const actionContext = createActionContext<T>(presetContext, name, options)
+		const actionContext = createActionContext(presetContext, name, resolved)
 
 		emitter.emit('action:start', actionContext)
 
 		try {
-			const resolved = {
-				...defaultOptions ?? {},
-				...options ?? {},
-			} as ReadonlyDeep<Required<T>>
-
 			if (!await action({ options: resolved, presetContext, actionContext, name })) {
 				debug.action(name, 'Action handler returned false, throwing.')
 				throw new Error('Action failed without throwing.')

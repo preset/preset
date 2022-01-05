@@ -9,6 +9,7 @@ export default definePreset({
 	},
 	handler: async(context) => {
 		await extractTemplates({ to: 'config' })
+		await extractTemplates()
 		await applyNestedPreset({ title: 'nested preset', resolvable: path.resolve(__dirname, './nested-preset.ts') })
 		await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts'), args: ['fail'] })
 		await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts'), args: ['nest'] })

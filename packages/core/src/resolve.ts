@@ -1,29 +1,40 @@
 import fs from 'fs'
-import path from 'path'
+import path from 'node:path'
 import tmp from 'temp-dir'
 import git from 'simple-git'
-import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset } from './types'
+import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset } from './types'
 import { debug, invoke } from './utils'
 
 /**
- * Resolves the preset and returns its path.
+ * Resolves the preset file and returns its path.
  */
-export async function resolvePreset(options: ApplyOptions) {
+export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset> {
 	// Parses the resolvable string into an object representing a directory or a repository.
 	const resolved = await parseResolvable(options.resolvable)
 
 	// If we already have a file path, returns it.
 	if (resolved.type === 'file') {
-		return resolved.path
+		return {
+			rootDirectory: path.dirname(resolved.path),
+			presetFile: resolved.path,
+		}
 	}
 
 	// If it's a repository, clone it and resolve the preset file.
 	if (resolved.type === 'repository') {
-		return resolvePresetFile(await cloneRepository(resolved, options))
+		const rootDirectory = await cloneRepository(resolved, options)
+
+		return {
+			rootDirectory,
+			presetFile: await resolvePresetFile(rootDirectory),
+		}
 	}
 
-	// Otherwise, just resolve the preset file.
-	return resolvePresetFile(resolved.path)
+	// Otherwise, it's a directory, just resolve the preset file.
+	return {
+		rootDirectory: resolved.path,
+		presetFile: await resolvePresetFile(resolved.path),
+	}
 }
 
 /**

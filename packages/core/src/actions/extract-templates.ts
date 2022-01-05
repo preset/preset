@@ -7,15 +7,17 @@ export interface ExtractTemplatesOptions {
 	extractDotfiles?: boolean
 }
 
-export const extractTemplates = defineAction<ExtractTemplatesOptions>('extract-templates', async({ options }) => {
-	if (options.to === '.') {
-		throw new Error('No target directory')
-	}
-
-	return true
-}, {
+const defaultOptions: Required<ExtractTemplatesOptions> = {
 	from: 'templates',
-	to: '.',
+	to: '',
 	whenConflict: 'override',
 	extractDotfiles: false,
-})
+}
+
+export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<ExtractTemplatesOptions>>(
+	'extract-templates',
+	async() => {
+		return false
+	},
+	defaultOptions,
+)

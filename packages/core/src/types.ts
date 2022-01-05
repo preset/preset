@@ -1,8 +1,8 @@
 import { ConfigValues, SimpleGit } from 'simple-git'
-import { Promisable, ReadonlyDeep } from 'type-fest'
+import { Promisable } from 'type-fest'
 
 export type ActionResult = boolean
-export type ActionHandlerParameters<T = void> = {
+export type ActionHandlerParameters<ResolvedOptions> = {
 	/**
 	 * The current preset's context.
 	 */
@@ -14,16 +14,20 @@ export type ActionHandlerParameters<T = void> = {
 	/**
 	 * Options given to this action.
 	 */
-	options: ReadonlyDeep<Required<T>>
+	options: ResolvedOptions
 	/**
 	 * The current action's name.
 	 */
 	name: Readonly<string>
 }
 
-export type ActionOptions<T = void> = T & Pick<ActionContext, 'title'>
-export type ActionHandler<T = void> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
-export type Action<T = void> = (options: ActionOptions<T>) => Promise<void>
+type RequiredKeys<T> = { [K in keyof T]-?: ({} extends { [P in K]: T[K] } ? never : K) }[keyof T]
+
+export type ActionHandler<T> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
+export type ActionOptions<T> = T extends undefined ? Pick<ActionContext, 'title'> : (T & Pick<ActionContext, 'title'>)
+export type Action<T> = RequiredKeys<T> extends never
+	? (options?: ActionOptions<T>) => Promise<void>
+	: (options: ActionOptions<T>) => Promise<void>
 
 export type PresetResult = boolean | void
 export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
@@ -83,16 +87,16 @@ export type Status = 'applying' | 'applied' | 'failed'
 /**
  * Represents the context of an action.
  */
-export interface ActionContext<T = any> {
+export interface ActionContext<ResolvedOptions = ActionOptions<any>> {
 	/**
 	 * A unique identifier.
 	 */
 	id: string
 
 	/**
-	 * Action options
+	 * Resolved action options.
 	 */
-	options: T
+	options: ResolvedOptions
 
 	/**
 	 * The ID of its context.
@@ -198,6 +202,11 @@ export interface PresetContext {
 	 * Action context log.
 	 */
 	actions: ActionContext[]
+
+	/**
+	 * Resolved local preset.
+	 */
+	localPreset: LocalPreset
 }
 
 export interface ApplyOptions {
@@ -253,6 +262,21 @@ export interface ApplyOptions {
  * Represents a resolved preset.
  */
 export type ResolvedPreset = RepositoryPreset | LocalFilePreset | LocalDirectoryPreset
+
+/**
+ * Represents local filesystem information for the preset.
+ */
+export interface LocalPreset {
+	/**
+	 * The absolute path to the root directory of the preset
+	 */
+	rootDirectory: string
+
+	/**
+	 * The absolute path to the preset file.
+	 */
+	presetFile: string
+}
 
 /**
  * Represents a preset in a distant repository.

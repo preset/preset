@@ -1,4 +1,4 @@
-import path from 'pathe'
+import path from 'node:path'
 import { it, expect } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset } from '../src/types'
@@ -14,21 +14,24 @@ async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
 }
 
 it('parses local file presets', async() => {
-	ensureParses([
+	await ensureParses([
+		[path.resolve(__dirname, './fixtures/basic-preset.ts'), { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
+		['../core/test/fixtures/basic-preset.ts', { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
 		['./test/fixtures/basic-preset.ts', { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
 		['./test/fixtures/preset-that-does-not-exist.ts', false],
 	])
 })
 
 it('parses directory presets', async() => {
-	ensureParses([
+	await ensureParses([
+		[path.resolve(__dirname, './fixtures/preset-with-root-file'), { path: path.resolve(__dirname, './fixtures/preset-with-root-file'), type: 'directory' }],
 		['./test/fixtures/preset-with-root-file', { path: path.resolve(__dirname, './fixtures/preset-with-root-file'), type: 'directory' }],
 		['./test/fixtures/dir-that-does-not-exists', false],
 	])
 })
 
 it('parses repository presets', async() => {
-	ensureParses([
+	await ensureParses([
 		['preset/cli', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: undefined }],
 		['preset/cli@v0.1', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: 'v0.1' }],
 		['preset/cli@main', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: 'main' }],
@@ -40,7 +43,7 @@ it('parses repository presets', async() => {
 })
 
 it('parses namespaced preset aliases', async() => {
-	ensureParses([
+	await ensureParses([
 		['laravel:inertia', { organization: 'laravel-presets', repository: 'inertia', ssh: true, type: 'repository', tag: undefined }],
 	])
 })

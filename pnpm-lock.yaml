@@ -59,7 +59,6 @@ importers:
       fast-glob: ^3.2.7
       fs-extra: ^10.0.0
       mitt: ^3.0.0
-      pathe: ^0.2.0
       simple-git: ^2.48.0
       temp-dir: ^2.0.0
       type-fest: ^2.8.0
@@ -70,7 +69,6 @@ importers:
       fast-glob: 3.2.7
       fs-extra: 10.0.0
       mitt: 3.0.0
-      pathe: 0.2.0
       simple-git: 2.48.0
       temp-dir: 2.0.0
     devDependencies:
@@ -2636,10 +2634,6 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
-
-  /pathe/0.2.0:
-    resolution: {integrity: sha512-sTitTPYnn23esFR3RlqYBWn4c45WGeLcsKzQiUpXJAyfcWkolvlYpV8FLo7JishK946oQwMFUCHXQ9AjGPKExw==}
-    dev: false
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}

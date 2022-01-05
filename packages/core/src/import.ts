@@ -1,6 +1,6 @@
 import vm from 'vm'
 import fs from 'fs'
-import path from 'pathe'
+import path from 'node:path'
 import { buildSync } from 'esbuild'
 import type { Preset } from './types'
 import { debug } from './utils'

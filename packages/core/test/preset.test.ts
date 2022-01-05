@@ -49,7 +49,7 @@ it('runs a preset and its actions and fails at the end', async() => {
 })
 
 it('runs actions with parameters and default parameters', async() => {
-	const result = { name: '', actionFlag: '', actionDefaultFlag: '', successful: false }
+	const result: any = { name: '', actionFlag: '', actionDefaultFlag: '', successful: false }
 	const parameterizedAction = defineAction<{ flag: string }>('parameterized-action', ({ options }) => {
 		result.actionFlag = options.flag
 

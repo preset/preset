@@ -3,7 +3,7 @@ import { performance } from 'node:perf_hooks'
 import cac from 'cac'
 import simpleGit from 'simple-git'
 import type { LastArrayElement } from 'type-fest'
-import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, ActionOptions } from './types'
+import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, LocalPreset, ActionOptions } from './types'
 import { debug } from './utils'
 
 /**
@@ -14,7 +14,7 @@ const contexts: PresetContext[] = []
 /**
   * Creates the context for the given preset.
   */
-export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions): Promise<PresetContext> {
+export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions, localPreset: LocalPreset): Promise<PresetContext> {
 	debug.context(`Creating a new context for "${preset.name}".`)
 
 	const context: PresetContext = {
@@ -31,6 +31,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 		actions: [],
 		status: 'applying',
 		applyOptions,
+		localPreset,
 	}
 
 	debug.context('Adding preset context to the stack:', context)
@@ -42,8 +43,12 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 /**
  * Adds an action to the context.
  */
-export function createActionContext<T>(presetContext: PresetContext, name: string, options: ActionOptions<T>) {
-	const context: ActionContext = {
+export function createActionContext<Options extends Object, ResolvedOptions extends ActionOptions<Options>>(
+	presetContext: PresetContext,
+	name: string,
+	options: ResolvedOptions,
+) {
+	const context: ActionContext<ResolvedOptions> = {
 		name,
 		options,
 		id: randomUUID(),

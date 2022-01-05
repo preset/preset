@@ -1,6 +1,6 @@
 #!/bin/env node
 /* eslint-disable no-console */
-import path from 'pathe'
+import path from 'node:path'
 import c from 'chalk'
 import createCli from 'cac'
 import { applyPreset } from '@preset/core'
