@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'pathe'
 import { it, expect } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset } from '../src/types'

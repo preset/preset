@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'pathe'
 import { it, assert } from 'vitest'
 import { importPresetFile } from '../src/import'
 

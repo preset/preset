@@ -40,8 +40,10 @@
   "dependencies": {
     "cac": "^6.7.12",
     "debug": "4.3.3",
+    "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
     "mitt": "^3.0.0",
+    "pathe": "^0.2.0",
     "simple-git": "^2.48.0",
     "temp-dir": "^2.0.0"
   }
