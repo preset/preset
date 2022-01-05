@@ -12,12 +12,14 @@ test('an action emits a fail event', async() => {
 
 	emitter.on('action:fail', (context) => contexts.push(context))
 
-	const { preset, context } = await makeTestPreset(async() => {
-		await failingAction()
-		await throwingAction()
+	const { executePreset } = await makeTestPreset({
+		handler: async() => {
+			await failingAction()
+			await throwingAction()
+		},
 	})
 
-	await preset.apply(context)
+	await executePreset()
 
 	assert.sameOrderedMembers(contexts.map(({ name }) => name), [
 		'failing-action',
@@ -36,11 +38,13 @@ test('an action emits a success event', async() => {
 
 	emitter.on('action:success', (context) => actionNames.push(context.name))
 
-	const { preset, context } = await makeTestPreset(async() => {
-		await successfulAction()
+	const { executePreset } = await makeTestPreset({
+		handler: async() => {
+			await successfulAction()
+		},
 	})
 
-	await preset.apply(context)
+	await executePreset()
 
 	assert.sameOrderedMembers(actionNames, [
 		'successful-action',
@@ -57,13 +61,15 @@ test('all actions emit an end event', async() => {
 
 	emitter.on('action:end', (context) => actionNames.push(context.name))
 
-	const { preset, context } = await makeTestPreset(async() => {
-		await successfulAction()
-		await failingAction()
-		await throwingAction()
+	const { executePreset } = await makeTestPreset({
+		handler: async() => {
+			await successfulAction()
+			await failingAction()
+			await throwingAction()
+		},
 	})
 
-	await preset.apply(context)
+	await executePreset()
 
 	assert.sameOrderedMembers(actionNames, [
 		'successful-action',

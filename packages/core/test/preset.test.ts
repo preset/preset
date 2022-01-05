@@ -7,9 +7,11 @@ const failingAction = defineAction('failing-action', () => false)
 
 it('runs a preset and its actions', async() => {
 	const result = { name: '', successful: false, successfulActions: 0 }
-	const { preset, context } = await makeTestPreset(async() => {
-		await successfulAction()
-		await successfulAction()
+	const { preset, context } = await makeTestPreset({
+		handler: async() => {
+			await successfulAction()
+			await successfulAction()
+		},
 	})
 
 	emitter.on('preset:start', ({ name }) => result.name = name)
@@ -25,10 +27,12 @@ it('runs a preset and its actions', async() => {
 
 it('runs a preset and its actions and fails at the end', async() => {
 	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0, ended: false }
-	const { preset, context } = await makeTestPreset(async() => {
-		await successfulAction()
-		await failingAction()
-		await successfulAction()
+	const { preset, context } = await makeTestPreset({
+		handler: async() => {
+			await successfulAction()
+			await failingAction()
+			await successfulAction()
+		},
 	})
 
 	emitter.on('preset:start', ({ name }) => result.name = name)
@@ -64,10 +68,12 @@ it('runs actions with parameters and default parameters', async() => {
 		flag: 'default-flag',
 	})
 
-	const { preset, context } = await makeTestPreset(async() => {
-		await successfulAction()
-		await parameterizedAction({ flag: 'flagged' })
-		await parameterizedActionWithDefault({})
+	const { preset, context } = await makeTestPreset({
+		handler: async() => {
+			await successfulAction()
+			await parameterizedAction({ flag: 'flagged' })
+			await parameterizedActionWithDefault({})
+		},
 	})
 
 	emitter.on('preset:start', ({ name }) => result.name = name)
