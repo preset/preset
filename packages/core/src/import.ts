@@ -1,5 +1,5 @@
-import vm from 'vm'
-import fs from 'fs'
+import vm from 'node:vm'
+import fs from 'node:fs'
 import path from 'node:path'
 import { buildSync } from 'esbuild'
 import type { Preset } from './types'
@@ -14,7 +14,7 @@ import * as preset from './index'
 export async function importPresetFile(filepath: string) {
 	debug.import(`Importing ${filepath}}.`)
 
-	const script = fs.readFileSync(filepath).toString()
+	const script = fs.readFileSync(filepath, { encoding: 'utf-8' })
 	const sanitizedScript = removeSelfImportStatement(script)
 
 	return await evaluateConfiguration(sanitizedScript, path.dirname(filepath), filepath)

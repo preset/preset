@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import path from 'node:path'
 import tmp from 'temp-dir'
 import git from 'simple-git'
