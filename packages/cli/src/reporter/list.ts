@@ -72,9 +72,15 @@ export const list = makeReporter({
 						case 'apply-nested-preset': {
 							const nestedPresetContext = contexts.find(({ applyOptions }) => applyOptions.actionContextId === action.id)
 
-							text += nestedPresetContext
-								? format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)})\n`)
-								: format.dim(' ...\n')
+							if (nestedPresetContext) {
+								text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)}`)
+
+								if (nestedPresetContext?.error) {
+									text += `${format.dim(',')} ${c.red(`error: ${(nestedPresetContext.error.message)}`)}`
+								}
+
+								text += format.dim(')\n')
+							}
 
 							renderPresetActions(nestedPresetContext)
 

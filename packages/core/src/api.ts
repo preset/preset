@@ -38,7 +38,7 @@ export function definePreset(preset: PresetOptions): Preset {
 				debug.preset(preset.name, 'Preset handler executed without throwing.')
 				emitter.emit('preset:success', context)
 			} catch (error: any) {
-				finishPresetContext(context, 'failed')
+				finishPresetContext(context, 'failed', error)
 
 				debug.preset(preset.name, 'Preset handler threw an error:', error)
 				emitter.emit('preset:fail', context)

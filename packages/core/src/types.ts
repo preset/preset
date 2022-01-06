@@ -207,6 +207,11 @@ export interface PresetContext {
 	 * Resolved local preset.
 	 */
 	localPreset: LocalPreset
+
+	/**
+	 * Potential error.
+	 */
+	error?: Error
 }
 
 export interface ApplyOptions {

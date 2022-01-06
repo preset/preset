@@ -85,9 +85,13 @@ export function getCurrentPresetContext(): PresetContext | undefined {
 /**
  * Marks the context as finished.
  */
-export function finishPresetContext(context: PresetContext, status: Status) {
-	context.end = performance.now()
+export function finishPresetContext(context: PresetContext, status: Status, error?: Error) {
 	context.status = status
+	context.end = performance.now()
+
+	if (error) {
+		context.error = error
+	}
 }
 
 /**
