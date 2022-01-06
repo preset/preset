@@ -10,7 +10,7 @@ import { createPresetContext } from '../src/context'
 import type { PresetOptions, LocalPreset, ApplyOptions } from '../src'
 
 export interface DirectoryStructure {
-	[path: string]: { type: 'file'; content?: any } | { type: 'directory' }
+	[path: string]: { type: 'file'; content?: any } | { type: 'directory' } | { type: 'none' }
 }
 
 export const debug = createDebugger('preset:tests')
@@ -55,6 +55,10 @@ export async function expectStructureMatches(directory: string, ds: DirectoryStr
 
 	for (const [relativePathToEntry, entry] of Object.entries(ds)) {
 		const pathToEntry = path.resolve(directory, relativePathToEntry)
+
+		if (entry.type === 'none') {
+			assert.isFalse(fs.pathExistsSync(pathToEntry), `${pathToEntry} actually exists although it should not.`)
+		}
 
 		if (entry.type === 'file') {
 			assert.isTrue(nfs.statSync(pathToEntry, { throwIfNoEntry: false })?.isFile(), `${pathToEntry} is not a file or does not exist`)

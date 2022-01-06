@@ -174,3 +174,23 @@ it('extracts a single nested file to the target directory', async() => {
 		{ 'templates/nested/gitignore.dotfile': { type: 'file' } },
 	)
 })
+
+it('extracts glob-based files to the target directory', async() => {
+	await usingSandbox(
+		async({ targetDirectory }, makeTestPreset) => {
+			const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ from: 'php/**/*.php' }) })
+
+			await executePreset()
+			await expectStructureMatches(targetDirectory, {
+				'php/index.html': { type: 'none' },
+				'php/index.php': { type: 'file' },
+				'php/config/vite.php': { type: 'file' },
+			})
+		},
+		{
+			'templates/php/index.html': { type: 'file' },
+			'templates/php/index.php': { type: 'file' },
+			'templates/php/config/vite.php': { type: 'file' },
+		},
+	)
+})

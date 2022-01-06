@@ -58,6 +58,39 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 		const templatesPath = path.resolve(presetContext.localPreset.rootDirectory, options.templates, options.from)
 		const targetPath = path.resolve(presetContext.applyOptions.targetDirectory, options.to)
 
+		async function copyFileToFile(input: string, output: string) {
+			output = renameDotfiles(output)
+
+			if (await fs.pathExists(output) && options.whenConflict === 'skip') {
+				debug.action(actionContext.name, `Skipped copying to ${output}.`)
+
+				return
+			}
+
+			debug.action(actionContext.name, `Copying ${input} to ${output}.`)
+			await fs.copy(input, output)
+		}
+
+		async function copyDirectoryToDirectory(input: string, output: string, glob: string = '**/**') {
+			const paths = await fg(glob, {
+				ignore: ['node_modules', '.git', 'dist'],
+				markDirectories: true,
+				absolute: false,
+				cwd: input,
+				dot: options.extractDotFiles,
+			})
+
+			debug.action(actionContext.name, `Matched ${paths.length} paths:`, paths)
+
+			// For each relative path, copy to the target path
+			for (const relativePath of paths) {
+				const resolvedInput = path.resolve(input, relativePath)
+				const resolvedOutput = path.resolve(output, relativePath)
+
+				await copyFileToFile(resolvedInput, resolvedOutput)
+			}
+		}
+
 		// Copying a directory to a file is kind of a dump operation
 		if (isDirectory(templatesPath) && isFile(targetPath)) {
 			throw new Error('Can not extract a directory to a file.')
@@ -88,40 +121,12 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 			return true
 		}
 
-		// ---
-
-		async function copyFileToFile(input: string, output: string) {
-			output = renameDotfiles(output)
-
-			if (await fs.pathExists(output) && options.whenConflict === 'skip') {
-				debug.action(actionContext.name, `Skipped copying to ${output}.`)
-
-				return
-			}
-
-			debug.action(actionContext.name, `Copying ${input} to ${output}.`)
-			await fs.copy(input, output)
-		}
-
-		async function copyDirectoryToDirectory(input: string, output: string) {
-			const paths = await fg('**/**', {
-				ignore: ['node_modules', '.git', 'dist'],
-				markDirectories: true,
-				absolute: false,
-				cwd: input,
-				dot: options.extractDotFiles,
-			})
-
-			debug.action(actionContext.name, `Matched ${paths.length} paths:`, paths)
-
-			// For each relative path, copy to the target path
-			for (const relativePath of paths) {
-				const resolvedInput = path.resolve(input, relativePath)
-				const resolvedOutput = path.resolve(output, relativePath)
-
-				await copyFileToFile(resolvedInput, resolvedOutput)
-			}
-		}
+		// Otherwise we assume "options.from" is a glob
+		await copyDirectoryToDirectory(
+			path.resolve(presetContext.localPreset.rootDirectory, options.templates),
+			targetPath,
+			options.from,
+		)
 
 		return true
 	},
