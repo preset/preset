@@ -101,14 +101,17 @@ export async function generateStructure(directory: string, ds?: DirectoryStructu
 	}
 }
 
+interface SandboxOptions {
+	fn: (d: { sandboxDirectory: string; targetDirectory: string; rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
+	rootStructure?: DirectoryStructure
+	targetStructure?: DirectoryStructure
+	cleanup?: boolean
+}
+
 /**
  * Creates a testing directory and a preset inside it.
  */
-export async function usingSandbox(
-	fn: (d: { sandboxDirectory: string; targetDirectory: string; rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>,
-	rootStructure?: DirectoryStructure,
-	targetStructure?: DirectoryStructure,
-) {
+export async function usingSandbox({ fn, rootStructure, targetStructure, cleanup }: SandboxOptions) {
 	const sandboxDirectory = path.resolve(fixturesDirectory, randomUUID())
 	const targetDirectory = path.resolve(sandboxDirectory, 'preset-target')
 	const rootDirectory = path.resolve(sandboxDirectory, 'preset-root')
@@ -128,6 +131,8 @@ export async function usingSandbox(
 		debug('Running sandbox handler.')
 		await fn({ sandboxDirectory, targetDirectory, rootDirectory }, proxyMakeTestPreset)
 	} finally {
-		await cleanupFixtures(sandboxDirectory)
+		if (cleanup === true) {
+			await cleanupFixtures(sandboxDirectory)
+		}
 	}
 }
