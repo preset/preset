@@ -14,8 +14,9 @@ export interface DirectoryStructure {
 }
 
 export const debug = createDebugger('preset:tests')
-export const fixturesDirectory = path.resolve(__dirname, '../__fixtures__')
+export const fixturesDirectory = path.resolve(__dirname, './__fixtures__')
 export const cleanupFixtures = async(fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1 })
+export const presetFixture = (name: string) => path.resolve(__dirname, './fixtures', name)
 
 /**
  * Creates a test preset.

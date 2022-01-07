@@ -2,6 +2,7 @@ import path from 'node:path'
 import { it, expect } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset } from '../src/types'
+import { presetFixture } from './utils'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
 	const cwd = path.resolve(__dirname, '..')
@@ -17,17 +18,17 @@ async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
 
 it('parses local file presets', async() => {
 	await ensureParses([
-		[path.resolve(__dirname, './fixtures/basic-preset.ts'), { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
-		['../core/test/fixtures/basic-preset.ts', { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
-		['./test/fixtures/basic-preset.ts', { path: path.resolve(__dirname, './fixtures/basic-preset.ts'), type: 'file' }],
+		[presetFixture('basic-preset.ts'), { path: presetFixture('basic-preset.ts'), type: 'file' }],
+		['../core/test/fixtures/basic-preset.ts', { path: presetFixture('basic-preset.ts'), type: 'file' }],
+		['./test/fixtures/basic-preset.ts', { path: presetFixture('basic-preset.ts'), type: 'file' }],
 		['./test/fixtures/preset-that-does-not-exist.ts', false],
 	])
 })
 
 it('parses directory presets', async() => {
 	await ensureParses([
-		[path.resolve(__dirname, './fixtures/preset-with-root-file'), { path: path.resolve(__dirname, './fixtures/preset-with-root-file'), type: 'directory' }],
-		['./test/fixtures/preset-with-root-file', { path: path.resolve(__dirname, './fixtures/preset-with-root-file'), type: 'directory' }],
+		[presetFixture('preset-with-root-file'), { path: presetFixture('preset-with-root-file'), type: 'directory' }],
+		['./test/fixtures/preset-with-root-file', { path: presetFixture('preset-with-root-file'), type: 'directory' }],
 		['./test/fixtures/dir-that-does-not-exists', false],
 	])
 })
@@ -52,9 +53,9 @@ it('parses namespaced preset aliases', async() => {
 
 it('resolves preset files in a directory', async() => {
 	const map = [
-		[path.resolve(__dirname, './fixtures/preset-with-root-file'), path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],
-		['./test/fixtures/preset-with-root-file', path.resolve(__dirname, './fixtures/preset-with-root-file/preset.ts')],
-		['./test/fixtures/preset-with-preset-in-pkg', path.resolve(__dirname, './fixtures/preset-with-preset-in-pkg/my-preset.ts')],
+		[presetFixture('preset-with-root-file'), presetFixture('preset-with-root-file/preset.ts')],
+		['./test/fixtures/preset-with-root-file', presetFixture('preset-with-root-file/preset.ts')],
+		['./test/fixtures/preset-with-preset-in-pkg', presetFixture('preset-with-preset-in-pkg/my-preset.ts')],
 	]
 
 	for (const [input, output] of map) {

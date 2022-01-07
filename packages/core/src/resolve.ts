@@ -1,6 +1,6 @@
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
-import tmp from 'temp-dir'
 import git from 'simple-git'
 import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset } from './types'
 import { debug, invoke } from './utils'
@@ -215,7 +215,7 @@ export async function resolvePresetFile(directory: string, cwd: string = process
  * Clones the repository to the disk.
  */
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
-	const targetDirectory = path.resolve(tmp, 'presets', preset.repository)
+	const targetDirectory = path.resolve(fs.realpathSync(os.tmpdir()), 'presets', preset.repository)
 	const useCache = options?.commandLine?.cache === undefined ? true : options?.commandLine?.cache
 	const cloneWithSsh = options?.commandLine?.ssh === undefined ? preset.ssh : options.commandLine.ssh
 	const tag = (options?.commandLine?.tag === undefined ? preset.tag : options.commandLine.tag)
