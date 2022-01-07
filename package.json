@@ -10,7 +10,7 @@
     "cli:build": "pnpm build && pnpm cli"
   },
   "devDependencies": {
-    "@innocenzi/eslint-config": "^0.6.0",
+    "@innocenzi/eslint-config": "^0.6.1",
     "@preset/core": "workspace:*",
     "@preset/init": "workspace:*",
     "@types/node": "^17.0.8",
