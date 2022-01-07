@@ -7,20 +7,20 @@
     "test": "pnpm -r --filter ./packages run test",
     "test:core": "pnpm -C ./packages/core run test",
     "cli": "esno ./packages/cli/src/cli.ts",
-		"cli:build": "pnpm build && pnpm cli"
+    "cli:build": "pnpm build && pnpm cli"
   },
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.6.0",
     "@preset/core": "workspace:*",
     "@preset/init": "workspace:*",
-    "@types/node": "^17.0.5",
-    "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
-    "eslint": "8.5.0",
+    "@types/node": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "8.6.0",
     "esno": "^0.13.0",
-    "tsup": "^5.11.10",
+    "tsup": "^5.11.11",
     "typescript": "^4.5.4",
     "vite": "^2.7.10",
-    "vitest": "^0.0.131"
+    "vitest": "^0.0.139"
   }
 }
