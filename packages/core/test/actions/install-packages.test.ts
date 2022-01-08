@@ -135,5 +135,4 @@ it('install the given node packages with the specified package manager', async()
 		})
 	},
 	targetStructure: { 'package.json': { type: 'file', content: '{}' } }, // necessary so it's not installed in the first package.json directory
-	cleanup: false,
 }))
