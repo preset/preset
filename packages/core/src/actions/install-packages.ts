@@ -89,7 +89,10 @@ export const installPackages = defineAction<InstallPackagesOptions>(
 					...args,
 					...packageNames,
 				].filter(Boolean),
-				(log: string) => actionContext.log.push(log),
+				(log: string) => {
+					actionContext.log.push(log)
+					debug.action(actionContext.name, log)
+				},
 				cwd,
 			)
 		}
