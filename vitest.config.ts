@@ -6,6 +6,6 @@ export default defineConfig({
 		reporters: 'verbose',
 		include: ['**/*.test.ts'],
 		watch: false,
-		testTimeout: 10000,
+		testTimeout: 15 * 1000,
 	},
 })

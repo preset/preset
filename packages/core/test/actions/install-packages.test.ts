@@ -55,7 +55,7 @@ it('install the given php packages as development dependencies', async() => awai
 	},
 }))
 
-it('install the given node packages', async() => await usingSandbox({
+it('install the given node packages with npm by default', async() => await usingSandbox({
 	fn: async({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await installPackages({
@@ -124,6 +124,7 @@ it('install the given node packages with the specified package manager', async()
 		await expectStructureMatches(targetDirectory, {
 			'node_modules': { type: 'directory' },
 			'node_modules/debug': { type: 'directory' },
+			'pnpm-lock.yaml': { type: 'file' },
 			'package.json': {
 				type: 'file',
 				json: {
@@ -134,5 +135,8 @@ it('install the given node packages with the specified package manager', async()
 			},
 		})
 	},
-	targetStructure: { 'package.json': { type: 'file', content: '{}' } }, // necessary so it's not installed in the first package.json directory
+	targetStructure: {
+		'package.json': { type: 'file', content: '{}' },
+		'.npmrc': { type: 'file', content: 'shared-workspace-lockfile=false' },
+	}, // necessary so it's not installed in the first package.json directory
 }))
