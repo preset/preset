@@ -1,7 +1,7 @@
-import { enable } from 'debug'
+import _debug from 'debug'
 import { makeReporter } from '../types'
 
 export const debug = makeReporter({
 	name: 'debug',
-	registerEvents: () => enable('preset:*'),
+	registerEvents: () => _debug.enable('preset:*'),
 })

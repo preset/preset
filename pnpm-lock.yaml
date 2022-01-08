@@ -41,9 +41,8 @@ importers:
       '@preset/core': link:../core
       cac: 6.7.12
       chalk: 5.0.0
-      log-update: 5.0.0
-    devDependencies:
       debug: 4.3.3
+      log-update: 5.0.0
 
   packages/core:
     specifiers:
@@ -73,18 +72,6 @@ importers:
       esbuild: 0.14.9
       type-fest: 2.8.0
       typescript: 4.5.4
-
-  packages/core/test/__fixtures__/331b464d-5de5-410b-a1c9-98691763f7a3/preset-target:
-    specifiers:
-      debug: ^4.3.3
-    dependencies:
-      debug: 4.3.3
-
-  packages/core/test/__fixtures__/5cf96aec-f4da-4031-b50e-a54b38607cb5/preset-target:
-    specifiers:
-      debug: ^4.3.3
-    dependencies:
-      debug: 4.3.3
 
   packages/init:
     specifiers:

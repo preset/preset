@@ -10,7 +10,7 @@
   "publishConfig": {
     "name": "preset",
     "type": "module",
-    "main": "dist/cli.js"
+    "main": "dist/cli.mjs"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "directory": "packages/cli"
   },
   "bin": {
-    "preset": "dist/cli.js"
+    "preset": "dist/cli.mjs"
   },
   "scripts": {
     "prepublishOnly": "pnpm build",
@@ -28,9 +28,7 @@
     "@preset/core": "workspace:*",
     "cac": "^6.7.12",
     "chalk": "^5.0.0",
-    "log-update": "^5.0.0"
-  },
-  "devDependencies": {
+    "log-update": "^5.0.0",
     "debug": "4.3.3"
   }
 }

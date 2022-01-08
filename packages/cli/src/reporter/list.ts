@@ -1,5 +1,5 @@
 import c from 'chalk'
-import { disable } from 'debug'
+import debug from 'debug'
 import { emitter } from '@preset/core'
 import type { Status, PresetContext } from '@preset/core'
 import { createLogUpdate } from 'log-update'
@@ -22,7 +22,7 @@ const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', 
 export const list = makeReporter({
 	name: 'list',
 	registerEvents: () => {
-		disable()
+		debug.disable()
 
 		const updateLog = createLogUpdate(process.stdout)
 		let timer: NodeJS.Timer
