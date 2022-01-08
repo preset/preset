@@ -108,7 +108,7 @@ function createContext(directory: string, filename: string): Record<string, any>
 			filename,
 			id: filename,
 			path: directory,
-			require: module.require,
+			require: typeof module !== 'undefined' ? module.require : require,
 		},
 		__dirname: directory,
 		__filename: filename,
