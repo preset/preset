@@ -12,9 +12,9 @@ const format = {
 	indent: (indent: number) => `${'  '.repeat(indent)}  `,
 	dim: (text?: any)	=> c.gray(text),
 	highlight: (text?: any)	=> c.bold(`${text}`),
-	titleWorking: (text?: any)	=> c.bgYellowBright.black.bold(`${text}`),
-	titleFail: (text?: any)	=> c.bgRed.bold(`${text}`),
-	titleSuccess: (text?: any)	=> c.bgGreen.bold(`${text}`),
+	titleWorking: (text?: any)	=> c.bgYellowBright.white.bold(`${text}`),
+	titleFail: (text?: any)	=> c.bgRed.white.bold(`${text}`),
+	titleSuccess: (text?: any)	=> c.bgGreen.white.bold(`${text}`),
 }
 
 const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
@@ -25,7 +25,7 @@ export const list = makeReporter({
 		disable()
 
 		const updateLog = createLogUpdate(process.stdout)
-		const timer = setInterval(() => render(), 150)
+		let timer: NodeJS.Timer
 		let index = 0
 
 		// Might need a lil cleanup
@@ -58,42 +58,46 @@ export const list = makeReporter({
 				preset.actions.forEach((action) => {
 					text += format.indent(preset.count)
 					text += symbol[action.status]
-					text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} `
+					text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
+					text += format.highlight(c.white(action.options.title || action.name))
 
-					if (action.options.title) {
-						text += format.highlight(action.options.title)
-					} else {
-						text += `action: ${format.highlight(action.name)}`
-					}
+					// Nested presets
+					if (action.name === 'apply-nested-preset') {
+						const nestedPresetContext = contexts.find(({ applyOptions }) => applyOptions.actionContextId === action.id)
 
-					// Depending on action, print additional logging
-					switch (action.name) {
-						// Nested preset have their own actions
-						case 'apply-nested-preset': {
-							const nestedPresetContext = contexts.find(({ applyOptions }) => applyOptions.actionContextId === action.id)
+						if (nestedPresetContext) {
+							text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)})`)
 
-							if (nestedPresetContext) {
-								text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)}`)
-
-								if (nestedPresetContext?.error) {
-									text += `${format.dim(',')} ${c.red(`error: ${(nestedPresetContext.error.message)}`)}`
-								}
-
-								text += format.dim(')\n')
+							if (nestedPresetContext?.error) {
+								text += '\n'
+								text += format.indent(preset.count + 1)
+								text += c.red(`↳ ${nestedPresetContext.error.message}`)
 							}
-
-							renderPresetActions(nestedPresetContext)
-
-							break
 						}
 
-						default:
-							if (action.error) {
-								text += c.red(` (error: ${format.highlight(action.error.message)})`)
-							}
-
-							text += '\n'
+						renderPresetActions(nestedPresetContext)
 					}
+
+					// Install packages
+					if (action.name === 'install-packages') {
+						text += format.dim(` (${format.highlight(action.options.for)})`)
+					}
+
+					// Display logs if there are.
+					if (action.log.length > 0 && action.status === 'applying') {
+						text += '\n'
+						text += format.indent(preset.count + 1)
+						text += format.dim(`↳ ${action.log.at(-1) ?? '...'}`)
+					}
+
+					// Display errors if there are, except for nested presets which display its own errors.
+					if (action.error && action.name !== 'apply-nested-preset') {
+						text += '\n'
+						text += format.indent(preset.count + 1)
+						text += c.red(`↳ ${action.error.message}`)
+					}
+
+					text += '\n'
 				})
 			}
 
@@ -120,6 +124,14 @@ export const list = makeReporter({
 		emitter.on('preset:start', (context) => {
 			contexts.push(context)
 			render()
+
+			if (context.count === 0) {
+				if (timer) {
+					clearInterval(timer)
+				}
+
+				timer = setInterval(() => render(), 150)
+			}
 		})
 
 		emitter.on('preset:end', (context) => {

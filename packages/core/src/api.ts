@@ -24,7 +24,7 @@ export function definePreset(preset: PresetOptions): Preset {
 				// Executes the handler
 				if ((await preset.handler(context)) === false) {
 					debug.preset(preset.name, 'Preset handler returned false, throwing.')
-					throw new Error('Action failed without throwing.')
+					throw new Error('Preset failed to execute properly.')
 				}
 
 				// If there was errors during the execution
@@ -83,7 +83,7 @@ export function defineAction<Options extends Object, OptionsWithDefault extends 
 		try {
 			if (!await action({ options: resolved, presetContext, actionContext, name })) {
 				debug.action(name, 'Action handler returned false, throwing.')
-				throw new Error('Action failed without throwing.')
+				throw new Error('Action failed to execute properly.')
 			}
 
 			finishActionContext(actionContext, 'applied')

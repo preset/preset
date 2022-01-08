@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/named
+import { execa, CommonOptions } from 'execa'
 import createDebugger from 'debug'
 
 export const debug = {
@@ -34,4 +36,28 @@ export function wrap<T>(value: T | T[]): T[] {
 
 export function invoke(fn: Function) {
 	return fn()
+}
+
+/**
+ * Executes the given command.
+ */
+export async function execute(command: string, args: string[] = [], fn: (log: string) => void, cwd: string, options: CommonOptions<'utf8'> = {}): Promise<boolean> {
+	const result = execa(command, args, {
+		cwd,
+		all: true,
+		...options,
+	})
+
+	result.all?.on('data', (data: Int32Array) => {
+		Buffer.from(data)
+			.toString('utf-8')
+			.split(/[\n\r]/g)
+			.map((str) => str.trim())
+			.filter((str) => str.length > 0 && !str.includes('fund'))
+			.forEach((str) => fn(str))
+	})
+
+	const { failed } = await result
+
+	return !failed
 }

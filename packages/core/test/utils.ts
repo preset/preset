@@ -10,7 +10,7 @@ import { createPresetContext } from '../src/context'
 import type { PresetOptions, LocalPreset, ApplyOptions } from '../src'
 
 export interface DirectoryStructure {
-	[path: string]: { type: 'file'; content?: any } | { type: 'directory' } | { type: 'none' }
+	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
 }
 
 export const debug = createDebugger('preset:tests')
@@ -66,6 +66,10 @@ export async function expectStructureMatches(directory: string, ds: DirectoryStr
 
 			if (entry.content) {
 				expect(fs.readFileSync(pathToEntry, { encoding: 'utf-8' })).toBe(entry.content)
+			}
+
+			if (entry.json) {
+				expect(fs.readJsonSync(pathToEntry)).toMatchObject(entry.json)
 			}
 		}
 
@@ -131,7 +135,7 @@ export async function usingSandbox({ fn, rootStructure, targetStructure, cleanup
 		debug('Running sandbox handler.')
 		await fn({ sandboxDirectory, targetDirectory, rootDirectory }, proxyMakeTestPreset)
 	} finally {
-		if (cleanup === true) {
+		if (cleanup !== false) {
 			await cleanupFixtures(sandboxDirectory)
 		}
 	}

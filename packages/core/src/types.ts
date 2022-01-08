@@ -124,6 +124,11 @@ export interface ActionContext<ResolvedOptions = ActionOptions<any>> {
 	status: Status
 
 	/**
+	 * Potential logs from the action.
+	 */
+	log: string[]
+
+	/**
 	 * Potential error.
 	 */
 	error?: Error

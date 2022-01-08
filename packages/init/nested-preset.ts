@@ -1,17 +1,12 @@
-import path from 'node:path'
-import { applyNestedPreset, definePreset, extractTemplates } from '@preset/core'
+import { definePreset } from '@preset/core'
 
 export default definePreset({
 	name: 'preset:nested-initialize-preset',
 	handler: async(context) => {
-		await extractTemplates({ title: 'template extraction', to: 'som directory' })
+		// await extractTemplates({ title: 'template extraction', to: 'som directory' })
 
 		if (context.args[0] === 'fail') {
-			await extractTemplates({})
-		}
-
-		if (context.args[0] === 'nest') {
-			await applyNestedPreset({ resolvable: path.resolve(__dirname, './nested-preset.ts') })
+			throw new Error('Failed on purpose')
 		}
 	},
 })

@@ -57,6 +57,7 @@ export function createActionContext<Options extends Object, ResolvedOptions exte
 		end: 0,
 		status: 'applying',
 		title: options.title,
+		log: [],
 	}
 
 	debug.context(`Adding action context to ${presetContext.id}:`, context)

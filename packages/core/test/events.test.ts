@@ -27,7 +27,7 @@ test('an action emits a fail event', async() => {
 	])
 
 	assert.sameOrderedMembers(contexts.map(({ error }) => error!.message), [
-		'Action failed without throwing.',
+		'Action failed to execute properly.',
 		'Action failed with throwing.',
 	])
 })
