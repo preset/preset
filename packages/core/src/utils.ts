@@ -53,7 +53,7 @@ export async function execute(command: string, args: string[] = [], fn: (log: st
 			.toString('utf-8')
 			.split(/[\n\r]/g)
 			.map((str) => str.trim())
-			.filter((str) => str.length > 0 && !str.includes('fund'))
+			.filter((str) => str.length > 0 && !str.includes('fund')) // to remove funding stuff from package managers, sorry :/
 			.forEach((str) => fn(str))
 	})
 
