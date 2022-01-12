@@ -18,6 +18,9 @@ export interface ExecuteOptions {
 	data?: (stdout: string) => void
 }
 
+/**
+ * Executes a shell command. This uses `execa` under the hood.
+ */
 export const executeCommand = defineAction<ExecuteOptions>('execute-command', async({ options, presetContext }) => {
 	return await execute(
 		options.command,

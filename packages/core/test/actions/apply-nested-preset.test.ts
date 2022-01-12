@@ -7,7 +7,7 @@ it('applies the given nested preset', async() => await usingSandbox({
 		const result: any = {}
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await applyNestedPreset({
-				resolvable: presetFixture('basic-preset.ts'),
+				preset: presetFixture('basic-preset.ts'),
 			}),
 		})
 
@@ -25,7 +25,7 @@ it('can be given arguments', async() => await usingSandbox({
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await applyNestedPreset({
 				args: ['some-arg', '--some-flag'],
-				resolvable: presetFixture('basic-preset.ts'),
+				preset: presetFixture('basic-preset.ts'),
 			}),
 		})
 
@@ -46,7 +46,7 @@ it('can inherit arguments', async() => await usingSandbox({
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await applyNestedPreset({
 				inheritsArguments: true,
-				resolvable: presetFixture('basic-preset.ts'),
+				preset: presetFixture('basic-preset.ts'),
 			}),
 		}, {
 			args: ['some-arg', 'some arg with spaces', '--some-flag', '--some-other-flag', 'the flag value'],

@@ -49,6 +49,10 @@ async function detectNodePackageManager(cwd: string) {
 	return null
 }
 
+/**
+ * Installs packages for the given environment, by calling the package manager directly via `execa`.
+ * If you install multiple packages, you may want to pass them all to the `install` option instead of calling the action multiple times.
+ */
 export const installPackages = defineAction<InstallPackagesOptions>(
 	'install-packages',
 	async({ options, presetContext, actionContext }) => {

@@ -52,6 +52,9 @@ function renameDotfiles(input: string) {
 const isFile = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })?.isFile() ?? false
 const isDirectory = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })?.isDirectory() ?? false
 
+/**
+ * Extracts templates from the preset to the target directory (most likely the one the preset command is used in).
+ */
 export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<ExtractTemplatesOptions>>(
 	'extract-templates',
 	async({ options, presetContext, actionContext }) => {
