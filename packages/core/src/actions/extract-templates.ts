@@ -74,8 +74,8 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 			await fs.copy(input, output)
 		}
 
-		async function copyDirectoryToDirectory(input: string, output: string, glob: string = '**/**') {
-			const paths = await fg(glob, {
+		async function copyDirectoryToDirectory(input: string, output: string, glob?: string) {
+			const paths = await fg(glob || '**/**', {
 				ignore: ['node_modules', '.git', 'dist'],
 				markDirectories: true,
 				absolute: false,
