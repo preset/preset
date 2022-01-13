@@ -16,6 +16,11 @@ export interface ExecuteOptions {
 	 * A callback called each time stdout or stdin prints a line.
 	 */
 	data?: (stdout: string) => void
+
+	/**
+	 * If true, exit code will be ignored.
+	 */
+	ignoreExitCode?: boolean
 }
 
 /**
@@ -27,5 +32,9 @@ export const executeCommand = defineAction<ExecuteOptions>('execute-command', as
 		options.arguments ?? [],
 		options.data ?? (() => {}),
 		presetContext.applyOptions.targetDirectory,
+		{
+			reject: !options.ignoreExitCode,
+		},
+		options.ignoreExitCode,
 	)
 })

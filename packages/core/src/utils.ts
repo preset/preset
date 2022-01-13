@@ -41,7 +41,14 @@ export function invoke(fn: Function) {
 /**
  * Executes the given command.
  */
-export async function execute(command: string, args: string[] = [], fn: (log: string) => void, cwd: string, options: CommonOptions<'utf8'> = {}): Promise<boolean> {
+export async function execute(
+	command: string,
+	args: string[] = [],
+	fn: (log: string) => void,
+	cwd: string,
+	options: CommonOptions<'utf8'> = {},
+	ignoreExitCode: boolean = false,
+): Promise<boolean> {
 	const result = execa(command, args, {
 		cwd,
 		all: true,
@@ -59,7 +66,7 @@ export async function execute(command: string, args: string[] = [], fn: (log: st
 
 	const { failed } = await result
 
-	return !failed
+	return ignoreExitCode ? true : !failed
 }
 
 /**
