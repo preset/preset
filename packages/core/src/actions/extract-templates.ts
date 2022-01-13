@@ -94,7 +94,7 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 			}
 		}
 
-		// Copying a directory to a file is kind of a dump operation
+		// Copying a directory to a file is kind of a dumb operation
 		if (isDirectory(templatesPath) && isFile(targetPath)) {
 			throw new Error('Can not extract a directory to a file.')
 		}

@@ -61,3 +61,13 @@ export async function execute(command: string, args: string[] = [], fn: (log: st
 
 	return !failed
 }
+
+/**
+ * Returns a clone of the given object without the specified key.
+ */
+export function objectWithoutKey<T extends object>(object: T, key: keyof T) {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+	const { [key]: deletedKey, ...otherKeys } = object
+
+	return otherKeys
+}

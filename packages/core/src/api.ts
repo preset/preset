@@ -1,4 +1,4 @@
-import { debug } from './utils'
+import { debug, objectWithoutKey } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
 import type { PresetOptions, Preset, ActionHandler, Action } from './types'
@@ -18,7 +18,7 @@ export function definePreset(preset: PresetOptions): Preset {
 			emitter.emit('preset:start', context)
 
 			try {
-				debug.context(preset.name, ' context:', context)
+				debug.context(preset.name, 'context', objectWithoutKey(context, 'git'))
 				debug.preset(preset.name, 'Executing handler.')
 
 				// Executes the handler
