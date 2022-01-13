@@ -50,6 +50,7 @@ importers:
       '@types/fs-extra': ^9.0.13
       cac: ^6.7.12
       debug: ^4.3.3
+      detect-indent: ^7.0.0
       esbuild: ^0.14.9
       execa: ^6.0.0
       fast-glob: ^3.2.7
@@ -61,6 +62,7 @@ importers:
     dependencies:
       cac: 6.7.12
       debug: 4.3.3
+      detect-indent: 7.0.0
       execa: 6.0.0
       fast-glob: 3.2.7
       fs-extra: 10.0.0
@@ -679,6 +681,11 @@ packages:
     dependencies:
       object-keys: 1.1.1
     dev: true
+
+  /detect-indent/7.0.0:
+    resolution: {integrity: sha512-/6kJlmVv6RDFPqaHC/ZDcU8bblYcoph2dUQ3kB47QqhkUEqXe3VZPELK9BaEMrC73qu+wn0AQ7iSteceN+yuMw==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /dir-glob/3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
