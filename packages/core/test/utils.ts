@@ -36,7 +36,7 @@ export const makeTestPreset = async(
 
 	const context = await createPresetContext(preset, {
 		resolvable: '',
-		args: [],
+		rawArguments: [],
 		targetDirectory: '',
 		...customApplyOptions,
 	}, {

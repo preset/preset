@@ -233,12 +233,12 @@ export interface ApplyOptions {
 	/**
 	 * The raw command-line arguments, without the first two from argv.
 	 */
-	args: readonly string[]
+	rawArguments: readonly string[]
 
 	/**
-   * List of command line options.
+   * List of parsed command line options.
    */
-	commandLine?: {
+	parsedOptions?: {
 		/**
 		 * The path to a sub-directory in which to look for a preset.
 		 */

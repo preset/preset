@@ -25,24 +25,27 @@ const cli = createCli('preset')
 cli.command('apply <resolvable> [target-directory]', 'Applies the given preset.')
 	.option('-p, --path [path]', 'The path to a sub-directory in which to look for a preset.')
 	.option('-t, --tag [tag]', 'The branch or tag to use if the preset is a repository.')
-	.option('-ssh', 'Whether to use SSH or not. This can be determined depending on the URL of the Git repository, defaulting to true when possible.')
+	.option('--no-ssh', 'Whether to use SSH or not. This can be determined depending on the URL of the Git repository, defaulting to true when possible.')
 	.option('--no-cache', 'Whether to use the cached repository if it exists.')
-	.action((resolvable: string, targetDirectory: string | undefined, commandLine) => applyPreset({
-		commandLine,
+	.allowUnknownOptions()
+	.action((resolvable: string, targetDirectory: string | undefined, parsedOptions) => applyPreset({
+		parsedOptions,
 		resolvable,
 		targetDirectory: targetDirectory ?? process.cwd(),
-		args: process.argv.slice(0, 2),
+		rawArguments: process.argv.slice(2),
 	}))
 
 // Registers the `init` command
 cli.command('init [target-directory]', 'Initializes a new preset.')
 	.alias('initialize')
 	.option('--no-git', 'Do not initialize a Git repository.')
-	.action((targetDirectory: string | undefined, commandLine) => applyPreset({
-		commandLine,
+	.option('--no-install', 'Do not install the preset dependency.')
+	.allowUnknownOptions()
+	.action((targetDirectory: string | undefined, parsedOptions) => applyPreset({
+		parsedOptions,
 		resolvable: path.resolve(__dirname, '../init'),
 		targetDirectory: targetDirectory ?? process.cwd(),
-		args: process.argv.slice(0, 2),
+		rawArguments: process.argv.slice(2),
 	}))
 
 // Runs the CLI after registering the events

@@ -216,9 +216,9 @@ export async function resolvePresetFile(directory: string, cwd: string = process
  */
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
 	const targetDirectory = path.resolve(fs.realpathSync(os.tmpdir()), 'presets', preset.repository)
-	const useCache = options?.commandLine?.cache === undefined ? true : options?.commandLine?.cache
-	const cloneWithSsh = options?.commandLine?.ssh === undefined ? preset.ssh : options.commandLine.ssh
-	const tag = (options?.commandLine?.tag === undefined ? preset.tag : options.commandLine.tag)
+	const useCache = options?.parsedOptions?.cache === undefined ? true : options?.parsedOptions?.cache
+	const cloneWithSsh = options?.parsedOptions?.ssh === undefined ? preset.ssh : options.parsedOptions.ssh
+	const tag = (options?.parsedOptions?.tag === undefined ? preset.tag : options.parsedOptions.tag)
 	const repositoryUrl = cloneWithSsh
 		? `git@github.com:${preset.organization}/${preset.repository}.git`
 		: `https://github.com/${preset.organization}/${preset.repository}`

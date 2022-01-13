@@ -28,9 +28,9 @@ export const applyNestedPreset = defineAction<ApplyNestedPresetOptions>('apply-n
 	const otherPresetOptions: ApplyOptions = {
 		resolvable: options.preset,
 		targetDirectory: presetContext.applyOptions.targetDirectory,
-		commandLine: options.inheritsArguments ? presetContext.applyOptions.commandLine : {},
-		args: [
-			...(options.inheritsArguments ? presetContext.applyOptions.args : []),
+		parsedOptions: options.inheritsArguments ? presetContext.applyOptions.parsedOptions : {},
+		rawArguments: [
+			...(options.inheritsArguments ? presetContext.applyOptions.rawArguments : []),
 			...options.args ?? [],
 		],
 		actionContextId: presetContext.actions.at(-1)?.id,

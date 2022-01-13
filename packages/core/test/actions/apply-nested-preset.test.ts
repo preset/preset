@@ -36,7 +36,7 @@ it('can be given arguments', async() => await usingSandbox({
 		expect(result.context?.name).toBe('basic-preset')
 		expect(result.context?.args).toStrictEqual(['some-arg'])
 		expect(result.context?.options).toMatchObject({ someFlag: true })
-		expect(result.context?.applyOptions.args).toStrictEqual(['some-arg', '--some-flag'])
+		expect(result.context?.applyOptions.rawArguments).toStrictEqual(['some-arg', '--some-flag'])
 	},
 }))
 
@@ -49,7 +49,7 @@ it('can inherit arguments', async() => await usingSandbox({
 				preset: presetFixture('basic-preset.ts'),
 			}),
 		}, {
-			args: ['some-arg', 'some arg with spaces', '--some-flag', '--some-other-flag', 'the flag value'],
+			rawArguments: ['some-arg', 'some arg with spaces', '--some-flag', '--some-other-flag', 'the flag value'],
 		})
 
 		emitter.on('preset:start', (context) => result.context = context)
@@ -57,7 +57,7 @@ it('can inherit arguments', async() => await usingSandbox({
 		await executePreset()
 
 		expect(result.context?.name).toBe('basic-preset')
-		expect(result.context?.applyOptions.args).toStrictEqual(['some-arg', 'some arg with spaces', '--some-flag', '--some-other-flag', 'the flag value'])
+		expect(result.context?.applyOptions.rawArguments).toStrictEqual(['some-arg', 'some arg with spaces', '--some-flag', '--some-other-flag', 'the flag value'])
 		expect(result.context?.args).toStrictEqual(['some-arg', 'some arg with spaces'])
 		expect(result.context?.options).toMatchObject({
 			someFlag: true,
