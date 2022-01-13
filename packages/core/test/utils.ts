@@ -1,8 +1,8 @@
 import nfs from 'node:fs'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
+import { it, assert, expect } from 'vitest'
 import fs from 'fs-extra'
-import { assert, expect } from 'vitest'
 import type { SetRequired } from 'type-fest'
 import createDebugger from 'debug'
 import { definePreset } from '../src'
@@ -15,7 +15,7 @@ export interface DirectoryStructure {
 
 export const debug = createDebugger('preset:tests')
 export const fixturesDirectory = path.resolve(__dirname, './__fixtures__')
-export const cleanupFixtures = async(fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1 })
+export const cleanupFixtures = async(fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
 export const presetFixture = (name: string) => path.resolve(__dirname, './fixtures', name)
 
 /**
@@ -105,7 +105,7 @@ export async function generateStructure(directory: string, ds?: DirectoryStructu
 	}
 }
 
-interface SandboxOptions {
+export interface SandboxOptions {
 	fn: (d: { sandboxDirectory: string; targetDirectory: string; rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
 	rootStructure?: DirectoryStructure
 	targetStructure?: DirectoryStructure
@@ -197,4 +197,27 @@ export function dedent(
 	})
 
 	return string
+}
+
+export interface TestRecord {
+	skip?: boolean
+	only?: boolean
+}
+
+export function testsInSandbox<T extends TestRecord>(tests: Record<string, T>, options: (test: T, name: string) => SandboxOptions) {
+	for (const [name, test] of Object.entries(tests)) {
+		const callback = async() => await usingSandbox(options(test, name))
+
+		if (test.skip === true) {
+			it.skip(name, async() => {})
+			continue
+		}
+
+		if (test.only === true) {
+			it.only(name, callback)
+			continue
+		}
+
+		it(name, callback)
+	}
 }

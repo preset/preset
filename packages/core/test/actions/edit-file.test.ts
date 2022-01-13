@@ -1,17 +1,14 @@
-import { it } from 'vitest'
 import { editFile, EditFileOperation } from '../../src'
-import { usingSandbox, dedent, expectStructureMatches } from '../utils'
+import { dedent, expectStructureMatches, TestRecord, testsInSandbox } from '../utils'
 
-interface EditFileTest {
-	skip?: boolean
-	only?: boolean
+interface EditFileTest extends TestRecord {
 	operation: EditFileOperation
 	fileBefore: string
 	fileAfter: string
 }
 
 const testFile = 'file.txt'
-const map: Record<string, EditFileTest> = {
+const tests: Record<string, EditFileTest> = {
 	'updates content in the file': {
 		operation: {
 			type: 'update-content',
@@ -356,38 +353,24 @@ const map: Record<string, EditFileTest> = {
 	},
 }
 
-for (const [name, test] of Object.entries(map)) {
-	const callback = async() => await usingSandbox({
-		fn: async({ targetDirectory }, makeTestPreset) => {
-			const { executePreset } = await makeTestPreset({
-				handler: async() => await editFile({ file: testFile, operations: [test.operation] }),
-			})
+testsInSandbox(tests, (test) => ({
+	fn: async({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({
+			handler: async() => await editFile({ file: testFile, operations: [test.operation] }),
+		})
 
-			await executePreset()
-			await expectStructureMatches(targetDirectory, {
-				[testFile]: {
-					type: 'file',
-					content: test.fileAfter,
-				},
-			})
-		},
-		targetStructure: {
+		await executePreset()
+		await expectStructureMatches(targetDirectory, {
 			[testFile]: {
 				type: 'file',
-				content: test.fileBefore,
+				content: test.fileAfter,
 			},
+		})
+	},
+	targetStructure: {
+		[testFile]: {
+			type: 'file',
+			content: test.fileBefore,
 		},
-	})
-
-	if (test.skip === true) {
-		it.skip(name, async() => {})
-		continue
-	}
-
-	if (test.only === true) {
-		it.only(name, callback)
-		continue
-	}
-
-	it(name, callback)
-}
+	},
+}))
