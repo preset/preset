@@ -1,10 +1,13 @@
-import { editFile, EditFileOperation } from '../../src'
-import { dedent, expectStructureMatches, TestRecord, testsInSandbox } from '../utils'
+import { editFiles, EditFileOperation } from '../../src'
+import { dedent, DirectoryStructure, expectStructureMatches, TestRecord, testsInSandbox } from '../utils'
 
 interface EditFileTest extends TestRecord {
 	operation: EditFileOperation
-	fileBefore: string
-	fileAfter: string
+	fileBefore?: string
+	fileAfter?: string
+	files?: string | string[]
+	initialStructure?: DirectoryStructure
+	finalStructure?: DirectoryStructure
 }
 
 const testFile = 'file.txt'
@@ -351,23 +354,41 @@ const tests: Record<string, EditFileTest> = {
 			Fourth line
 		`,
 	},
+	'updates content in multiple files': {
+		files: '*.txt',
+		operation: {
+			type: 'update-content',
+			update: (content) => content.replaceAll('l', 'w'),
+		},
+		initialStructure: {
+			'hello.txt': { type: 'file', content: 'Hello' },
+			'world.txt': { type: 'file', content: 'world' },
+		},
+		finalStructure: {
+			'hello.txt': { type: 'file', content: 'Hewwo' },
+			'world.txt': { type: 'file', content: 'worwd' },
+		},
+	},
 }
 
 testsInSandbox(tests, (test) => ({
 	fn: async({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await editFile({ file: testFile, operations: [test.operation] }),
+			handler: async() => await editFiles({
+				files: test.files ?? testFile,
+				operations: [test.operation],
+			}),
 		})
 
 		await executePreset()
-		await expectStructureMatches(targetDirectory, {
+		await expectStructureMatches(targetDirectory, test.finalStructure ?? {
 			[testFile]: {
 				type: 'file',
 				content: test.fileAfter,
 			},
 		})
 	},
-	targetStructure: {
+	targetStructure: test.initialStructure ?? {
 		[testFile]: {
 			type: 'file',
 			content: test.fileBefore,
