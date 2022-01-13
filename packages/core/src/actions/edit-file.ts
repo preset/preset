@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import detectIndent from 'detect-indent'
 import { defineAction } from '../api'
-import { debug } from '../utils'
+import { debug, wrap } from '../utils'
 
 export const editFile = defineAction<EditFileOptions>('edit-file', async({ options, presetContext, actionContext }) => {
 	const targetFile = path.resolve(presetContext.applyOptions.targetDirectory, options.file)
@@ -76,7 +76,7 @@ export const editFile = defineAction<EditFileOptions>('edit-file', async({ optio
 
 		// Adds line
 		if (operation.type === 'add-line') {
-			const linesToAdd = Array.isArray(operation.lines) ? operation.lines : [operation.lines]
+			const linesToAdd = wrap(operation.lines)
 			debug.action(actionContext.name, `Adding ${linesToAdd.length} line(s) ${operation.position} ${operation.match}.`)
 
 			const lines = content.replace(/\r\n/, '\n').split('\n')

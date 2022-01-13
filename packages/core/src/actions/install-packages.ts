@@ -1,6 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
-import { debug, execute } from '../utils'
+import { debug, execute, wrap } from '../utils'
 import { defineAction } from '../api'
 
 // https://github.com/antfu/install-pkg
@@ -57,7 +57,7 @@ export const installPackages = defineAction<InstallPackagesOptions>(
 	'install-packages',
 	async({ options, presetContext, actionContext }) => {
 		const cwd = presetContext.applyOptions.targetDirectory
-		const packageNames = Array.isArray(options.install) ? options.install : [options.install]
+		const packageNames = wrap(options.install)
 		const args = options.additionalArgs || []
 
 		debug.action(actionContext.name, `Installing packages in ${cwd}`)
