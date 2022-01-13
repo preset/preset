@@ -17,8 +17,14 @@ const contexts: PresetContext[] = []
 export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions, localPreset: LocalPreset): Promise<PresetContext> {
 	debug.context(`Creating a new context for "${preset.name}".`)
 
+	const { options, args } = cac().parse(['', '', ...applyOptions.args])
+
 	const context: PresetContext = {
-		...cac().parse(['', '', ...applyOptions.args]),
+		options: {
+			...preset.flags,
+			...options,
+		},
+		args,
 		id: randomUUID(),
 		name: preset.name,
 		git: {
