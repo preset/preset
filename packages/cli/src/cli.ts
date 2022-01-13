@@ -40,7 +40,7 @@ cli.command('init [target-directory]', 'Initializes a new preset.')
 	.option('--no-git', 'Do not initialize a Git repository.')
 	.action((targetDirectory: string | undefined, commandLine) => applyPreset({
 		commandLine,
-		resolvable: path.resolve(__dirname, '../../init'),
+		resolvable: path.resolve(__dirname, '../init'),
 		targetDirectory: targetDirectory ?? process.cwd(),
 		args: process.argv.slice(0, 2),
 	}))

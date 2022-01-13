@@ -7,11 +7,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "name": "preset",
-    "type": "module",
-    "main": "dist/cli.mjs"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/preset/preset.git",

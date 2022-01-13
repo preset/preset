@@ -6,7 +6,6 @@ importers:
     specifiers:
       '@innocenzi/eslint-config': ^0.6.1
       '@preset/core': workspace:*
-      '@preset/init': workspace:*
       '@types/node': ^17.0.8
       '@typescript-eslint/eslint-plugin': ^5.9.0
       '@typescript-eslint/parser': ^5.9.0
@@ -19,7 +18,6 @@ importers:
     devDependencies:
       '@innocenzi/eslint-config': 0.6.1_eslint@8.6.0+typescript@4.5.4
       '@preset/core': link:packages/core
-      '@preset/init': link:packages/init
       '@types/node': 17.0.8
       '@typescript-eslint/eslint-plugin': 5.9.0_bd2fd93dbcc607ad2f21b784bccfe0c8
       '@typescript-eslint/parser': 5.9.0_eslint@8.6.0+typescript@4.5.4
@@ -74,12 +72,6 @@ importers:
       esbuild: 0.14.9
       type-fest: 2.8.0
       typescript: 4.5.4
-
-  packages/init:
-    specifiers:
-      '@preset/core': workspace:*
-    devDependencies:
-      '@preset/core': link:../core
 
 packages:
 
