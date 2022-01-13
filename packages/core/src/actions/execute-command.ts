@@ -32,9 +32,7 @@ export const executeCommand = defineAction<ExecuteOptions>('execute-command', as
 		options.arguments ?? [],
 		options.data ?? (() => {}),
 		presetContext.applyOptions.targetDirectory,
-		{
-			reject: !options.ignoreExitCode,
-		},
+		{ reject: !options.ignoreExitCode },
 		options.ignoreExitCode,
 	)
 })
