@@ -75,7 +75,7 @@ export function getCurrentPresetContext(): PresetContext | undefined {
 	const context = contexts.at(-1)
 
 	if (!context) {
-		debug.context('Context could not be found in the context stack. This might cause issues.')
+		throw new Error('Context could not be found in the context stack. This might cause issues.')
 	}
 
 	debug.context('Current context:', objectWithoutKey(context, 'git'))
