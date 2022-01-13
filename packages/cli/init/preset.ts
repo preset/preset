@@ -7,6 +7,7 @@ export default definePreset({
 		git: true,
 	},
 	handler: async(context) => {
+		// TODO prompt
 		// const presetName = 'test' // await prompt('What is the name of the preset', ({ targetDirectory }) => path.basename(targetDirectory))
 		// const kebabPresetName = presetName
 		// 	.match(/[A-Z]{2,}(?=[A-Z][a-z0-9]*|\b)|[A-Z]?[a-z0-9]*|[A-Z]|[0-9]+/g)!
@@ -15,7 +16,7 @@ export default definePreset({
 		// 	.join('-')
 		// 	.replace(/'/, "\\'")
 
-		await extractTemplates()
+		await extractTemplates({ title: 'extract templates' })
 
 		await editFiles({
 			files: '**/**',
@@ -24,19 +25,21 @@ export default definePreset({
 					type: 'replace-variables',
 					variables: {
 						author: context.git.config['user.name'] as string,
+						email: context.git.config['user.email'] as string,
 					},
 				},
 			],
+			title: 'replace variables',
 		})
 
 		if (context.options.install) {
-			await installPackages({ for: 'node', install: '@preset/core' })
+			await installPackages({ for: 'node', install: '@preset/core', dev: true, title: 'install typings' })
 		}
 
 		if (context.options.git) {
-			await executeCommand({ command: 'git', arguments: ['init'] })
-			await executeCommand({ command: 'git', arguments: ['add', '.'] })
-			await executeCommand({ command: 'git', arguments: ['commit', '-m', 'chore: initialize preset'] })
+			// TODO: await group()
+			await executeCommand({ command: 'git', arguments: ['init'], title: 'initialize repository' })
+			await executeCommand({ command: 'git', arguments: ['commit', '-q', '-am', '"chore: initialize preset"'], ignoreExitCode: true, title: 'make first commit' })
 		}
 	},
 })
