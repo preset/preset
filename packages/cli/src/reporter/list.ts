@@ -69,9 +69,11 @@ export const list = makeReporter({
 							text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)})`)
 
 							if (nestedPresetContext?.error) {
-								text += '\n'
-								text += format.indent(preset.count + 1)
-								text += c.red(`↳ ${nestedPresetContext.error.message}`)
+								nestedPresetContext.error.message.split('\n').forEach((line, index) => {
+									text += '\n'
+									text += format.indent(preset.count + 1)
+									text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+								})
 							}
 						}
 
@@ -92,9 +94,11 @@ export const list = makeReporter({
 
 					// Display errors if there are, except for nested presets which display its own errors.
 					if (action.error && action.name !== 'apply-nested-preset') {
-						text += '\n'
-						text += format.indent(preset.count + 1)
-						text += c.red(`↳ ${action.error.message}`)
+						action.error.message.split('\n').forEach((line, index) => {
+							text += '\n'
+							text += format.indent(preset.count + 1)
+							text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+						})
 					}
 
 					text += '\n'
