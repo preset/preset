@@ -1,6 +1,6 @@
 {
   "name": "@preset/core",
-  "version": "0.3.0",
+  "version": "0.0.1",
   "license": "MIT",
   "author": "Enzo Innocenzi",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
