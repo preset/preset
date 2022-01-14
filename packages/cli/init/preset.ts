@@ -39,7 +39,8 @@ export default definePreset({
 		if (context.options.git) {
 			// TODO: await group()
 			await executeCommand({ command: 'git', arguments: ['init'], title: 'initialize repository' })
-			await executeCommand({ command: 'git', arguments: ['commit', '-q', '-am', '"chore: initialize preset"'], ignoreExitCode: true, title: 'make first commit' })
+			await executeCommand({ command: 'git', arguments: ['add', '.'], ignoreExitCode: true, title: 'stage preset files' })
+			await executeCommand({ command: 'git', arguments: ['commit', '-m', '"chore: initialize preset"'], ignoreExitCode: true, title: 'make first commit' })
 		}
 	},
 })
