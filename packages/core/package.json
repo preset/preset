@@ -1,6 +1,6 @@
 {
   "name": "@preset/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "author": "Enzo Innocenzi",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
@@ -36,11 +36,11 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "esbuild": "^0.14.9",
     "type-fest": "^2.8.0",
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "esbuild": "^0.14.9",
     "cac": "^6.7.12",
     "debug": "^4.3.3",
     "detect-indent": "^7.0.0",
