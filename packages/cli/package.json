@@ -8,7 +8,8 @@
 		"access": "public"
 	},
   "files": [
-    "dist"
+    "dist",
+		"init"
   ],
   "repository": {
     "type": "git",
