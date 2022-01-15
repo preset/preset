@@ -83,7 +83,8 @@ export function defineAction<Options extends Object, OptionsWithDefault extends 
 		debug.action(name, 'Resolved options:', resolved)
 
 		const presetContext = getCurrentPresetContext()!
-		const actionContext = createActionContext(presetContext, name, resolved)
+		const groupAction = presetContext.actions.find((action) => action.name === 'group' && action.status === 'applying')
+		const actionContext = createActionContext(presetContext, name, resolved, groupAction)
 
 		emitter.emit('action:start', actionContext)
 

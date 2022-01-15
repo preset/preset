@@ -1,4 +1,4 @@
-import { definePreset, editFiles, extractTemplates, installPackages, executeCommand } from '@preset/core'
+import { definePreset, editFiles, extractTemplates, installPackages, executeCommand, group } from '@preset/core'
 
 export default definePreset({
 	name: 'preset:initialize',
@@ -37,10 +37,14 @@ export default definePreset({
 		}
 
 		if (context.options.git) {
-			// TODO: await group()
-			await executeCommand({ command: 'git', arguments: ['init'], title: 'initialize repository' })
-			await executeCommand({ command: 'git', arguments: ['add', '.'], ignoreExitCode: true, title: 'stage preset files' })
-			await executeCommand({ command: 'git', arguments: ['commit', '-m', '"chore: initialize preset"'], ignoreExitCode: true, title: 'make first commit' })
+			await group({
+				title: 'initialize repository',
+				handler: async() => {
+					await executeCommand({ command: 'git', arguments: ['init'] })
+					await executeCommand({ command: 'git', arguments: ['add', '.'] })
+					await executeCommand({ command: 'git', arguments: ['commit', '-m', '"chore: initialize preset"'] })
+				},
+			})
 		}
 	},
 })

@@ -41,7 +41,7 @@ export default makeReporter({
 
 			// The main preset is specially formatted
 			const main = contexts.at(0)!
-			text += '\n\n'
+			text += '\n'
 			text += {
 				applying: ` ${format.titleWorking(' RUN ')} ${format.dim(`Applying preset: ${format.highlight(main.name)}...`)}`,
 				applied: ` ${format.titleSuccess(' OK ')} ${c.green(`Applied preset: ${format.highlight(main.name)}.`)}`,
@@ -55,54 +55,69 @@ export default makeReporter({
 				}
 
 				// Render actions
-				preset.actions.forEach((action) => {
-					text += format.indent(preset.count)
-					text += symbol[action.status]
-					text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
-					text += format.highlight(c.white(action.options.title || action.name))
+				preset.actions
+					.filter((action) => !action.groupContextId)
+					.forEach((action) => {
+						text += format.indent(preset.count)
+						text += symbol[action.status]
+						text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
+						text += format.highlight(c.white(action.options.title || action.name))
 
-					// Nested presets
-					if (action.name === 'apply-nested-preset') {
-						const nestedPresetContext = contexts.find(({ applyOptions }) => applyOptions.actionContextId === action.id)
+						// Nested presets
+						if (action.name === 'apply-nested-preset') {
+							const nestedPresetContext = contexts.find(({ applyOptions }) => applyOptions.actionContextId === action.id)
 
-						if (nestedPresetContext) {
-							text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)})`)
+							if (nestedPresetContext) {
+								text += format.dim(` (preset: ${format.highlight(nestedPresetContext?.name)})`)
 
-							if (nestedPresetContext?.error) {
-								nestedPresetContext.error.message.split('\n').forEach((line, index) => {
-									text += '\n'
-									text += format.indent(preset.count + 1)
-									text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
-								})
+								if (nestedPresetContext?.error) {
+									nestedPresetContext.error.message.split('\n').forEach((line, index) => {
+										text += '\n'
+										text += format.indent(preset.count + 1)
+										text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+									})
+								}
+							}
+
+							renderPresetActions(nestedPresetContext)
+						}
+
+						// Install packages
+						if (action.name === 'install-packages') {
+							text += format.dim(` (${format.highlight(action.options.for)})`)
+						}
+
+						// Display child action logs if there are.
+						if (action.name === 'group') {
+							const logs = preset.actions
+								.filter((child) => child.groupContextId === action.id && child.status === 'applying')
+								.flatMap((action) => action.log)
+
+							if (logs.length > 0 && action.status === 'applying') {
+								text += '\n'
+								text += format.indent(preset.count + 1)
+								text += format.dim(`↳ ${logs.at(-1) ?? '...'}`)
 							}
 						}
 
-						renderPresetActions(nestedPresetContext)
-					}
-
-					// Install packages
-					if (action.name === 'install-packages') {
-						text += format.dim(` (${format.highlight(action.options.for)})`)
-					}
-
-					// Display logs if there are.
-					if (action.log.length > 0 && action.status === 'applying') {
-						text += '\n'
-						text += format.indent(preset.count + 1)
-						text += format.dim(`↳ ${action.log.at(-1) ?? '...'}`)
-					}
-
-					// Display errors if there are, except for nested presets which display its own errors.
-					if (action.error && action.name !== 'apply-nested-preset') {
-						action.error.message.split('\n').forEach((line, index) => {
+						// Display logs if there are.
+						if (action.log.length > 0 && action.status === 'applying') {
 							text += '\n'
 							text += format.indent(preset.count + 1)
-							text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
-						})
-					}
+							text += format.dim(`↳ ${action.log.at(-1) ?? '...'}`)
+						}
 
-					text += '\n'
-				})
+						// Display errors if there are, except for nested presets which display its own errors.
+						if (action.error && action.name !== 'apply-nested-preset') {
+							action.error.message.split('\n').forEach((line, index) => {
+								text += '\n'
+								text += format.indent(preset.count + 1)
+								text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+							})
+						}
+
+						text += '\n'
+					})
 			}
 
 			// Render presets

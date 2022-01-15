@@ -53,12 +53,14 @@ export function createActionContext<Options extends Object, ResolvedOptions exte
 	presetContext: PresetContext,
 	name: string,
 	options: ResolvedOptions,
+	groupAction?: ActionContext,
 ) {
 	const context: ActionContext<ResolvedOptions> = {
 		name,
 		options,
 		id: randomUUID(),
 		presetContextId: presetContext.id,
+		groupContextId: groupAction?.id,
 		start: performance.now(),
 		end: 0,
 		status: 'applying',

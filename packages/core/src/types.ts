@@ -94,6 +94,11 @@ export interface ActionContext<ResolvedOptions = ActionOptions<any>> {
 	presetContextId: string
 
 	/**
+	 * The ID of its group action context.
+	 */
+	groupContextId?: string
+
+	/**
 	 * The action name.
 	 */
 	name: string
