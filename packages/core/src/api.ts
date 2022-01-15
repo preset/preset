@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import { debug, objectWithoutKey } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
@@ -20,6 +21,12 @@ export function definePreset(preset: PresetOptions): Preset {
 			try {
 				debug.context(preset.name, 'context', objectWithoutKey(context, 'git'))
 				debug.preset(preset.name, 'Executing handler.')
+
+				// Target directory check
+				if (!await fs.pathExists(context.applyOptions.targetDirectory)) {
+					debug.preset(preset.name, 'Target directory does not exist, creating it.')
+					await fs.ensureDir(context.applyOptions.targetDirectory)
+				}
 
 				// Executes the handler
 				if ((await preset.handler(context)) === false) {

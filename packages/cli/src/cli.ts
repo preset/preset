@@ -33,7 +33,7 @@ cli.command('apply <resolvable> [target-directory]', 'Applies the given preset.'
 	.action((resolvable: string, targetDirectory: string | undefined, parsedOptions) => applyPreset({
 		parsedOptions,
 		resolvable,
-		targetDirectory: targetDirectory ?? process.cwd(),
+		targetDirectory: targetDirectory ? path.resolve(targetDirectory) : process.cwd(),
 		rawArguments: process.argv.slice(2),
 	}))
 
