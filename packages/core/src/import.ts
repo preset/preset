@@ -12,7 +12,7 @@ import * as preset from './index'
  * @returns
  */
 export async function importPresetFile(filepath: string) {
-	debug.import(`Importing ${filepath}}.`)
+	debug.import(`Importing ${filepath}.`)
 
 	const script = fs.readFileSync(filepath, { encoding: 'utf-8' })
 	const sanitizedScript = removeSelfImportStatement(script)

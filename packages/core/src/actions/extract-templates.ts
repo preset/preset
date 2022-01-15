@@ -61,6 +61,9 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 		const templatesPath = path.resolve(presetContext.localPreset.rootDirectory, options.templates, options.from)
 		const targetPath = path.resolve(presetContext.applyOptions.targetDirectory, options.to)
 
+		debug.action(actionContext.name, 'Templates path:', templatesPath)
+		debug.action(actionContext.name, 'Target path:', targetPath)
+
 		async function copyFileToFile(input: string, output: string) {
 			output = renameDotfiles(output)
 
@@ -75,6 +78,8 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 		}
 
 		async function copyDirectoryToDirectory(input: string, output: string, glob?: string) {
+			debug.action(actionContext.name, `Matching ${glob || '**/**'} in`, input)
+
 			const paths = await fg(glob || '**/**', {
 				ignore: ['node_modules', '.git', 'dist'],
 				markDirectories: true,
