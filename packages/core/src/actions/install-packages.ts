@@ -8,9 +8,9 @@ export type PackageManager = 'pnpm' | 'yarn' | 'npm'
 
 export interface InstallPackagesOptions {
 	/**
-	 * The environment for which to install the dependencies.
+	 * The environment for which to install the dependencies. Defaults to Node.
 	 */
-	for: 'node' | 'php'
+	for?: 'node' | 'php'
 
 	/**
 	 * The dependencies to install.
