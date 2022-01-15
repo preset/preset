@@ -401,6 +401,66 @@ const tests: Record<string, EditFileTest> = {
 			New line
 		`,
 	},
+	'merges json to a json file': {
+		operation: {
+			type: 'edit-json',
+			merge: {
+				preset: 'preset.ts',
+				devDependencies: {
+					'@preset/core': '*',
+				},
+				files: ['dist'],
+			},
+		},
+		fileBefore: JSON.stringify({ private: true, files: ['src'] }),
+		fileAfter: JSON.stringify({
+			private: true,
+			files: ['src', 'dist'],
+			preset: 'preset.ts',
+			devDependencies: { '@preset/core': '*' },
+		}),
+	},
+	'deletes properties from a json file': {
+		operation: {
+			type: 'edit-json',
+			delete: ['devDependencies.@preset/core', 'preset'],
+		},
+		fileBefore: JSON.stringify({
+			private: true,
+			files: ['src', 'dist'],
+			preset: 'preset.ts',
+			devDependencies: {
+				'@preset/core': '*',
+				'debug': '^4.3.4',
+			},
+		}),
+		fileAfter: JSON.stringify({
+			private: true,
+			files: ['src', 'dist'],
+			devDependencies: {
+				debug: '^4.3.4',
+			},
+		}),
+	},
+	'keeps json indent': {
+		operation: {
+			type: 'edit-json',
+			delete: ['devDependencies.@preset/core'],
+		},
+		fileBefore: JSON.stringify({
+			private: true,
+			devDependencies: {
+				'@preset/core': '*',
+				'debug': '^4.3.4',
+			},
+		}, null, '  '),
+		fileAfter: JSON.stringify({
+			private: true,
+			devDependencies: {
+				debug: '^4.3.4',
+			},
+		}, null, '  '),
+	},
 }
 
 testsInSandbox(tests, (test) => ({

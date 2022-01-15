@@ -2,6 +2,9 @@ import path from 'node:path'
 import fs from 'node:fs'
 import fg from 'fast-glob'
 import detectIndent from 'detect-indent'
+import unset from 'unset-value'
+import merge from 'deepmerge'
+import { JsonObject } from 'type-fest'
 import { defineAction } from '../api'
 import { debug, wrap } from '../utils'
 
@@ -136,6 +139,27 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 
 				content = lines.join('\n')
 			}
+
+			// Updates JSON
+			if (operation.type === 'edit-json') {
+				const { indent } = detectIndent(content)
+				let json = JSON.parse(content)
+
+				// Merge JSON
+				if (operation.merge) {
+					json = merge(json, operation.merge, {
+						arrayMerge: (destinationArray: any[], sourceArray: any[]) => [...new Set(destinationArray.concat(sourceArray))],
+					})
+				}
+
+				// Delete paths
+				if (operation.delete) {
+					const pathsToDelete = wrap(operation.delete)
+					pathsToDelete.forEach((path) => unset(json, path))
+				}
+
+				content = JSON.stringify(json, null, indent)
+			}
 		}
 
 		// Writes back to file
@@ -233,7 +257,21 @@ interface UpdateContentOperation {
 	update: (content: string) => string
 }
 
-export type EditFileOperation = AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation
+interface EditJsonOperation {
+	type: 'edit-json'
+
+	/**
+	 * Merges the given JSON object.
+	 */
+	merge?: JsonObject
+
+	/**
+	 * Deletes the properties at the given paths. Paths may have dots.
+	 */
+	delete?: string | string[]
+}
+
+export type EditFileOperation = AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
 
 export interface EditFilesOptions {
 	/**
