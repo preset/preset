@@ -12,7 +12,7 @@ async function testImport(presetFixturePath: string, expect: any) {
 it('imports typescript presets', async() => {
 	testImport('./fixtures/basic-preset.ts', {
 		name: 'basic-preset',
-		flags: {
+		options: {
 			install: true,
 			git: true,
 		},
@@ -23,7 +23,7 @@ it('imports typescript presets', async() => {
 it('imports presets that import local files', async() => {
 	testImport('./fixtures/preset-that-imports-files/preset.ts', {
 		name: 'preset-that-imports-files',
-		flags: {
+		options: {
 			install: true,
 			git: true,
 		},

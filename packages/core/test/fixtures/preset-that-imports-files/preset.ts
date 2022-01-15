@@ -3,7 +3,7 @@ import { invoke } from './utils'
 
 export default invoke(() => definePreset({
 	name: 'preset-that-imports-files',
-	flags: {
+	options: {
 		install: true,
 		git: true,
 	},

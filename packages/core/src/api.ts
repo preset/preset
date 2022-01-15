@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import { debug, objectWithoutKey } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
-import type { PresetOptions, Preset, ActionHandler, Action } from './types'
+import type { PresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
 
 /**
  * Defines a preset.
@@ -10,10 +10,10 @@ import type { PresetOptions, Preset, ActionHandler, Action } from './types'
  * @param name The preset name.
  * @param preset The preset's script.
  */
-export function definePreset(preset: PresetOptions): Preset {
+export function definePreset<Options extends PresetFlags>(preset: PresetOptions<Options>): Preset<Options> {
 	return {
 		name: preset.name,
-		flags: preset.flags ?? {},
+		options: preset.options ?? {} as any,
 		apply: async(context) => {
 			debug.preset(preset.name, `Applying preset "${preset.name}".`)
 			emitter.emit('preset:start', context)
@@ -22,8 +22,8 @@ export function definePreset(preset: PresetOptions): Preset {
 				debug.context(preset.name, 'context', objectWithoutKey(context, 'git'))
 				debug.preset(preset.name, 'Executing handler.')
 
-				// Target directory check
-				if (!await fs.pathExists(context.applyOptions.targetDirectory)) {
+				// Creates the target directory if needed, except in tests
+				if (!process.env.VITEST && !await fs.pathExists(context.applyOptions.targetDirectory)) {
 					debug.preset(preset.name, 'Target directory does not exist, creating it.')
 					await fs.ensureDir(context.applyOptions.targetDirectory)
 				}

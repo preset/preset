@@ -2,7 +2,7 @@ import { definePreset, editFiles, extractTemplates, installPackages, executeComm
 
 export default definePreset({
 	name: 'preset:initialize',
-	flags: {
+	options: {
 		install: true,
 		git: true,
 	},

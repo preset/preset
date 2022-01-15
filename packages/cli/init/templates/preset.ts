@@ -2,7 +2,7 @@ import { definePreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
 	name: 'my-preset',
-	flags: {
+	options: {
 		// ...
 	},
 	handler: async() => {

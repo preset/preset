@@ -28,7 +28,7 @@ export const makeTestPreset = async(
 ) => {
 	const preset = definePreset({
 		name: 'test-preset',
-		flags: {
+		options: {
 			test: true,
 		},
 		...customPresetOptions,

@@ -30,53 +30,43 @@ export type Action<T> = RequiredKeys<T> extends never
 	: (options: ActionOptions<T>) => Promise<void>
 
 export type PresetResult = boolean | void
-export type PresetHandler = (context: PresetContext) => Promise<PresetResult>
-export interface Preset {
+export type PresetFlags = { [name: string]: any }
+export type PresetHandler<Options extends PresetFlags> = (context: PresetContext<Options>) => Promise<PresetResult>
+export interface Preset<Options extends PresetFlags = PresetFlags> {
+	/**
+	 * Preset name.
+	 */
 	name: string
-	flags: { [name: string]: any }
-	apply: (context: PresetContext) => Promise<boolean>
+
+	/**
+	 * Default options for this preset.
+	 */
+	options: Options
+
+	/**
+	 * Handler that executes this preset.
+	 */
+	apply: (context: PresetContext<Options>) => Promise<boolean>
 }
 
 /**
  * Represents the options that define a preset.
  */
-export interface PresetOptions {
+export interface PresetOptions<Options extends PresetFlags = PresetFlags> {
 	/**
 	 * The preset name.
 	 */
 	name: string
 
 	/**
-	 * Definitions of command line flags.
+	 * Definitions of command line options.
 	 */
-	flags?: {
-		[name: string]: any
-	}
+	options?: Options
 
 	/**
 	 * The preset's script handler.
 	 */
-	handler: PresetHandler
-}
-
-/**
- * Represents final preset options.
- */
-export type ResolvedPresetOptions = ContextCreationOptions | PresetOptions
-
-/**
- * Options for context creation.
- */
-export interface ContextCreationOptions {
-	/**
-	 * Command-line arguments passed for this preset.
-	 */
-	args: string[]
-
-	/**
-	 * Absolute path to which the preset is applied.
-	 */
-	targetDirectory: string
+	handler: PresetHandler<Options>
 }
 
 /**
@@ -142,7 +132,7 @@ export interface ActionContext<ResolvedOptions = ActionOptions<any>> {
 /**
  * Represents the context of a preset.
  */
-export interface PresetContext {
+export interface PresetContext<Options extends PresetFlags = PresetFlags> {
 	/**
 	 * A unique identifier.
 	 */
@@ -159,9 +149,9 @@ export interface PresetContext {
 	status: Status
 
 	/**
-	 * Parsed command-line flags.
+	 * Parsed command-line options.
 	 */
-	options: Record<string, any>
+	options: Options
 
 	/**
 	 * Parsed command-line args.

@@ -21,7 +21,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 
 	const context: PresetContext = {
 		options: {
-			...preset.flags,
+			...preset.options,
 			...options,
 		},
 		args,

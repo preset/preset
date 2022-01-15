@@ -2,7 +2,7 @@ import { definePreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
 	name: 'preset-with-root-file',
-	flags: {
+	options: {
 		install: true,
 		git: true,
 	},
