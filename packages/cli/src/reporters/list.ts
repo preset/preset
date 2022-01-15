@@ -19,7 +19,7 @@ const format = {
 
 const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
 
-export const list = makeReporter({
+export default makeReporter({
 	name: 'list',
 	registerEvents: () => {
 		debug.disable()

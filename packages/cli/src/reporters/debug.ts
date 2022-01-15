@@ -1,7 +1,7 @@
 import _debug from 'debug'
 import { makeReporter } from '../types'
 
-export const debug = makeReporter({
+export default makeReporter({
 	name: 'debug',
 	registerEvents: () => _debug.enable('preset:*'),
 })

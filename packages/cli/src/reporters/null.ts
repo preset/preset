@@ -1,6 +1,6 @@
 import { makeReporter } from '../types'
 
-export const _null = makeReporter({
+export default makeReporter({
 	name: 'null',
 	registerEvents: () => {},
 })
