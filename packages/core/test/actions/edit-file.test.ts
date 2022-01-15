@@ -369,6 +369,38 @@ const tests: Record<string, EditFileTest> = {
 			'world.txt': { type: 'file', content: 'worwd' },
 		},
 	},
+	'prepends a line to a file': {
+		operation: {
+			type: 'add-line',
+			position: 'prepend',
+			lines: 'New line',
+		},
+		fileBefore: dedent`
+			First line
+			Second line
+		`,
+		fileAfter: dedent`
+			New line
+			First line
+			Second line
+		`,
+	},
+	'appends a line to a file': {
+		operation: {
+			type: 'add-line',
+			position: 'append',
+			lines: 'New line',
+		},
+		fileBefore: dedent`
+			First line
+			Second line
+		`,
+		fileAfter: dedent`
+			First line
+			Second line
+			New line
+		`,
+	},
 }
 
 testsInSandbox(tests, (test) => ({

@@ -78,12 +78,12 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 			// Adds line
 			if (operation.type === 'add-line') {
 				const linesToAdd = wrap(operation.lines)
-				debug.action(actionContext.name, `Adding ${linesToAdd.length} line(s) ${operation.position} ${operation.match}.`)
+				debug.action(actionContext.name, `Adding ${linesToAdd.length} line(s) ${operation.position} ${'match' in operation ? operation.match : ''}`)
 
 				const lines = content.replace(/\r\n/, '\n').split('\n')
-				const index = lines.findIndex((value) => value.match(operation.match))
+				const index = 'match' in operation ? lines.findIndex((value) => value.match(operation.match)) : -1
 
-				if (index === -1) {
+				if (index === -1 && 'match' in operation) {
 					debug.action(actionContext.name, `Could not find ${operation.match}, skipping.`)
 					continue
 				}
@@ -108,6 +108,18 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 
 					// If false or otherwise: will not indent.
 					return lines
+				}
+
+				// Adds line to the start
+				if (operation.position === 'prepend') {
+					lines.splice(0, 0, ...linesToAdd)
+					debug.action(actionContext.name, `Prepended ${linesToAdd.length} line(s).`)
+				}
+
+				// Adds line to the end
+				if (operation.position === 'append') {
+					lines.push(...linesToAdd)
+					debug.action(actionContext.name, `Appended ${linesToAdd.length} line(s).`)
 				}
 
 				// Adds lines after the index
@@ -138,26 +150,36 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
  */
  type Position = 'after' | 'before'
 
- /**
-  * If a number: will indent with the given amount of spaces.
-  * If a string: will use the given string as indentation.
-  * If true: will keep the indentation from the line before or after.
-  * If false: will not indent.
-  */
- type Indent = number | string | boolean
+/**
+ * If a number: will indent with the given amount of spaces.
+ * If a string: will use the given string as indentation.
+ * If true: will keep the indentation from the line before or after.
+ * If false: will not indent.
+ */
+type Indent = number | string | boolean
+
+type AddLineWithMatchOperation = AddLineOperation & {
+	/**
+	 * Whether to add the line before or after the matched line.
+	 */
+	position: Position
+
+	/**
+   * The line to match.
+   */
+	match: RegExp
+}
+
+type AddLineAtOperation = AddLineOperation & {
+	/**
+	 * Whether to prepend or append the line.
+	 */
+	position: 'prepend' | 'append'
+}
 
 interface AddLineOperation {
 	type: 'add-line'
 
-	/**
-    * Whether to add the line before or after the matched line.
-    */
-	position: Position
-
-	/**
-    * The line to match.
-    */
-	match: RegExp
 	/**
     * The lines to add.
     */
@@ -211,7 +233,7 @@ interface UpdateContentOperation {
 	update: (content: string) => string
 }
 
-export type EditFileOperation = AddLineOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation
+export type EditFileOperation = AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation
 
 export interface EditFilesOptions {
 	/**
