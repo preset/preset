@@ -57,7 +57,7 @@ function removeSelfImportStatement(script: string) {
 		.split(/\r\n|\r|\n/)
 		.filter((line) => {
 			const lineImports = ['import', 'require'].some((statement) => line.includes(statement))
-			const lineMentionsImportValue = ['@preset/core', ...Object.keys(preset)].some((imp) => line.includes(imp))
+			const lineMentionsImportValue = ['node:', '@preset/core', ...Object.keys(preset)].some((imp) => line.includes(imp))
 
 			if (lineImports && lineMentionsImportValue) {
 				return false
@@ -88,7 +88,7 @@ function transformScript(contents: string, resolveDir: string, sourcefile: strin
 		write: false,
 	})
 
-	debug.import(`Transformed ${outputFiles.length}.`)
+	debug.import(`Transformed ${outputFiles.length} files: `, outputFiles[0].text)
 
 	return outputFiles[0].text
 }
@@ -121,6 +121,8 @@ function createContext(directory: string, filename: string): Record<string, any>
 		clearTimeout,
 		console,
 		global,
+		path,
+		fs,
 		process,
 		queueMicrotask,
 		setImmediate,

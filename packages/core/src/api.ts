@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import { debug, objectWithoutKey } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
-import type { PresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
+import type { DefinePresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
 
 /**
  * Defines a preset.
@@ -10,10 +10,11 @@ import type { PresetOptions, Preset, ActionHandler, Action, PresetFlags } from '
  * @param name The preset name.
  * @param preset The preset's script.
  */
-export function definePreset<Options extends PresetFlags>(preset: PresetOptions<Options>): Preset<Options> {
+export function definePreset<Options extends PresetFlags>(preset: DefinePresetOptions<Options>): Preset<Options> {
 	return {
 		name: preset.name,
 		options: preset.options ?? {} as any,
+		postInstall: preset.postInstall,
 		apply: async(context) => {
 			debug.preset(preset.name, `Applying preset "${preset.name}".`)
 			emitter.emit('preset:start', context)

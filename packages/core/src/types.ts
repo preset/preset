@@ -29,6 +29,8 @@ export type Action<T> = RequiredKeys<T> extends never
 	? (options?: ActionOptions<T>) => Promise<void>
 	: (options: ActionOptions<T>) => Promise<void>
 
+type Colorize = (text: string) => string
+export type PostInstall<Options extends PresetFlags> = string[] | ((context: PresetContext<Options>, highlight: Colorize, bold: Colorize) => string[])
 export type PresetResult = boolean | void
 export type PresetFlags = { [name: string]: any }
 export type PresetHandler<Options extends PresetFlags> = (context: PresetContext<Options>) => Promise<PresetResult>
@@ -47,12 +49,17 @@ export interface Preset<Options extends PresetFlags = PresetFlags> {
 	 * Handler that executes this preset.
 	 */
 	apply: (context: PresetContext<Options>) => Promise<boolean>
+
+	/**
+	 * Messages to write post-installation.
+	 */
+	postInstall?: PostInstall<Options>
 }
 
 /**
  * Represents the options that define a preset.
  */
-export interface PresetOptions<Options extends PresetFlags = PresetFlags> {
+export interface DefinePresetOptions<Options extends PresetFlags = PresetFlags> {
 	/**
 	 * The preset name.
 	 */
@@ -67,6 +74,11 @@ export interface PresetOptions<Options extends PresetFlags = PresetFlags> {
 	 * The preset's script handler.
 	 */
 	handler: PresetHandler<Options>
+
+	/**
+	 * Messages to write post-installation.
+	 */
+	postInstall?: PostInstall<Options>
 }
 
 /**
@@ -147,6 +159,11 @@ export interface PresetContext<Options extends PresetFlags = PresetFlags> {
 	 * Preset name.
 	 */
 	name: string
+
+	/**
+	 * Initial preset object.
+	 */
+	preset: Readonly<Preset>
 
 	/**
 	 * Preset status.

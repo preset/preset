@@ -15,6 +15,7 @@ const format = {
 	titleWorking: (text?: any)	=> c.bgYellowBright.white.bold(`${text}`),
 	titleFail: (text?: any)	=> c.bgRed.white.bold(`${text}`),
 	titleSuccess: (text?: any)	=> c.bgGreen.white.bold(`${text}`),
+	titleNextSteps: (text?: any)	=> c.bgMagenta.white.bold(`${text}`),
 }
 
 const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
@@ -120,10 +121,10 @@ export default makeReporter({
 					})
 			}
 
-			// Render presets
+			// Renders presets
 			renderPresetActions(main)
 
-			// Display stat results
+			// Displays stat results
 			if (contexts[0].status !== 'applying') {
 				const actionsFailed = contexts.reduce((failed, { actions }) => failed += actions.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0), 0)
 				const actionsSucceeded = contexts.reduce((succeeded, { actions }) => succeeded += actions.reduce((succeeded, { status }) => succeeded += (status === 'applied' ? 1 : 0), 0), 0)
@@ -135,6 +136,21 @@ export default makeReporter({
 				text += `  Actions  ${formatResult({ count: actionsSucceeded, color: c.green.bold, text: 'ran' }, { count: actionsFailed, color: c.green.red, text: 'failed', excludeWhenEmpty: true })} \n`
 				text += `     Time  ${time(contexts[0].start, contexts[0].end)}`
 				text += '\n'
+
+				// Displays post-install messages
+				const highlight = (text: string) => c.magenta(text)
+				const bold = (text: string) => c.bold(text)
+				const postInstall = typeof contexts[0].preset.postInstall === 'function'
+					? contexts[0].preset.postInstall(contexts[0], highlight, bold)
+					: contexts[0].preset.postInstall
+
+				if (postInstall) {
+					text += '\n\n'
+					text += ` ${format.titleNextSteps(' NEXT STEPS ')}`
+					text += '\n\n'
+					text += postInstall.map((msg) => `  ${c.magentaBright('➜')}  ${msg}`).join('\n')
+					text += '\n'
+				}
 			}
 
 			updateLog(text)

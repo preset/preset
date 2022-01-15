@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { definePreset, editFiles, extractTemplates, installPackages, executeCommand, group } from '@preset/core'
 
 export default definePreset({
@@ -6,6 +7,11 @@ export default definePreset({
 		install: true,
 		git: true,
 	},
+	postInstall: ({ applyOptions }, hl) => [
+		`Edit ${hl('preset.ts')}.`,
+		`Push this repository to ${hl('GitHub')}.`,
+		`Use ${hl(`npx @preset/cli <github-username>/${path.parse(applyOptions.targetDirectory).name}`)}.`,
+	],
 	handler: async(context) => {
 		// TODO prompt
 		// const presetName = 'test' // await prompt('What is the name of the preset', ({ targetDirectory }) => path.basename(targetDirectory))

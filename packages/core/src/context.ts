@@ -20,15 +20,16 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 	const { options, args } = cac().parse(['', '', ...applyOptions.rawArguments])
 
 	const context: PresetContext = {
+		name: preset.name,
 		options: {
 			...preset.options,
 			...options,
 		},
+		preset,
 		args,
 		id: randomUUID(),
-		name: preset.name,
 		git: {
-			instance: simpleGit(process.cwd()),
+			instance: simpleGit(),
 			config: (await simpleGit().listConfig()).all,
 		},
 		count: contexts.length,

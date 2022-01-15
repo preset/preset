@@ -7,7 +7,7 @@ import type { SetRequired } from 'type-fest'
 import createDebugger from 'debug'
 import { definePreset } from '../src'
 import { createPresetContext } from '../src/context'
-import type { PresetOptions, LocalPreset, ApplyOptions } from '../src'
+import type { DefinePresetOptions, LocalPreset, ApplyOptions } from '../src'
 
 export interface DirectoryStructure {
 	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
@@ -22,7 +22,7 @@ export const presetFixture = (name: string) => path.resolve(__dirname, './fixtur
  * Creates a test preset.
  */
 export const makeTestPreset = async(
-	customPresetOptions: SetRequired<Partial<PresetOptions>, 'handler'>,
+	customPresetOptions: SetRequired<Partial<DefinePresetOptions>, 'handler'>,
 	customApplyOptions?: Partial<ApplyOptions>,
 	customLocalPreset?: Partial<LocalPreset>,
 ) => {
