@@ -66,12 +66,12 @@ export interface DefinePresetOptions<Options extends PresetFlags = PresetFlags> 
 	name: string
 
 	/**
-	 * Definitions of command line options.
+	 * Default options for this preset.
 	 */
 	options?: Options
 
 	/**
-	 * The preset's script handler.
+	 * Handler that executes this preset.
 	 */
 	handler: PresetHandler<Options>
 
