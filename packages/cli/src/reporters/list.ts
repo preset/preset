@@ -138,10 +138,10 @@ export default makeReporter({
 				text += '\n'
 
 				// Displays post-install messages
-				const highlight = (text: string) => c.magenta(text)
-				const bold = (text: string) => c.bold(text)
+				const hl = (text: string) => c.magenta(text)
+				const b = (text: string) => c.bold(text)
 				const postInstall = typeof contexts[0].preset.postInstall === 'function'
-					? contexts[0].preset.postInstall(contexts[0], highlight, bold)
+					? contexts[0].preset.postInstall({ context: contexts[0], hl, b })
 					: contexts[0].preset.postInstall
 
 				if (postInstall) {

@@ -30,7 +30,21 @@ export type Action<T> = RequiredKeys<T> extends never
 	: (options: ActionOptions<T>) => Promise<void>
 
 type Colorize = (text: string) => string
-export type PostInstall<Options extends PresetFlags> = string[] | ((context: PresetContext<Options>, highlight: Colorize, bold: Colorize) => string[])
+interface PostInstallCallbackOptions<Options extends PresetFlags> {
+	/**
+	 * The preset context.
+	 */
+	context: PresetContext<Options>
+	/**
+	 * A highlight callback.
+	 */
+	hl: Colorize
+	/**
+	 * A bold callback.
+	 */
+	b: Colorize
+}
+export type PostInstall<Options extends PresetFlags> = string[] | ((options: PostInstallCallbackOptions<Options>) => string[])
 export type PresetResult = boolean | void
 export type PresetFlags = { [name: string]: any }
 export type PresetHandler<Options extends PresetFlags> = (context: PresetContext<Options>) => Promise<PresetResult>
