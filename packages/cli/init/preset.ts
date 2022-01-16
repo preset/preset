@@ -7,10 +7,10 @@ export default definePreset({
 		install: true,
 		git: true,
 	},
-	postInstall: ({ applyOptions }, hl) => [
+	postInstall: ({ context, hl }) => [
 		`Edit ${hl('preset.ts')}.`,
 		`Push this repository to ${hl('GitHub')}.`,
-		`Use ${hl(`preset apply <github-username>/${path.parse(applyOptions.targetDirectory).name}`)}.`,
+		`Use ${hl(`preset apply <github-username>/${path.parse(context.applyOptions.targetDirectory).name}`)}.`,
 	],
 	handler: async(context) => {
 		// TODO prompt
