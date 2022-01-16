@@ -93,9 +93,15 @@ export default makeReporter({
 
 						// Display child action logs if there are.
 						if (action.name === 'group') {
-							const logs = preset.actions
-								.filter((child) => child.groupContextId === action.id && child.status === 'applying')
+							const children = preset.actions.filter((child) => child.groupContextId === action.id)
+							const failed = children.filter((child) => child.status === 'failed')
+							const logs = children
+								.filter((child) => child.status === 'applying')
 								.flatMap((action) => action.log)
+
+							if (children.length > 1) {
+								text += format.dim(` (${children.length} actions)`)
+							}
 
 							if (logs.length > 0 && action.status === 'applying') {
 								text += '\n'
@@ -103,7 +109,19 @@ export default makeReporter({
 								text += format.dim(`↳ ${logs.at(-1) ?? '...'}`)
 							}
 
+							if (failed.length) {
+								failed.forEach((failedChild) => {
+									if (failedChild?.error) {
+										failedChild.error.message.split('\n').forEach((line, index) => {
+											text += '\n'
+											text += format.indent(preset.count + 1)
+											text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+										})
+									}
+								})
+							}
 						}
+
 						// Display prompts
 						if (action.name === 'prompt') {
 							const input = inputs.find((input) => input.actionContextId === action.id)

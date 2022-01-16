@@ -10,8 +10,10 @@ export interface GroupOptions {
 /**
  * Runs actions in a group.
  */
-export const group = defineAction<GroupOptions>('group', async({ options }) => {
+export const group = defineAction<GroupOptions>('group', async({ options, presetContext, actionContext }) => {
 	await options.handler()
 
-	return true
+	return presetContext.actions
+		.filter((child) => child.groupContextId === actionContext.id)
+		.every((child) => child.status === 'applied')
 })
