@@ -38,6 +38,7 @@ export const makeTestPreset = async(
 		resolvable: '',
 		rawArguments: [],
 		targetDirectory: '',
+		parsedOptions: {},
 		...customApplyOptions,
 	}, {
 		presetFile: '',
