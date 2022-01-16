@@ -1,7 +1,7 @@
 import { definePreset, extractTemplates } from '@preset/core'
 
 export default definePreset({
-	name: 'my-preset',
+	name: '@@presetName',
 	options: {
 		// ...
 	},

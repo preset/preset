@@ -243,6 +243,11 @@ export interface PresetContext<Options extends PresetFlags = PresetFlags> {
 	 * Potential error.
 	 */
 	error?: Error
+
+	/**
+	 * Prompt responses.
+	 */
+	prompts: Record<string, string | undefined>
 }
 
 export interface ApplyOptions {
@@ -264,7 +269,7 @@ export interface ApplyOptions {
 	/**
    * List of parsed command line options.
    */
-	parsedOptions?: {
+	parsedOptions: {
 		/**
 		 * The path to a sub-directory in which to look for a preset.
 		 */
@@ -339,4 +344,17 @@ export interface LocalDirectoryPreset {
 export interface LocalFilePreset {
 	type: 'file'
 	path: string
+}
+
+export interface PromptInput {
+	id: string
+	actionContextId: string
+	name: string
+	text: string
+	default?: string
+}
+
+export interface PromptResponse {
+	id: string
+	response?: string
 }

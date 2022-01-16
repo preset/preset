@@ -39,6 +39,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 		status: 'applying',
 		applyOptions,
 		localPreset,
+		prompts: {},
 	}
 
 	debug.context('Adding preset context to the stack:', objectWithoutKey(context, 'git'))

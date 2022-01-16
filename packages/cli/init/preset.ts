@@ -1,5 +1,12 @@
 import path from 'node:path'
-import { definePreset, editFiles, extractTemplates, installPackages, executeCommand, group } from '@preset/core'
+import { definePreset, editFiles, extractTemplates, installPackages, executeCommand, group, prompt } from '@preset/core'
+
+const kebab = (str: string) => str
+	.match(/[A-Z]{2,}(?=[A-Z][a-z0-9]*|\b)|[A-Z]?[a-z0-9]*|[A-Z]|[0-9]+/g)!
+	.filter(Boolean)
+	.map((x: string) => x.toLowerCase())
+	.join('-')
+	.replace(/'/, "\\'")
 
 export default definePreset({
 	name: 'preset:initialize',
@@ -10,17 +17,15 @@ export default definePreset({
 	postInstall: ({ context, hl }) => [
 		`Edit ${hl('preset.ts')}.`,
 		`Push this repository to ${hl('GitHub')}.`,
-		`Use ${hl(`preset apply <github-username>/${path.parse(context.applyOptions.targetDirectory).name}`)}.`,
+		`Use ${hl(`preset apply <github-username>/${context.prompts.name}.`)}`,
 	],
 	handler: async(context) => {
-		// TODO prompt
-		// const presetName = 'test' // await prompt('What is the name of the preset', ({ targetDirectory }) => path.basename(targetDirectory))
-		// const kebabPresetName = presetName
-		// 	.match(/[A-Z]{2,}(?=[A-Z][a-z0-9]*|\b)|[A-Z]?[a-z0-9]*|[A-Z]|[0-9]+/g)!
-		// 	.filter(Boolean)
-		// 	.map((x: string) => x.toLowerCase())
-		// 	.join('-')
-		// 	.replace(/'/, "\\'")
+		await prompt({
+			title: 'prompt preset name',
+			name: 'name',
+			text: 'What is the name of the preset?',
+			default: path.parse(context.applyOptions.targetDirectory).name,
+		})
 
 		await extractTemplates({ title: 'extract templates' })
 
@@ -32,6 +37,7 @@ export default definePreset({
 					variables: {
 						author: context.git.config['user.name'] as string,
 						email: context.git.config['user.email'] as string,
+						presetName: kebab(context.prompts.name!),
 					},
 				},
 			],

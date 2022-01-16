@@ -1,7 +1,8 @@
+import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
 import { emitter } from '@preset/core'
-import type { Status, PresetContext } from '@preset/core'
+import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
 import { makeReporter } from '../types'
 import { contexts } from '../state'
@@ -25,7 +26,9 @@ export default makeReporter({
 	registerEvents: () => {
 		debug.disable()
 
+		const inputs: Array<PromptInput & { response: string }> = []
 		const updateLog = createLogUpdate(process.stdout)
+		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
 
@@ -49,12 +52,6 @@ export default makeReporter({
 				failed: ` ${format.titleFail(' ERR ')} ${c.red(`Failed applying: ${format.highlight(main.name)}.`)}`,
 			}[main.status]
 			text += '\n\n'
-
-			// Display errors
-			if (main.status === 'failed') {
-				text += ` ${format.titleFail(' ERR ')} ${c.red(main.error?.message ?? 'An unknown error occured.')}`
-				text += '\n'
-			}
 
 			function renderPresetActions(preset?: PresetContext) {
 				if (!preset) {
@@ -105,6 +102,15 @@ export default makeReporter({
 								text += format.indent(preset.count + 1)
 								text += format.dim(`↳ ${logs.at(-1) ?? '...'}`)
 							}
+
+						}
+						// Display prompts
+						if (action.name === 'prompt') {
+							const input = inputs.find((input) => input.actionContextId === action.id)
+							text += '\n'
+							text += format.indent(preset.count + 1)
+							text += format.dim(`↳ ${format.dim(action.options.text)} `)
+							text += c.gray.bold(input?.response.trim() || action.options.default)
 						}
 
 						// Display logs if there are.
@@ -150,7 +156,12 @@ export default makeReporter({
 					? contexts[0].preset.postInstall({ context: contexts[0], hl, b })
 					: contexts[0].preset.postInstall
 
-				if (postInstall) {
+				// Display errors
+				if (main.status === 'failed') {
+					text += '\n\n'
+					text += ` ${format.titleFail(' ERR ')} ${c.red(main.error?.message ?? 'An unknown error occured.')}`
+					text += '\n'
+				} else if (postInstall) {
 					text += '\n\n'
 					text += ` ${format.titleNextSteps(' NEXT STEPS ')}`
 					text += '\n\n'
@@ -162,15 +173,62 @@ export default makeReporter({
 			updateLog(text)
 		}
 
+		emitter.on('prompt:input', async(promptInput) => {
+			inputs.push({ ...promptInput, response: '' })
+
+			const onInput = () => {
+				const input = inputs.at(-1)!
+				let chunk
+
+				// 8 backspace
+				// 3 ctrl+c
+				// 13 enter
+
+				// eslint-disable-next-line no-cond-assign
+				while ((chunk = process.stdin.read()) !== null) {
+					// Handle backspace (8)
+					if (Buffer.from(chunk).toString().charCodeAt(0) === 8) {
+						input.response = input.response.slice(0, -1)
+						continue
+					}
+
+					// Add the chunk
+					input.response += chunk
+				}
+
+				// Deactive typing when enter is pressed
+				if (input.response.endsWith('\r') || input.response.endsWith(String.fromCharCode(3))) {
+					input.response = input.response.slice(0, -1)
+
+					process.stdin.off('readable', onInput)
+					process.stdin.setRawMode(false)
+
+					emitter.emit('prompt:response', {
+						id: input.id,
+						response: input.response,
+					})
+				}
+			}
+
+			// Activates typing
+			process.stdin.on('readable', onInput)
+			process.stdin.setRawMode(true)
+		})
+
 		emitter.on('preset:start', (context) => {
 			contexts.push(context)
 			render()
 
 			if (context.count === 0) {
+				context.applyOptions.parsedOptions.interaction = context.applyOptions.parsedOptions.interaction === undefined
+					? true
+					: context.applyOptions.parsedOptions.interaction
+
 				if (timer) {
 					clearInterval(timer)
 				}
 
+				rl = readline.createInterface({ input: process.stdin })
 				timer = setInterval(() => render(), 150)
 			}
 		})
@@ -180,6 +238,7 @@ export default makeReporter({
 				setTimeout(() => {
 					render()
 					clearInterval(timer)
+					rl?.close()
 				}, 1)
 			}
 		})

@@ -13,6 +13,7 @@ import { reporters } from './reporters'
 const cli = createCli('preset')
 	.option('--no-interaction', 'Disable interactions.')
 	.option('--reporter <name>', 'Which reporter to log to..', { default: 'list' })
+	.option('--no-interaction', 'Disable interactions. Prompts will use their default answers.')
 	.help()
 	.version(version)
 
