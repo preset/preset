@@ -47,7 +47,11 @@ cli.command('init [target-directory]', 'Initializes a new preset.')
 try {
 	const { options } = patch(cli).parse()
 
-	Reflect.get(reporters, options.reporter)?.registerEvents()
+	if (process.env.CI) {
+		reporters.debug.registerEvents()
+	} else {
+		Reflect.get(reporters, options.reporter)?.registerEvents()
+	}
 } catch (error: any) {
 	console.log()
 	console.log(`${c.bgRed.white.bold(' ERROR ')} ${c.red(error.message)}`)
