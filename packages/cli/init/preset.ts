@@ -48,7 +48,7 @@ export default definePreset({
 				handler: async() => {
 					await executeCommand({ command: 'git', arguments: ['init'] })
 					await executeCommand({ command: 'git', arguments: ['add', '.'] })
-					await executeCommand({ command: 'git', arguments: ['commit', '-m', '"chore: initialize preset"'] })
+					await executeCommand({ command: 'git', arguments: ['commit', '-m', 'chore: initialize preset'] })
 				},
 			})
 		}
