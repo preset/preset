@@ -11,9 +11,9 @@ import { reporters } from './reporters'
 
 // Creates the base CLI
 const cli = createCli('preset')
-	.option('--no-interaction', 'Disable interactions.')
 	.option('--reporter <name>', 'Which reporter to log to..', { default: 'list' })
 	.option('--no-interaction', 'Disable interactions. Prompts will use their default answers.')
+	.option('--debug', 'Use the debug reporter.')
 	.help()
 	.version(version)
 
@@ -48,7 +48,7 @@ cli.command('init [target-directory]', 'Initializes a new preset.')
 try {
 	const { options } = patch(cli).parse()
 
-	if (process.env.CI) {
+	if (process.env.CI || options.debug === true) {
 		reporters.debug.registerEvents()
 	} else {
 		Reflect.get(reporters, options.reporter)?.registerEvents()
