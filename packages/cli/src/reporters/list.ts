@@ -50,6 +50,12 @@ export default makeReporter({
 			}[main.status]
 			text += '\n\n'
 
+			// Display errors
+			if (main.status === 'failed') {
+				text += ` ${format.titleFail(' ERR ')} ${c.red(main.error?.message ?? 'An unknown error occured.')}`
+				text += '\n'
+			}
+
 			function renderPresetActions(preset?: PresetContext) {
 				if (!preset) {
 					return
