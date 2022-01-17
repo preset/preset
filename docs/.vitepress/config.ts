@@ -25,10 +25,8 @@ export default defineConfig({
     nav: [
       { text: 'Docs', link: '/basics/introduction' },
       { text: 'API', link: '/api/' },
-      {
-        text: 'Twitter',
-        link: 'https://twitter.com/innocenzi'
-      },
+      { text: 'Legacy', link: 'https://legacy.preset.dev' },
+      { text: 'Twitter', link: 'https://twitter.com/innocenzi' },
     ],
 
     sidebar: {
