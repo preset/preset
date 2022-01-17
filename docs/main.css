@@ -1,0 +1,110 @@
+:root {
+	--c-text: black !important;
+	--c-brand: #667eea;
+	--c-accent: #a3bffa;
+	--c-title: black;
+	--font-family-base: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+		sans-serif;
+	--bg-gradient: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--c-bg: rgb(20, 20, 20) !important;
+		--c-text: rgb(255, 255, 255, 87%) !important;
+		--c-text-sidebar: #c6c6c6 !important;
+		--c-text-light: #747993 !important;
+		--c-brand: #adbcff !important;
+		--c-title: #adbcff !important;
+		--c-accent: #a3bffa !important;
+		--bg-gradient: 20, 20, 20 !important;
+		--code-inline-bg-color: #282c34aa !important;
+		--c-divider: transparent !important;
+	}
+
+	tr:nth-child(2n) {
+		background-color: var(--c-bg) !important;
+	}
+	tr {
+		border-top: 1px solid var(--code-inline-bg-color) !important;
+	}
+}
+
+#app,
+.home {
+	min-height: 100vh;
+}
+
+main.home ul > li {
+	opacity: 0.8;
+	transition: 0.1s ease;
+}
+main.home ul > li:hover {
+	opacity: 1;
+}
+
+.custom-block.tip {
+	border-color: var(--c-text-light) !important;
+	background-color: #202020;
+	border-left-color: red;
+}
+
+.custom-block.info {
+	border-color: var(--c-brand) !important;
+	background-color: #202020;
+	border-left-color: red;
+}
+
+.custom-block.warning {
+	border-color: #e7c000;
+	color: inherit;
+	background-color: rgba(255, 229, 100, 0.11);
+}
+
+.nav-bar-title .logo {
+	height: 1.5em !important;
+	margin-right: 0.5rem !important;
+}
+
+/* Overrides */
+
+.home-content {
+	min-height: calc(100vh - var(--header-height));
+	max-width: 1800px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+th,
+td {
+	border: 1px solid #8885;
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5 {
+	color: var(--c-title);
+	border: none !important;
+}
+
+.sidebar > .sidebar-links > .sidebar-link > p.sidebar-link-item {
+	color: var(--c-text-light);
+	text-transform: uppercase;
+	font-size: 0.9rem;
+}
+.sidebar > .sidebar-links > .sidebar-link > .sidebar-links > .sidebar-link > .sidebar-link-item {
+	color: var(--c-text-sidebar);
+	font-size: 0.95rem;
+}
+
+.sidebar
+	> .sidebar-links
+	> .sidebar-link
+	> .sidebar-links
+	> .sidebar-link
+	> a.sidebar-link-item.active {
+	color: var(--c-text);
+}

@@ -1,5 +1,5 @@
 node_modules
 .pnpm-debug.log
-packages/**/node_modules
-packages/**/dist
+*/**/node_modules
+*/**/dist
 packages/**/__fixtures__

@@ -7,7 +7,10 @@
     "test": "pnpm -r --filter ./packages run test",
     "test:core": "pnpm -C ./packages/core run test",
     "cli": "esno ./packages/cli/src/cli.ts",
-    "cli:build": "pnpm build && pnpm cli"
+    "cli:build": "pnpm build && pnpm cli",
+		"docs:dev": "pnpm -C docs run dev",
+    "docs:build": "pnpm -C docs run build",
+    "docs:serve": "pnpm -C docs run serve"
   },
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.6.1",
