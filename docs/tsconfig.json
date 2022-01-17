@@ -17,8 +17,14 @@
       "vite/client"
     ],
     "paths": {
-      "~/*": ["src/*"]
+      "@/*": ["./.vitepress/theme/*"]
     }
   },
+	"include": [
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.d.ts",
+    ".vitepress/**/*.vue",
+    "components.d.ts"
+	],
   "exclude": ["dist", "node_modules"]
 }

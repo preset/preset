@@ -2,21 +2,32 @@
   "name": "docs",
   "private": true,
   "scripts": {
-    "dev": "vitepress --port 3333 --open",
+    "dev": "vitepress --port 3333",
     "build": "vitepress build",
     "serve": "vitepress serve",
     "lint": "eslint . --ext=.ts,.vue"
   },
   "dependencies": {
+    "@docsearch/css": "^3.0.0-alpha.42",
+    "@docsearch/js": "^3.0.0-alpha.42",
+    "@docsearch/react": "^3.0.0-alpha.42",
     "@vueuse/core": "^7.5.3",
-    "vue": "^3.2.24"
+    "markdown-it": "^12.3.2",
+    "prism-theme-vars": "^0.2.2",
+    "prismjs": "^1.25.0",
+    "vue": "^3.2.24",
+    "windicss": "^3.4.2"
   },
   "devDependencies": {
     "@iconify-json/carbon": "^1.0.12",
+    "@iconify/json": "^1.1.381",
+    "@types/markdown-it": "^12.2.3",
     "@unocss/preset-wind": "^0.22.4",
     "@vitejs/plugin-vue": "^2.0.1",
-    "unocss": "^0.22.2",
+    "unplugin-icons": "^0.12.23",
     "unplugin-vue-components": "^0.17.11",
+    "vite-plugin-restart": "^0.1.0",
+    "vite-plugin-windicss": "^1.6.1",
     "vitepress": "^0.21.4"
   }
 }

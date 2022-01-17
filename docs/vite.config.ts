@@ -3,24 +3,36 @@ import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 import { defineConfig } from 'vite'
 import Components from 'unplugin-vue-components/vite'
-import Unocss from 'unocss/vite'
-import { presetIcons } from 'unocss'
-import presetWind from '@unocss/preset-wind'
+import WindiCSS from 'vite-plugin-windicss'
+import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
+import ViteRestart from 'vite-plugin-restart'
 
 export default defineConfig({
+	resolve: {
+		alias: {
+			'@/': `${resolve(__dirname, '.vitepress/theme')}/`,
+		},
+	},
 	plugins: [
 		Components({
-			include: [/\.vue/, /\.md/],
-			dts: true,
-		}),
-		Unocss({
-			presets: [
-				presetWind(),
-				presetIcons({
-					scale: 1.2,
+			dirs: [
+				'.vitepress/theme/components',
+			],
+			extensions: ['vue', 'ts'],
+			include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
+			resolvers: [
+				IconsResolver({
+					componentPrefix: '',
 				}),
 			],
+			dts: true,
 		}),
+		Icons(),
+		WindiCSS(),
+    ViteRestart({
+      restart: '.vitepress/config/*.*',
+    }),
 		IncludesPlugin(),
 	],
 

@@ -1,0 +1,62 @@
+body {
+	font-family: var(--font-family);
+	text-rendering: optimizeLegibility;
+	color: var(--docs-text);
+	background-color: var(--docs-bg);
+}
+
+html {
+	font-size: 16px;
+	overflow-y: overlay;
+}
+
+button {
+	@apply focus:outline-none;
+}
+
+// vue transition
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.collapse-enter-active,
+.collapse-leave-active {
+	transition: max-height 0.3s ease-out;
+	height: auto;
+	max-height: 300px;
+	overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+	max-height: 0;
+}
+
+// Custom blocks
+
+.custom-block {
+	@apply mb-4 px-4 py-3 rounded bg-$block-bg text-$block-text border-l-4;
+	border-left-color: var(--block-border);
+}
+
+.custom-block.warning {
+	border-left-color: var(--block-warning-border);
+}
+
+.custom-block.info {
+	border-left-color: var(--block-info-border);
+}
+
+.custom-block .custom-block-title {
+	@apply mb-1.5 font-bold text-sm opacity-50 tracking-wider;
+}
+
+.custom-block > p {
+	@apply m-0;
+}
