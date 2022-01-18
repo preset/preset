@@ -4,7 +4,7 @@ importers:
 
   .:
     specifiers:
-      '@innocenzi/eslint-config': ^0.7.0
+      '@innocenzi/eslint-config': ^0.7.1
       '@preset/core': workspace:*
       '@types/node': ^17.0.8
       '@typescript-eslint/eslint-plugin': ^5.9.1
@@ -16,7 +16,7 @@ importers:
       vite: ^2.7.12
       vitest: ^0.1.15
     devDependencies:
-      '@innocenzi/eslint-config': 0.7.0_eslint@8.6.0+typescript@4.5.4
+      '@innocenzi/eslint-config': 0.7.1_eslint@8.6.0+typescript@4.5.4
       '@preset/core': link:packages/core
       '@types/node': 17.0.8
       '@typescript-eslint/eslint-plugin': 5.9.1_b7b2e42b32ee097737cd3e626b10847b
@@ -347,8 +347,8 @@ packages:
       - supports-color
     dev: true
 
-  /@innocenzi/eslint-config/0.7.0_eslint@8.6.0+typescript@4.5.4:
-    resolution: {integrity: sha512-U5fQn5MQO6nfNUDt9yIXeHI2cIxHMmJadOfaBKmupHtnS3GrKmiPJM5CKB9AbNF3wnfdaePN/2tk8VQ/3kJIrA==}
+  /@innocenzi/eslint-config/0.7.1_eslint@8.6.0+typescript@4.5.4:
+    resolution: {integrity: sha512-oqFlM1vjtXdE/8GYXGGVhhjx55sG1Xoio08JxRn2UMWC1cX3ZI4cSlgUxjkA6uf/tIuRctS2n6/VZBsOAVn/9g==}
     peerDependencies:
       eslint: '>=7.4.0'
       typescript: ^4.0.0

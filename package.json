@@ -13,7 +13,7 @@
     "docs:serve": "pnpm -C docs run serve"
   },
   "devDependencies": {
-    "@innocenzi/eslint-config": "^0.7.0",
+    "@innocenzi/eslint-config": "^0.7.1",
     "@preset/core": "workspace:*",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.1",

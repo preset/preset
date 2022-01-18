@@ -30,9 +30,9 @@ export default defineConfig({
 		}),
 		Icons(),
 		WindiCSS(),
-    ViteRestart({
-      restart: '.vitepress/config/*.*',
-    }),
+		ViteRestart({
+			restart: '.vitepress/config/*.*',
+		}),
 		IncludesPlugin(),
 	],
 

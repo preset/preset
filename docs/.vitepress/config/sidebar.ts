@@ -1,18 +1,18 @@
 import type { DefaultTheme } from 'vitepress'
 
 export const sidebar: DefaultTheme.Config['sidebar'] = {
-  '/actions/': [
-		{ 
+	'/actions/': [
+		{
 			text: 'Actions',
 			children: [
-				{ 
-					text: 'Extract templates', 
-					link: '/actions/extract-templates'
-				}
-			]
-		}
+				{
+					text: 'Extract templates',
+					link: '/actions/extract-templates',
+				},
+			],
+		},
 	],
-  '/': [
+	'/': [
 		{
 			text: 'Basics',
 			children: [
@@ -28,9 +28,9 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					text: 'Alternatives',
 					link: '/basics/alternatives',
 				},
-			]
+			],
 		},
-		
+
 		{
 			text: 'Concepts',
 			children: [
@@ -46,9 +46,9 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					text: 'Templates',
 					link: '/concepts/templates',
 				},
-			]
+			],
 		},
-		
+
 		{
 			text: 'Guides',
 			children: [
@@ -64,7 +64,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					text: 'Using a preset',
 					link: '/guide/using-a-preset',
 				},
-			]
+			],
 		},
 
 		{
@@ -102,9 +102,9 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					text: 'Prompt (experimental)',
 					link: '/actions/prompt',
 				},
-			]
+			],
 		},
-		
+
 		{
 			text: 'API',
 			children: [
@@ -112,7 +112,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					text: 'Programmatic API',
 					link: '/api/programmatic',
 				},
-			]
+			],
 		},
-	]
+	],
 }

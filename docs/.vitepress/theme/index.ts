@@ -12,5 +12,5 @@ import NotFound from './NotFound.vue'
 
 export default <Theme> {
 	Layout,
-	NotFound
+	NotFound,
 }
