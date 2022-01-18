@@ -6,70 +6,75 @@ import { useData, useRoute } from 'vitepress'
 import { isActive, joinUrl } from '@/logic/utils'
 
 const props = defineProps({
-  item: {
-    type: Object as PropType<Partial<DefaultTheme.SideBarItem>>,
-    required: true,
-  },
-  header: {
-    type: Boolean,
-    default: false,
-  },
-  table: {
-    type: Boolean,
-    default: false,
-  },
+	item: {
+		type: Object as PropType<Partial<DefaultTheme.SideBarItem>>,
+		required: true,
+	},
+	header: {
+		type: Boolean,
+		default: false,
+	},
+	table: {
+		type: Boolean,
+		default: false,
+	},
+	level: {
+		type: Number,
+		default: 0,
+	},
 })
 
 const route = useRoute()
 const { site } = useData()
 
 function resolveLink(base: string, path?: string): string | undefined {
-  if (path === undefined)
-    return path
+	if (path === undefined) {
+		return path
+	}
 
-  // keep relative hash to the same page
-  if (path.startsWith('#'))
-    return path
+	// keep relative hash to the same page
+	if (path.startsWith('#')) {
+		return path
+	}
 
-  return joinUrl(base, path)
+	return joinUrl(base, path)
 }
 
 const active = computed(() => isActive(route, props.item.link))
 const link = resolveLink(site.value.base, props.item.link)
 
-const style = computed(() => ([
-  'transition duration-100',
-  props.header
-    ? 'font-bold py-2'
-    : props.table
-      ? `inline-flex
-      items-center
-      justify-between py-2 px-3 w-full rounded-md
-      text-sm text-gray-700
-      dark:text-gray-400
-      hover:(text-primary dark:text-primary bg-$docs-hover-bg)`
-      : `relative
-      inline-flex
-      items-center
-      justify-between
-      pl-3 py-1
-      border-l border-gray-100
-      dark:border-dark-400
-      text-sm text-gray-700
-      dark:text-gray-400
-      hover:(text-primary dark:text-primary)`,
-  {
-    '!border-primary dark:border-primary !text-primary dark:text-primary': active.value,
-  },
-]))
+const style = computed(() => [
+	'transition duration-100',
+	props.header
+		? 'font-bold py-2'
+		: props.table
+			? `inline-flex
+				items-center
+				justify-between py-2 px-3 w-full rounded-md
+				text-sm text-gray-700
+				dark:text-gray-400
+				hover:(text-primary dark:text-primary bg-$docs-hover-bg)`
+			: `relative
+				inline-flex
+				items-center
+				justify-between
+				pl-4 py-1
+				border-l border-gray-100
+				dark:border-dark-400
+				text-sm text-gray-700
+				dark:text-gray-400
+				hover:(text-primary dark:text-primary)`,
+	{
+		'!border-primary dark:border-primary !text-primary dark:text-primary': active.value,
+		'-ml-1': props.level === 2,
+		'ml-3': props.level === 3,
+		'ml-5': props.level === 4,
+	},
+])
 
 </script>
 
 <template>
-  <a v-if="link" :href="link" :class="style">
-    {{ item.text }}
-  </a>
-  <h5 v-else :class="style">
-    {{ item.text }}
-  </h5>
+	<a v-if="link" :href="link" :class="style" v-text="item.text" />
+	<h5 v-else :class="style" v-text="item.text" />
 </template>
