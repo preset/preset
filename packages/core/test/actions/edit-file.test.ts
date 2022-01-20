@@ -471,6 +471,46 @@ const tests: Record<string, EditFileTest> = {
 			devDependencies: { '@preset/core': '*' },
 		}),
 	},
+	'replaces a json file with a callback': {
+		operation: {
+			type: 'edit-json',
+			replace: (json, omit) => ({
+				...json,
+				dependencies: {
+					...omit(json.dependencies, 'eslint', 'typescript'),
+				},
+				devDependencies: {
+					eslint: json.dependencies.eslint,
+					typescript: json.dependencies.typescript,
+					...json.devDependencies,
+				},
+			}),
+		},
+		fileBefore: JSON.stringify({
+			private: true,
+			files: ['src'],
+			dependencies: {
+				vue: '^3.0.0',
+				eslint: '^8.7.0',
+				typescript: '^4.5.4',
+			},
+			devDependencies: {
+				'@preset/core': '*',
+			},
+		}),
+		fileAfter: JSON.stringify({
+			private: true,
+			files: ['src'],
+			dependencies: {
+				vue: '^3.0.0',
+			},
+			devDependencies: {
+				'eslint': '^8.7.0',
+				'typescript': '^4.5.4',
+				'@preset/core': '*',
+			},
+		}),
+	},
 	'deletes properties from a json file': {
 		operation: {
 			type: 'edit-json',

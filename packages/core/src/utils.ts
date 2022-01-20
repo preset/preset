@@ -78,3 +78,15 @@ export function objectWithoutKey<T extends object>(object: T, key: keyof T) {
 
 	return otherKeys
 }
+
+/**
+ * Returns a clone of the given object without the specified keys.
+ */
+export function objectWithoutKeys<T extends object = {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+	return (keys as any).reduce((a: Partial<T>, e: keyof T) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { [e]: _, ...rest } = a
+
+		return rest
+	}, obj)
+}

@@ -6,7 +6,7 @@ import unset from 'unset-value'
 import merge from 'deepmerge'
 import { JsonObject } from 'type-fest'
 import { defineAction } from '../api'
-import { debug, wrap } from '../utils'
+import { debug, objectWithoutKeys, wrap } from '../utils'
 
 /**
  * Applies one or multiple operations to the given files.
@@ -161,6 +161,11 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 					pathsToDelete.forEach((path) => unset(json, path))
 				}
 
+				// Replace JSON
+				if (operation.replace) {
+					json = operation.replace(json, objectWithoutKeys)
+				}
+
 				content = JSON.stringify(json, null, indent)
 			}
 		}
@@ -274,6 +279,11 @@ interface EditJsonOperation {
 	 * Merges the given JSON object.
 	 */
 	merge?: JsonObject
+
+	/**
+	 * Merges the given JSON object.
+	 */
+	replace?: (current: any, omit: (object: any, ...keys: string[]) => any) => JsonObject
 
 	/**
 	 * Deletes the properties at the given paths. Paths may have dots.
