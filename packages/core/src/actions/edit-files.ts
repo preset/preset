@@ -281,7 +281,8 @@ interface EditJsonOperation {
 	merge?: JsonObject
 
 	/**
-	 * Merges the given JSON object.
+	 * Replaces the given JSON object.
+	 * A helper is given to omit keys from the given JSON object.
 	 */
 	replace?: (current: any, omit: (object: any, ...keys: string[]) => any) => JsonObject
 
