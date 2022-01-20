@@ -7,7 +7,7 @@ import { wrap, debug } from '../utils'
 /**
  * Deletes the given paths from the target directory.
  */
-export const deletePath = defineAction<DeletePathOptions>('delete-path', async({ options, actionContext, presetContext }) => {
+export const deletePaths = defineAction<DeletePathOptions>('delete-paths', async({ options, actionContext, presetContext }) => {
 	const pathsOrGlobs = wrap(options.paths)
 
 	const deletePath = async(path: string) => {
