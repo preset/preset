@@ -8,6 +8,9 @@ import { JsonObject } from 'type-fest'
 import { defineAction } from '../api'
 import { debug, wrap } from '../utils'
 
+/**
+ * Applies one or multiple operations to the given files.
+ */
 export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ options, presetContext, actionContext }) => {
 	const paths = await fg(options.files, {
 		ignore: ['node_modules', '.git', 'dist'],
