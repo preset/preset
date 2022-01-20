@@ -105,6 +105,12 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 					return lines
 				}
 
+				// Adds line to specified index
+				if (typeof operation.position === 'number') {
+					lines.splice(operation.position, 0, ...linesToAdd)
+					debug.action(actionContext.name, `Added ${linesToAdd.length} line(s) to specified index.`)
+				}
+
 				// Adds line to the start
 				if (operation.position === 'prepend') {
 					lines.splice(0, 0, ...linesToAdd)
@@ -193,6 +199,13 @@ type AddLineAtOperation = AddLineOperation & {
 	position: 'prepend' | 'append'
 }
 
+type AddLineAtIndexOperation = AddLineOperation & {
+	/**
+	 * The index to which add the line.
+	 */
+	position: number
+}
+
 interface AddLineOperation {
 	type: 'add-line'
 
@@ -263,7 +276,7 @@ interface EditJsonOperation {
 	delete?: string | string[]
 }
 
-export type EditFileOperation = AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
+export type EditFileOperation = AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
 
 export interface EditFilesOptions {
 	/**

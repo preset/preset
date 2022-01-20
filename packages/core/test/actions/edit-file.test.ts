@@ -183,6 +183,24 @@ const tests: Record<string, EditFileTest> = {
 			Fifth line
 		`,
 	},
+	'adds a line to the specified index': {
+		operation: {
+			type: 'add-line',
+			position: 2,
+			lines: 'New line',
+		},
+		fileBefore: dedent`
+			First line
+			Second line
+			Third line
+		`,
+		fileAfter: dedent`
+			First line
+			Second line
+			New line
+			Third line
+		`,
+	},
 	'adds a line after another line': {
 		operation: {
 			type: 'add-line',
