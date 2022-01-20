@@ -81,6 +81,8 @@ export default makeReporter({
 										text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
 									})
 								}
+
+								text += '\n'
 							}
 
 							renderPresetActions(nestedPresetContext)
@@ -147,7 +149,9 @@ export default makeReporter({
 							})
 						}
 
-						text += '\n'
+						if (action.name !== 'apply-nested-preset') {
+							text += '\n'
+						}
 					})
 			}
 
