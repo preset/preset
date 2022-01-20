@@ -1,9 +1,11 @@
 import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
-import { emitter } from '@preset/core'
+import semver from 'semver'
+import { emitter, LocalPreset } from '@preset/core'
 import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
+import corePkg from '../../../core/package.json'
 import { makeReporter } from '../types'
 import { contexts } from '../state'
 import { formatResult, time } from '../utils'
@@ -17,6 +19,7 @@ const format = {
 	titleFail: (text?: any)	=> c.bgRed.white.bold(`${text}`),
 	titleSuccess: (text?: any)	=> c.bgGreen.white.bold(`${text}`),
 	titleNextSteps: (text?: any)	=> c.bgMagenta.white.bold(`${text}`),
+	titleWarning: (text?: any)	=> c.bgYellow.white.bold(`${text}`),
 }
 
 const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
@@ -28,6 +31,7 @@ export default makeReporter({
 
 		const inputs: Array<PromptInput & { response: string }> = []
 		const updateLog = createLogUpdate(process.stdout)
+		let versionMismatch: LocalPreset | false = false
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
@@ -43,8 +47,20 @@ export default makeReporter({
 				failed: c.red.bold('×'),
 			}
 
-			// The main preset is specially formatted
 			const main = contexts.at(0)!
+
+			// Display upgrade message
+			if (versionMismatch) {
+				text += '\n'
+				text += ` ${format.titleWarning(' VERSION MISMATCH ')}`
+				text += '\n\n'
+				text += `  ${c.yellowBright('➜')}  Currently running: ${c.bold.redBright(`v${corePkg.version}`)}\n`
+				text += `  ${c.yellowBright('➜')}  Version required: ${c.bold.greenBright(versionMismatch.presetVersion)}\n`
+				text += `  ${c.yellowBright('➜')}  The preset may not behave as expected. Use ${c.magenta('npm i -g @preset/cli')} to update.`
+				text += '\n\n'
+			}
+
+			// The main preset is specially formatted
 			text += '\n'
 			text += {
 				applying: ` ${format.titleWorking(' RUN ')} ${format.dim(`Applying preset: ${format.highlight(main.name)}...`)}`,
@@ -262,6 +278,20 @@ export default makeReporter({
 					clearInterval(timer)
 					rl?.close()
 				}, 1)
+			}
+		})
+
+		emitter.on('preset:resolve', (preset) => {
+			if (contexts.length !== 0) {
+				return
+			}
+
+			if (!preset.presetVersion) {
+				return
+			}
+
+			if (!semver.satisfies(corePkg.version, preset.presetVersion)) {
+				versionMismatch = preset
 			}
 		})
 	},
