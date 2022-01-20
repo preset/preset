@@ -50,8 +50,7 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 
 			// Removes lines
 			if (operation.type === 'remove-line') {
-				const count = operation.count === undefined ? 1 : operation.count
-				debug.action(actionContext.name, `Removing ${count} line(s) ${operation.position} ${operation.match}.`)
+				debug.action(actionContext.name, `Removing line(s) on match ${operation.match}.`)
 
 				const lines = content.replace(/\r\n/, '\n').split('\n')
 				const index = lines.findIndex((value) => value.match(operation.match))
@@ -61,19 +60,12 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 					continue
 				}
 
-				// Removes lines after the index
-				if (operation.position === 'after') {
-					lines.splice(index + 1, count)
-					debug.action(actionContext.name, `Removed ${count} line(s) at index ${index}.`)
-				}
+				// Removes lines from index
+				const count = operation.count || 1
+				const start = operation.start || 0
 
-				// Removes lines before the index
-				if (operation.position === 'before') {
-					const start = Math.max(0, index - count)
-					const end = index - start
-					lines.splice(start, end)
-					debug.action(actionContext.name, `Removed ${start - end} line(s) at index ${index} (start: ${start}, end: ${end}).`)
-				}
+				debug.action(actionContext.name, `Using index ${index + start} and deleteCount ${count}`)
+				lines.splice(index + start, count)
 
 				content = lines.join('\n')
 			}
@@ -223,17 +215,17 @@ interface RemoveLineOperation {
 	type: 'remove-line'
 
 	/**
-    * Whether to remove the lines before or after the matched line.
-    */
-	position: Position
-
-	/**
     * The line to match.
     */
 	match: RegExp
 
 	/**
-    * Amount of lines to remove. Defaults to one.
+	 * The index to start removing lines from. Defaults to 0.
+	 */
+	start?: number
+
+	/**
+	 * The amount of lines to remove. Defaults to 1, can be negative to remove previous lines.
     */
 	count?: number
 }

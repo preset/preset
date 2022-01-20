@@ -43,11 +43,25 @@ const tests: Record<string, EditFileTest> = {
 		fileBefore: 'Hello %%username, is it true that you like %%likes? @@stuff',
 		fileAfter: 'Hello Komi, is it true that you like Tadano? @@stuff',
 	},
-	'removes a line (by default) after another line': {
+	'removes the line that matches': {
 		operation: {
 			type: 'remove-line',
-			position: 'after',
 			match: /First line/,
+		},
+		fileBefore: dedent`
+			First line
+			Second line
+			Third line
+		`,
+		fileAfter: dedent`
+			Second line
+			Third line
+		`,
+	},
+	'removes the line that matches at a non-zero index': {
+		operation: {
+			type: 'remove-line',
+			match: /Second line/,
 		},
 		fileBefore: dedent`
 			First line
@@ -59,10 +73,9 @@ const tests: Record<string, EditFileTest> = {
 			Third line
 		`,
 	},
-	'removes multiple lines after another line': {
+	'removes the line that matches and two of the following ones': {
 		operation: {
 			type: 'remove-line',
-			position: 'after',
 			match: /Second line/,
 			count: 2,
 		},
@@ -74,14 +87,13 @@ const tests: Record<string, EditFileTest> = {
 		`,
 		fileAfter: dedent`
 			First line
-			Second line
+			Fourth line
 		`,
 	},
 	'removes multiple lines after another line even if the count is too big': {
 		operation: {
 			type: 'remove-line',
-			position: 'after',
-			match: /Second line/,
+			match: /Third line/,
 			count: 5,
 		},
 		fileBefore: dedent`
@@ -95,10 +107,9 @@ const tests: Record<string, EditFileTest> = {
 			Second line
 		`,
 	},
-	'removes a line (by default) before another line': {
+	'removes the matched line by default': {
 		operation: {
 			type: 'remove-line',
-			position: 'before',
 			match: /Second line/,
 		},
 		fileBefore: dedent`
@@ -107,15 +118,16 @@ const tests: Record<string, EditFileTest> = {
 			Third line
 		`,
 		fileAfter: dedent`
-			Second line
+			First line
 			Third line
 		`,
 	},
-	'removes multiple lines before another line': {
+	'removes two lines before another line': {
 		operation: {
 			type: 'remove-line',
 			position: 'before',
 			match: /Fourth line/,
+			start: -2,
 			count: 2,
 		},
 		fileBefore: dedent`
@@ -131,12 +143,11 @@ const tests: Record<string, EditFileTest> = {
 			Fifth line
 		`,
 	},
-	'removes multiple lines before another line even if the count is too big': {
+	'removes the line before with negative start': {
 		operation: {
 			type: 'remove-line',
-			position: 'before',
 			match: /Fourth line/,
-			count: 10,
+			start: -1,
 		},
 		fileBefore: dedent`
 			First line
@@ -146,7 +157,29 @@ const tests: Record<string, EditFileTest> = {
 			Fifth line
 		`,
 		fileAfter: dedent`
+			First line
+			Second line
 			Fourth line
+			Fifth line
+		`,
+	},
+	'removes the line and the one before with negative start and a count of two': {
+		operation: {
+			type: 'remove-line',
+			match: /Fourth line/,
+			start: -1,
+			count: 2,
+		},
+		fileBefore: dedent`
+			First line
+			Second line
+			Third line
+			Fourth line
+			Fifth line
+		`,
+		fileAfter: dedent`
+			First line
+			Second line
 			Fifth line
 		`,
 	},
