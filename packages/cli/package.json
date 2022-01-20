@@ -1,15 +1,15 @@
 {
   "name": "@preset/cli",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "author": "Enzo Innocenzi",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
-	"publishConfig": {
-		"access": "public"
-	},
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
-		"init"
+    "init"
   ],
   "repository": {
     "type": "git",
