@@ -3,11 +3,11 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r --filter ./packages run build",
+    "build:cli": "pnpm -C ./packages/cli run build",
+    "build:core": "pnpm -C ./packages/core run build",
     "lint": "eslint **/*.ts",
     "test": "pnpm -r --filter ./packages run test",
     "test:core": "pnpm -C ./packages/core run test",
-    "cli": "esno ./packages/cli/src/cli.ts",
-    "cli:build": "pnpm build && pnpm cli",
     "docs:dev": "pnpm -C docs run dev",
     "docs:build": "pnpm -C docs run build",
     "docs:serve": "pnpm -C docs run serve",
