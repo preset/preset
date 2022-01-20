@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import git from 'simple-git'
+import { emitter } from './events'
 import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset } from './types'
 import { debug, invoke } from './utils'
 
@@ -10,47 +11,47 @@ import { debug, invoke } from './utils'
  */
 export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset> {
 	// Parses the resolvable string into an object representing a directory or a repository.
-	const resolved = await parseResolvable(options.resolvable)
+	const resolved = await parseResolvable(options)
+	const emitAndReturn = (resolved: LocalPreset) => {
+		debug.apply('Resolved: ', resolved)
+		emitter.emit('preset:resolve', resolved)
+
+		return resolved
+	}
 
 	// If we already have a file path, returns it.
 	if (resolved.type === 'file') {
-		return {
+		return emitAndReturn({
 			rootDirectory: path.dirname(resolved.path),
 			presetFile: resolved.path,
-		}
+		})
 	}
 
 	// If it's a repository, clone it and resolve the preset file.
 	if (resolved.type === 'repository') {
 		const rootDirectory = await cloneRepository(resolved, options)
 
-		return {
-			rootDirectory,
-			presetFile: await resolvePresetFile(rootDirectory),
-		}
+		return emitAndReturn(await resolvePresetFile(rootDirectory))
 	}
 
 	// Otherwise, it's a directory, just resolve the preset file.
-	return {
-		rootDirectory: resolved.path,
-		presetFile: await resolvePresetFile(resolved.path),
-	}
+	return emitAndReturn(await resolvePresetFile(resolved.path))
 }
 
 /**
  * Parses the given resolvable.
  */
-export async function parseResolvable(resolvable: string, cwd: string = process.cwd()): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
+export async function parseResolvable(options: ApplyOptions, cwd: string = process.cwd()): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
 	debug.resolve('Working directory:', cwd)
-	debug.resolve('Parsing resolvable:', resolvable)
+	debug.resolve('Parsing resolvable:', options.resolvable)
 	const resolved
-		= await resolveNamespacedAlias(resolvable)
-		|| await resolveLocalFile(resolvable, cwd)
-		|| await resolveLocalDirectory(resolvable, cwd)
-		|| await resolveGitHubRepository(resolvable)
+		= await resolveNamespacedAlias(options)
+		|| await resolveLocalFile(options, cwd)
+		|| await resolveLocalDirectory(options, cwd)
+		|| await resolveGitHubRepository(options)
 
 	if (!resolved) {
-		throw new Error(`Could not resolve ${resolvable} as a local file, local directory or a repository.`)
+		throw new Error(`Could not resolve ${options.resolvable} as a local file, local directory or a repository.`)
 	}
 
 	return resolved
@@ -63,7 +64,7 @@ export async function parseResolvable(resolvable: string, cwd: string = process.
  * @example organization/repository(at)tag
  * @example git(at)github.com:organization/repository
  */
-export async function resolveGitHubRepository(resolvable: string): Promise<RepositoryPreset | false> {
+export async function resolveGitHubRepository(options: ApplyOptions): Promise<RepositoryPreset | false> {
 	debug.resolve('Trying to resolve as a GitHub repository.')
 
 	const regexes = [
@@ -74,7 +75,7 @@ export async function resolveGitHubRepository(resolvable: string): Promise<Repos
 
 	const repository = regexes
 		.map((regex) => {
-			const [matches, organization, repository, tag] = resolvable.match(regex) ?? []
+			const [matches, organization, repository, tag] = options.resolvable.match(regex) ?? []
 
 			if (!matches) {
 				return false
@@ -85,7 +86,8 @@ export async function resolveGitHubRepository(resolvable: string): Promise<Repos
 				organization,
 				repository,
 				tag,
-				ssh: !resolvable.includes('http'),
+				ssh: !options.resolvable.includes('http'),
+				path: options.parsedOptions.path ?? '',
 			}
 
 			return result
@@ -105,10 +107,10 @@ export async function resolveGitHubRepository(resolvable: string): Promise<Repos
 /**
  * Resolves a local directory.
  */
-export async function resolveLocalDirectory(resolvable: string, cwd: string): Promise<LocalDirectoryPreset | false> {
-	debug.resolve('Trying to resolve as a local directory.')
+export async function resolveLocalDirectory(options: ApplyOptions, cwd: string): Promise<LocalDirectoryPreset | false> {
+	const absolute = path.resolve(cwd, options.resolvable, options.parsedOptions.path ?? '')
 
-	const absolute = path.resolve(cwd, resolvable)
+	debug.resolve('Trying to resolve as a local directory:', absolute)
 
 	try {
 		if ((fs.statSync(absolute)).isDirectory()) {
@@ -127,10 +129,10 @@ export async function resolveLocalDirectory(resolvable: string, cwd: string): Pr
 /**
  * Resolves a local file.
  */
-export async function resolveLocalFile(resolvable: string, cwd: string): Promise<LocalFilePreset | false> {
-	debug.resolve('Trying to resolve as a local file.')
+export async function resolveLocalFile(options: ApplyOptions, cwd: string): Promise<LocalFilePreset | false> {
+	const absolute = path.resolve(cwd, options.resolvable, options.parsedOptions.path ?? '')
 
-	const absolute = path.resolve(cwd, resolvable)
+	debug.resolve('Trying to resolve as a local file:', absolute)
 
 	try {
 		if ((fs.statSync(absolute)).isFile()) {
@@ -151,20 +153,21 @@ export async function resolveLocalFile(resolvable: string, cwd: string): Promise
  *
  * @example laravel:inertia => laravel-presets/inertia
  */
-export async function resolveNamespacedAlias(resolvable: string): Promise<RepositoryPreset | false> {
+export async function resolveNamespacedAlias(options: ApplyOptions): Promise<RepositoryPreset | false> {
 	debug.resolve('Trying to resolve an alias.')
 
-	if (!resolvable.match(/^([a-zA-Z][\w-]+):([a-zA-Z][\w-]+)$/)) {
+	if (!options.resolvable.match(/^([a-zA-Z][\w-]+):([a-zA-Z][\w-]+)$/)) {
 		return false
 	}
 
-	const [namespace, repository] = resolvable.split(':')
+	const [namespace, repository] = options.resolvable.split(':')
 
 	return {
 		type: 'repository',
 		ssh: true,
 		organization: `${namespace}-presets`,
 		repository,
+		path: options.parsedOptions.path ?? '',
 	}
 }
 
@@ -173,7 +176,7 @@ export async function resolveNamespacedAlias(resolvable: string): Promise<Reposi
  *
  * @param directory Absolute path to the directory in which to find the preset file.
  */
-export async function resolvePresetFile(directory: string, cwd: string = process.cwd()) {
+export async function resolvePresetFile(directory: string, cwd: string = process.cwd()): Promise<LocalPreset> {
 	debug.resolve(`Resolving preset file in "${directory}" with working directory "${cwd}".`)
 
 	const pkg = invoke(() => {
@@ -208,7 +211,13 @@ export async function resolvePresetFile(directory: string, cwd: string = process
 
 	debug.resolve(`Found "${filepath}".`)
 
-	return filepath
+	const DEPENDENCY_NAME = '@preset/core'
+
+	return {
+		rootDirectory: directory,
+		presetFile: filepath,
+		presetVersion: pkg?.devDependencies?.[DEPENDENCY_NAME] ?? pkg?.dependencies?.[DEPENDENCY_NAME],
+	}
 }
 
 /**
@@ -252,11 +261,16 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 	// Clones the repository
 	debug.resolve(`Cloning ${repositoryUrl} with${cloneWithSsh ? '' : 'out'} SSH into ${targetDirectory}.`)
 
+	// TODO: mock simple-git
+	if (process.env.VITEST) {
+		throw new Error('Cloning repositories is not allowed in tests.')
+	}
+
 	await git()
 		.clone(repositoryUrl, targetDirectory, {
 			'--depth': 1,
 			...(tag && { '--branch': tag }),
 		})
 
-	return targetDirectory
+	return path.resolve(targetDirectory, preset.path)
 }

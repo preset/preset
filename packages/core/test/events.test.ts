@@ -1,7 +1,7 @@
-import { test, assert } from 'vitest'
-import { defineAction, emitter } from '../src'
+import { test, assert, expect } from 'vitest'
+import { defineAction, emitter, resolvePreset } from '../src'
 import type { ActionContext } from '../src/types'
-import { makeTestPreset } from './utils'
+import { makeTestPreset, fixedFixturesDirectory } from './utils'
 
 test('an action emits a fail event', async() => {
 	const contexts: ActionContext[] = []
@@ -76,4 +76,20 @@ test('all actions emit an end event', async() => {
 		'failing-action',
 		'throwing-action',
 	])
+})
+
+test('applying a preset emits an event', async() => {
+	const result: any = {}
+	emitter.on('preset:resolve', (resolved) => result.resolved = resolved)
+
+	const resolved = await resolvePreset({
+		resolvable: fixedFixturesDirectory,
+		targetDirectory: '',
+		rawArguments: [],
+		parsedOptions: {
+			path: 'preset-with-specific-version',
+		},
+	})
+
+	expect(resolved).toMatchObject(resolved)
 })

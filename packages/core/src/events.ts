@@ -1,8 +1,9 @@
 import createEvents from 'mitt'
-import type { PresetContext, ActionContext, PromptInput, PromptResponse } from './types'
+import type { PresetContext, ActionContext, PromptInput, PromptResponse, LocalPreset } from './types'
 
 export const emitter = createEvents<{
 	// Presets
+	'preset:resolve': LocalPreset
 	'preset:start': PresetContext
 	'preset:end': PresetContext
 	'preset:success': PresetContext

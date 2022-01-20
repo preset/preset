@@ -317,6 +317,11 @@ export interface LocalPreset {
 	 * The absolute path to the preset file.
 	 */
 	presetFile: string
+
+	/**
+	 * The version required by the preset.
+	 */
+	presetVersion?: string
 }
 
 /**
@@ -327,6 +332,7 @@ export interface RepositoryPreset {
 	organization: string
 	repository: string
 	ssh: boolean
+	path: string
 	tag?: string
 }
 
