@@ -3,6 +3,7 @@ import { execa, CommonOptions } from 'execa'
 import createDebugger from 'debug'
 
 export const debug = {
+	error: makeDebugger('preset:core:error'),
 	apply: makeDebugger('preset:core:apply'),
 	resolve: makeDebugger('preset:core:resolve'),
 	import: makeDebugger('preset:core:import'),

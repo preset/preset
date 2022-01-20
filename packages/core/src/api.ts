@@ -3,6 +3,7 @@ import { debug, objectWithoutKeys } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
 import type { DefinePresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
+import { PresetError } from './errors'
 
 /**
  * Defines a preset.
@@ -11,6 +12,10 @@ import type { DefinePresetOptions, Preset, ActionHandler, Action, PresetFlags } 
  * @param preset The preset's script.
  */
 export function definePreset<Options extends PresetFlags>(preset: DefinePresetOptions<Options>): Preset<Options> {
+	if (!preset.name || !preset.handler) {
+		throw new PresetError({ code: 'ERR_INVALID_PRESET', details: 'Preset configuration is missing a name or an handler.' })
+	}
+
 	return {
 		name: preset.name,
 		options: preset.options ?? {} as any,
@@ -32,23 +37,24 @@ export function definePreset<Options extends PresetFlags>(preset: DefinePresetOp
 				// Executes the handler
 				if ((await preset.handler(context)) === false) {
 					debug.preset(preset.name, 'Preset handler returned false, throwing.')
-					throw new Error('Preset failed to execute properly.')
+					throw new PresetError({ code: 'ERR_PRESET_FAILED', details: 'Preset failed to execute properly.' })
 				}
 
 				// If there was errors during the execution
 				if (context.actions.some(({ error }) => Boolean(error))) {
 					debug.preset(preset.name, 'One or more actions failed.')
-					throw new Error('One or more actions failed.')
+					throw new PresetError({ code: 'ERR_ACTIONS_FAILED', details: 'Preset failed because some of its actions failed.' })
 				}
 
 				finishPresetContext(context, 'applied')
 
 				debug.preset(preset.name, 'Preset handler executed without throwing.')
 				emitter.emit('preset:success', context)
-			} catch (error: any) {
+			} catch (parent: any) {
+				const error = new PresetError({ code: 'ERR_PRESET_FAILED', details: `Preset ${preset.name} threw an error.`, parent })
+
 				finishPresetContext(context, 'failed', error)
 
-				debug.preset(preset.name, 'Preset handler threw an error:', error)
 				emitter.emit('preset:fail', context)
 
 				return false
@@ -91,18 +97,18 @@ export function defineAction<Options extends Object, OptionsWithDefault extends 
 
 		try {
 			if (!await action({ options: resolved, presetContext, actionContext, name })) {
-				debug.action(name, 'Action handler returned false, throwing.')
-				throw new Error('Action failed to execute properly.')
+				throw new PresetError({ code: 'ERR_ACTION_FAILED', details: `Action ${name} was not successful.` })
 			}
 
 			finishActionContext(actionContext, 'applied')
 
 			debug.action(name, 'Action handler executed without throwing.')
 			emitter.emit('action:success', actionContext)
-		} catch (error: any) {
+		} catch (parent: any) {
+			const error = new PresetError({ code: 'ERR_ACTION_FAILED', details: `Action ${name} threw an error.`, parent })
+
 			finishActionContext(actionContext, 'failed', error)
 
-			debug.action(name, 'Action handler threw an error:', error)
 			emitter.emit('action:fail', actionContext)
 		}
 

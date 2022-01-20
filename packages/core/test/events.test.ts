@@ -7,7 +7,7 @@ test('an action emits a fail event', async() => {
 	const contexts: ActionContext[] = []
 	const failingAction = defineAction('failing-action', () => false)
 	const throwingAction = defineAction('throwing-action', () => {
-		throw new Error('Action failed with throwing.')
+		throw new Error('Action failed by throwing.')
 	})
 
 	emitter.on('action:fail', (context) => contexts.push(context))
@@ -26,9 +26,9 @@ test('an action emits a fail event', async() => {
 		'throwing-action',
 	])
 
-	assert.sameOrderedMembers(contexts.map(({ error }) => error!.message), [
-		'Action failed to execute properly.',
-		'Action failed with throwing.',
+	expect(contexts.map(({ error }) => [error!.code, error!.details])).toMatchObject([
+		['ERR_ACTION_FAILED', 'Action failing-action threw an error.'],
+		['ERR_ACTION_FAILED', 'Action throwing-action threw an error.'],
 	])
 })
 

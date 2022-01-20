@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import git from 'simple-git'
+import { PresetError } from './errors'
 import { emitter } from './events'
 import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset } from './types'
 import { debug, invoke } from './utils'
@@ -51,7 +52,10 @@ export async function parseResolvable(options: ApplyOptions, cwd: string = proce
 		|| await resolveGitHubRepository(options)
 
 	if (!resolved) {
-		throw new Error(`Could not resolve ${options.resolvable} as a local file, local directory or a repository.`)
+		throw new PresetError({
+			code: 'ERR_NOT_RESOLVED',
+			details: `Could not resolve "${options.resolvable}" as an alias, a local file, a local directory or a repository.`,
+		})
 	}
 
 	return resolved
@@ -205,8 +209,10 @@ export async function resolvePresetFile(directory: string, cwd: string = process
 	const filepath = await ensureFile(pkg?.preset) ?? await ensureFile('preset.ts') ?? await ensureFile('src/preset.ts')
 
 	if (!filepath) {
-		debug.resolve(`Could not find the preset file in "${directory}".`)
-		throw new Error(`Could not find a preset file in "${directory}".`)
+		throw new PresetError({
+			code: 'ERR_PRESET_FILE_NOT_FOUND',
+			details: `Could not find a preset file in "${directory}".`,
+		})
 	}
 
 	debug.resolve(`Found "${filepath}".`)

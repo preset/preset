@@ -5,6 +5,7 @@ import simpleGit from 'simple-git'
 import type { LastArrayElement } from 'type-fest'
 import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, LocalPreset, ActionOptions } from './types'
 import { debug, objectWithoutKeys } from './utils'
+import { PresetError } from './errors'
 
 /**
  * Context list, in order of execution.
@@ -85,7 +86,7 @@ export function getCurrentPresetContext(): PresetContext | undefined {
 	const context = contexts.at(-1)
 
 	if (!context) {
-		throw new Error('Context could not be found in the context stack. This might cause issues.')
+		throw new PresetError({ code: 'ERR_MISSING_CONTEXT', details: 'Context could not be found in the context stack. This might cause issues.' })
 	}
 
 	debug.context('Current context:', objectWithoutKeys(context, 'git'))
@@ -96,7 +97,7 @@ export function getCurrentPresetContext(): PresetContext | undefined {
 /**
  * Marks the context as finished.
  */
-export function finishPresetContext(context: PresetContext, status: Status, error?: Error) {
+export function finishPresetContext(context: PresetContext, status: Status, error?: PresetError) {
 	context.status = status
 	context.end = performance.now()
 
@@ -108,7 +109,7 @@ export function finishPresetContext(context: PresetContext, status: Status, erro
 /**
  * Mark action as finished.
  */
-export function finishActionContext(action: LastArrayElement<PresetContext['actions']>, status: Status, error?: Error) {
+export function finishActionContext(action: LastArrayElement<PresetContext['actions']>, status: Status, error?: PresetError) {
 	action.status = status
 	action.end = performance.now()
 

@@ -1,6 +1,7 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import { debug, execute, wrap } from '../utils'
+import { PresetError } from '../errors'
 import { defineAction } from '../api'
 
 // https://github.com/antfu/install-pkg
@@ -101,7 +102,7 @@ export const installPackages = defineAction<InstallPackagesOptions>(
 			)
 		}
 
-		throw new Error(`Environment "${options.for || '<not given>'}" is not supported.`)
+		throw new PresetError({ code: 'ERR_ACTION_FAILED', details: `Environment "${options.for || '<not given>'}" is not supported.` })
 	},
 	{
 		for: 'node',

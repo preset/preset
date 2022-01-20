@@ -26,3 +26,11 @@ export function formatResult(...parts: Part[]) {
 
 	return `${text} ${c.gray(`(${count})`)}`
 }
+
+export async function invoke(fn: Function, handleError: (error: Error) => void) {
+	try {
+		return await fn()
+	} catch (error) {
+		handleError(error as Error)
+	}
+}

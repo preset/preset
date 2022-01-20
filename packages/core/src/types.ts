@@ -1,5 +1,6 @@
 import { ConfigValues, SimpleGit } from 'simple-git'
 import { Promisable } from 'type-fest'
+import { PresetError } from './errors'
 
 export type ActionResult = boolean
 export type ActionHandlerParameters<ResolvedOptions> = {
@@ -152,7 +153,7 @@ export interface ActionContext<ResolvedOptions = ActionOptions<any>> {
 	/**
 	 * Potential error.
 	 */
-	error?: Error
+	error?: PresetError
 
 	/**
 	 * Optional title to display in the logs.
@@ -242,7 +243,7 @@ export interface PresetContext<Options extends PresetFlags = PresetFlags> {
 	/**
 	 * Potential error.
 	 */
-	error?: Error
+	error?: PresetError
 
 	/**
 	 * Prompt responses.

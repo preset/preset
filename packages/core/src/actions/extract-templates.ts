@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import fg from 'fast-glob'
 import { defineAction } from '../api'
 import { debug } from '../utils'
+import { PresetError } from '../errors'
 
 export interface ExtractTemplatesOptions {
 	/**
@@ -101,7 +102,7 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 
 		// Copying a directory to a file is kind of a dumb operation
 		if (isDirectory(templatesPath) && isFile(targetPath)) {
-			throw new Error('Can not extract a directory to a file.')
+			throw new PresetError({ code: 'ERR_ACTION_FAILED', details: 'Can not extract a directory to a file.' })
 		}
 
 		// Copying a file to a directory means copying the file inside the directory

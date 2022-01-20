@@ -4,6 +4,7 @@ import path from 'node:path'
 import { buildSync } from 'esbuild'
 import type { Preset } from './types'
 import { debug } from './utils'
+import { PresetError } from './errors'
 import * as preset from './index'
 
 /**
@@ -36,7 +37,7 @@ async function evaluateConfiguration(script: string, directory: string, filepath
 
 		if (!result.name || !result.apply) {
 			debug.import(result)
-			throw new Error('Preset configuration is missing a name or an apply handler.')
+			throw new PresetError({ code: 'ERR_INVALID_PRESET', details: 'Preset configuration is missing a name or an apply handler.' })
 		}
 
 		debug.import(`Found default export "${defaultExportKey}":`, result.name)
@@ -44,7 +45,7 @@ async function evaluateConfiguration(script: string, directory: string, filepath
 		return result
 	}
 
-	throw new Error('Preset configuration is missing a default export.')
+	throw new PresetError({ code: 'ERR_PRESET_NO_EXPORT', details: 'Preset configuration is missing a default export.' })
 }
 
 /**
