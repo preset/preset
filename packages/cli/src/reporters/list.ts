@@ -24,8 +24,9 @@ const format = {
 const symbols = {
 	spinner: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
 	arrow: '➜',
-	check: '√',
+	check: '✓',
 	cross: '×',
+	subArrow: ' ↪ ',
 }
 
 export default makeReporter({
@@ -104,7 +105,7 @@ export default makeReporter({
 					.forEach((action) => {
 						text += format.indent(preset.count)
 						text += symbol[action.status]
-						text += ` ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
+						text += `  ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
 						text += format.highlight(c.white(action.options.title || action.name))
 
 						// Nested presets
@@ -118,7 +119,7 @@ export default makeReporter({
 									nestedPresetContext.error.message.split('\n').forEach((line, index) => {
 										text += '\n'
 										text += format.indent(preset.count + 1)
-										text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+										text += c.red(`${index === 0 ? symbols.subArrow : ' '} ${line}`)
 									})
 								}
 
@@ -148,7 +149,7 @@ export default makeReporter({
 							if (logs.length > 0 && action.status === 'applying') {
 								text += '\n'
 								text += format.indent(preset.count + 1)
-								text += format.dim(`↳ ${logs.at(-1) ?? '...'}`)
+								text += format.dim(`${symbols.subArrow} ${logs.at(-1) ?? '...'}`)
 							}
 
 							if (failed.length) {
@@ -157,7 +158,7 @@ export default makeReporter({
 										failedChild.error.message.split('\n').forEach((line, index) => {
 											text += '\n'
 											text += format.indent(preset.count + 1)
-											text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+											text += c.red(`${index === 0 ? symbols.subArrow : ' '} ${line}`)
 										})
 									}
 								})
@@ -169,7 +170,7 @@ export default makeReporter({
 							const input = inputs.find((input) => input.actionContextId === action.id)
 							text += '\n'
 							text += format.indent(preset.count + 1)
-							text += format.dim(`↳ ${format.dim(action.options.text)} `)
+							text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
 							text += c.gray.bold(input?.response.trim() || action.options.default)
 						}
 
@@ -177,7 +178,7 @@ export default makeReporter({
 						if (action.log.length > 0 && action.status === 'applying') {
 							text += '\n'
 							text += format.indent(preset.count + 1)
-							text += format.dim(`↳ ${action.log.at(-1) ?? '...'}`)
+							text += format.dim(`${symbols.subArrow} ${action.log.at(-1) ?? '...'}`)
 						}
 
 						// Display errors if there are, except for nested presets which display its own errors.
@@ -185,7 +186,7 @@ export default makeReporter({
 							action.error.message.split('\n').forEach((line, index) => {
 								text += '\n'
 								text += format.indent(preset.count + 1)
-								text += c.red(`${index === 0 ? '↳' : ' '} ${line}`)
+								text += c.red(`${index === 0 ? symbols.subArrow : ' '} ${line}`)
 							})
 						}
 
