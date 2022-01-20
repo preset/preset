@@ -28,7 +28,9 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 
 		// Loops through operations
 		for (const operation of options.operations) {
-		// Updates the content of the file via a callback
+			debug.action(actionContext.name, 'Performing operation:', operation)
+
+			// Updates the content of the file via a callback
 			if (operation.type === 'update-content') {
 				debug.action(actionContext.name, 'Updating file content via callback.')
 				content = operation.update(content)
@@ -73,7 +75,7 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 			// Adds line
 			if (operation.type === 'add-line') {
 				const linesToAdd = wrap(operation.lines)
-				debug.action(actionContext.name, `Adding ${linesToAdd.length} line(s) ${operation.position} ${'match' in operation ? operation.match : ''}`)
+				debug.action(actionContext.name, `Adding ${linesToAdd.length} line(s)`)
 
 				const lines = content.replace(/\r\n/, '\n').split('\n')
 				const index = 'match' in operation ? lines.findIndex((value) => value.match(operation.match)) : -1
@@ -107,7 +109,7 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 
 				// Adds line to specified index
 				if (typeof operation.position === 'number') {
-					lines.splice(operation.position, 0, ...linesToAdd)
+					lines.splice(operation.position, 0, ...indentLines(lines[operation.position], linesToAdd))
 					debug.action(actionContext.name, `Added ${linesToAdd.length} line(s) to specified index.`)
 				}
 
