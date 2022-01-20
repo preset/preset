@@ -37,6 +37,7 @@ export default definePreset({
 					variables: {
 						author: context.git.config['user.name'] as string,
 						email: context.git.config['user.email'] as string,
+						dir: context.applyOptions.targetDirectory,
 						presetName: kebab(context.prompts.name!),
 					},
 				},
