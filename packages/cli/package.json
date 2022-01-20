@@ -28,10 +28,13 @@
     "cac": "^6.7.12",
     "chalk": "^5.0.0",
     "debug": "4.3.3",
+    "fs-extra": "^10.0.0",
     "log-update": "^5.0.0",
-    "semver": "^7.3.5"
+    "semver": "^7.3.5",
+    "update-notifier": "^5.1.0"
   },
   "devDependencies": {
-    "@types/semver": "^7.3.9"
+    "@types/semver": "^7.3.9",
+    "@types/update-notifier": "^5.1.0"
   }
 }

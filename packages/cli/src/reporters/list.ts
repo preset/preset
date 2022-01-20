@@ -1,14 +1,13 @@
 import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
-import semver from 'semver'
-import { emitter, LocalPreset } from '@preset/core'
+import { emitter } from '@preset/core'
 import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
-import corePkg from '../../../core/package.json'
 import { makeReporter } from '../types'
 import { contexts } from '../state'
 import { formatResult, time } from '../utils'
+import { checks } from '../version'
 
 // https://github.com/vitest-dev/vitest/blob/f2caced25fb0c5ac33368a8a64329467b796089e/packages/vitest/src/reporters/renderers/figures.ts
 const format = {
@@ -22,7 +21,12 @@ const format = {
 	titleWarning: (text?: any)	=> c.bgYellow.white.bold(`${text}`),
 }
 
-const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+const symbols = {
+	spinner: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
+	arrow: '➜',
+	check: '√',
+	cross: '×',
+}
 
 export default makeReporter({
 	name: 'list',
@@ -31,7 +35,6 @@ export default makeReporter({
 
 		const inputs: Array<PromptInput & { response: string }> = []
 		const updateLog = createLogUpdate(process.stdout)
-		let versionMismatch: LocalPreset | false = false
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
@@ -39,25 +42,46 @@ export default makeReporter({
 		// Might need a lil cleanup
 		function render() {
 			let text: string = ''
-			index = ++index % spinner.length
+			index = ++index % symbols.spinner.length
 
 			const symbol: Record<Status, string> = {
-				applying: c.yellowBright.bold(spinner[index]),
-				applied: c.green.bold('√'),
-				failed: c.red.bold('×'),
+				applying: c.yellowBright.bold(symbols.spinner[index]),
+				applied: c.green.bold(symbols.check),
+				failed: c.red.bold(symbols.cross),
 			}
 
 			const main = contexts.at(0)!
 
-			// Display upgrade message
-			if (versionMismatch) {
+			// Displays update messages
+			if (checks.versionMismatches.length || checks.updates) {
+				const updateAvailable = checks.updates && checks.updates.latest !== checks.updates.current
+
 				text += '\n'
-				text += ` ${format.titleWarning(' VERSION MISMATCH ')}`
+				text += ` ${format.titleWarning(updateAvailable ? ' UPDATE AVAILABLE ' : ' VERSION MISMATCH ')}`
 				text += '\n\n'
-				text += `  ${c.yellowBright('➜')}  Currently running: ${c.bold.redBright(`v${corePkg.version}`)}\n`
-				text += `  ${c.yellowBright('➜')}  Version required: ${c.bold.greenBright(versionMismatch.presetVersion)}\n`
-				text += `  ${c.yellowBright('➜')}  The preset may not behave as expected. Use ${c.magenta('npm i -g @preset/cli')} to update.`
-				text += '\n\n'
+
+				// Displays if an update is available or the current version
+				if (updateAvailable) {
+					text += `  ${c.greenBright(symbols.arrow)}  Latest version: ${c.bold.greenBright(`v${checks.updates!.latest}`)}\n`
+					text += `  ${c.redBright(symbols.arrow)}  Current version: ${c.bold.redBright(`v${checks.updates!.current}`)}\n`
+				} else {
+					text += `  ${c.greenBright(symbols.arrow)}  Current version: ${c.bold.greenBright(`v${checks.current}`)} ${c.gray('(latest)')}\n`
+				}
+
+				// Displays each version mismatch
+				checks.versionMismatches.forEach((mismatch) => {
+					const name = contexts.find((preset) => mismatch.presetFile === preset.localPreset.presetFile)?.name
+
+					if (name) {
+						text += `  ${c.redBright(symbols.arrow)}  Preset ${c.magenta(name)} requires ${c.bold.redBright(mismatch.presetVersion)} ${mismatch.isOutdated ? c.gray('(outdated, may not work)') : ''}\n`
+					}
+				})
+
+				// Displays the update command
+				if (updateAvailable) {
+					text += `  ${c.greenBright(symbols.arrow)}  ${c.bold(`Use ${c.magenta.bold('npm i -g @preset/cli')} to update.`)}\n`
+				}
+				text += '\n'
 			}
 
 			// The main preset is specially formatted
@@ -278,20 +302,6 @@ export default makeReporter({
 					clearInterval(timer)
 					rl?.close()
 				}, 1)
-			}
-		})
-
-		emitter.on('preset:resolve', (preset) => {
-			if (contexts.length !== 0) {
-				return
-			}
-
-			if (!preset.presetVersion) {
-				return
-			}
-
-			if (!semver.satisfies(corePkg.version, preset.presetVersion)) {
-				versionMismatch = preset
 			}
 		})
 	},

@@ -9,8 +9,12 @@ import { version } from '../package.json'
 import { patch } from './patch'
 import { reporters } from './reporters'
 import { invoke } from './utils'
+import { checkLatestVersion, registerVersionMismatches } from './version'
 
 invoke(async() => {
+	registerVersionMismatches()
+	checkLatestVersion()
+
 	// Creates the base CLI
 	const cli = createCli('preset')
 		.option('--reporter <name>', 'Which reporter to log to..', { default: 'list' })
@@ -69,7 +73,7 @@ invoke(async() => {
 	console.log(`${c.bgRed.white.bold(' ERROR ')} ${c.red(error.message)}`)
 
 	if (!error.toString().includes('CACError')) {
-		console.log(c.gray((error as Error)?.stack ?? ''))
+		console.log(c.gray(error?.toString() ?? ''))
 	}
 
 	console.log()
