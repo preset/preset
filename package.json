@@ -11,7 +11,7 @@
     "docs:dev": "pnpm -C docs run dev",
     "docs:build": "pnpm -C docs run build",
     "docs:serve": "pnpm -C docs run serve",
-		"release": "bumpp packages/*/package.json --tag --commit \"release: v\""
+		"release": "bumpp packages/*/package.json --push --tag --commit \"release: v\""
   },
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.7.1",
