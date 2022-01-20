@@ -4,7 +4,7 @@ import cac from 'cac'
 import simpleGit from 'simple-git'
 import type { LastArrayElement } from 'type-fest'
 import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, LocalPreset, ActionOptions } from './types'
-import { debug, objectWithoutKey } from './utils'
+import { debug, objectWithoutKeys } from './utils'
 
 /**
  * Context list, in order of execution.
@@ -42,7 +42,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 		prompts: {},
 	}
 
-	debug.context('Adding preset context to the stack:', objectWithoutKey(context, 'git'))
+	debug.context('Adding preset context to the stack:', objectWithoutKeys(context, 'git'))
 	contexts.push(context)
 
 	return context
@@ -88,7 +88,7 @@ export function getCurrentPresetContext(): PresetContext | undefined {
 		throw new Error('Context could not be found in the context stack. This might cause issues.')
 	}
 
-	debug.context('Current context:', objectWithoutKey(context, 'git'))
+	debug.context('Current context:', objectWithoutKeys(context, 'git'))
 
 	return context
 }

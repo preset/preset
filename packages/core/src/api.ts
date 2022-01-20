@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { debug, objectWithoutKey } from './utils'
+import { debug, objectWithoutKeys } from './utils'
 import { emitter } from './events'
 import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
 import type { DefinePresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
@@ -20,7 +20,7 @@ export function definePreset<Options extends PresetFlags>(preset: DefinePresetOp
 			emitter.emit('preset:start', context)
 
 			try {
-				debug.context(preset.name, 'context', objectWithoutKey(context, 'git'))
+				debug.context(preset.name, 'context', objectWithoutKeys(context, 'git'))
 				debug.preset(preset.name, 'Executing handler.')
 
 				// Creates the target directory if needed, except in tests
