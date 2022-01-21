@@ -1,6 +1,9 @@
+import fs from 'node:fs'
+import path from 'node:path'
 // eslint-disable-next-line import/named
 import { execa, CommonOptions } from 'execa'
 import createDebugger from 'debug'
+import type { NodePackageManager } from './types'
 
 export const debug = {
 	error: makeDebugger('preset:core:error'),
@@ -8,6 +11,8 @@ export const debug = {
 	resolve: makeDebugger('preset:core:resolve'),
 	import: makeDebugger('preset:core:import'),
 	context: makeDebugger('preset:core:context'),
+	config: makeDebugger('preset:core:config'),
+	utils: makeDebugger('preset:core:utils'),
 	action: makeDynamicDebugger('preset:core:action'),
 	preset: makeDynamicDebugger('preset:core:execution'),
 }
@@ -23,7 +28,7 @@ export function makeDynamicDebugger(baseName: string) {
 /**
  * Wraps the value in an array if necessary.
  */
-export function wrap<T>(value: T | T[]): T[] {
+export function wrap<T>(value: T | T[]): NonNullable<T>[] {
 	if (!value) {
 		return []
 	}
@@ -32,7 +37,7 @@ export function wrap<T>(value: T | T[]): T[] {
 		value = [value]
 	}
 
-	return value
+	return value as NonNullable<T>[]
 }
 
 export function invoke(fn: Function) {
@@ -80,4 +85,27 @@ export function objectWithoutKeys<T extends object = {}>(obj: T, ...keys: (keyof
 
 		return rest
 	}, obj)
+}
+
+/**
+ * Detects the package manager used in the given directory.
+ */
+export async function detectNodePackageManager(directory: string) {
+	const packageLockFiles: Record<string, NodePackageManager> = {
+		'pnpm-lock.yaml': 'pnpm',
+		'yarn.lock': 'yarn',
+		'package-lock.json': 'npm',
+	}
+
+	for (const [packageLock, packageManager] of Object.entries(packageLockFiles)) {
+		if (fs.existsSync(path.resolve(directory, packageLock))) {
+			debug.utils(`Detected ${packageManager} in ${directory}`)
+
+			return packageManager
+		}
+	}
+
+	debug.utils(`No package manager detected in ${directory}`)
+
+	return null
 }
