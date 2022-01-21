@@ -365,3 +365,9 @@ export interface PromptResponse {
 	id: string
 	response?: string
 }
+
+
+export interface PresetConfiguration {
+	defaultNodeAgent: NodePackageManager
+	aliases: Record<string, ResolvedPreset>
+}
