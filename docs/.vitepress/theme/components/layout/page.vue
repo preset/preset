@@ -1,8 +1,8 @@
 <template>
 	<LayoutHeader />
-  <div class="container !max-w-screen-2xl lg:px-6 mx-auto pt-$header-height content">
+	<div class="container !max-w-screen-2xl lg:px-6 mx-auto pt-$header-height content">
 		<Sidebar />
-  	<div class="grid px-6 md:px-8 py-8 lg:py-12 relative">
+		<div class="grid px-6 md:px-8 py-8 lg:py-12 relative">
 			<!-- <HomeHero /> -->
 			<div class="prose min-w-0">
 				<Content />
@@ -10,7 +10,7 @@
 			<LayoutFooter />
 		</div>
 		<SidebarRight />
-  </div>
+	</div>
 </template>
 
 <style scoped lang="postcss">

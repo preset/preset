@@ -1,7 +1,9 @@
 ---
-home: true
 sidebar: false
-title: 'Preset - Elegant, ecosystem-agnostic preset mechanism'
 ---
 
-<Home />
+<script setup>
+import { useRouter } from 'vitepress'
+
+useRouter().go('/basics/introduction')
+</script>

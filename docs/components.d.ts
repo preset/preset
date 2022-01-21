@@ -23,7 +23,6 @@ declare module 'vue' {
     Layout: typeof import('./.vitepress/theme/components/layout/layout.vue')['default']
     LayoutFooter: typeof import('./.vitepress/theme/components/layout/layout-footer.vue')['default']
     LayoutHeader: typeof import('./.vitepress/theme/components/layout/layout-header.vue')['default']
-    'Mdi:cogOutline': typeof import('~icons/mdi/cog-outline')['default']
     NavLink: typeof import('./.vitepress/theme/components/nav-link.vue')['default']
     NextAndPreviousLinks: typeof import('./.vitepress/theme/components/next-and-previous-links.vue')['default']
     Page: typeof import('./.vitepress/theme/components/layout/page.vue')['default']
@@ -39,6 +38,8 @@ declare module 'vue' {
     ToggleSidebar: typeof import('./.vitepress/theme/components/toggle-sidebar.vue')['default']
     TreeLink: typeof import('./.vitepress/theme/components/tree-link.vue')['default']
     TreeMenu: typeof import('./.vitepress/theme/components/tree-menu.vue')['default']
+    'Uil:githubAlt': typeof import('~icons/uil/github-alt')['default']
+    'Uil:twitterAlt': typeof import('~icons/uil/twitter-alt')['default']
     UilAngleDown: typeof import('~icons/uil/angle-down')['default']
     UilAngleRight: typeof import('~icons/uil/angle-right')['default']
   }

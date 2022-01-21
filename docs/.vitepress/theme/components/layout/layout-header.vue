@@ -23,8 +23,11 @@ const repo = useRepo()
 				<DropdownMenu />
 			</div>
 			<div class="flex items-center lg:space-x-3 lg:pl-3 xl:pl-6">
-				<IconButton class="hidden lg:inline-flex" :href="repo?.link">
-					<carbon-logo-github />
+				<IconButton class="hidden lg:inline-flex hover:text-blue-300 transition" href="https://twitter.com/enzoinnocenzi">
+					<uil:twitter-alt />
+				</IconButton>
+				<IconButton class="hidden lg:inline-flex hover:text-gray-400 transition" :href="repo?.link">
+					<uil:github-alt />
 				</IconButton>
 				<ToggleDark />
 			</div>
