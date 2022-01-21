@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import detectIndent from 'detect-indent'
 import unset from 'unset-value'
 import merge from 'deepmerge'
-import { JsonObject } from 'type-fest'
+import { JsonObject, Promisable } from 'type-fest'
 import { defineAction } from '../api'
 import { debug, objectWithoutKeys, wrap } from '../utils'
 
@@ -32,6 +32,11 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 		// Loops through operations
 		for (const operation of options.operations) {
 			debug.action(actionContext.name, 'Performing operation:', operation)
+
+			// Skip the operation if necessary
+			if (operation.skipIf && (await operation.skipIf(content, targetFile)) === true) {
+				continue
+			}
 
 			// Updates the content of the file via a callback
 			if (operation.type === 'update-content') {
@@ -292,7 +297,14 @@ interface EditJsonOperation {
 	delete?: string | string[]
 }
 
-export type EditFileOperation = AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
+type EditFileOperations = AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
+
+export type EditFileOperation = EditFileOperations & {
+	/**
+	 * Whether to skip that operation.
+	 */
+	skipIf?: (content: string, targetFile: string) => Promisable<Boolean>
+}
 
 export interface EditFilesOptions {
 	/**

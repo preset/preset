@@ -552,6 +552,20 @@ const tests: Record<string, EditFileTest> = {
 			},
 		}, null, '  '),
 	},
+	'skips operation on condition': {
+		only: true,
+		operation: {
+			type: 'edit-json',
+			delete: ['foo'],
+			skipIf: (content) => content.includes('foo'),
+		},
+		fileBefore: JSON.stringify({
+			foo: 'bar',
+		}),
+		fileAfter: JSON.stringify({
+			foo: 'bar',
+		}),
+	},
 }
 
 testsInSandbox(tests, (test) => ({
