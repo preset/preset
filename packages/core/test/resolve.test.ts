@@ -2,6 +2,7 @@ import path from 'node:path'
 import { it, expect } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset, ApplyOptions } from '../src/types'
+import { loadConfig } from '../src/config'
 import { presetFixture, fixedFixturesDirectory } from './utils'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
@@ -115,4 +116,28 @@ it('finds versions of a resolved preset', async() => {
 		expect(resolved).toMatchObject({ path: presetFixture(path), type: 'directory' })
 		expect(preset).toMatchObject({ rootDirectory: resolved.path, presetFile: output, presetVersion: version })
 	}
+})
+
+it('resolves globally configured aliases', async() => {
+	loadConfig({
+		aliases: {
+			'custom:alias': {
+				type: 'file',
+				path: presetFixture('preset-with-root-file/preset.ts'),
+			},
+		},
+	})
+
+	const cwd = path.resolve(__dirname, '..')
+	const options: ApplyOptions = {
+		resolvable: 'custom:alias', // directiry
+		parsedOptions: {},
+		targetDirectory: '',
+		rawArguments: [],
+	}
+
+	expect(await parseResolvable(options, cwd)).toMatchObject({
+		path: presetFixture('preset-with-root-file/preset.ts'),
+		type: 'file',
+	})
 })

@@ -4,8 +4,9 @@ import path from 'node:path'
 import git from 'simple-git'
 import { PresetError } from './errors'
 import { emitter } from './events'
-import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset } from './types'
+import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset, ResolvedPreset } from './types'
 import { debug, invoke } from './utils'
+import { config } from './config'
 
 /**
  * Resolves the preset file and returns its path.
@@ -42,11 +43,12 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 /**
  * Parses the given resolvable.
  */
-export async function parseResolvable(options: ApplyOptions, cwd: string = process.cwd()): Promise<LocalDirectoryPreset | RepositoryPreset | LocalFilePreset> {
+export async function parseResolvable(options: ApplyOptions, cwd: string = process.cwd()): Promise<ResolvedPreset> {
 	debug.resolve('Working directory:', cwd)
 	debug.resolve('Parsing resolvable:', options.resolvable)
 	const resolved
-		= await resolveNamespacedAlias(options)
+		= await resolveConfiguredAlias(options)
+		|| await resolveNamespacedAlias(options)
 		|| await resolveLocalFile(options, cwd)
 		|| await resolveLocalDirectory(options, cwd)
 		|| await resolveGitHubRepository(options)
@@ -148,6 +150,17 @@ export async function resolveLocalFile(options: ApplyOptions, cwd: string): Prom
 			}
 		}
 	} catch {}
+
+	return false
+}
+
+/**
+ * Resolves a configured alias.
+ */
+export async function resolveConfiguredAlias(options: ApplyOptions): Promise<ResolvedPreset | false> {
+	if (options.resolvable in config.aliases) {
+		return config.aliases[options.resolvable]
+	}
 
 	return false
 }

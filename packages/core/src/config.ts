@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import { PresetConfiguration } from './types'
 import { debug } from './utils'
 
-export const presetrc = path.resolve(fs.realpathSync(os.homedir()), '.presetrc')
+export const presetrc = path.resolve(fs.realpathSync(os.homedir()), '.presetrc.json')
 
 export const config: Readonly<PresetConfiguration> = {
 	defaultNodeAgent: 'npm',
@@ -37,11 +37,24 @@ export function readConfig(filepath: string): PresetConfiguration {
 /**
  * Loads and cache the configuration from the given file.
  */
-export function loadConfig(filepath?: string): PresetConfiguration {
-	if (!config) {
-		debug.config('Loading configuration')
-		Object.entries(readConfig(filepath ?? presetrc)).forEach(([key, value]) => Reflect.set(config, key, value))
+export function loadConfig(configOrPath?: string | Partial<PresetConfiguration>): PresetConfiguration {
+	if (typeof configOrPath === 'object') {
+		return saveConfig(configOrPath)
 	}
+
+	if (typeof configOrPath === 'string') {
+		return saveConfig(readConfig(configOrPath))
+	}
+
+	return saveConfig(readConfig(presetrc))
+}
+
+/**
+ * Saves the configuration.
+ */
+export function saveConfig(cfg: Partial<PresetConfiguration>): PresetConfiguration {
+	debug.config('Saving configuration', cfg)
+	Object.entries(cfg).forEach(([key, value]) => Reflect.set(config, key, value))
 
 	return config
 }
