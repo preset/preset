@@ -285,11 +285,15 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 		throw new Error('Cloning repositories is not allowed in tests.')
 	}
 
-	await git()
-		.clone(repositoryUrl, targetDirectory, {
-			'--depth': 1,
-			...(tag && { '--branch': tag }),
-		})
+	try {
+		await git()
+			.clone(repositoryUrl, targetDirectory, {
+				'--depth': 1,
+				...(tag && { '--branch': tag }),
+			})
+	} catch (parent: any) {
+		throw new PresetError({ code: 'ERR_CLONE_PRESET', details: `Repository ${repositoryUrl} could not be cloned.`, parent })
+	}
 
 	return path.resolve(targetDirectory, preset.path)
 }

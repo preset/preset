@@ -9,6 +9,7 @@ export type Code =
 	| 'ERR_MISSING_CONTEXT'
 	| 'ERR_PRESET_NO_EXPORT'
 	| 'ERR_INVALID_PRESET'
+	| 'ERR_CLONE_PRESET'
 
 interface PresetErrorOptions {
 	code: Code
