@@ -18,7 +18,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 			children: [
 				{
 					text: 'Introduction',
-					link: '/basics/introduction',
+					link: '/',
 				},
 				{
 					text: 'Getting started',
