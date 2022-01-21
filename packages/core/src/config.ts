@@ -38,15 +38,19 @@ export function readConfig(filepath: string): PresetConfiguration {
  * Loads and cache the configuration from the given file.
  */
 export function loadConfig(configOrPath?: string | Partial<PresetConfiguration>): PresetConfiguration {
-	if (typeof configOrPath === 'object') {
-		return saveConfig(configOrPath)
-	}
+	try {
+		if (typeof configOrPath === 'object') {
+			return saveConfig(configOrPath)
+		}
 
-	if (typeof configOrPath === 'string') {
-		return saveConfig(readConfig(configOrPath))
-	}
+		if (typeof configOrPath === 'string') {
+			return saveConfig(readConfig(configOrPath))
+		}
 
-	return saveConfig(readConfig(presetrc))
+		return saveConfig(readConfig(presetrc))
+	} catch {}
+
+	return config
 }
 
 /**
