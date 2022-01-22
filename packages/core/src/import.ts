@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import vm from 'node:vm'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -58,7 +59,7 @@ function removeSelfImportStatement(script: string) {
 		.split(/\r\n|\r|\n/)
 		.filter((line) => {
 			const lineImports = ['import', 'require'].some((statement) => line.includes(statement))
-			const lineMentionsImportValue = ['node:', '@preset/core', ...Object.keys(preset)].some((imp) => line.includes(imp))
+			const lineMentionsImportValue = ['@preset/core', ...Object.keys(preset)].some((imp) => line.includes(imp))
 
 			if (lineImports && lineMentionsImportValue) {
 				return false
@@ -101,6 +102,7 @@ function createContext(directory: string, filename: string): Record<string, any>
 	debug.import('Creating VM context.')
 
 	const exports = {}
+	const require = createRequire(import.meta.url)
 	const moduleGlobals = {
 		exports,
 		require,
@@ -109,7 +111,7 @@ function createContext(directory: string, filename: string): Record<string, any>
 			filename,
 			id: filename,
 			path: directory,
-			require: typeof module !== 'undefined' ? module.require : require,
+			require,
 		},
 		__dirname: directory,
 		__filename: filename,
@@ -122,8 +124,6 @@ function createContext(directory: string, filename: string): Record<string, any>
 		clearTimeout,
 		console,
 		global,
-		path,
-		fs,
 		process,
 		queueMicrotask,
 		setImmediate,

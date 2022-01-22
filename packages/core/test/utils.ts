@@ -7,7 +7,7 @@ import type { SetRequired } from 'type-fest'
 import createDebugger from 'debug'
 import { definePreset } from '../src'
 import { createPresetContext } from '../src/context'
-import type { DefinePresetOptions, LocalPreset, ApplyOptions } from '../src'
+import type { Preset, DefinePresetOptions, LocalPreset, ApplyOptions } from '../src'
 
 export interface DirectoryStructure {
 	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
@@ -18,6 +18,27 @@ export const fixturesDirectory = path.resolve(__dirname, './__fixtures__')
 export const fixedFixturesDirectory = path.resolve(__dirname, './fixtures')
 export const cleanupFixtures = async(fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
 export const presetFixture = (name: string) => path.resolve(fixedFixturesDirectory, name)
+
+/**
+ * Creates a test context.
+ */
+export const createTestPresetContext = async(
+	preset: Preset,
+	customApplyOptions?: Partial<ApplyOptions>,
+	customLocalPreset?: Partial<LocalPreset>,
+) => {
+	return await createPresetContext(preset, {
+		resolvable: '',
+		rawArguments: [],
+		targetDirectory: '',
+		parsedOptions: {},
+		...customApplyOptions,
+	}, {
+		presetFile: '',
+		rootDirectory: '',
+		...customLocalPreset,
+	})
+}
 
 /**
  * Creates a test preset.
@@ -35,17 +56,7 @@ export const makeTestPreset = async(
 		...customPresetOptions,
 	})
 
-	const context = await createPresetContext(preset, {
-		resolvable: '',
-		rawArguments: [],
-		targetDirectory: '',
-		parsedOptions: {},
-		...customApplyOptions,
-	}, {
-		presetFile: '',
-		rootDirectory: '',
-		...customLocalPreset,
-	})
+	const context = await createTestPresetContext(preset, customApplyOptions, customLocalPreset)
 
 	return { preset, context, executePreset: async() => preset.apply(context) }
 }

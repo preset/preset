@@ -553,7 +553,6 @@ const tests: Record<string, EditFileTest> = {
 		}, null, '  '),
 	},
 	'skips operation on condition': {
-		only: true,
 		operation: {
 			type: 'edit-json',
 			delete: ['foo'],
