@@ -65,16 +65,11 @@ invoke(async() => {
 		console.log()
 		console.log(`${c.bgRed.white.bold(` ${error.code} `)} ${c.red(error.details ?? error.parent?.message)}`)
 		console.log()
-
-		return
+	} else {
+		console.log()
+		console.log(`${c.bgRed.white.bold(' ERROR ')} ${c.red(error.message)}`)
+		console.log()
 	}
 
-	console.log()
-	console.log(`${c.bgRed.white.bold(' ERROR ')} ${c.red(error.message)}`)
-
-	if (!error.toString().includes('CACError')) {
-		console.log(c.gray(error?.toString() ?? ''))
-	}
-
-	console.log()
+	process.exit(1)
 })
