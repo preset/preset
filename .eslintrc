@@ -1,3 +1,6 @@
 {
-	"extends": "@innocenzi/eslint-config/vue"
+	"extends": "@innocenzi/eslint-config/vue",
+	"rules": {
+		"import/named": "off"
+	}
 }
