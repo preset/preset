@@ -1,6 +1,6 @@
 {
   "name": "@preset/core",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "license": "MIT",
   "author": "Enzo Innocenzi",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
@@ -9,7 +9,7 @@
   },
   "files": [
     "dist",
-		"*.d.ts"
+    "*.d.ts"
   ],
   "repository": {
     "type": "git",
