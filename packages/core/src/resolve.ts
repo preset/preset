@@ -185,6 +185,7 @@ export async function resolveNamespacedAlias(options: ApplyOptions): Promise<Rep
 		organization: `${namespace}-presets`,
 		repository,
 		path: options.parsedOptions.path ?? '',
+		tag: undefined,
 	}
 }
 
