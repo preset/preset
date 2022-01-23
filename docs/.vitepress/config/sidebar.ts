@@ -76,8 +76,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					link: '/actions/execute-command',
 				},
 				{
-					text: 'Edit file',
-					link: '/actions/edit-file',
+					text: 'Edit files',
+					link: '/actions/edit-files',
 				},
 				{
 					text: 'Delete paths',
