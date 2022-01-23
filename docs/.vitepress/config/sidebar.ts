@@ -1,17 +1,6 @@
 import type { DefaultTheme } from 'vitepress'
 
 export const sidebar: DefaultTheme.Config['sidebar'] = {
-	'/actions/': [
-		{
-			text: 'Actions',
-			children: [
-				{
-					text: 'Extract templates',
-					link: '/actions/extract-templates',
-				},
-			],
-		},
-	],
 	'/': [
 		{
 			text: 'Basics',
