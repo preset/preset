@@ -1,6 +1,6 @@
 {
   "name": "@preset/cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "MIT",
   "author": "Enzo Innocenzi",
   "description": "Elegant, ecosystem-agnostic preset mechanism",
