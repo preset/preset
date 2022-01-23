@@ -1,4 +1,4 @@
-## Getting started
+# Aliases
 
 :::tip WIP
 This documentation is work-in-progress.

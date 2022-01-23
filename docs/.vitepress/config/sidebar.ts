@@ -35,8 +35,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 			text: 'Concepts',
 			children: [
 				{
-					text: 'Configuration',
-					link: '/concepts/configuration',
+					text: 'Preset file',
+					link: '/concepts/preset-file',
 				},
 				{
 					text: 'Actions',
@@ -57,12 +57,16 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					link: '/guide/writing-a-preset',
 				},
 				{
-					text: 'Hosting',
-					link: '/guide/hosting',
-				},
-				{
 					text: 'Using a preset',
 					link: '/guide/using-a-preset',
+				},
+				{
+					text: 'Using aliases',
+					link: '/guide/using-aliases',
+				},
+				{
+					text: 'Hosting',
+					link: '/guide/hosting',
 				},
 			],
 		},

@@ -2,7 +2,7 @@
 
 Preset is a system that makes it easy to perform modifications on a freshly scaffolded project.
 
-It is distributed as a command line tool, which makes it accessible without installation thanks to npx. It also has a programmatic API that is useful for building tools with similar needs.
+It is distributed as a command line tool, which makes it accessible without installation thanks to [`npx`](https://www.npmjs.com/package/npx). It also has a programmatic API that is useful for building tools with similar needs.
 
 ## Understanding the need
 
