@@ -13,7 +13,6 @@ export default definePreset({
 	options: {
 		install: true,
 		git: true,
-		interaction: false,
 	},
 	postInstall: ({ context, hl }) => [
 		`Edit ${hl('preset.ts')}.`,
