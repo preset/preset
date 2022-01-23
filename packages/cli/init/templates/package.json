@@ -2,9 +2,5 @@
 	"private": true,
   "author": "@@author <@@email>",
   "license": "MIT",
-  "preset": "preset.ts",
-  "devDependencies": {
-		"@types/node": "*",
-    "@preset/core": "*"
-  }
+  "preset": "preset.ts"
 }
