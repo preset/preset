@@ -3,8 +3,10 @@ name: Tests
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs'
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!packages/**/package.json'
   pull_request:
     branches: [main]
 
