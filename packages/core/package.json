@@ -35,7 +35,9 @@
     "build": "tsup src/index.ts --dts --format cjs,esm --external esbuild",
     "test": "vitest",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+		"prepublish": "esno ./update-globals.ts",
+		"postpublish": "esno ./update-globals.ts --delete"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
