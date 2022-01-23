@@ -36,26 +36,26 @@
     "test": "vitest",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build",
-		"prepublish": "esno ./update-globals.ts",
-		"postpublish": "esno ./update-globals.ts --delete"
+    "prepublish": "esno ./update-globals.ts",
+    "postpublish": "esno ./update-globals.ts --delete"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "type-fest": "^2.9.0",
-    "typescript": "^4.5.4"
+    "type-fest": "^2.10.0",
+    "typescript": "^4.5.5"
   },
   "dependencies": {
     "cac": "^6.7.12",
     "debug": "^4.3.3",
     "deepmerge": "^4.2.2",
     "detect-indent": "^7.0.0",
-    "esbuild": "^0.14.11",
+    "esbuild": "^0.14.13",
     "execa": "^6.0.0",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "mitt": "^3.0.0",
-    "simple-git": "^2.48.0",
+    "simple-git": "^3.1.0",
     "unset-value": "^2.0.0"
   }
 }
