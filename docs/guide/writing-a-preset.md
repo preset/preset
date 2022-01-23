@@ -62,4 +62,4 @@ git archive -o update.zip HEAD $(git diff --diff-filter=M --name-only)
 ```
 :::
 
-Then, you will need to [publish your preset](/guides/hosting), or you can keep it local for your personal use. You can even use an [alias](/guide/using-aliases) to make it easier.
+Then, you will need to [publish your preset](/guide/hosting), or you can keep it local for your personal use. You can even use an [alias](/guide/using-aliases) to make it easier.
