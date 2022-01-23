@@ -13,6 +13,7 @@ export default definePreset({
 	options: {
 		install: true,
 		git: true,
+		interaction: false,
 	},
 	postInstall: ({ context, hl }) => [
 		`Edit ${hl('preset.ts')}.`,
@@ -46,7 +47,12 @@ export default definePreset({
 		})
 
 		if (context.options.install) {
-			await installPackages({ for: 'node', install: '@preset/core', dev: true, title: 'install typings' })
+			await installPackages({
+				for: 'node',
+				packages: ['@preset/core', '@types/node'],
+				dev: true,
+				title: 'install typings',
+			})
 		}
 
 		if (context.options.git) {

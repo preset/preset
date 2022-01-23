@@ -14,7 +14,10 @@
     "forceConsistentCasingInFileNames": true,
     "types": [
       "node",
-    ]
+    ],
+		"paths": {
+      "@preset/core/globals": ["./packages/core/globals.d.ts"],
+		}
   },
   "include": [
     "./*.ts",

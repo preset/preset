@@ -20,7 +20,10 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./*": "./*"
+    "./*": "./*",
+    "./globals": {
+      "types": "./globals.d.ts"
+    }
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
