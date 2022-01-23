@@ -19,7 +19,7 @@
   </a>
   <span>&nbsp;</span>
   <a href="https://preset.dev">
-    <img alt="npm" src="https://img.shields.io/static/v1?label=documentation&message=out-of-date&color=b75170">
+    <img alt="npm" src="https://img.shields.io/static/v1?label=docs&message=work-in-progress&color=f48041">
   </a>
   <br />
   <br />
