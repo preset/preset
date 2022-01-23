@@ -8,7 +8,8 @@
     "access": "public"
   },
   "files": [
-    "dist"
+    "dist",
+		"*.d.ts"
   ],
   "repository": {
     "type": "git",
