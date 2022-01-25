@@ -24,7 +24,7 @@ Unless you used the `--no-git` flag, a repository will be created with an initia
 
 ## Adding actions
 
-In the `handler` function of the object exported by `preset.ts`, you can use [actions](/concepts/actions). Note that both `handler` and action functions are asynchronous, which means that the latter must be `await`ed.
+In the `handler` function of the object exported by `preset.ts`, you can use [actions](/concepts/actions). Note that both `handler` and action functions are asynchronous, which means that the latter must be `await`ed. Note that you don't need to import actions, they are available globally.
 
 To learn more about actions and how they are used, refer to their [documentation page](/concepts/actions).
 

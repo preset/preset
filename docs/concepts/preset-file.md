@@ -3,8 +3,6 @@
 In a Preset project, you must have at least what is called a "preset file". This is simply a specific script that describes the steps the preset applies on a project.
 
 ```ts
-import { definePreset } from '@preset/core'
-
 export default definePreset({
   name: 'my-preset',
   options: {

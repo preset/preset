@@ -4,6 +4,10 @@ Actions are functions available in preset files. They are a layer of abstraction
 
 They are the key concept of Preset: easy to use, powerful enough to make almost any kind of preset.
 
+## Usage
+
+Actions are globally avaiable in a preset file. Typings are provided by default if you used `preset init`, so you can benefit from IDE autocompletion. Every action is a single asynchronous function call with a single object parameter. 
+
 ## Available actions
 
 The following actions are implemented.
