@@ -54,7 +54,7 @@ const isFile = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })
 const isDirectory = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })?.isDirectory() ?? false
 
 /**
- * Extracts templates from the preset to the target directory (most likely the one the preset command is used in).
+ * The `extractTemplates` action serves the common purpose of extracting files from the preset's template directory to the target directory.
  */
 export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<ExtractTemplatesOptions>>(
 	'extract-templates',

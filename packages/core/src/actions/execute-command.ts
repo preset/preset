@@ -1,7 +1,7 @@
 import { defineAction } from '../api'
 import { execute } from '../utils'
 
-export interface ExecuteOptions {
+export interface ExecuteCommandOptions {
 	/**
 	 * The command/process to execute.
 	 */
@@ -26,7 +26,7 @@ export interface ExecuteOptions {
 /**
  * Executes a shell command. This uses `execa` under the hood.
  */
-export const executeCommand = defineAction<ExecuteOptions>('execute-command', async({ options, presetContext }) => {
+export const executeCommand = defineAction<ExecuteCommandOptions>('execute-command', async({ options, presetContext }) => {
 	return await execute(
 		options.command,
 		options.arguments ?? [],
