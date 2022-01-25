@@ -29,16 +29,51 @@ In the `handler` function of the object exported by `preset.ts`, you can use [ac
 To learn more about actions and how they are used, refer to their [documentation page](/concepts/actions).
 
 ```ts
-import { definePreset, extractTemplates } from '@preset/core'
-
 export default definePreset({
 	name: 'my-preset',
 	handler: async() => {
-		await extractTemplates()
+    // Will extract /templates/vue to the target directory
+		await extractTemplates({
+      from: 'vue'
+    })
+
 		// ...
 	},
 })
 ```
+
+## Using options
+
+Preset uses [`cac`](https://github.com/cacjs/cac) to parse command-line arguments. You can set default values to arguments using the `options` property and use the `context` object that is given to `handler` to read their value:
+
+```ts
+export default definePreset({
+	name: 'my-preset',
+  options: {
+    somethingCustom: false
+  },
+	handler: async(context) => {
+    if (context.options.somethingCustom) {
+      // Do something only if --something-custom was used
+    }
+
+		// ...
+	},
+})
+```
+
+Thanks to `cac`, you can set an option to `false` using the `--no-` prefix. In the example below, `customOption` is always `true` unless you use `--no-custom-option`. 
+
+```ts
+export default definePreset({
+  options: {
+    customOption: true
+  },
+	// ...
+})
+```
+
+Note that options names are converted to `camelCase`.
 
 ## Testing the preset locally
 

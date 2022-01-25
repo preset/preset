@@ -46,10 +46,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
 					link: '/guide/writing-a-preset',
 				},
 				{
-					text: 'Using a preset',
-					link: '/guide/using-a-preset',
-				},
-				{
 					text: 'Using aliases',
 					link: '/guide/using-aliases',
 				},
