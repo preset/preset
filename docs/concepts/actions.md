@@ -6,7 +6,7 @@ They are the key concept of Preset: easy to use, powerful enough to make almost 
 
 ## Usage
 
-Actions are globally avaiable in a preset file. Typings are provided by default if you used `preset init`, so you can benefit from IDE autocompletion. Every action is a single asynchronous function call with a single object parameter. 
+Actions are globally avaiable in a preset file. Typings are provided by default if you used `preset init`, so you can benefit from IDE autocompletion. Every action is a single asynchronous function call with a single object parameter. Every object parameter accepts a `title` property that changes the text displayed in the console for the corresponding action when applying the preset.
 
 ## Available actions
 

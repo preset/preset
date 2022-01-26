@@ -2,7 +2,7 @@ import { defineAction } from '../api'
 
 export interface GroupOptions {
 	/**
-	 * The callback that will executes actions in a group.
+	 * The callback that will execute actions.
 	 */
 	handler: () => Promise<void>
 }
