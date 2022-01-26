@@ -105,11 +105,11 @@ h6:focus .header-anchor {
 }
 
 :not(pre) > code {
-	@apply text-violet-500 !dark:text-violet-400 !font-normal !text-0.95rem;
+	@apply font-normal text-0.95rem;
 }
 
 .prose table code {
-	@apply !text-violet-400 !font-normal !text-sm;
+	@apply font-normal text-sm;
 }
 
 .prose a:hover {

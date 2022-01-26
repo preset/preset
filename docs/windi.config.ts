@@ -59,8 +59,12 @@ export default defineConfig({
 						'code': {
 							'font-family': 'Consolas, -ui-monospace, SFMono-Regular, Menlo, monospace',
 							'background-color': '#1f1f1f',
+							'color': 'white',
 							'padding': '1px 5px',
 							'border-radius': '4px',
+						},
+						'p code': {
+							color: '#7f9cf5',
 						},
 						'code::before': { content: '' },
 						'code::after': { content: '' },
