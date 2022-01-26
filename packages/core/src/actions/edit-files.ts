@@ -182,24 +182,35 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 	return true
 })
 
-/**
- * Whether to add or remove the given line `after` or `before` the line that matches.
- */
- type Position = 'after' | 'before'
+/*
+|--------------------------------------------------------------------------
+| Add line
+|--------------------------------------------------------------------------
+*/
 
-/**
- * If a number: will indent with the given amount of spaces.
- * If a string: will use the given string as indentation.
- * If true: will keep the indentation from the line before or after.
- * If false: will not indent.
- */
-type Indent = number | string | boolean
+interface AddLineOperation {
+	type: 'add-line'
+
+	/**
+    * The lines to add.
+    */
+	lines: string | string[]
+
+	/**
+    * Indentation for this line addition.
+		* If a number: will indent with the given amount of spaces.
+		* If a string: will use the given string as indentation.
+		* If true: will keep the indentation from the line before or after.
+		* If false: will not indent.
+    */
+	indent?: number | string | boolean
+}
 
 type AddLineWithMatchOperation = AddLineOperation & {
 	/**
 	 * Whether to add the line before or after the matched line.
 	 */
-	position: Position
+	position: 'after' | 'before'
 
 	/**
    * The line to match.
@@ -221,23 +232,11 @@ type AddLineAtIndexOperation = AddLineOperation & {
 	position: number
 }
 
-interface AddLineOperation {
-	type: 'add-line'
-
-	/**
-    * The lines to add.
-    */
-	lines: string | string[]
-
-	/**
-    * Indentation for this line addition.
-		* If a number: will indent with the given amount of spaces.
-		* If a string: will use the given string as indentation.
-		* If true: will keep the indentation from the line before or after.
-		* If false: will not indent.
-    */
-	indent?: Indent
-}
+/*
+|--------------------------------------------------------------------------
+| Remove line
+|--------------------------------------------------------------------------
+*/
 
 interface RemoveLineOperation {
 	type: 'remove-line'
@@ -258,6 +257,12 @@ interface RemoveLineOperation {
 	count?: number
 }
 
+/*
+|--------------------------------------------------------------------------
+| Replace variables
+|--------------------------------------------------------------------------
+*/
+
 interface ReplaceVariablesOperation {
 	type: 'replace-variables'
 
@@ -272,10 +277,26 @@ interface ReplaceVariablesOperation {
 	variables: Record<string, string | number | ((content: string) => string | number)>
 }
 
+/*
+|--------------------------------------------------------------------------
+| Update content
+|--------------------------------------------------------------------------
+*/
+
 interface UpdateContentOperation {
 	type: 'update-content'
+
+	/**
+	 * Callback that takes the file content and must return the updated content.
+	 */
 	update: (content: string) => string
 }
+
+/*
+|--------------------------------------------------------------------------
+| Edit JSON
+|--------------------------------------------------------------------------
+*/
 
 interface EditJsonOperation {
 	type: 'edit-json'
@@ -297,9 +318,7 @@ interface EditJsonOperation {
 	delete?: string | string[]
 }
 
-type EditFileOperations = AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation
-
-export type EditFileOperation = EditFileOperations & {
+export type EditFileOperation = (AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation) & {
 	/**
 	 * Whether to skip that operation.
 	 */
