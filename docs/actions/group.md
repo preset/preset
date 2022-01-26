@@ -46,9 +46,6 @@ await group({
 
 ```ts
 interface GroupOptions {
-	/**
-	 * The callback that will execute actions.
-	 */
 	handler: () => Promise<void>
 }
 ```

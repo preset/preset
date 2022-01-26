@@ -1,6 +1,6 @@
 # Group
 
-The `executeCommand` actions makes it easy to run a shell command.
+The `executeCommand` action makes it easy to run a shell command.
 
 ## Usage
 
@@ -45,24 +45,9 @@ await executeCommand({ command: 'git', arguments: ['init'] })
 
 ```ts
 interface ExecuteCommandOptions {
-	/**
-	 * The command/process to execute.
-	 */
 	command: string
-
-	/**
-	 * A list of arguments to pass to the process.
-	 */
 	arguments?: string[]
-
-	/**
-	 * A callback called each time stdout or stdin prints a line.
-	 */
 	data?: (stdout: string) => void
-
-	/**
-	 * If true, exit code will be ignored.
-	 */
 	ignoreExitCode?: boolean
 }
 ```

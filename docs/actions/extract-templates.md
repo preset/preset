@@ -74,34 +74,11 @@ await extractTemplates({
 
 ```ts
 interface ExtractTemplatesOptions {
-	/**
-	 * Defines the templates directory. Default is `templates`.
-	 */
 	templates?: string
-
-	/**
-	 * Sets the source file or directory.
-	 */
 	from?: string
-
-	/**
-	 * Sets the target file or directory.
-	 */
 	to?: string
-
-	/**
-	 * Ignore templates file structure. Only works when extracting from a file to a directory.
-	 */
 	flatten?: boolean
-
-	/**
-	 * Extract actual dotfiles in addition to `.dotfile` files.
-	 */
 	extractDotFiles?: boolean
-
-	/**
-	 * Defines whether to override existing files or skip extraction.
-	 */
 	whenConflict?: 'override' | 'skip'
 }
 ```

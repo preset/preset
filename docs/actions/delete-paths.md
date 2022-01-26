@@ -1,6 +1,6 @@
 # Group
 
-The `deletePaths` actions is useful to delete files or directoris inside the target directory.
+The `deletePaths` action is useful to delete files or directoris inside the target directory.
 
 ## Usage
 
