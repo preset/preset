@@ -99,6 +99,9 @@ export interface InstallPackagesOptions {
 	 */
 	for?: 'node' | 'php'
 
+	/**
+	 * The type of installation.
+	 */
 	type?: 'install' | 'update'
 
 	/**
