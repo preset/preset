@@ -1,4 +1,4 @@
-# Group
+# Delete paths
 
 The `deletePaths` action is useful to delete files or directoris inside the target directory.
 

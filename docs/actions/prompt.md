@@ -1,4 +1,4 @@
-# Group
+# Prompt
 
 The `prompt` action allows asking for input to the user when applying a preset.
 

@@ -1,4 +1,4 @@
-# Group
+# Execute command
 
 The `executeCommand` action makes it easy to run a shell command.
 
