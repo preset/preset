@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["node","@preset/core/globals"]
+    "types": ["node", "@preset/core/globals"]
   },
   "include": [
     "./*.ts",
