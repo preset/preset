@@ -30,7 +30,7 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 		let content = fs.readFileSync(targetFile, { encoding: 'utf-8' })
 
 		// Loops through operations
-		for (const operation of options.operations) {
+		for (const operation of wrap(options.operations)) {
 			debug.action(actionContext.name, 'Performing operation:', operation)
 
 			// Skip the operation if necessary
@@ -334,5 +334,5 @@ export interface EditFilesOptions {
 	/**
     * List of operations to perform on the given file.
     */
-	operations: EditFileOperation[]
+	operations: EditFileOperation | EditFileOperation[]
 }
