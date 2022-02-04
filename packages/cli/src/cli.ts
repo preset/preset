@@ -17,9 +17,9 @@ invoke(async() => {
 
 	// Creates the base CLI
 	const cli = createCli('preset')
-		.option('--reporter <name>', 'Which reporter to log to..', { default: 'list' })
 		.option('--no-interaction', 'Disable interactions. Prompts will use their default answers.')
 		.option('--debug', 'Use the debug reporter.')
+		.option('--silent', 'Do not use a reporter.')
 		.help()
 		.version(version)
 
@@ -55,7 +55,7 @@ invoke(async() => {
 
 	if (process.env.CI || options.debug === true) {
 		reporters.debug.registerEvents()
-	} else {
+	} else if (!options.silent) {
 		Reflect.get(reporters, options.reporter)?.registerEvents()
 	}
 
