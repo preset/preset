@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '**'
+      - '!readme.md'
       - '!docs/**'
       - '!packages/**/package.json'
   pull_request:
