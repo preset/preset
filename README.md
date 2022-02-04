@@ -10,20 +10,14 @@
 
 <p align="center">
   <br />
-  <a href="https://github.com/preset/cli/actions?query=workflow%3Atests">
-    <img alt="Status" src="https://github.com/preset/cli/workflows/tests/badge.svg">
-  </a>
+  <a href="https://github.com/preset/preset/actions?query=workflow%3Atests"><img alt="Status" src="https://github.com/preset/preset/workflows/tests/badge.svg"></a>
   <span>&nbsp;</span>
-  <a href="https://www.npmjs.com/package/@preset/core">
-    <img alt="npm" src="https://img.shields.io/npm/v/@preset/core">
-  </a>
+  <a href="https://github.com/preset/preset/releases"><img alt="version" src="https://img.shields.io/github/v/release/preset/preset?include_prereleases&label=version&logo=github&logoColor=white"></a>
   <span>&nbsp;</span>
-  <a href="https://preset.dev">
-    <img alt="npm" src="https://img.shields.io/static/v1?label=docs&message=work-in-progress&color=f48041">
-  </a>
+  <a href="https://laravel-vite.dev"><img alt="docs" src="https://img.shields.io/badge/documentation-online-blue?logo=readthedocs&logoColor=white"></a>
   <br />
   <br />
-<pre><div align="center">npx @preset/cli &lt;your-username/your-preset&gt;</div></pre>
+  <pre><div align="center">npx @preset/cli apply &lt;your-username/your-preset&gt;</div></pre>
 </p>
 
 <br />
@@ -33,8 +27,6 @@
   <br />
   It was made to automate the repetitive task of doing the same modifications each time a project is created. 
   <br />
-  <br />
-  <i>The project is being rewritten, the documentation is out of date.</i>
   <br />
   <a href="https://preset.dev">Learn more</a>
 </div>
