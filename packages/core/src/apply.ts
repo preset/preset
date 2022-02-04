@@ -3,7 +3,7 @@ import { createPresetContext } from './context'
 import { importPresetFile } from './import'
 import { resolvePreset } from './resolve'
 import { debug } from './utils'
-import { loadConfig } from './config'
+import { initializeConfig } from './config'
 
 /**
  * Applies the given preset.
@@ -11,7 +11,7 @@ import { loadConfig } from './config'
 export async function applyPreset(options: ApplyOptions) {
 	debug.apply(`Applying preset ${options.resolvable} into ${options.targetDirectory}.`)
 
-	loadConfig()
+	await initializeConfig()
 
 	const resolved = await resolvePreset(options)
 	const preset = await importPresetFile(resolved.presetFile)

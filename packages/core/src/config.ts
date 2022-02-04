@@ -1,64 +1,37 @@
-import path from 'node:path'
 import os from 'node:os'
-import fs from 'node:fs'
+import { ReadonlyDeep } from 'type-fest'
+import { loadConfig } from 'unconfig'
 import { PresetConfiguration } from './types'
 import { debug } from './utils'
 
-export const presetrc = path.resolve(fs.realpathSync(os.homedir()), '.presetrc.json')
-
-export const config: Readonly<PresetConfiguration> = {
+export const config: ReadonlyDeep<PresetConfiguration> = {
 	defaultNodeAgent: 'npm',
 	aliases: {},
 }
 
-/**
- * Parses the configuration
- */
-export function parseConfig(cfg: any): PresetConfiguration {
-	debug.config('Parsing config:', cfg)
-
-	const json = JSON.parse(cfg)
-
-	return {
-		defaultNodeAgent: json.defaultNodeAgent ?? 'npm',
-		aliases: json.aliases ?? {},
+export function replaceConfig(replacement: Partial<PresetConfiguration>) {
+	for (const [key, value] of Object.entries(replacement)) {
+		debug.config('Setting config:', key, value)
+		Reflect.set(config, key, value)
 	}
+
+	debug.config('Replaced config:', config)
 }
 
-/**
- * Reads and parses the configuration from the given file.
- */
-export function readConfig(filepath: string): PresetConfiguration {
-	debug.config('Reading config from file:', filepath)
+export async function initializeConfig(): Promise<PresetConfiguration> {
+	debug.config('Initializing config')
 
-	return parseConfig(fs.readFileSync(filepath, { encoding: 'utf-8' }))
-}
+	const result = await loadConfig<PresetConfiguration>({
+		cwd: os.homedir(),
+		sources: {
+			files: ['preset', '.presetrc'],
+			extensions: ['ts', 'mts', 'cts', 'js', 'mjs', 'cjs', 'json', ''],
+		},
+		defaults: config,
+	})
 
-/**
- * Loads and cache the configuration from the given file.
- */
-export function loadConfig(configOrPath?: string | Partial<PresetConfiguration>): PresetConfiguration {
-	try {
-		if (typeof configOrPath === 'object') {
-			return saveConfig(configOrPath)
-		}
-
-		if (typeof configOrPath === 'string') {
-			return saveConfig(readConfig(configOrPath))
-		}
-
-		return saveConfig(readConfig(presetrc))
-	} catch {}
-
-	return config
-}
-
-/**
- * Saves the configuration.
- */
-export function saveConfig(cfg: Partial<PresetConfiguration>): PresetConfiguration {
-	debug.config('Saving configuration', cfg)
-	Object.entries(cfg).forEach(([key, value]) => Reflect.set(config, key, value))
+	debug.config('Loaded config:', result)
+	replaceConfig(result.config)
 
 	return config
 }

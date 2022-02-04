@@ -2,7 +2,7 @@ import path from 'node:path'
 import { it, expect } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ResolvedPreset, ApplyOptions } from '../src/types'
-import { loadConfig } from '../src/config'
+import { replaceConfig } from '../src/config'
 import { presetFixture, fixedFixturesDirectory } from './utils'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
@@ -119,7 +119,7 @@ it('finds versions of a resolved preset', async() => {
 })
 
 it('resolves globally configured aliases', async() => {
-	loadConfig({
+	replaceConfig({
 		aliases: {
 			'custom:alias': {
 				type: 'file',
