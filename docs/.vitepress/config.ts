@@ -4,14 +4,14 @@ import type { Config } from '@vue/theme'
 import { NavItem, SidebarConfig } from '@vue/theme/src/vitepress/config'
 
 const production = process.env.NODE_ENV === 'production'
-const title = 'Laravel Vite'
-const description = 'Vite integration for the Laravel framework'
+const title = 'Preset'
+const description = 'Elegant, ecosystem-agnostic preset mechanism'
 const site = production ? 'https://preset.dev' : 'http://localhost:3000'
 const image = `${site}/banner.png`
 
 const head: HeadConfig[] = [
 	['meta', { name: 'author', content: 'Enzo Innocenzi' }],
-	['meta', { name: 'keywords', content: 'laravel, vitejs, vue, react, vite, php' }],
+	['meta', { name: 'keywords', content: 'preset, scaffolding, node, vue cli, sao, yeoman, plopjs, scaffold' }],
 	['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
 	['meta', { name: 'HandheldFriendly', content: 'True' }],
 	['meta', { name: 'MobileOptimized', content: '320' }],
