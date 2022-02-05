@@ -14,7 +14,7 @@
   <span>&nbsp;</span>
   <a href="https://github.com/preset/preset/releases"><img alt="version" src="https://img.shields.io/github/v/release/preset/preset?include_prereleases&label=version&logo=github&logoColor=white"></a>
   <span>&nbsp;</span>
-  <a href="https://laravel-vite.dev"><img alt="docs" src="https://img.shields.io/badge/documentation-online-blue?logo=readthedocs&logoColor=white"></a>
+  <a href="https://preset.dev"><img alt="docs" src="https://img.shields.io/badge/documentation-online-blue?logo=readthedocs&logoColor=white"></a>
   <br />
   <br />
   <pre><div align="center">npx @preset/cli apply &lt;your-username/your-preset&gt;</div></pre>
