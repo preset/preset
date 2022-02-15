@@ -57,7 +57,7 @@ invoke(async() => {
 	if (process.env.CI || options.debug === true) {
 		reporters.debug.registerEvents()
 	} else if (!options.silent) {
-		Reflect.get(reporters, options.reporter)?.registerEvents()
+		Reflect.get(reporters, options.reporter || 'list')?.registerEvents()
 	}
 
 	await cli.runMatchedCommand()
