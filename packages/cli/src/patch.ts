@@ -13,8 +13,6 @@ const patches = {
  * Applies property patches to CAC.
  */
 export function patch(cli: CAC) {
-	cli.command('').action(() => cli.outputHelp())
-
 	cli.globalCommand.options.forEach((option) => {
 		if (Reflect.has(patches, option.name)) {
 			Object.entries<string>(Reflect.get(patches, option.name))

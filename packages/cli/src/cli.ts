@@ -24,7 +24,8 @@ invoke(async() => {
 		.version(version)
 
 	// Registers the `apply` command
-	cli.command('apply <resolvable> [target-directory]', 'Applies the given preset.')
+	cli.command('<resolvable> [target-directory]', 'Applies the given preset.')
+		.alias('apply')
 		.option('-p, --path [path]', 'The path to a sub-directory in which to look for a preset.')
 		.option('-t, --tag [tag]', 'The branch or tag to use if the preset is a repository.')
 		.option('--no-ssh', 'Whether to use SSH or not. This can be determined depending on the URL of the Git repository, defaulting to true when possible.')
