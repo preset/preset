@@ -49,7 +49,7 @@ const nav: NavItem[] = [
 		text: 'Ecosystem',
 		items: [
 			{ text: 'Laravel presets', link: 'https://github.com/laravel-presets' },
-			{ text: 'Preset list', link: 'https://github.com/presets/awesome' },
+			{ text: 'Preset list', link: 'https://github.com/preset/awesome' },
 		],
 	},
 ]
