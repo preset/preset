@@ -31,7 +31,23 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 
 	// If it's a repository, clone it and resolve the preset file.
 	if (resolved.type === 'repository') {
-		const rootDirectory = await cloneRepository(resolved, options)
+		const rootDirectory = invoke(async() => {
+			try {
+				return await cloneRepository(resolved, options)
+			} catch (error: any) {
+				// If the error was thrown because of a bad SSH setup, retry
+				// just once without SSH.
+				if ('parent' in error && error.parent.message.includes('key verification failed')) {
+					return await cloneRepository(resolved, {
+						...options,
+						parsedOptions: {
+							...options.parsedOptions,
+							ssh: false,
+						},
+					})
+				}
+			}
+		})
 
 		return emitAndReturn(await resolvePresetFile(rootDirectory))
 	}
