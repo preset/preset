@@ -8,10 +8,11 @@ import { applyPreset, PresetError } from '@preset/core'
 import { version } from '../package.json'
 import { patch } from './patch'
 import { reporters } from './reporters'
-import { invoke } from './utils'
+import { debug, invoke } from './utils'
 import { checkLatestVersion, registerVersionMismatches } from './version'
 
 invoke(async() => {
+	debug.cli(`Running preset v${version}`)
 	registerVersionMismatches()
 	checkLatestVersion()
 
@@ -53,6 +54,7 @@ invoke(async() => {
 
 	// Runs the CLI after registering the events
 	const { options } = patch(cli).parse(process.argv, { run: false })
+	debug.cli('Parsed options:', options)
 
 	if (process.env.CI || options.debug === true) {
 		reporters.debug.registerEvents()

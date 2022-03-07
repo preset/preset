@@ -1,4 +1,9 @@
 import c from 'chalk'
+import makeDebugger from 'debug'
+
+export const debug = {
+	cli: makeDebugger('preset:cli'),
+}
 
 export function time(start: number, end: number) {
 	const time = end - start
