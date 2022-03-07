@@ -31,7 +31,7 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 
 	// If it's a repository, clone it and resolve the preset file.
 	if (resolved.type === 'repository') {
-		const rootDirectory = invoke(async() => {
+		const rootDirectory = await invoke(async() => {
 			try {
 				return await cloneRepository(resolved, options)
 			} catch (error: any) {
