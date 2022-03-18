@@ -35,9 +35,12 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 			try {
 				return await cloneRepository(resolved, options)
 			} catch (error: any) {
+				debug.resolve('Could not clone the repository.')
+
 				// If the error was thrown because of a bad SSH setup, retry
 				// just once without SSH.
 				if ('parent' in error && error.parent.message.includes('key verification failed')) {
+					debug.resolve('Trying again without SSH.')
 					return await cloneRepository(resolved, {
 						...options,
 						parsedOptions: {
@@ -46,6 +49,8 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 						},
 					})
 				}
+
+				throw error
 			}
 		})
 
