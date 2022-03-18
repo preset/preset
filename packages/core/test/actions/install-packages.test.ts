@@ -60,7 +60,7 @@ it('installs the given node package with npm by default', async() => await using
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await installPackages({
 				for: 'node',
-				packages: 'debug@^4.3.3',
+				packages: 'debug@4.3.3',
 			}),
 		})
 
@@ -87,7 +87,7 @@ it('installs the given node package as development dependencies', async() => awa
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await installPackages({
 				for: 'node',
-				packages: 'debug@^4.3.3',
+				packages: 'debug@4.3.3',
 				packageManager: 'npm',
 				dev: true,
 			}),
@@ -116,7 +116,7 @@ it('installs the given node package with the specified package manager', async()
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await installPackages({
 				for: 'node',
-				packages: 'debug@^4.3.3',
+				packages: 'debug@4.3.3',
 				packageManager: 'pnpm',
 			}),
 		})
@@ -130,7 +130,7 @@ it('installs the given node package with the specified package manager', async()
 				type: 'file',
 				json: {
 					dependencies: {
-						debug: '^4.3.3',
+						debug: '4.3.3',
 					},
 				},
 			},
@@ -147,7 +147,7 @@ it('installs the given packages at once', async() => await usingSandbox({
 		const { executePreset } = await makeTestPreset({
 			handler: async() => await installPackages({
 				for: 'node',
-				packages: ['debug@^4.3.3', 'picocolors@^1.0.0'],
+				packages: ['debug@4.3.3', 'picocolors@1.0.0'],
 				packageManager: 'npm',
 			}),
 		})
@@ -186,14 +186,14 @@ it('installs packages already present in package.json with npm', async() => awai
 				type: 'file',
 				json: {
 					dependencies: {
-						debug: '^4.3.3',
+						debug: '4.3.3',
 					},
 				},
 			},
 		})
 	},
 	targetStructure: {
-		'package.json': { type: 'file', json: { dependencies: { debug: '^4.3.3' } } },
+		'package.json': { type: 'file', json: { dependencies: { debug: '4.3.3' } } },
 	},
 }))
 
