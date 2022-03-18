@@ -8,6 +8,7 @@ import createDebugger from 'debug'
 import { definePreset } from '../src'
 import { createPresetContext } from '../src/context'
 import type { Preset, DefinePresetOptions, LocalPreset, ApplyOptions } from '../src'
+import { resetConfig } from '../src/config'
 
 export interface DirectoryStructure {
 	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
@@ -32,6 +33,7 @@ export const createTestPresetContext = async(
 		rawArguments: [],
 		targetDirectory: '',
 		parsedOptions: {},
+		withoutGlobalConfig: true,
 		...customApplyOptions,
 	}, {
 		presetFile: '',
@@ -58,7 +60,14 @@ export const makeTestPreset = async(
 
 	const context = await createTestPresetContext(preset, customApplyOptions, customLocalPreset)
 
-	return { preset, context, executePreset: async() => preset.apply(context) }
+	return {
+		preset,
+		context,
+		executePreset: async() => {
+			resetConfig()
+			return preset.apply(context)
+		},
+	}
 }
 
 /**

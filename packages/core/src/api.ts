@@ -42,7 +42,7 @@ export function definePreset<Options extends PresetFlags>(preset: DefinePresetOp
 
 				// If there was errors during the execution
 				if (context.actions.some(({ error }) => Boolean(error))) {
-					debug.preset(preset.name, 'One or more actions failed.')
+					debug.preset(preset.name, 'One or more actions failed.', context.actions.map((action) => ({ name: action.name, error: action.error })))
 					throw new PresetError({ code: 'ERR_ACTIONS_FAILED', details: 'Preset failed because some of its actions failed.' })
 				}
 

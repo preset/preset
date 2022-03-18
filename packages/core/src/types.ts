@@ -298,6 +298,11 @@ export interface ApplyOptions {
 	 * Context ID of the action that called this preset, if the preset is nested.
 	 */
 	actionContextId?: string
+
+	/**
+	 * Applies the preset without using the global config.
+	 */
+	withoutGlobalConfig?: boolean
 }
 
 /**

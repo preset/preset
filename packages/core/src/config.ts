@@ -9,6 +9,13 @@ export const config: ReadonlyDeep<PresetConfiguration> = {
 	aliases: {},
 }
 
+export function resetConfig() {
+	replaceConfig({
+		defaultNodeAgent: 'npm',
+		aliases: {},
+	})
+}
+
 export function replaceConfig(replacement: Partial<PresetConfiguration>) {
 	for (const [key, value] of Object.entries(replacement)) {
 		debug.config('Setting config:', key, value)
