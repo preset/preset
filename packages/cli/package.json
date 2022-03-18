@@ -26,8 +26,8 @@
   "dependencies": {
     "@preset/core": "workspace:*",
     "cac": "^6.7.12",
-    "chalk": "^5.0.0",
-    "debug": "4.3.3",
+    "chalk": "^5.0.1",
+    "debug": "^4.3.4",
     "fs-extra": "^10.0.1",
     "log-update": "^5.0.0",
     "semver": "^7.3.5",
