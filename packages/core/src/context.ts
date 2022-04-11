@@ -14,6 +14,7 @@ const contexts: PresetContext[] = []
 
 /**
   * Creates the context for the given preset.
+	* @internal
   */
 export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions, localPreset: LocalPreset): Promise<PresetContext> {
 	debug.context(`Creating a new context for "${preset.name}".`)
@@ -51,6 +52,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
 
 /**
  * Adds an action to the context.
+ * @internal
  */
 export function createActionContext<Options extends Object, ResolvedOptions extends ActionOptions<Options>>(
 	presetContext: PresetContext,
@@ -79,6 +81,7 @@ export function createActionContext<Options extends Object, ResolvedOptions exte
 
 /**
  * Gets the context for the current preset.
+ * @internal
  */
 export function getCurrentPresetContext(): PresetContext | undefined {
 	debug.context(`Retrieving the current context from the stack (count: ${contexts.length}).`)
@@ -108,6 +111,7 @@ export function finishPresetContext(context: PresetContext, status: Status, erro
 
 /**
  * Mark action as finished.
+ * @internal
  */
 export function finishActionContext(action: LastArrayElement<PresetContext['actions']>, status: Status, error?: PresetError) {
 	action.status = status
@@ -120,6 +124,7 @@ export function finishActionContext(action: LastArrayElement<PresetContext['acti
 
 /**
   * Removes the current context from the context stacks.
+  * @internal
   */
 export function popCurrentContext(): void {
 	debug.context('Destroying the current context.')
