@@ -275,7 +275,7 @@ it('installs existing packages with yarn', async() => await usingSandbox({
 		})
 	},
 	targetStructure: {
-		...emptyPackageJsonStructure, 
+		...emptyPackageJsonStructure,
 		'package.json': { type: 'file', content: '{"dependencies": {"debug": "^4.3.4"}}' },
 	},
 }))
