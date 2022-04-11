@@ -1,6 +1,11 @@
 import { it } from 'vitest'
 import { installPackages } from '../../src'
-import { usingSandbox, expectStructureMatches } from '../utils'
+import { usingSandbox, expectStructureMatches, DirectoryStructure } from '../utils'
+
+const emptyPackageJsonStructure: DirectoryStructure = {
+	'package.json': { type: 'file', content: '{}' },
+	'.npmrc': { type: 'file', content: 'shared-workspace-lockfile=false' },
+}
 
 it('installs the given php package', async() => await usingSandbox({
 	fn: async({ targetDirectory }, makeTestPreset) => {
@@ -79,7 +84,7 @@ it('installs the given node package with npm by default', async() => await using
 			},
 		})
 	},
-	targetStructure: { 'package.json': { type: 'file', content: '{}' } }, // necessary so it's not installed in the first package.json directory
+	targetStructure: { 'package.json': { type: 'file', content: '{}' } },
 }))
 
 it('installs the given node package as development dependencies', async() => await usingSandbox({
@@ -108,7 +113,7 @@ it('installs the given node package as development dependencies', async() => awa
 			},
 		})
 	},
-	targetStructure: { 'package.json': { type: 'file', content: '{}' } }, // necessary so it's not installed in the first package.json directory
+	targetStructure: { 'package.json': { type: 'file', content: '{}' } },
 }))
 
 it('installs the given node package with the specified package manager', async() => await usingSandbox({
@@ -136,10 +141,7 @@ it('installs the given node package with the specified package manager', async()
 			},
 		})
 	},
-	targetStructure: {
-		'package.json': { type: 'file', content: '{}' },
-		'.npmrc': { type: 'file', content: 'shared-workspace-lockfile=false' },
-	}, // necessary so it's not installed in the first package.json directory
+	targetStructure: emptyPackageJsonStructure,
 }))
 
 it('installs the given packages at once', async() => await usingSandbox({
@@ -168,7 +170,7 @@ it('installs the given packages at once', async() => await usingSandbox({
 			},
 		})
 	},
-	targetStructure: { 'package.json': { type: 'file', content: '{}' } }, // necessary so it's not installed in the first package.json directory
+	targetStructure: { 'package.json': { type: 'file', content: '{}' } },
 }))
 
 it('installs packages already present in package.json with npm', async() => await usingSandbox({
@@ -225,5 +227,55 @@ it('installs packages already present in composer.json', async() => await usingS
 			type: 'file',
 			json: { require: { 'innocenzi/laravel-vite': '^0.1.20' } },
 		},
+	},
+}))
+
+it('installs the given node package with yarn', async() => await usingSandbox({
+	fn: async({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({
+			handler: async() => await installPackages({
+				for: 'node',
+				packages: 'debug@^4.3.4',
+				packageManager: 'yarn',
+			}),
+		})
+
+		await executePreset()
+		await expectStructureMatches(targetDirectory, {
+			'node_modules': { type: 'directory' },
+			'node_modules/debug': { type: 'directory' },
+			'yarn.lock': { type: 'file' },
+			'package.json': {
+				type: 'file',
+				json: {
+					dependencies: {
+						debug: '^4.3.4',
+					},
+				},
+			},
+		})
+	},
+	targetStructure: emptyPackageJsonStructure,
+}))
+
+it('installs existing packages with yarn', async() => await usingSandbox({
+	fn: async({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({
+			handler: async() => await installPackages({
+				for: 'node',
+				packageManager: 'yarn',
+			}),
+		})
+
+		await executePreset()
+		await expectStructureMatches(targetDirectory, {
+			'node_modules': { type: 'directory' },
+			'node_modules/debug': { type: 'directory' },
+			'yarn.lock': { type: 'file' },
+		})
+	},
+	targetStructure: {
+		...emptyPackageJsonStructure,
+		'package.json': { type: 'file', content: '{"dependencies": {"debug": "^4.3.4"}}' },
 	},
 }))
