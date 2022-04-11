@@ -1,4 +1,4 @@
-import { debug, execute, wrap, detectNodePackageManager } from '../utils'
+import { debug, execute, wrap, detectNodePackageManager, invoke } from '../utils'
 import { PresetError } from '../errors'
 import { defineAction } from '../api'
 import { config } from '../config'
@@ -32,15 +32,20 @@ async function getNodePackageManagerInstallArguments(cwd: string, options: Insta
 	}
 
 	if (packageManager === 'yarn') {
-		const cmd = (() => 
+		const command = invoke(() => {
+			if (options.type === 'update') {
+				return 'upgrade'
+			}
+
+			if (packageNames.length) {
+				return 'add'
+			}
+
+			return 'install'
+		})
+
 		return [packageManager, [
-			(() => {
-				if (options.type === "install")
-					if (packageNames.length)
-						return "add"
-					return "install"
-				return "upgrade"
-			})(),
+			command,
 			options.dev ? '-D' : '',
 			...args,
 			...packageNames,
