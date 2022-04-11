@@ -32,8 +32,15 @@ async function getNodePackageManagerInstallArguments(cwd: string, options: Insta
 	}
 
 	if (packageManager === 'yarn') {
+		const cmd = (() => 
 		return [packageManager, [
-			options.type === 'install' ? 'add' : 'upgrade',
+			(() => {
+				if (options.type === "install")
+					if (packageNames.length)
+						return "add"
+					return "install"
+				return "upgrade"
+			})(),
 			options.dev ? '-D' : '',
 			...args,
 			...packageNames,
