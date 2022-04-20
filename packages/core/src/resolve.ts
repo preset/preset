@@ -113,7 +113,7 @@ export async function resolveGitHubRepository(options: ApplyOptions): Promise<Re
 				organization,
 				repository,
 				tag,
-				ssh: !options.resolvable.includes('http'),
+				ssh: options.resolvable.startsWith('git@'),
 				path: options.parsedOptions.path ?? '',
 			}
 
@@ -202,7 +202,7 @@ export async function resolveNamespacedAlias(options: ApplyOptions): Promise<Rep
 
 	return {
 		type: 'repository',
-		ssh: true,
+		ssh: false,
 		organization: `${namespace}-presets`,
 		repository,
 		path: options.parsedOptions.path ?? '',
@@ -266,7 +266,6 @@ export async function resolvePresetFile(directory: string, cwd: string = process
  */
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
 	const targetDirectory = path.resolve(fs.realpathSync(os.tmpdir()), 'presets', preset.repository)
-	const useCache = options?.parsedOptions?.cache === undefined ? true : options?.parsedOptions?.cache
 	const cloneWithSsh = options?.parsedOptions?.ssh === undefined ? preset.ssh : options.parsedOptions.ssh
 	const tag = (options?.parsedOptions?.tag === undefined ? preset.tag : options.parsedOptions.tag)
 	const repositoryUrl = cloneWithSsh
@@ -275,27 +274,7 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 
 	// Checks if already cloned
 	if (fs.statSync(targetDirectory, { throwIfNoEntry: false })?.isDirectory()) {
-		debug.resolve(`${repositoryUrl} already exists, checking if up-to-date.`)
-
-		const remoteLatest = (await git().listRemote([repositoryUrl, tag ?? 'HEAD'])).replace('HEAD', '').trim()
-		debug.resolve(`Remote latest commit: ${remoteLatest} (${tag ?? 'HEAD'}).`)
-
-		const localLatest = await git(targetDirectory).revparse(tag ?? 'HEAD')
-		debug.resolve(`Local latest commit: ${localLatest} (${tag ?? 'HEAD'}).`)
-
-		// If it doesn't match, remove the target directory - unless we don't want to use the cache
-		if (useCache && remoteLatest === localLatest) {
-			debug.resolve('Local repository is up-to-date, skipping cloning.')
-
-			return targetDirectory
-		}
-
-		debug.resolve(
-			!useCache
-				? '--no-cache has been used, removing directory and cloning again.'
-				: 'Local repository is outdated, removing directory and cloning again.',
-		)
-
+		debug.resolve(`${repositoryUrl} already exists (${targetDirectory}), deleting it.`)
 		await fs.promises.rm(targetDirectory, { recursive: true, force: true })
 	}
 

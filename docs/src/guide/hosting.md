@@ -16,10 +16,10 @@ You can apply a preset by using its GitHub URL or shorthand.
 # Shorthand
 preset apply your-organization/your-cool-preset
 
-# Full URL
+# Full URL (with SSH)
 preset apply git@github.com:your-organization/your-cool-preset
 
-# Without SSH
+# Full URL (without SSH)
 preset apply https://github.com/your-organization/your-cool-preset
 ```
 
@@ -59,7 +59,7 @@ preset apply your-username/repository --path category/preset2
 
 ## Private repositories
 
-You can use private repositories if you [configured your SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account). Repositories are cloned using SSH by default, so there isn't anything special to do.
+You can use private repositories if you [configured your SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account). You will need to use the `--ssh` flag.
 
 ```shell
 preset apply your-username/private-repository

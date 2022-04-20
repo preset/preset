@@ -43,9 +43,9 @@ it('parses directory presets', async() => {
 
 it('parses repository presets', async() => {
 	await ensureParses([
-		['preset/cli', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: undefined, path: '' }],
-		['preset/cli@v0.1', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: 'v0.1', path: '' }],
-		['preset/cli@main', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: 'main', path: '' }],
+		['preset/cli', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: undefined, path: '' }],
+		['preset/cli@v0.1', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: 'v0.1', path: '' }],
+		['preset/cli@main', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: 'main', path: '' }],
 		['https://github.com/preset/cli', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: undefined, path: '' }],
 		['https://github.com/preset/cli@v0.1', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: 'v0.1', path: '' }],
 		['git@github.com:preset/cli.git', { organization: 'preset', repository: 'cli', ssh: true, type: 'repository', tag: undefined, path: '' }],
@@ -55,7 +55,7 @@ it('parses repository presets', async() => {
 
 it('parses namespaced preset aliases', async() => {
 	await ensureParses([
-		['laravel:inertia', { organization: 'laravel-presets', repository: 'inertia', ssh: true, type: 'repository', tag: undefined, path: '' }],
+		['laravel:inertia', { organization: 'laravel-presets', repository: 'inertia', ssh: false, type: 'repository', tag: undefined, path: '' }],
 	])
 })
 
