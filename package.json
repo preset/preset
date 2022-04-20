@@ -15,16 +15,16 @@
   "devDependencies": {
     "@innocenzi/eslint-config": "^0.9.2",
     "@preset/core": "workspace:*",
-    "@types/node": "^17.0.21",
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
+    "@types/node": "^17.0.25",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
     "bumpp": "^7.1.1",
-    "eslint": "8.10.0",
+    "eslint": "8.13.0",
     "esno": "^0.14.1",
-    "tsup": "^5.12.1",
-    "typescript": "^4.6.2",
-    "vite": "^2.8.6",
-    "vitest": "^0.6.3"
+    "tsup": "^5.12.5",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5",
+    "vitest": "^0.9.3"
   },
   "pnpm": {
     "peerDependencyRules": {
