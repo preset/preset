@@ -2,7 +2,7 @@
   "name": "@preset/monorepo",
   "private": true,
   "scripts": {
-    "build": "pnpm -r --filter ./packages run build",
+    "build": "pnpm -r -F \"./packages/**\" run build",
     "build:cli": "pnpm -C ./packages/cli run build",
     "build:core": "pnpm -C ./packages/core run build",
     "lint": "eslint **/*.ts",
