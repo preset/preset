@@ -88,9 +88,9 @@ export default makeReporter({
 			// The main preset is specially formatted
 			text += '\n'
 			text += {
-				applying: ` ${format.titleWorking(' RUN ')} ${format.dim(`Applying preset: ${format.highlight(main.name)}...`)}`,
-				applied: ` ${format.titleSuccess(' OK ')} ${c.green(`Applied preset: ${format.highlight(main.name)}.`)}`,
-				failed: ` ${format.titleFail(' ERR ')} ${c.red(`Failed applying: ${format.highlight(main.name)}.`)}`,
+				applying: ` ${format.titleWorking(' RUN ')} ${format.dim(`Applying ${format.highlight(main.name)}...`)}`,
+				applied: ` ${format.titleSuccess(' OK ')} ${c.green(`Applied ${format.highlight(main.name)}.`)}`,
+				failed: ` ${format.titleFail(' ERROR ')} ${c.red(`Failed applying ${format.highlight(main.name)}.`)}`,
 			}[main.status]
 			text += '\n\n'
 
@@ -105,8 +105,14 @@ export default makeReporter({
 					.forEach((action) => {
 						text += format.indent(preset.count)
 						text += symbol[action.status]
-						text += `  ${{ applying: 'Running', applied: 'Ran', failed: 'Failed' }[action.status]} action: `
+						text += `  ${{ applying: 'Executing', applied: 'Executed', failed: 'Failed' }[action.status]} action: `
 						text += format.highlight(c.white(action.options.title || action.name))
+
+						/*
+						|--------------------------------------------------------------------------
+						| Inline
+						|--------------------------------------------------------------------------
+						*/
 
 						// Nested presets
 						if (action.name === 'apply-nested-preset') {
@@ -133,6 +139,12 @@ export default makeReporter({
 						if (action.name === 'install-packages') {
 							text += format.dim(` (${format.highlight(action.options.for)})`)
 						}
+
+						/*
+						|--------------------------------------------------------------------------
+						| New line
+						|--------------------------------------------------------------------------
+						*/
 
 						// Display child action logs if there are.
 						if (action.name === 'group') {
@@ -207,9 +219,29 @@ export default makeReporter({
 				const presetsSucceeded = contexts.reduce((failed, { status }) => failed += (status === 'applied' ? 1 : 0), 0)
 
 				text += '\n'
-				text += `  Presets  ${formatResult({ count: presetsSucceeded, color: c.green.bold, text: 'applied', excludeWhenEmpty: true }, { count: presetsFailed, color: c.green.red, text: 'failed', excludeWhenEmpty: true })} \n`
-				text += `  Actions  ${formatResult({ count: actionsSucceeded, color: c.green.bold, text: 'ran' }, { count: actionsFailed, color: c.green.red, text: 'failed', excludeWhenEmpty: true })} \n`
-				text += `     Time  ${time(contexts[0].start, contexts[0].end)}`
+				text += ` ${c.gray('Presets')}  ${formatResult({
+					count: presetsSucceeded,
+					color: c.green.bold,
+					text: 'applied',
+					excludeWhenEmpty: true,
+				}, {
+					count: presetsFailed,
+					color: c.green.red,
+					text: 'failed',
+					excludeWhenEmpty: true,
+				})} \n`
+				text += ` ${c.gray('Actions')}  ${formatResult({
+					count: actionsSucceeded,
+					color: c.green.bold,
+					text: 'executed',
+				},
+				{
+					count: actionsFailed,
+					color: c.green.red,
+					text: 'failed',
+					excludeWhenEmpty: true,
+				})} \n`
+				text += `${c.gray('Duration')}  ${time(contexts[0].start, contexts[0].end)}`
 				text += '\n'
 
 				// Displays post-install messages

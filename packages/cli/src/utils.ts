@@ -27,9 +27,13 @@ export function formatResult(...parts: Part[]) {
 		.filter((part) => part.count > 0 || !part.excludeWhenEmpty)
 		.map((part) => part.color(`${part.count} ${part.text}`))
 		.join(' | ')
-	const count = parts.reduce((total, { count }) => total + count, 0)
 
-	return `${text} ${c.gray(`(${count})`)}`
+	const count = parts.reduce((total, { count }) => total + count, 0)
+	const displayCount = parts
+		.filter((part) => part.count > 0 || !part.excludeWhenEmpty)
+		.some((part) => part.count !== count)
+
+	return `${text} ${displayCount ? c.gray(`(${count})`) : ''}`
 }
 
 export async function invoke(fn: Function, handleError: (error: Error) => void) {
