@@ -17,7 +17,13 @@ export const prompt = defineAction<PromptOptions>('prompt', async({ presetContex
 	presetContext.prompts[options.name] = options.default
 
 	// Don't emit if no interaction were asked
-	if (presetContext.options.interaction === false || presetContext.applyOptions.parsedOptions.interaction !== true) {
+	const shouldReturnDefaultResponse
+		= presetContext.options.interaction === false
+		|| presetContext.applyOptions.parsedOptions.interaction !== true
+		|| presetContext.applyOptions.parsedOptions.debug === true
+		|| process.stdout.isTTY === false
+
+	if (shouldReturnDefaultResponse) {
 		debug.action(actionContext.name, 'Interactions disabled, using default response.')
 
 		return true
