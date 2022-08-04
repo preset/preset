@@ -50,9 +50,9 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ op
 				debug.action(actionContext.name, `Replacing given variables in file content, with prefix ${prefix}.`)
 
 				for (let [variableName, variableValue] of Object.entries(operation.variables)) {
-					variableName = variableName.startsWith(prefix) ? variableName : `${prefix}${variableName}`
-					variableValue = typeof variableValue === 'function' ? variableValue(content).toString() : variableValue.toString()
-					content = content.replaceAll(variableName, variableValue)
+					variableName = variableName.startsWith(prefix)	? variableName : `${prefix}${variableName}`
+					variableValue = typeof variableValue === 'function' ? variableValue(content)?.toString() : variableValue?.toString()
+					content = content.replaceAll(variableName, variableValue ?? variableName)
 
 					debug.action(actionContext.name, variableName, '->', variableValue)
 				}
