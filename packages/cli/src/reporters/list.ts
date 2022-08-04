@@ -140,6 +140,11 @@ export default makeReporter({
 							text += format.dim(` (${format.highlight(action.options.for)})`)
 						}
 
+						// Duration
+						if (action.end && preset.options.time) {
+							text += format.dim(`  (${time(action.start, action.end)})`)
+						}
+
 						/*
 						|--------------------------------------------------------------------------
 						| New line

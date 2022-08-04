@@ -19,6 +19,7 @@ invoke(async() => {
 	// Creates the base CLI
 	const cli = createCli('preset')
 		.option('--no-interaction', 'Disable interactions. Prompts will use their default answers.')
+		.option('--time', 'Display the duration for each action.')
 		.option('--debug', 'Use the debug reporter.')
 		.option('--silent', 'Do not use a reporter.')
 		.help()
