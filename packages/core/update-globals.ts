@@ -15,6 +15,7 @@ function write() {
 
 	const globals = `declare global {
 		const definePreset: typeof import('@preset/core')['definePreset']
+		const defineAction: typeof import('@preset/core')['defineAction']
 		${actionImports.join('\n	')}
 	}
 	export {}\n`
