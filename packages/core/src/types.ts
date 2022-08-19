@@ -1,6 +1,6 @@
-import { ConfigValues, SimpleGit } from 'simple-git'
-import { Promisable } from 'type-fest'
-import { PresetError } from './errors'
+import type { ConfigValues, SimpleGit } from 'simple-git'
+import type { Promisable } from 'type-fest'
+import type { PresetError } from './errors'
 
 export type ActionResult = boolean
 export type ActionHandlerParameters<ResolvedOptions> = {

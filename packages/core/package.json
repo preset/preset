@@ -19,7 +19,7 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./*": "./*",
     "./globals": {
@@ -32,17 +32,17 @@
   "bugs": "https://github.com/preset/preset/issues",
   "homepage": "https://preset.dev",
   "scripts": {
-    "build": "tsup src/index.ts --dts --format cjs,esm --external esbuild",
+    "build": "unbuild",
+    "stub": "unbuild --stub",
     "test": "vitest",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build",
-    "prepublish": "esno ./update-globals.ts",
-    "postpublish": "esno ./update-globals.ts --delete"
+    "prepublish": "tsx ./update-globals.ts",
+    "postpublish": "tsx ./update-globals.ts --delete"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "type-fest": "^2.18.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
@@ -57,6 +57,7 @@
     "mitt": "^3.0.0",
     "simple-git": "^3.12.0",
     "unconfig": "^0.3.5",
-    "unset-value": "^2.0.1"
+    "unset-value": "^2.0.1",
+    "type-fest": "^2.18.1"
   }
 }

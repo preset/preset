@@ -11,7 +11,7 @@ importers:
       '@typescript-eslint/parser': ^5.33.1
       bumpp: ^8.2.1
       eslint: 8.21.0
-      esno: ^0.16.3
+      tsx: ^3.6.0
       typescript: ^4.7.4
       unbuild: ^0.8.9
       vite: ^3.0.9
@@ -24,7 +24,7 @@ importers:
       '@typescript-eslint/parser': 5.33.1_qugx7qdu5zevzvxaiqyxfiwquq
       bumpp: 8.2.1
       eslint: 8.21.0
-      esno: 0.16.3
+      tsx: 3.6.0
       typescript: 4.7.4
       unbuild: 0.8.9
       vite: 3.0.9
@@ -94,12 +94,12 @@ importers:
       fs-extra: 10.1.0
       mitt: 3.0.0
       simple-git: 3.12.0
+      type-fest: 2.18.1
       unconfig: 0.3.5
       unset-value: 2.0.1
     devDependencies:
       '@types/debug': 4.1.7
       '@types/fs-extra': 9.0.13
-      type-fest: 2.18.1
       typescript: 4.7.4
 
 packages:
@@ -2570,13 +2570,6 @@ packages:
       v8-compile-cache: 2.3.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /esno/0.16.3:
-    resolution: {integrity: sha512-6slSBEV1lMKcX13DBifvnDFpNno5WXhw4j/ff7RI0y51BZiDqEe5dNhhjhIQ3iCOQuzsm2MbVzmwqbN78BBhPg==}
-    hasBin: true
-    dependencies:
-      tsx: 3.6.0
     dev: true
 
   /espree/9.3.3:

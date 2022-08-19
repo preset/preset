@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import detectIndent from 'detect-indent'
 import unset from 'unset-value'
 import merge from 'deepmerge'
-import { JsonObject, Promisable } from 'type-fest'
+import type { JsonObject, Promisable } from 'type-fest'
 import { defineAction } from '../api'
 import { debug, objectWithoutKeys, wrap } from '../utils'
 
