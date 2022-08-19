@@ -1,5 +1,5 @@
 {
-	"private": true,
+  "private": true,
   "author": "@@author <@@email>",
   "license": "MIT",
   "preset": "preset.ts"

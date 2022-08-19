@@ -21,7 +21,8 @@
   },
   "scripts": {
     "prepublishOnly": "pnpm build",
-    "build": "tsup-node src/cli.ts --clean --format esm"
+    "build": "unbuild",
+    "stub": "unbuild --stub"
   },
   "dependencies": {
     "@preset/core": "workspace:*",
@@ -29,12 +30,12 @@
     "chalk": "^5.0.1",
     "debug": "^4.3.4",
     "fs-extra": "^10.1.0",
-    "log-update": "^5.0.0",
+    "log-update": "^5.0.1",
     "semver": "^7.3.7",
-    "update-notifier": "^5.1.0"
+    "update-notifier": "^6.0.2"
   },
   "devDependencies": {
-    "@types/semver": "^7.3.9",
-    "@types/update-notifier": "^5.1.0"
+    "@types/semver": "^7.3.12",
+    "@types/update-notifier": "^6.0.1"
   }
 }

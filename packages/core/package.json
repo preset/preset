@@ -42,21 +42,21 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "type-fest": "^2.12.2",
-    "typescript": "^4.6.3"
+    "type-fest": "^2.18.1",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "cac": "^6.7.12",
     "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
     "detect-indent": "^7.0.0",
-    "esbuild": "^0.14.36",
+    "esbuild": "^0.15.5",
     "execa": "^6.1.0",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.1.0",
     "mitt": "^3.0.0",
-    "simple-git": "^3.7.0",
-    "unconfig": "^0.3.3",
+    "simple-git": "^3.12.0",
+    "unconfig": "^0.3.5",
     "unset-value": "^2.0.1"
   }
 }
