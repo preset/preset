@@ -36,6 +36,7 @@ export default makeReporter({
 
 		const inputs: Array<PromptInput & { response: string }> = []
 		const updateLog = createLogUpdate(process.stdout)
+		const failedPresets: Set<string> = new Set([])
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
@@ -258,6 +259,7 @@ export default makeReporter({
 
 				// Display errors
 				if (main.status === 'failed') {
+					failedPresets.add(main.id)
 					text += '\n\n'
 					text += ` ${format.titleFail(` ${main.error?.code ?? 'ERROR'} `)} ${c.red(main.error?.parent?.message ?? main.error?.message ?? main.error?.details ?? 'An unknown error occured.')}`
 					text += '\n'
@@ -339,6 +341,10 @@ export default makeReporter({
 					render()
 					clearInterval(timer)
 					rl?.close()
+
+					if (failedPresets.size > 0) {
+						process.exit(1)
+					}
 				}, 1)
 			}
 		})
