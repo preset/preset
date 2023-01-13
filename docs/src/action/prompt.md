@@ -2,7 +2,7 @@
 outline: deep
 ---
 
-# Prompt (experimental)
+# Prompt
 
 > The `prompt` action can prompt the user for input when applying a preset.
 

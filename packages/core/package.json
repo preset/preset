@@ -42,22 +42,22 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^9.0.13",
-    "typescript": "^4.7.4",
+    "@types/fs-extra": "^11.0.1",
+    "detect-indent": "^7.0.1",
     "execa": "^6.1.0",
-    "detect-indent": "^7.0.0"
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "cac": "^6.7.12",
+    "cac": "^6.7.14",
     "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
-    "esbuild": "^0.15.5",
-    "fast-glob": "^3.2.11",
-    "fs-extra": "^10.1.0",
+    "esbuild": "^0.16.17",
+    "fast-glob": "^3.2.12",
+    "fs-extra": "^11.1.0",
     "mitt": "^3.0.0",
-    "simple-git": "^3.12.0",
-    "unconfig": "^0.3.5",
-    "unset-value": "^2.0.1",
-    "type-fest": "^2.18.1"
+    "simple-git": "^3.15.1",
+    "type-fest": "^3.5.1",
+    "unconfig": "^0.3.7",
+    "unset-value": "^2.0.1"
   }
 }

@@ -1,11 +1,11 @@
 ---
-page: true
-sidebar: false
+layout: home
 title: Preset - Elegant, ecosystem-agnostic preset mechanism
+titleTemplate: false
 ---
 
 <script setup>
-import Home from '/@theme/components/Home.vue'
+import Marketing from '../.vitepress/theme/components/marketing.vue'
 </script>
 
-<Home />
+<Marketing />

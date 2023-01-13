@@ -1,0 +1,48 @@
+pre code {
+	tab-size: 2 !important;
+}
+
+a:has(code) {
+	text-decoration: underline;
+	color: var(--vp-c-text-code) !important;
+}
+
+.vp-doc a > code {
+	color: inherit;
+	transition: color 0.25s;
+}
+
+hr {
+	margin: 4rem 0 !important;
+}
+
+.vp-doc h2 {
+	margin-top: 5rem !important;
+}
+
+.vp-doc h3 {
+	margin-top: 3rem !important;
+}
+
+.vp-doc .custom-block {
+	margin: 3rem 0 !important;
+}
+
+.vp-doc h1 + h2 {
+	margin-top: 2.5rem !important;
+}
+
+footer p.message {
+	display: inline-flex;
+	align-items: center;
+}
+
+.is-home,
+.is-home > div,
+.is-home > div > div,
+.is-home > div > div > div {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	flex-grow: 1;
+}

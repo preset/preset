@@ -4,3 +4,5 @@ node_modules
 */**/dist
 packages/**/__fixtures__
 packages/core/globals.d.ts
+docs/.vitepress/dist
+docs/.vitepress/cache
