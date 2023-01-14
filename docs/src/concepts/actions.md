@@ -24,6 +24,7 @@ The following actions are implemented.
 | [Install packages](/action/install-packages)        | Installs Node or PHP packages                      |
 | [Execute command](/action/execute-command)          | Executes shell commands in the target directory    |
 | [Edit files](/action/edit-files)                    | Performs file manipulations on the selected files  |
+| [Rename paths](/action/rename-paths)                | Renames files or directories                       |
 | [Delete paths](/action/delete-paths)                | Deletes files or directories                       |
 | [Apply nested presets](/action/apply-nested-preset) | Applies another preset                             |
 | [Group](/action/group)                              | Groups multiple actions together                   |
