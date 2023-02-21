@@ -2,11 +2,15 @@ import { randomUUID } from 'node:crypto'
 import { defineAction } from '../api'
 import { debug } from '../utils'
 import { emitter } from '../events'
+import { ActionContext, PresetContext } from '../types';
 
-/**
- * Asks for information.
- */
-export const prompt = defineAction<PromptOptions>('prompt', async({ presetContext, actionContext, options }) => {
+const shouldReturnDefaultResponse = (presetContext: PresetContext): boolean =>
+	presetContext.options.interaction === false
+	|| presetContext.applyOptions.parsedOptions.interaction !== true
+	|| presetContext.applyOptions.parsedOptions.debug === true
+	|| process.stdout.isTTY === false
+
+const inputPromptAction = async({ presetContext, actionContext, options }: PromptAction): Promise<boolean> => {
 	const promptId = randomUUID()
 
 	debug.action(actionContext.name, `Prompting for "${options.name}":`, options.text)
@@ -16,16 +20,8 @@ export const prompt = defineAction<PromptOptions>('prompt', async({ presetContex
 	// Sets default
 	presetContext.prompts[options.name] = options.default
 
-	// Don't emit if no interaction were asked
-	const shouldReturnDefaultResponse
-		= presetContext.options.interaction === false
-		|| presetContext.applyOptions.parsedOptions.interaction !== true
-		|| presetContext.applyOptions.parsedOptions.debug === true
-		|| process.stdout.isTTY === false
-
-	if (shouldReturnDefaultResponse) {
+	if (shouldReturnDefaultResponse(presetContext)) {
 		debug.action(actionContext.name, 'Interactions disabled, using default response.')
-
 		return true
 	}
 
@@ -48,10 +44,83 @@ export const prompt = defineAction<PromptOptions>('prompt', async({ presetContex
 		emitter.emit('prompt:input', {
 			actionContextId: actionContext.id,
 			id: promptId,
+			isSelect: false,
 			...options,
 		})
 	})
+}
+
+const selectPromptAction = async({ presetContext, actionContext, options }: SelectPromptAction): Promise<boolean> => {
+	const promptId = randomUUID()
+
+	const getDefault = (options: SelectPromptOptions): string => {
+		const optionIdx = options.initial || 0
+		const choice = options.choices[optionIdx] as PromptChoice
+
+		return typeof choice === 'string' ? choice : choice.value || choice.title
+	}
+
+	debug.action(actionContext.name, `Prompting for "${options.name}":`, options.text)
+	debug.action(actionContext.name, 'Default response:', getDefault(options) ?? 'not defined')
+	debug.action(actionContext.name, 'Prompt ID', promptId)
+
+	// Sets default
+	presetContext.prompts[options.name] = getDefault(options)
+
+	if (shouldReturnDefaultResponse(presetContext)) {
+		debug.action(actionContext.name, 'Interactions disabled, using default response.')
+		return true
+	}
+
+	return await new Promise((resolve) => {
+		// Catches the response
+		emitter.on('prompt:response', ({ id, response }) => {
+			if (id !== promptId) {
+				return debug.action(actionContext.name, 'Received response for another prompt.')
+			}
+
+			// Sets the prompt response
+			presetContext.prompts[options.name] = response?.trim() || getDefault(options)
+			debug.action(actionContext.name, 'Received response:', presetContext.prompts[options.name])
+
+			resolve(true)
+		})
+
+		// Emits the select
+		debug.action(actionContext.name, `Emitting select event for "${options.name}".`)
+
+		emitter.emit('prompt:select', {
+			actionContextId: actionContext.id,
+			id: promptId,
+			isSelect: true,
+			...options,
+		})
+	})
+}
+
+/**
+ * Asks for information.
+ */
+export const prompt = defineAction<PromptOptions | SelectPromptOptions>('prompt', async({
+	presetContext,
+	actionContext,
+	options
+}) => {
+	const isSelect = Object.keys(options).includes('choices');
+	return isSelect
+		? selectPromptAction({ presetContext, actionContext, options: options as SelectPromptOptions })
+		: inputPromptAction({ presetContext, actionContext, options: options as PromptOptions })
 })
+
+export interface PromptAction {
+	presetContext: PresetContext,
+	actionContext: ActionContext,
+	options: PromptOptions
+}
+
+export interface SelectPromptAction extends PromptAction {
+	options: SelectPromptOptions
+}
 
 export interface PromptOptions {
 	/**
@@ -68,4 +137,28 @@ export interface PromptOptions {
 	 * A default answer if none is returned.
 	 */
 	default?: string
+}
+
+export type PromptChoice = { title: string, value?: string } | string
+
+export interface SelectPromptOptions {
+	/**
+	 * The name of the prompt.
+	 */
+	name: string
+
+	/**
+	 * The text to prompt.
+	 */
+	text: string
+
+	/**
+	 * The initial selected choice
+	 */
+	initial?: number
+
+	/**
+	 * The initial selected choice
+	 */
+	choices: [PromptChoice]
 }
