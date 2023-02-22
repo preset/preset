@@ -15,13 +15,11 @@ it('emits select and response events and adds response to context', async() => {
 	})
 
 	// Handles the response
-	emitter.on('prompt:response', (response) =>
-		result.response = response
-	)
+	emitter.on('prompt:response', (response) => result.response = response)
 
 	// Handles the select
 	emitter.on('prompt:select', (select) => {
-		result.select= select
+		result.select = select
 
 		// Emits a response
 		emitter.emit('prompt:response', { id: select.id, response: 'Makise' })
@@ -57,9 +55,7 @@ it('adds a default response to context when no response is emitted', async() => 
 	})
 
 	// Handles the response
-	emitter.on('prompt:response', (response) =>
-		result.response = response
-	)
+	emitter.on('prompt:response', (response) => result.response = response)
 
 	// Handles the select
 	emitter.on('prompt:select', (select) => {
@@ -107,7 +103,7 @@ it('does not emit events when there are no interactions', async() => {
 		options: {
 			choices: ['first', 'second'],
 			name: 'choice',
-			text: 'Which do you choose?'
+			text: 'Which do you choose?',
 		},
 	})
 })

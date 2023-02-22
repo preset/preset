@@ -2,18 +2,19 @@ import { randomUUID } from 'node:crypto'
 import { defineAction } from '../api'
 import { debug } from '../utils'
 import { emitter } from '../events'
-import { ActionContext, PresetContext } from '../types';
+import { ActionContext, PresetContext } from '../types'
 
-const shouldReturnDefaultResponse = (presetContext: PresetContext): boolean =>
-	presetContext.options.interaction === false
-	|| presetContext.applyOptions.parsedOptions.interaction !== true
-	|| presetContext.applyOptions.parsedOptions.debug === true
-	|| process.stdout.isTTY === false
+function shouldReturnDefaultResponse(presetContext: PresetContext): boolean {
+	return presetContext.options.interaction === false
+		|| presetContext.applyOptions.parsedOptions.interaction !== true
+		|| presetContext.applyOptions.parsedOptions.debug === true
+		|| process.stdout.isTTY === false
+}
 
-const inputPromptAction = async({ presetContext, actionContext, options }: PromptAction): Promise<boolean> => {
+async function inputPromptAction({ presetContext, actionContext, options }: PromptAction): Promise<boolean> {
 	const promptId = randomUUID()
 
-	debug.action(actionContext.name, `Prompting for "${options.name}":`, options.text)
+	debug.action(actionContext.name, `Prompting text for "${options.name}":`, options.text)
 	debug.action(actionContext.name, 'Default response:', options.default ?? 'not defined')
 	debug.action(actionContext.name, 'Prompt ID', promptId)
 
@@ -50,17 +51,17 @@ const inputPromptAction = async({ presetContext, actionContext, options }: Promp
 	})
 }
 
-const selectPromptAction = async({ presetContext, actionContext, options }: SelectPromptAction): Promise<boolean> => {
+async function selectPromptAction({ presetContext, actionContext, options }: SelectPromptAction): Promise<boolean> {
 	const promptId = randomUUID()
 
-	const getDefault = (options: SelectPromptOptions): string => {
+	function getDefault(options: SelectPromptOptions): string {
 		const optionIdx = options.initial || 0
 		const choice = options.choices[optionIdx] as PromptChoice
 
 		return typeof choice === 'string' ? choice : choice.value || choice.title
 	}
 
-	debug.action(actionContext.name, `Prompting for "${options.name}":`, options.text)
+	debug.action(actionContext.name, `Prompting selection for "${options.name}":`, options.text)
 	debug.action(actionContext.name, 'Default response:', getDefault(options) ?? 'not defined')
 	debug.action(actionContext.name, 'Prompt ID', promptId)
 
@@ -104,17 +105,17 @@ const selectPromptAction = async({ presetContext, actionContext, options }: Sele
 export const prompt = defineAction<PromptOptions | SelectPromptOptions>('prompt', async({
 	presetContext,
 	actionContext,
-	options
+	options,
 }) => {
-	const isSelect = Object.keys(options).includes('choices');
+	const isSelect = Object.keys(options).includes('choices')
 	return isSelect
 		? selectPromptAction({ presetContext, actionContext, options: options as SelectPromptOptions })
 		: inputPromptAction({ presetContext, actionContext, options: options as PromptOptions })
 })
 
 export interface PromptAction {
-	presetContext: PresetContext,
-	actionContext: ActionContext,
+	presetContext: PresetContext
+	actionContext: ActionContext
 	options: PromptOptions
 }
 
@@ -139,7 +140,7 @@ export interface PromptOptions {
 	default?: string
 }
 
-export type PromptChoice = { title: string, value?: string } | string
+export type PromptChoice = { title: string; value?: string } | string
 
 export interface SelectPromptOptions {
 	/**
@@ -153,12 +154,12 @@ export interface SelectPromptOptions {
 	text: string
 
 	/**
-	 * The initial selected choice
+	 * Initial choice.
 	 */
 	initial?: number
 
 	/**
-	 * The initial selected choice
+	 * List of possible choices.
 	 */
-	choices: [PromptChoice]
+	choices: PromptChoice[]
 }

@@ -368,7 +368,7 @@ export interface PromptSelect {
 	isSelect: boolean
 	name: string
 	text: string
-	choices: [{ title: string, value?: string } | string]
+	choices: Array<{ title: string; value?: string } | string>
 	initial?: number
 }
 

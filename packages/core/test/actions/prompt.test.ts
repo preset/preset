@@ -14,9 +14,7 @@ it('emits input and response events and adds response to context', async() => {
 	})
 
 	// Handles the response
-	emitter.on('prompt:response', (response) =>
-		result.response = response
-	)
+	emitter.on('prompt:response', (response) => result.response = response)
 
 	// Handles the input
 	emitter.on('prompt:input', (input) => {
@@ -55,9 +53,7 @@ it('adds a default response to context when no response is emitted', async() => 
 	})
 
 	// Handles the response
-	emitter.on('prompt:response', (response) =>
-		result.response = response
-	)
+	emitter.on('prompt:response', (response) => result.response = response)
 
 	// Handles the input
 	emitter.on('prompt:input', (input) => {

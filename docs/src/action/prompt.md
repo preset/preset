@@ -7,9 +7,9 @@ outline: deep
 > The `prompt` action can prompt the user for input when applying a preset. There are 2 prompt types available. 
 > The default is a text prompt. A select prompt can be requested by supplying a `choices` property.
 
-## Usage (Text prompt)
+## Text prompt
 
-Call the `prompt` options in the `handler` function:
+Call the `prompt` function in the `handler`:
 
 ```ts
 export default definePreset({
@@ -56,15 +56,19 @@ interface PromptOptions {
   default?: string;
 }
 ```
-## Usage (Select prompt)
+## Select prompt
 
-Call the `prompt` options in the `handler` function:
+Call the `prompt` function in the `handler` with the `choices` option:
 
 ```ts
 export default definePreset({
   // ...
   handler: async () => {
-    await prompt({ name: 'choice', text: 'What is your choice?', choices: ['first', 'second'] })
+    await prompt({
+      name: 'choice',
+      text: 'What is your choice?',
+      choices: ['first', 'second']
+    })
   }
 })
 ```
@@ -111,9 +115,9 @@ await prompt({
 type PromptChoice = { title: string, value?: string } | string
 
 interface SelectPromptOptions {
-  name: string;
-  text: string;
-  initial?: number;
+  name: string
+  text: string
+  initial?: number
   choices: [PromptChoice]
 }
 ```
