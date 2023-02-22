@@ -2,7 +2,7 @@ import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
 import { beep, cursor } from 'sisteransi'
-import { emitter, PromptSelect } from '@preset/core'
+import { ActionContext, emitter, PromptChoice, PromptSelect } from '@preset/core'
 import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
 import { makeReporter } from '../types'
@@ -22,44 +22,6 @@ const format = {
 	titleWarning: (text?: any)	=> c.bgYellow.white.bold(`${text}`),
 }
 
-const action = (key, isSelect) => {
-	if (key.meta && key.name !== 'escape') return
-
-	if (key.ctrl) {
-		if (key.name === 'a') return 'first'
-		if (key.name === 'c') return 'abort'
-		if (key.name === 'd') return 'abort'
-		if (key.name === 'e') return 'last'
-		if (key.name === 'g') return 'reset'
-	}
-
-	if (isSelect) {
-		if (key.name === 'j') return 'down'
-		if (key.name === 'k') return 'up'
-	}
-
-	if (key.name === 'return') return 'submit'
-	if (key.name === 'enter') return 'submit' // ctrl + J
-	if (key.name === 'backspace') return 'delete'
-	if (key.name === 'delete') return 'deleteForward'
-	if (key.name === 'abort') return 'abort'
-	if (key.name === 'escape') return 'exit'
-	if (key.name === 'tab') return 'next'
-	if (key.name === 'pagedown') return 'nextPage'
-	if (key.name === 'pageup') return 'prevPage'
-	// TODO create home() in prompt types (e.g. TextPrompt)
-	if (key.name === 'home') return 'home'
-	// TODO create end() in prompt types (e.g. TextPrompt)
-	if (key.name === 'end') return 'end'
-
-	if (key.name === 'up') return 'up'
-	if (key.name === 'down') return 'down'
-	if (key.name === 'right') return 'right'
-	if (key.name === 'left') return 'left'
-
-	return false
-}
-
 const symbols = {
 	spinner: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
 	arrow: '➜',
@@ -76,18 +38,29 @@ const symbols = {
 	pointerSmall: '›',
 }
 
+interface TextInput extends PromptInput {
+	response: string
+}
+
+interface SelectInput extends PromptSelect {
+	response: string
+	cursor: number
+	isDone: boolean
+	optionsPerPage?: number
+}
+
 export default makeReporter({
 	name: 'list',
 	registerEvents: () => {
 		debug.disable()
-		const inputs: Array<(PromptInput | PromptSelect) & { response: string, cursor?: number, isDone?: boolean }> = []
+		const inputs: Array<TextInput | SelectInput> = []
 		const updateLog = createLogUpdate(process.stdout)
 		const failedPresets: Set<string> = new Set([])
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
 
-		function renderInputPrompt (preset, action, input) {
+		function renderInputPrompt (preset: PresetContext, action: ActionContext, input: TextInput): string {
 			let text = '\n'
 			text += format.indent(preset.count + 1)
 			text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
@@ -95,7 +68,7 @@ export default makeReporter({
 			return text
 		}
 
-		function entriesToDisplay (cursor, total, maxVisible) {
+		function entriesToDisplay(cursor: number, total: number, maxVisible: number | undefined): { startIndex: number; endIndex: number } {
 			maxVisible = maxVisible || total
 
 			let startIndex = Math.min(total - maxVisible, cursor - Math.floor(maxVisible / 2))
@@ -105,33 +78,33 @@ export default makeReporter({
 			return { startIndex, endIndex }
 		}
 
-		function renderChoices (preset, input) {
+		function getChoicePrefix (preset: PresetContext, idx: number, startIdx: number, endIdx: number, numChoices: number, selectedIdx: number): string {
+			let prefix = ' '
+
+			if (idx === startIdx && startIdx > 0) {
+				prefix = symbols.arrowUp
+			} else if (idx === endIdx - 1 && endIdx < numChoices) {
+				prefix = symbols.arrowDown
+			}
+
+			return format.indent(preset.count + 2) + (selectedIdx === idx ? c.cyan(symbols.pointerDouble) + '' : ' ') + prefix
+		}
+
+		function renderChoices (preset: PresetContext, input: SelectInput) {
 			let outputText = '\n';
 
 			const { startIndex, endIndex } = entriesToDisplay(
-				input?.cursor,
-				input?.choices.length,
+				input.cursor,
+				input.choices.length,
 				input?.optionsPerPage
 			)
 
-			const getChoicePrefix = (idx, startIdx, endIdx, numChoices, selectedIdx) => {
-				let prefix = ' '
-
-				if (idx === startIdx && startIdx > 0) {
-					prefix = symbols.arrowUp
-				} else if (idx === endIdx - 1 && endIdx < numChoices) {
-					prefix = symbols.arrowDown
-				}
-
-				return format.indent(preset.count + 2) + (selectedIdx === idx ? c.cyan(symbols.pointerDouble) + '' : ' ') + prefix
-			}
-
 			for (let i = startIndex; i < endIndex; i++) {
-				const choice = input.choices[i]
-				const choiceTitle = choice.title || choice
+				const choice = input.choices[i] as PromptChoice
+				const choiceTitle = typeof choice === 'string' ? choice : choice.title
 
 				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle;
-				const prefix = getChoicePrefix(i, startIndex, endIndex, input.choices.length, input.cursor)
+				const prefix = getChoicePrefix(preset, i, startIndex, endIndex, input.choices.length, input.cursor)
 
 				outputText += `${prefix} ${title}\n`;
 			}
@@ -139,7 +112,7 @@ export default makeReporter({
 			return outputText
 		}
 
-		function renderSelectPrompt (preset, action, input) {
+		function renderSelectPrompt (preset: PresetContext, action: ActionContext, input: SelectInput) {
 			const isDone = input.isDone
 			const hasHint = Boolean(action.options.text)
 
@@ -151,9 +124,16 @@ export default makeReporter({
 			return ` ${isDone ? outputText : outputText + renderChoices(preset, input)}`
 		}
 
-		function renderPrompt (preset, action, inputs) {
+		function renderPrompt (preset: PresetContext, action: ActionContext, inputs: (TextInput | SelectInput)[]): string {
 			const input = inputs.find((input) => input.actionContextId === action.id)
-			return input.isSelect ? renderSelectPrompt(preset, action, input) : renderInputPrompt(preset, action, input)
+
+			if (!input) {
+				return ''
+			}
+
+			return input.isSelect
+				? renderSelectPrompt(preset, action, input as SelectInput)
+				: renderInputPrompt(preset, action, input as TextInput)
 		}
 
 		// Might need a lil cleanup
@@ -430,7 +410,6 @@ export default makeReporter({
 		
 		emitter.on('prompt:select', async (promptSelect) => {
 			const { stdin, stdout } = process
-			const isSelect = true
 			const initialCursor = promptSelect.initial || 0
 
 			const choices = promptSelect.choices.map((ch) => ({
@@ -438,7 +417,9 @@ export default makeReporter({
 				value: typeof ch === 'string' ? ch : ch.value || ch.title,
 			}))
 
-			const state = {
+			type SelectInputState = { cursor: number, response: string, isDone: boolean }
+
+			const state: SelectInputState = {
 				cursor: initialCursor,
 				response: choices[initialCursor].value,
 				isDone: false
@@ -446,20 +427,29 @@ export default makeReporter({
 
 			inputs.push({ ...promptSelect, ...state })
 
-			const updateInput = (actionContextId, state) => {
-				const idx = inputs.findIndex((input) => input.actionContextId === actionContextId)
-				inputs[idx].cursor = state.cursor
-				inputs[idx].response = state.response
-				inputs[idx].isDone = state.isDone
+			const updateInput = (actionContextId: string, state: SelectInputState) => {
+				const idx = inputs.findIndex((input) => input.actionContextId === actionContextId);
+				const currentInput = inputs[idx] as SelectInput
+
+				currentInput.cursor = state.cursor
+				currentInput.response = state.response
+				currentInput.isDone = state.isDone
 			}
 
-			const moveCursor = (n) => {
+			const moveCursor = (n: number) => {
 				state.cursor = n
 				state.response = choices[n].value
 				updateInput(promptSelect.actionContextId, state)
 			}
 
-			const actions = {
+			const actionKeys: { [key: string]: string; } = {
+				return: 'submit',
+				enter: 'submit',
+				up: 'up',
+				down: 'down'
+			}
+
+			const actions: { [key: string]: () => void } = {
 				up: () => {
 					if (state.cursor === 0) {
 						moveCursor(choices.length - 1)
@@ -482,12 +472,12 @@ export default makeReporter({
 				}
 			}
 
-			const keypress = (str, key) => {
-				let a = action(key, isSelect)
-				if (a === false) {
-					this._ && this._(str, key)
-				} else if (typeof actions[a] === 'function') {
-					actions[a](key)
+			const keypress = (str: string, key: { name: string }) => {
+				const actionKey: string | undefined = actionKeys[key.name]
+				const action: () => void | undefined = actions[actionKey]
+
+				if (typeof action === 'function') {
+					action()
 				} else {
 					stdout.write(beep)
 				}
