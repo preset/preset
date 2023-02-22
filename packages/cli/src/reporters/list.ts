@@ -25,15 +25,9 @@ const format = {
 const symbols = {
 	spinner: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
 	arrow: '➜',
-	arrowUp: '↑',
-	arrowDown: '↓',
-	arrowLeft: '←',
-	arrowRight: '→',
 	check: '✓',
 	cross: '×',
 	subArrow: ' ↪ ',
-	ellipsis: '…',
-	pointer: '❯',
 	pointerDouble: '»',
 	pointerSmall: '›',
 }
@@ -46,7 +40,6 @@ interface SelectInput extends PromptSelect {
 	response: string
 	cursor: number
 	isDone: boolean
-	optionsPerPage?: number
 }
 
 export default makeReporter({
@@ -68,43 +61,20 @@ export default makeReporter({
 			return text
 		}
 
-		function entriesToDisplay(cursor: number, total: number, maxVisible: number | undefined): { startIndex: number; endIndex: number } {
-			maxVisible = maxVisible || total
-
-			let startIndex = Math.min(total - maxVisible, cursor - Math.floor(maxVisible / 2))
-			if (startIndex < 0) startIndex = 0
-			const endIndex = Math.min(startIndex + maxVisible, total)
-
-			return { startIndex, endIndex }
-		}
-
-		function getChoicePrefix (preset: PresetContext, idx: number, startIdx: number, endIdx: number, numChoices: number, selectedIdx: number): string {
-			let prefix = ' '
-
-			if (idx === startIdx && startIdx > 0) {
-				prefix = symbols.arrowUp
-			} else if (idx === endIdx - 1 && endIdx < numChoices) {
-				prefix = symbols.arrowDown
+		function getChoicePrefix (preset: PresetContext, idx: number, cursor: number): string {
+				const prefix = ' '
+				return format.indent(preset.count + 2) + (cursor === idx ? symbols.pointerDouble + '' : ' ') + prefix
 			}
-
-			return format.indent(preset.count + 2) + (selectedIdx === idx ? c.cyan(symbols.pointerDouble) + '' : ' ') + prefix
-		}
 
 		function renderChoices (preset: PresetContext, input: SelectInput) {
 			let outputText = '\n';
 
-			const { startIndex, endIndex } = entriesToDisplay(
-				input.cursor,
-				input.choices.length,
-				input?.optionsPerPage
-			)
-
-			for (let i = startIndex; i < endIndex; i++) {
+			for (let i = 0; i < input.choices.length; i++) {
 				const choice = input.choices[i] as PromptChoice
 				const choiceTitle = typeof choice === 'string' ? choice : choice.title
 
 				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle;
-				const prefix = getChoicePrefix(preset, i, startIndex, endIndex, input.choices.length, input.cursor)
+				const prefix = getChoicePrefix(preset, i, input.cursor)
 
 				outputText += `${prefix} ${title}\n`;
 			}
