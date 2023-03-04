@@ -356,9 +356,20 @@ export interface LocalFilePreset {
 export interface PromptInput {
 	id: string
 	actionContextId: string
+	isSelect: boolean
 	name: string
 	text: string
 	default?: string
+}
+
+export interface PromptSelect {
+	id: string
+	actionContextId: string
+	isSelect: boolean
+	name: string
+	text: string
+	choices: Array<{ title: string; value?: string } | string>
+	initial?: number
 }
 
 export interface PromptResponse {

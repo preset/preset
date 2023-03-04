@@ -1,7 +1,8 @@
 import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
-import { emitter } from '@preset/core'
+import { beep, cursor } from 'sisteransi'
+import { ActionContext, emitter, PromptChoice, PromptSelect } from '@preset/core'
 import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
 import { makeReporter } from '../types'
@@ -27,19 +28,83 @@ const symbols = {
 	check: '✓',
 	cross: '×',
 	subArrow: ' ↪ ',
+	pointerDouble: '»',
+	pointerSmall: '›',
+}
+
+interface TextInput extends PromptInput {
+	response: string
+}
+
+interface SelectInput extends PromptSelect {
+	response: string
+	cursor: number
+	isDone: boolean
 }
 
 export default makeReporter({
 	name: 'list',
 	registerEvents: () => {
 		debug.disable()
-
-		const inputs: Array<PromptInput & { response: string }> = []
+		const inputs: Array<TextInput | SelectInput> = []
 		const updateLog = createLogUpdate(process.stdout)
 		const failedPresets: Set<string> = new Set([])
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
+
+		function renderInputPrompt(preset: PresetContext, action: ActionContext, input: TextInput): string {
+			let text = '\n'
+			text += format.indent(preset.count + 1)
+			text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
+			text += c.gray.bold(input?.response.trim() || action.options.default)
+			return text
+		}
+
+		function getChoicePrefix(preset: PresetContext, idx: number, cursor: number): string {
+			const prefix = ' '
+			return format.indent(preset.count + 2) + (cursor === idx ? `${symbols.pointerDouble}` : ' ') + prefix
+		}
+
+		function renderChoices(preset: PresetContext, input: SelectInput) {
+			let outputText = '\n'
+
+			for (let i = 0; i < input.choices.length; i++) {
+				const choice = input.choices[i] as PromptChoice
+				const choiceTitle = typeof choice === 'string' ? choice : choice.title
+
+				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle
+				const prefix = getChoicePrefix(preset, i, input.cursor)
+
+				outputText += `${prefix} ${title}\n`
+			}
+
+			return outputText
+		}
+
+		function renderSelectPrompt(preset: PresetContext, action: ActionContext, input: SelectInput) {
+			const isDone = input.isDone
+			const hasHint = Boolean(action.options.text)
+
+			const outputText = [
+				isDone ? symbols.pointerSmall : hasHint ? c.bold.gray(symbols.pointerSmall) : '',
+				isDone ? input.response.trim() : hasHint ? c.bold.gray(action.options.text) : '',
+			].join(' ')
+
+			return ` ${isDone ? outputText : outputText + renderChoices(preset, input)}`
+		}
+
+		function renderPrompt(preset: PresetContext, action: ActionContext, inputs: (TextInput | SelectInput)[]): string {
+			const input = inputs.find((input) => input.actionContextId === action.id)
+
+			if (!input) {
+				return ''
+			}
+
+			return input.isSelect
+				? renderSelectPrompt(preset, action, input as SelectInput)
+				: renderInputPrompt(preset, action, input as TextInput)
+		}
 
 		// Might need a lil cleanup
 		function render() {
@@ -185,11 +250,7 @@ export default makeReporter({
 
 						// Display prompts
 						if (action.name === 'prompt') {
-							const input = inputs.find((input) => input.actionContextId === action.id)
-							text += '\n'
-							text += format.indent(preset.count + 1)
-							text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
-							text += c.gray.bold(input?.response.trim() || action.options.default)
+							text += renderPrompt(preset, action, inputs)
 						}
 
 						// Display logs if there are.
@@ -278,14 +339,13 @@ export default makeReporter({
 		emitter.on('prompt:input', async(promptInput) => {
 			inputs.push({ ...promptInput, response: '' })
 
-			const onInput = () => {
+			function onInput() {
 				const input = inputs.at(-1)!
 				let chunk
 
 				// 8 backspace
 				// 3 ctrl+c
 				// 13 enter
-
 				// eslint-disable-next-line no-cond-assign
 				while ((chunk = process.stdin.read()) !== null) {
 					// Handle backspace (8)
@@ -317,6 +377,104 @@ export default makeReporter({
 			process.stdin.setRawMode(true)
 		})
 
+		emitter.on('prompt:select', async(promptSelect) => {
+			const { stdin, stdout } = process
+			const initialCursor = promptSelect.initial || 0
+
+			const choices = promptSelect.choices.map((ch) => ({
+				title: typeof ch === 'string' ? ch : ch.title,
+				value: typeof ch === 'string' ? ch : ch.value || ch.title,
+			}))
+
+			type SelectInputState = { cursor: number; response: string; isDone: boolean }
+
+			const state: SelectInputState = {
+				cursor: initialCursor,
+				response: choices[initialCursor].value,
+				isDone: false,
+			}
+
+			inputs.push({ ...promptSelect, ...state })
+
+			function updateInput(actionContextId: string, state: SelectInputState) {
+				const idx = inputs.findIndex((input) => input.actionContextId === actionContextId)
+				const currentInput = inputs[idx] as SelectInput
+
+				currentInput.cursor = state.cursor
+				currentInput.response = state.response
+				currentInput.isDone = state.isDone
+			}
+
+			function moveSelectPromptSelection(n: number) {
+				state.cursor = n
+				state.response = choices[n].value
+				updateInput(promptSelect.actionContextId, state)
+			}
+
+			const actionKeys: { [key: string]: string } = {
+				return: 'submit',
+				enter: 'submit',
+				up: 'up',
+				down: 'down',
+			}
+
+			const actions: { [key: string]: () => void } = {
+				up: () => {
+					if (state.cursor === 0) {
+						moveSelectPromptSelection(choices.length - 1)
+					} else {
+						moveSelectPromptSelection(state.cursor - 1)
+					}
+				},
+				down: () => {
+					if (state.cursor === choices.length - 1) {
+						moveSelectPromptSelection(0)
+					} else {
+						moveSelectPromptSelection(state.cursor + 1)
+					}
+				},
+				submit: () => {
+					state.isDone = true
+					updateInput(promptSelect.actionContextId, state)
+					stdout.write('\n')
+					finishSelectPrompt()
+				},
+			}
+
+			function handleKeypress(str: string, key: { name: string }) {
+				const actionKey: string | undefined = actionKeys[key.name]
+				const action: () => void | undefined = actions[actionKey]
+
+				if (typeof action === 'function') {
+					action()
+				} else {
+					stdout.write(beep)
+				}
+			}
+
+			function finishSelectPrompt() {
+				const input = inputs.at(-1)!
+
+				stdout.write(cursor.show)
+				stdin.removeListener('keypress', handleKeypress)
+
+				if (stdin.isTTY) {
+					stdin.setRawMode(false)
+				}
+
+				emitter.emit('prompt:response', {
+					id: input.id,
+					response: input.response,
+				})
+			}
+
+			if (stdin.isTTY) {
+				stdin.setRawMode(true)
+			}
+
+			stdin.on('keypress', handleKeypress)
+		})
+
 		emitter.on('preset:start', (context) => {
 			contexts.push(context)
 			render()
@@ -330,7 +488,9 @@ export default makeReporter({
 					clearInterval(timer)
 				}
 
-				rl = readline.createInterface({ input: process.stdin })
+				rl = readline.createInterface({ input: process.stdin, escapeCodeTimeout: 50 })
+				readline.emitKeypressEvents(process.stdin, rl)
+
 				timer = setInterval(() => render(), 150)
 			}
 		})

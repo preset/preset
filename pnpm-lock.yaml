@@ -51,6 +51,7 @@ importers:
       fs-extra: ^11.1.0
       log-update: ^5.0.1
       semver: ^7.3.8
+      sisteransi: ^1.0.5
       update-notifier: ^6.0.2
     dependencies:
       '@preset/core': link:../core
@@ -60,6 +61,7 @@ importers:
       fs-extra: 11.1.0
       log-update: 5.0.1
       semver: 7.3.8
+      sisteransi: 1.0.5
       update-notifier: 6.0.2
     devDependencies:
       '@types/semver': 7.3.13
@@ -4495,7 +4497,6 @@ packages:
 
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
-    dev: true
 
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
