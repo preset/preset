@@ -53,7 +53,7 @@ export default makeReporter({
 		let timer: NodeJS.Timer
 		let index = 0
 
-		function renderInputPrompt (preset: PresetContext, action: ActionContext, input: TextInput): string {
+		function renderInputPrompt(preset: PresetContext, action: ActionContext, input: TextInput): string {
 			let text = '\n'
 			text += format.indent(preset.count + 1)
 			text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
@@ -61,40 +61,40 @@ export default makeReporter({
 			return text
 		}
 
-		function getChoicePrefix (preset: PresetContext, idx: number, cursor: number): string {
-				const prefix = ' '
-				return format.indent(preset.count + 2) + (cursor === idx ? symbols.pointerDouble + '' : ' ') + prefix
-			}
+		function getChoicePrefix(preset: PresetContext, idx: number, cursor: number): string {
+			const prefix = ' '
+			return format.indent(preset.count + 2) + (cursor === idx ? `${symbols.pointerDouble}` : ' ') + prefix
+		}
 
-		function renderChoices (preset: PresetContext, input: SelectInput) {
-			let outputText = '\n';
+		function renderChoices(preset: PresetContext, input: SelectInput) {
+			let outputText = '\n'
 
 			for (let i = 0; i < input.choices.length; i++) {
 				const choice = input.choices[i] as PromptChoice
 				const choiceTitle = typeof choice === 'string' ? choice : choice.title
 
-				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle;
+				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle
 				const prefix = getChoicePrefix(preset, i, input.cursor)
 
-				outputText += `${prefix} ${title}\n`;
+				outputText += `${prefix} ${title}\n`
 			}
 
 			return outputText
 		}
 
-		function renderSelectPrompt (preset: PresetContext, action: ActionContext, input: SelectInput) {
+		function renderSelectPrompt(preset: PresetContext, action: ActionContext, input: SelectInput) {
 			const isDone = input.isDone
 			const hasHint = Boolean(action.options.text)
 
 			const outputText = [
 				isDone ? symbols.pointerSmall : hasHint ? c.bold.gray(symbols.pointerSmall) : '',
-				isDone ? input.response.trim() : hasHint ? c.bold.gray(action.options.text) : ''
-			].join(' ');
+				isDone ? input.response.trim() : hasHint ? c.bold.gray(action.options.text) : '',
+			].join(' ')
 
 			return ` ${isDone ? outputText : outputText + renderChoices(preset, input)}`
 		}
 
-		function renderPrompt (preset: PresetContext, action: ActionContext, inputs: (TextInput | SelectInput)[]): string {
+		function renderPrompt(preset: PresetContext, action: ActionContext, inputs: (TextInput | SelectInput)[]): string {
 			const input = inputs.find((input) => input.actionContextId === action.id)
 
 			if (!input) {
@@ -339,14 +339,13 @@ export default makeReporter({
 		emitter.on('prompt:input', async(promptInput) => {
 			inputs.push({ ...promptInput, response: '' })
 
-			const onInput = () => {
+			function onInput() {
 				const input = inputs.at(-1)!
 				let chunk
 
 				// 8 backspace
 				// 3 ctrl+c
 				// 13 enter
-
 				// eslint-disable-next-line no-cond-assign
 				while ((chunk = process.stdin.read()) !== null) {
 					// Handle backspace (8)
@@ -377,8 +376,8 @@ export default makeReporter({
 			process.stdin.on('readable', onInput)
 			process.stdin.setRawMode(true)
 		})
-		
-		emitter.on('prompt:select', async (promptSelect) => {
+
+		emitter.on('prompt:select', async(promptSelect) => {
 			const { stdin, stdout } = process
 			const initialCursor = promptSelect.initial || 0
 
@@ -387,18 +386,18 @@ export default makeReporter({
 				value: typeof ch === 'string' ? ch : ch.value || ch.title,
 			}))
 
-			type SelectInputState = { cursor: number, response: string, isDone: boolean }
+			type SelectInputState = { cursor: number; response: string; isDone: boolean }
 
 			const state: SelectInputState = {
 				cursor: initialCursor,
 				response: choices[initialCursor].value,
-				isDone: false
+				isDone: false,
 			}
 
 			inputs.push({ ...promptSelect, ...state })
 
-			const updateInput = (actionContextId: string, state: SelectInputState) => {
-				const idx = inputs.findIndex((input) => input.actionContextId === actionContextId);
+			function updateInput(actionContextId: string, state: SelectInputState) {
+				const idx = inputs.findIndex((input) => input.actionContextId === actionContextId)
 				const currentInput = inputs[idx] as SelectInput
 
 				currentInput.cursor = state.cursor
@@ -406,43 +405,43 @@ export default makeReporter({
 				currentInput.isDone = state.isDone
 			}
 
-			const moveCursor = (n: number) => {
+			function moveSelectPromptSelection(n: number) {
 				state.cursor = n
 				state.response = choices[n].value
 				updateInput(promptSelect.actionContextId, state)
 			}
 
-			const actionKeys: { [key: string]: string; } = {
+			const actionKeys: { [key: string]: string } = {
 				return: 'submit',
 				enter: 'submit',
 				up: 'up',
-				down: 'down'
+				down: 'down',
 			}
 
 			const actions: { [key: string]: () => void } = {
 				up: () => {
 					if (state.cursor === 0) {
-						moveCursor(choices.length - 1)
+						moveSelectPromptSelection(choices.length - 1)
 					} else {
-						moveCursor(state.cursor - 1)
+						moveSelectPromptSelection(state.cursor - 1)
 					}
 				},
 				down: () => {
 					if (state.cursor === choices.length - 1) {
-						moveCursor(0)
+						moveSelectPromptSelection(0)
 					} else {
-						moveCursor(state.cursor + 1)
+						moveSelectPromptSelection(state.cursor + 1)
 					}
 				},
 				submit: () => {
 					state.isDone = true
 					updateInput(promptSelect.actionContextId, state)
 					stdout.write('\n')
-					close()
-				}
+					finishSelectPrompt()
+				},
 			}
 
-			const keypress = (str: string, key: { name: string }) => {
+			function handleKeypress(str: string, key: { name: string }) {
 				const actionKey: string | undefined = actionKeys[key.name]
 				const action: () => void | undefined = actions[actionKey]
 
@@ -453,11 +452,11 @@ export default makeReporter({
 				}
 			}
 
-			const close = () => {
+			function finishSelectPrompt() {
 				const input = inputs.at(-1)!
 
 				stdout.write(cursor.show)
-				stdin.removeListener('keypress', keypress)
+				stdin.removeListener('keypress', handleKeypress)
 
 				if (stdin.isTTY) {
 					stdin.setRawMode(false)
@@ -473,7 +472,7 @@ export default makeReporter({
 				stdin.setRawMode(true)
 			}
 
-			stdin.on('keypress', keypress)
+			stdin.on('keypress', handleKeypress)
 		})
 
 		emitter.on('preset:start', (context) => {
