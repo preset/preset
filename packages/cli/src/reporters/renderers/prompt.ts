@@ -2,18 +2,18 @@ import { ActionContext, PresetContext } from '@preset/core'
 import renderTextPrompt, { TextInput } from './text-prompt'
 import renderSelectPrompt, { SelectInput } from './select-prompt'
 
-export default function renderPrompt (
-  preset: PresetContext,
-  action: ActionContext,
-  inputs: (TextInput | SelectInput)[]
+export default function renderPrompt(
+	preset: PresetContext,
+	action: ActionContext,
+	inputs: (TextInput | SelectInput)[],
 ): string {
-  const input = inputs.find((input) => input.actionContextId === action.id)
+	const input = inputs.find((input) => input.actionContextId === action.id)
 
-  if (!input) {
-    return ''
-  }
+	if (!input) {
+		return ''
+	}
 
-  return input.isSelect
-    ? renderSelectPrompt(preset, action, input as SelectInput)
-    : renderTextPrompt(preset, action, input as TextInput)
+	return input.isSelect
+		? renderSelectPrompt(preset, action, input as SelectInput)
+		: renderTextPrompt(preset, action, input as TextInput)
 }

@@ -1,7 +1,7 @@
+import * as readline from 'node:readline'
 import { emitter } from '@preset/core'
 import type { Status, PresetContext } from '@preset/core'
 
-import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
 import { createLogUpdate } from 'log-update'
