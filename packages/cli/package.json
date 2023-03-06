@@ -22,7 +22,9 @@
   "scripts": {
     "prepublishOnly": "pnpm build",
     "build": "unbuild",
-    "stub": "unbuild --stub"
+    "stub": "unbuild --stub",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@preset/core": "workspace:*",

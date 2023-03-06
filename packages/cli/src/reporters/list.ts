@@ -1,46 +1,22 @@
+import { emitter } from '@preset/core'
+import type { Status, PresetContext } from '@preset/core'
+
 import * as readline from 'node:readline'
 import c from 'chalk'
 import debug from 'debug'
-import { beep, cursor } from 'sisteransi'
-import { ActionContext, emitter, PromptChoice, PromptSelect } from '@preset/core'
-import type { Status, PresetContext, PromptInput } from '@preset/core'
 import { createLogUpdate } from 'log-update'
-import { makeReporter } from '../types'
+import { beep, cursor } from 'sisteransi'
+
 import { contexts } from '../state'
+import { makeReporter } from '../types'
 import { formatResult, time } from '../utils'
 import { checks } from '../version'
 
-// https://github.com/vitest-dev/vitest/blob/f2caced25fb0c5ac33368a8a64329467b796089e/packages/vitest/src/reporters/renderers/figures.ts
-const format = {
-	indent: (indent: number) => `${'  '.repeat(indent)}  `,
-	dim: (text?: any)	=> c.gray(text),
-	highlight: (text?: any)	=> c.bold(`${text}`),
-	titleWorking: (text?: any)	=> c.bgYellowBright.white.bold(`${text}`),
-	titleFail: (text?: any)	=> c.bgRed.white.bold(`${text}`),
-	titleSuccess: (text?: any)	=> c.bgGreen.white.bold(`${text}`),
-	titleNextSteps: (text?: any)	=> c.bgMagenta.white.bold(`${text}`),
-	titleWarning: (text?: any)	=> c.bgYellow.white.bold(`${text}`),
-}
-
-const symbols = {
-	spinner: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
-	arrow: '➜',
-	check: '✓',
-	cross: '×',
-	subArrow: ' ↪ ',
-	pointerDouble: '»',
-	pointerSmall: '›',
-}
-
-interface TextInput extends PromptInput {
-	response: string
-}
-
-interface SelectInput extends PromptSelect {
-	response: string
-	cursor: number
-	isDone: boolean
-}
+import renderPrompt from './renderers/prompt'
+import { TextInput } from './renderers/text-prompt'
+import { SelectInput } from './renderers/select-prompt'
+import { symbols } from './renderers/symbols'
+import { format } from './renderers/text-formater'
 
 export default makeReporter({
 	name: 'list',
@@ -52,59 +28,6 @@ export default makeReporter({
 		let rl: readline.Interface
 		let timer: NodeJS.Timer
 		let index = 0
-
-		function renderInputPrompt(preset: PresetContext, action: ActionContext, input: TextInput): string {
-			let text = '\n'
-			text += format.indent(preset.count + 1)
-			text += format.dim(`${symbols.subArrow} ${format.dim(action.options.text)} `)
-			text += c.gray.bold(input?.response.trim() || action.options.default)
-			return text
-		}
-
-		function getChoicePrefix(preset: PresetContext, idx: number, cursor: number): string {
-			const prefix = ' '
-			return format.indent(preset.count + 2) + (cursor === idx ? `${symbols.pointerDouble}` : ' ') + prefix
-		}
-
-		function renderChoices(preset: PresetContext, input: SelectInput) {
-			let outputText = '\n'
-
-			for (let i = 0; i < input.choices.length; i++) {
-				const choice = input.choices[i] as PromptChoice
-				const choiceTitle = typeof choice === 'string' ? choice : choice.title
-
-				const title = input.cursor === i ? c.cyan.underline(choiceTitle) : choiceTitle
-				const prefix = getChoicePrefix(preset, i, input.cursor)
-
-				outputText += `${prefix} ${title}\n`
-			}
-
-			return outputText
-		}
-
-		function renderSelectPrompt(preset: PresetContext, action: ActionContext, input: SelectInput) {
-			const isDone = input.isDone
-			const hasHint = Boolean(action.options.text)
-
-			const outputText = [
-				isDone ? symbols.pointerSmall : hasHint ? c.bold.gray(symbols.pointerSmall) : '',
-				isDone ? input.response.trim() : hasHint ? c.bold.gray(action.options.text) : '',
-			].join(' ')
-
-			return ` ${isDone ? outputText : outputText + renderChoices(preset, input)}`
-		}
-
-		function renderPrompt(preset: PresetContext, action: ActionContext, inputs: (TextInput | SelectInput)[]): string {
-			const input = inputs.find((input) => input.actionContextId === action.id)
-
-			if (!input) {
-				return ''
-			}
-
-			return input.isSelect
-				? renderSelectPrompt(preset, action, input as SelectInput)
-				: renderInputPrompt(preset, action, input as TextInput)
-		}
 
 		// Might need a lil cleanup
 		function render() {
@@ -386,7 +309,11 @@ export default makeReporter({
 				value: typeof ch === 'string' ? ch : ch.value || ch.title,
 			}))
 
-			type SelectInputState = { cursor: number; response: string; isDone: boolean }
+			type SelectInputState = {
+				cursor: number
+				response: string
+				isDone: boolean
+			}
 
 			const state: SelectInputState = {
 				cursor: initialCursor,
