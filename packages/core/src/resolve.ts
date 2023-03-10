@@ -69,6 +69,7 @@ export async function parseResolvable(options: ApplyOptions, cwd: string = proce
 	debug.resolve('Parsing resolvable:', options.resolvable)
 	const resolved
 		= await resolveConfiguredAlias(options)
+		|| await resolveAlias(options)
 		|| await resolveNamespacedAlias(options)
 		|| await resolveLocalFile(options, cwd)
 		|| await resolveLocalDirectory(options, cwd)
@@ -171,6 +172,25 @@ export async function resolveLocalFile(options: ApplyOptions, cwd: string): Prom
 			}
 		}
 	} catch {}
+
+	return false
+}
+
+/**
+ * Resolves an alias.
+ */
+export async function resolveAlias(options: ApplyOptions): Promise<ResolvedPreset | false> {
+	const aliases: Record<string, ResolvedPreset> = {
+		hybridly: {
+			organization: 'hybridly',
+			repository: 'preset',
+			type: 'repository',
+		} as RepositoryPreset,
+	}
+
+	if (options.resolvable in aliases) {
+		return aliases[options.resolvable]
+	}
 
 	return false
 }
@@ -296,5 +316,5 @@ export async function cloneRepository(preset: RepositoryPreset, options: ApplyOp
 		throw new PresetError({ code: 'ERR_CLONE_PRESET', details: `Repository ${repositoryUrl} could not be cloned.`, parent })
 	}
 
-	return path.resolve(targetDirectory, preset.path)
+	return path.resolve(targetDirectory, preset.path ?? '')
 }
