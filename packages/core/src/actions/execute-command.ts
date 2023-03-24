@@ -21,6 +21,10 @@ export interface ExecuteCommandOptions {
 	 * If true, exit code will be ignored.
 	 */
 	ignoreExitCode?: boolean
+	/**
+	 * Environment variables for this command.
+	 */
+	env?: Record<string, string>
 }
 
 /**
@@ -32,7 +36,7 @@ export const executeCommand = defineAction<ExecuteCommandOptions>('execute-comma
 		options.arguments ?? [],
 		options.data ?? (() => {}),
 		presetContext.applyOptions.targetDirectory,
-		{ reject: !options.ignoreExitCode },
+		{ reject: !options.ignoreExitCode, env: options.env },
 		options.ignoreExitCode,
 	)
 })
