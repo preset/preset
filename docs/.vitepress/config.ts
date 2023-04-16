@@ -43,6 +43,10 @@ export default defineConfig({
 	themeConfig: {
 		logo: '/logo.svg',
 
+		search: {
+			provider: 'local',
+		},
+
 		nav: [
 			{ text: 'Documentation', link: '/introduction' },
 			{
@@ -116,12 +120,6 @@ export default defineConfig({
 				},
 			],
 		},
-
-		// algolia: {
-		// 	appId: 'UNQJXGJJCM',
-		// 	apiKey: '13f1ef823ef6da38d5b51452d5768113',
-		// 	indexName: 'preset',
-		// },
 
 		socialLinks: [
 			{ icon: 'github', link: 'https://github.com/preset/preset' },
