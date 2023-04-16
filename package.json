@@ -1,46 +1,47 @@
 {
-  "name": "@preset/monorepo",
-  "private": true,
-  "scripts": {
-    "build": "pnpm -r -F \"./packages/**\" run build",
-    "build:cli": "pnpm -C ./packages/cli run build",
-    "build:core": "pnpm -C ./packages/core run build",
-    "lint": "eslint **/*.ts",
-    "test": "pnpm -r -F \"./packages/**\" run test",
-    "test:cli": "pnpm -C ./packages/cli run test",
-    "test:core": "pnpm -C ./packages/core run test",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs",
-    "release": "bumpp packages/*/package.json --push --tag --commit \"release: v\""
-  },
-  "devDependencies": {
-    "@fontsource/rubik": "^4.5.14",
-    "@iconify-json/mdi": "^1.1.50",
-    "@innocenzi/eslint-config": "^0.19.1",
-    "@preset/core": "workspace:*",
-    "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "@typescript-eslint/parser": "^5.58.0",
-    "bumpp": "^9.1.0",
-    "eslint": "8.38.0",
-    "tsx": "^3.12.6",
-    "typescript": "^5.0.4",
-    "unbuild": "^1.2.1",
-    "unocss": "^0.51.4",
-    "vite": "^4.2.1",
-    "vitepress": "1.0.0-alpha.69",
-    "vitest": "^0.30.1",
-    "vue": "^3.2.47"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "react",
-        "react-dom",
-        "@types/react"
-      ]
+    "name": "@preset/monorepo",
+    "private": true,
+    "scripts": {
+        "build": "pnpm -r -F \"./packages/**\" run build",
+        "build:cli": "pnpm -C ./packages/cli run build",
+        "build:core": "pnpm -C ./packages/core run build",
+        "lint": "eslint **/*.ts",
+        "test": "pnpm -r -F \"./packages/**\" run test",
+        "test:cli": "pnpm -C ./packages/cli run test",
+        "test:core": "pnpm -C ./packages/core run test",
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:serve": "vitepress serve docs",
+        "release": "bumpp packages/*/package.json --push --tag --commit \"release: v\""
+    },
+    "devDependencies": {
+        "@fontsource/rubik": "^4.5.14",
+        "@iconify-json/mdi": "^1.1.50",
+        "@innocenzi/eslint-config": "^0.19.1",
+        "@preset/core": "workspace:*",
+        "@types/node": "^18.15.11",
+        "@typescript-eslint/eslint-plugin": "^5.58.0",
+        "@typescript-eslint/parser": "^5.58.0",
+        "bumpp": "^9.1.0",
+        "eslint": "8.38.0",
+        "tsx": "^3.12.6",
+        "typescript": "^5.0.4",
+        "unbuild": "^1.2.1",
+        "unocss": "^0.51.4",
+        "vite": "^4.2.1",
+        "vitepress": "1.0.0-alpha.69",
+        "vitest": "^0.30.1",
+        "vue": "^3.2.47"
+    },
+    "pnpm": {
+        "peerDependencyRules": {
+            "ignoreMissing": [
+                "@algolia/client-search",
+                "react",
+                "react-dom",
+                "@types/react",
+                "tailwindcss"
+            ]
+        }
     }
-  }
 }
