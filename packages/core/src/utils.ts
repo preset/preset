@@ -91,6 +91,12 @@ export function objectWithoutKeys<T extends object = {}>(obj: T, ...keys: (keyof
  * Detects the package manager used in the given directory.
  */
 export async function detectNodePackageManager(directory: string) {
+	const packageManager = process.env.npm_config_user_agent?.split('/')[0]
+	if (packageManager && ['npm', 'yarn', 'pnpm'].includes(packageManager)) {
+		debug.utils(`Detected running package manager: ${packageManager}`)
+		return packageManager
+	}
+
 	const packageLockFiles: Record<string, NodePackageManager> = {
 		'pnpm-lock.yaml': 'pnpm',
 		'yarn.lock': 'yarn',
