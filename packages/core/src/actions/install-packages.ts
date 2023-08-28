@@ -13,6 +13,15 @@ async function getNodePackageManagerInstallArguments(cwd: string, options: Insta
 
 	debug.action(ACTION_NAME, `Using package manager: ${packageManager}`)
 
+	if (packageManager === 'bun') {
+		return [packageManager, [
+			options.type!,
+			options.dev ? '-D' : '',
+			...args,
+			...packageNames,
+		].filter(Boolean)]
+	}
+
 	if (packageManager === 'npm') {
 		return [packageManager, [
 			options.type!,

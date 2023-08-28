@@ -346,6 +346,34 @@ it('installs the given node package with yarn', async() => await usingSandbox({
 	targetStructure: emptyPackageJsonStructure,
 }))
 
+it('installs the given node package with bun', async() => await usingSandbox({
+	fn: async({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({
+			handler: async() => await installPackages({
+				for: 'node',
+				packages: 'debug@^4.3.4',
+				packageManager: 'bun',
+			}),
+		})
+
+		await executePreset()
+		await expectStructureMatches(targetDirectory, {
+			'node_modules': { type: 'directory' },
+			'node_modules/debug': { type: 'directory' },
+			'bun.lockb': { type: 'file' },
+			'package.json': {
+				type: 'file',
+				json: {
+					dependencies: {
+						debug: '^4.3.4',
+					},
+				},
+			},
+		})
+	},
+	targetStructure: emptyPackageJsonStructure,
+}))
+
 it('installs existing packages with yarn', async() => await usingSandbox({
 	fn: async({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({

@@ -377,7 +377,7 @@ export interface PromptResponse {
 	response?: string
 }
 
-export type NodePackageManager = 'pnpm' | 'yarn' | 'npm'
+export type NodePackageManager = 'pnpm' | 'yarn' | 'npm' | 'bun'
 
 export interface PresetConfiguration {
 	defaultNodeAgent: NodePackageManager

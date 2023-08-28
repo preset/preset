@@ -92,12 +92,13 @@ export function objectWithoutKeys<T extends object = {}>(obj: T, ...keys: (keyof
  */
 export async function detectNodePackageManager(directory: string) {
 	const packageManager = process.env.npm_config_user_agent?.split('/')[0]
-	if (packageManager && ['npm', 'yarn', 'pnpm'].includes(packageManager)) {
+	if (packageManager && ['npm', 'yarn', 'pnpm', 'bun'].includes(packageManager)) {
 		debug.utils(`Detected running package manager: ${packageManager}`)
 		return packageManager
 	}
 
 	const packageLockFiles: Record<string, NodePackageManager> = {
+		'bun.lockb': 'bun',
 		'pnpm-lock.yaml': 'pnpm',
 		'yarn.lock': 'yarn',
 		'package-lock.json': 'npm',

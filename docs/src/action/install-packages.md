@@ -45,7 +45,7 @@ Defines whether to `install` or `update`. In either case, `packages` can be empt
 
 Defines the package manager that can be used. 
 
-This option is only used for Node, for which `npm`, `yarn` and `pnpm` are available. If not specified, the package manager will be determined, by the lockfile in the target directory or the the `defaultNodeAgent` property of `~/.presetrc.json`, if specified. Otherwise, `npm` will be used.
+This option is only used for Node, for which `npm`, `yarn`, `pnpm` and `bun` are available. If not specified, the package manager will be determined, by the lockfile in the target directory or the the `defaultNodeAgent` property of `~/.presetrc.json`, if specified. Otherwise, `npm` will be used.
 
 ### `additionalArgs`
 
