@@ -18,8 +18,8 @@ Once installed on your system, the `preset` command becomes available. Alternati
 # With global installation
 preset apply organization/preset
 
-# With npx for one-off commands
-npx @preset/cli apply organization/preset
+# With npx for one-off commands (note that `apply` is an aliased package equivalent to `@preset/cli`)
+npx apply organization/preset
 ```
 
 ## Usage

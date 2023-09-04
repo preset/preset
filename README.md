@@ -17,7 +17,7 @@
   <a href="https://preset.dev"><img alt="docs" src="https://img.shields.io/badge/documentation-online-blue?logo=readthedocs&logoColor=white"></a>
   <br />
   <br />
-  <pre><div align="center">npx @preset/cli apply &lt;your-username/your-preset&gt;</div></pre>
+  <pre><div align="center">npx apply &lt;your-username/your-preset&gt;</div></pre>
 </p>
 
 <br />
