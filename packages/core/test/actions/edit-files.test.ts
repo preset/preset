@@ -125,7 +125,6 @@ const tests: Record<string, EditFileTest> = {
 	'removes two lines before another line': {
 		operation: {
 			type: 'remove-line',
-			position: 'before',
 			match: /Fourth line/,
 			start: -2,
 			count: 2,
