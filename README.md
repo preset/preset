@@ -10,7 +10,7 @@
 
 <p align="center">
   <br />
-  <a href="https://github.com/preset/preset/actions?query=workflow%3Atests"><img alt="Status" src="https://github.com/preset/preset/workflows/tests/badge.svg"></a>
+  <a href="https://github.com/preset/preset/actions/workflows/test.yaml"><img alt="Status" src="https://github.com/preset/preset/actions/workflows/test.yaml/badge.svg"></a>
   <span>&nbsp;</span>
   <a href="https://github.com/preset/preset/releases"><img alt="version" src="https://img.shields.io/github/v/release/preset/preset?include_prereleases&label=version&logo=github&logoColor=white"></a>
   <span>&nbsp;</span>
