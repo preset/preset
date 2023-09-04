@@ -48,7 +48,7 @@
         "fast-glob": "^3.3.1",
         "fs-extra": "^11.1.1",
         "mitt": "^3.0.1",
-        "simple-git": "^3.19.1",
+        "simple-git": "^3.16.0",
         "type-fest": "^4.3.1",
         "unconfig": "^0.3.10",
         "unset-value": "^2.0.1"
