@@ -60,6 +60,12 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
+  packages/apply:
+    dependencies:
+      '@preset/cli':
+        specifier: workspace:*
+        version: link:../cli
+
   packages/cli:
     dependencies:
       '@preset/core':
@@ -150,7 +156,7 @@ importers:
         version: 5.2.2
 
   packages/preset:
-    devDependencies:
+    dependencies:
       '@preset/cli':
         specifier: workspace:*
         version: link:../cli
