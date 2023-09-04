@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@preset/core": "workspace:*",
+        "@types/debug": "^4.1.8",
         "cac": "^6.7.14",
         "chalk": "^5.3.0",
         "debug": "^4.3.4",
