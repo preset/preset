@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         os: [ubuntu-latest]
       fail-fast: true
 
@@ -34,7 +34,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 7.24.0
+          version: 8.7.1
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
