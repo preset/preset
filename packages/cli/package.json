@@ -16,6 +16,11 @@
         "dist",
         "init"
     ],
+    "exports": {
+        ".": {
+            "import": "./dist/cli.mjs"
+        }
+    },
     "bin": {
         "preset": "dist/cli.mjs"
     },
