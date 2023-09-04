@@ -1,63 +1,63 @@
 {
-  "name": "@preset/core",
-  "version": "0.11.0",
-  "license": "MIT",
-  "author": "Enzo Innocenzi",
-  "description": "Elegant, ecosystem-agnostic preset mechanism",
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "dist",
-    "*.d.ts"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/preset/preset.git",
-    "directory": "packages/core"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+    "name": "@preset/core",
+    "version": "0.11.0",
+    "description": "Elegant, ecosystem-agnostic preset mechanism",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/preset/preset.git",
+        "directory": "packages/core"
     },
-    "./*": "./*",
-    "./globals": {
-      "types": "./globals.d.ts"
+    "author": "Enzo Innocenzi",
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "dist",
+        "*.d.ts"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        },
+        "./*": "./*",
+        "./globals": {
+            "types": "./globals.d.ts"
+        }
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "bugs": "https://github.com/preset/preset/issues",
+    "homepage": "https://preset.dev",
+    "scripts": {
+        "build": "unbuild",
+        "stub": "unbuild --stub",
+        "test": "vitest",
+        "test:watch": "vitest",
+        "prepublishOnly": "npm run build",
+        "prepublish": "tsx ./update-globals.ts",
+        "postpublish": "tsx ./update-globals.ts --delete"
+    },
+    "dependencies": {
+        "cac": "^6.7.14",
+        "debug": "^4.3.4",
+        "deepmerge": "^4.3.1",
+        "esbuild": "^0.19.2",
+        "fast-glob": "^3.3.1",
+        "fs-extra": "^11.1.1",
+        "mitt": "^3.0.1",
+        "simple-git": "^3.19.1",
+        "type-fest": "^4.3.1",
+        "unconfig": "^0.3.10",
+        "unset-value": "^2.0.1"
+    },
+    "devDependencies": {
+        "@types/debug": "^4.1.8",
+        "@types/fs-extra": "^11.0.1",
+        "detect-indent": "^7.0.1",
+        "execa": "^8.0.1",
+        "typescript": "^5.2.2"
     }
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "bugs": "https://github.com/preset/preset/issues",
-  "homepage": "https://preset.dev",
-  "scripts": {
-    "build": "unbuild",
-    "stub": "unbuild --stub",
-    "test": "vitest",
-    "test:watch": "vitest",
-    "prepublishOnly": "npm run build",
-    "prepublish": "tsx ./update-globals.ts",
-    "postpublish": "tsx ./update-globals.ts --delete"
-  },
-  "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^11.0.1",
-    "detect-indent": "^7.0.1",
-    "execa": "^6.1.0",
-    "typescript": "^4.9.4"
-  },
-  "dependencies": {
-    "cac": "^6.7.14",
-    "debug": "^4.3.4",
-    "deepmerge": "^4.2.2",
-    "esbuild": "^0.16.17",
-    "fast-glob": "^3.2.12",
-    "fs-extra": "^11.1.0",
-    "mitt": "^3.0.0",
-    "simple-git": "^3.15.1",
-    "type-fest": "^3.5.1",
-    "unconfig": "^0.3.7",
-    "unset-value": "^2.0.1"
-  }
 }
