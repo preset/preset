@@ -4,7 +4,7 @@ import { afterEach, it, expect } from 'vitest'
 
 import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
-import renderTextPrompt, { TextInput } from '../../../src/reporters/renderers/text-prompt'
+import renderTextPrompt, { type TextInput } from '../../../src/reporters/renderers/text-prompt'
 import { makeActionContext, makePresetContext, makeTextInput } from './utils'
 
 const promptDefault: string = 'Some default text'

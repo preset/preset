@@ -4,7 +4,7 @@ import { afterEach, it, expect } from 'vitest'
 
 import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
-import renderSelectPrompt, { SelectInput } from '../../../src/reporters/renderers/select-prompt'
+import renderSelectPrompt, { type SelectInput } from '../../../src/reporters/renderers/select-prompt'
 import { makeActionContext, makePresetContext, makeSelectInput } from './utils'
 
 const cursor = 0

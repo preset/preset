@@ -1,14 +1,14 @@
 import {
-	ActionContext,
-	ActionOptions,
-	ApplyOptions,
+	type ActionContext,
+	type ActionOptions,
+	type ApplyOptions,
 	createPresetContext,
-	LocalPreset,
-	Preset,
-	PromptChoice,
+	type LocalPreset,
+	type Preset,
+	type PromptChoice,
 } from '@preset/core'
-import { TextInput } from '../../../src/reporters/renderers/text-prompt'
-import { SelectInput } from '../../../src/reporters/renderers/select-prompt'
+import type { TextInput } from '../../../src/reporters/renderers/text-prompt'
+import type { SelectInput } from '../../../src/reporters/renderers/select-prompt'
 
 export const makePresetContext = () => {
 	const testPreset: Preset = { name: 'test_preset_name', options: {}, apply: async() => false }
