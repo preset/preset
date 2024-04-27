@@ -266,13 +266,14 @@ export default makeReporter({
 				const input = inputs.at(-1)!
 				let chunk
 
-				// 8 backspace
+				// 127 backspace
+				// 8 del
 				// 3 ctrl+c
 				// 13 enter
 				// eslint-disable-next-line no-cond-assign
 				while ((chunk = process.stdin.read()) !== null) {
-					// Handle backspace (8)
-					if (Buffer.from(chunk).toString().charCodeAt(0) === 8) {
+					// Handle backspace (127)
+					if (Buffer.from(chunk).toString().charCodeAt(0) === 127) {
 						input.response = input.response.slice(0, -1)
 						continue
 					}
