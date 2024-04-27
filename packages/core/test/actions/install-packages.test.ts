@@ -1,6 +1,6 @@
 import { it } from 'vitest'
 import { installPackages } from '../../src'
-import { usingSandbox, expectStructureMatches, DirectoryStructure } from '../utils'
+import { usingSandbox, expectStructureMatches, type DirectoryStructure } from '../utils'
 
 const emptyPackageJsonStructure: DirectoryStructure = {
 	'package.json': { type: 'file', content: '{}' },

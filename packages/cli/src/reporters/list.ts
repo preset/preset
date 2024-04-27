@@ -13,8 +13,8 @@ import { formatResult, time } from '../utils'
 import { checks } from '../version'
 
 import renderPrompt from './renderers/prompt'
-import { TextInput } from './renderers/text-prompt'
-import { SelectInput } from './renderers/select-prompt'
+import type { TextInput } from './renderers/text-prompt'
+import type { SelectInput } from './renderers/select-prompt'
 import { symbols } from './renderers/symbols'
 import { format } from './renderers/text-formater'
 

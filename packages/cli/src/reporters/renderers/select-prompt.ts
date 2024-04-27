@@ -1,4 +1,4 @@
-import { ActionContext, PresetContext, PromptChoice, PromptSelect } from '@preset/core'
+import type { ActionContext, PresetContext, PromptChoice, PromptSelect } from '@preset/core'
 import c from 'chalk'
 
 import { symbols } from './symbols'

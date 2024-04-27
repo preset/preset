@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest'
-import { group, extractTemplates, executeCommand, emitter, ActionContext } from '../../src'
+import { group, extractTemplates, executeCommand, emitter, type ActionContext } from '../../src'
 import { usingSandbox } from '../utils'
 
 it('applies actions in the group', async() => await usingSandbox({

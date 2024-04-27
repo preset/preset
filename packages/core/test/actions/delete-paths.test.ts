@@ -1,5 +1,5 @@
-import { deletePaths, DeletePathsOptions } from '../../src'
-import { DirectoryStructure, expectStructureMatches, testsInSandbox, TestRecord } from '../utils'
+import { deletePaths, type DeletePathsOptions } from '../../src'
+import { type DirectoryStructure, expectStructureMatches, testsInSandbox, type TestRecord } from '../utils'
 
 interface DeletePathTest extends TestRecord {
 	options: DeletePathsOptions
