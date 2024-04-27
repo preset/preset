@@ -26,7 +26,7 @@ export default makeReporter({
 		const updateLog = createLogUpdate(process.stdout)
 		const failedPresets: Set<string> = new Set([])
 		let rl: readline.Interface
-		let timer: NodeJS.Timer
+		let timer: ReturnType<typeof setTimeout>
 		let index = 0
 
 		// Might need a lil cleanup
