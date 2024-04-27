@@ -16,7 +16,7 @@
         "release": "bumpp packages/*/package.json --push --tag --commit \"release: v\""
     },
     "devDependencies": {
-        "@fontsource/rubik": "^5.0.20",
+        "@fontsource-variable/rubik": "^5.0.22",
         "@iconify-json/mdi": "^1.1.66",
         "@innocenzi/eslint-config": "^0.21.2",
         "@preset/core": "workspace:*",

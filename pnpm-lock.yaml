@@ -8,9 +8,9 @@ importers:
 
   .:
     devDependencies:
-      '@fontsource/rubik':
-        specifier: ^5.0.20
-        version: 5.0.20
+      '@fontsource-variable/rubik':
+        specifier: ^5.0.22
+        version: 5.0.22
       '@iconify-json/mdi':
         specifier: ^1.1.66
         version: 1.1.66
@@ -709,8 +709,8 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@fontsource/rubik@5.0.20':
-    resolution: {integrity: sha512-4iEk1Nnnz4kzrpfsjfHXOm7HDVtsDfs8uihhE4LaXqQuxnY8lERZWJhtGAKILDwbx3gsnVXI+0beUNLRmaHeCw==}
+  '@fontsource-variable/rubik@5.0.22':
+    resolution: {integrity: sha512-QwMlj57+k5+IsShA8q6FECU6zlR4CIm4TAy49GIIiMxxpmRwDXbMynrTp2kBNZmlN4b/myXzSRBnI2DXmnWBJA==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -4389,7 +4389,7 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@fontsource/rubik@5.0.20': {}
+  '@fontsource-variable/rubik@5.0.22': {}
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
