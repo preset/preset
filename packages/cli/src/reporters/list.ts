@@ -344,6 +344,7 @@ export default makeReporter({
 				enter: 'submit',
 				up: 'up',
 				down: 'down',
+				escape: 'cancel',
 			}
 
 			const actions: { [key: string]: () => void } = {
@@ -361,6 +362,9 @@ export default makeReporter({
 						moveSelectPromptSelection(state.cursor + 1)
 					}
 				},
+				cancel: () => {
+					process.exit()
+				},
 				submit: () => {
 					state.isDone = true
 					updateInput(promptSelect.actionContextId, state)
@@ -369,15 +373,17 @@ export default makeReporter({
 				},
 			}
 
-			function handleKeypress(str: string, key: { name: string }) {
+			function handleKeypress(str: string, key: { name: string, ctrl: boolean }) {
 				const actionKey: string | undefined = actionKeys[key.name]
 				const action: () => void | undefined = actions[actionKey]
-
-				if (typeof action === 'function') {
-					action()
-				} else {
-					stdout.write(beep)
-				}
+				
+				if (key.name === 'c' && key.ctrl) {
+					process.exit()
+				} else if (typeof action === "function") {
+          action();
+        } else {
+          stdout.write(beep);
+        }
 			}
 
 			function finishSelectPrompt() {
