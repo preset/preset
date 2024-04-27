@@ -23,5 +23,5 @@
     "./*.ts",
     "./packages/**/*.ts"
   ],
-  "exclude": ["**/dist/**", "node_modules", "packages/cli/init/templates/**"]
+  "exclude": ["**/bin/**", "**/dist/**", "node_modules", "packages/cli/init/templates/**"]
 }

@@ -13,6 +13,7 @@
         "access": "public"
     },
     "files": [
+        "bin",
         "dist",
         "init"
     ],
@@ -22,7 +23,7 @@
         }
     },
     "bin": {
-        "preset": "dist/cli.mjs"
+        "preset": "bin/preset.mjs"
     },
     "scripts": {
         "prepublishOnly": "pnpm build",
