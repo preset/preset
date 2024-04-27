@@ -16,6 +16,7 @@
       "node",
     ],
 		"paths": {
+      "@preset/core": ["./packages/core/src/index.ts"],
       "@preset/core/globals": ["./packages/core/globals.d.ts"],
 		}
   },
