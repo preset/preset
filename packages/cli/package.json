@@ -1,6 +1,6 @@
 {
     "name": "@preset/cli",
-    "version": "0.11.2",
+    "version": "0.11.3",
     "description": "Elegant, ecosystem-agnostic preset mechanism",
     "license": "MIT",
     "repository": {
