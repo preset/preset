@@ -2,7 +2,12 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
 	test: {
-		threads: false,
+		pool: 'threads',
+		poolOptions: {
+			threads: {
+				singleThread: true
+			}
+		},
 		reporters: 'verbose',
 		include: ['**/*.test.ts'],
 		watch: false,

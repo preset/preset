@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { defineAction } from '../api'
 import { debug } from '../utils'
 import { emitter } from '../events'
-import { ActionContext, PresetContext } from '../types'
+import type { ActionContext, PresetContext } from '../types'
 
 function shouldReturnDefaultResponse(presetContext: PresetContext): boolean {
 	return presetContext.options.interaction === false

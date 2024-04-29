@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest'
-import { applyNestedPreset, emitter, PresetContext } from '../../src'
+import { applyNestedPreset, emitter, type PresetContext } from '../../src'
 import { usingSandbox, presetFixture } from '../utils'
 
 it('applies the given nested preset', async() => await usingSandbox({

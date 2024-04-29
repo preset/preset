@@ -1,6 +1,6 @@
-import { emitter, LocalPreset } from '@preset/core'
+import { emitter, type LocalPreset } from '@preset/core'
 import semver from 'semver'
-import checkUpdates, { UpdateInfo } from 'update-notifier'
+import checkUpdates, { type UpdateInfo } from 'update-notifier'
 import pkg from '../../core/package.json'
 
 interface VersionCheck {

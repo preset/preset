@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 // eslint-disable-next-line import/named
-import { execa, CommonOptions } from 'execa'
+import { execa, type CommonOptions } from 'execa'
 import createDebugger from 'debug'
 import type { NodePackageManager } from './types'
 

@@ -1,5 +1,5 @@
-import { editFiles, EditFileOperation } from '../../src'
-import { dedent, DirectoryStructure, expectStructureMatches, TestRecord, testsInSandbox } from '../utils'
+import { editFiles, type EditFileOperation } from '../../src'
+import { dedent, type DirectoryStructure, expectStructureMatches, type TestRecord, testsInSandbox } from '../utils'
 
 interface EditFileTest extends TestRecord {
 	operation: EditFileOperation

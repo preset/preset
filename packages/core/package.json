@@ -44,20 +44,20 @@
         "cac": "^6.7.14",
         "debug": "^4.3.4",
         "deepmerge": "^4.3.1",
-        "esbuild": "^0.19.2",
-        "fast-glob": "^3.3.1",
-        "fs-extra": "^11.1.1",
+        "esbuild": "^0.20.2",
+        "fast-glob": "^3.3.2",
+        "fs-extra": "^11.2.0",
         "mitt": "^3.0.1",
-        "simple-git": "^3.19.1",
-        "type-fest": "^4.3.1",
-        "unconfig": "^0.3.10",
+        "simple-git": "^3.24.0",
+        "type-fest": "^4.17.0",
+        "unconfig": "^0.3.13",
         "unset-value": "^2.0.1"
     },
     "devDependencies": {
-        "@types/debug": "^4.1.8",
-        "@types/fs-extra": "^11.0.1",
+        "@types/debug": "^4.1.12",
+        "@types/fs-extra": "^11.0.4",
         "detect-indent": "^7.0.1",
         "execa": "^8.0.1",
-        "typescript": "^5.2.2"
+        "typescript": "^5.4.5"
     }
 }

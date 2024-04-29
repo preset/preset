@@ -13,8 +13,8 @@ import { formatResult, time } from '../utils'
 import { checks } from '../version'
 
 import renderPrompt from './renderers/prompt'
-import { TextInput } from './renderers/text-prompt'
-import { SelectInput } from './renderers/select-prompt'
+import type { TextInput } from './renderers/text-prompt'
+import type { SelectInput } from './renderers/select-prompt'
 import { symbols } from './renderers/symbols'
 import { format } from './renderers/text-formater'
 
@@ -26,7 +26,7 @@ export default makeReporter({
 		const updateLog = createLogUpdate(process.stdout)
 		const failedPresets: Set<string> = new Set([])
 		let rl: readline.Interface
-		let timer: NodeJS.Timer
+		let timer: ReturnType<typeof setTimeout>
 		let index = 0
 
 		// Might need a lil cleanup
@@ -266,16 +266,23 @@ export default makeReporter({
 				const input = inputs.at(-1)!
 				let chunk
 
-				// 8 backspace
+				// 8 del
 				// 3 ctrl+c
 				// 13 enter
+				// 27 escape
+				// 127 backspace
 				// eslint-disable-next-line no-cond-assign
 				while ((chunk = process.stdin.read()) !== null) {
-					// Handle backspace (8)
-					if (Buffer.from(chunk).toString().charCodeAt(0) === 8) {
+					const currentBuffer = Buffer.from(chunk).toString().charCodeAt(0)
+
+					// Handle backspace (127)
+					if (currentBuffer === 127) {
 						input.response = input.response.slice(0, -1)
 						continue
-					}
+					// Handle ctrl+c (3) || escape (27)
+					} else if (currentBuffer === 3 || currentBuffer == 27) {
+            process.exit()
+          }
 
 					// Add the chunk
 					input.response += chunk
@@ -343,6 +350,7 @@ export default makeReporter({
 				enter: 'submit',
 				up: 'up',
 				down: 'down',
+				escape: 'cancel',
 			}
 
 			const actions: { [key: string]: () => void } = {
@@ -360,23 +368,27 @@ export default makeReporter({
 						moveSelectPromptSelection(state.cursor + 1)
 					}
 				},
+				cancel: () => {
+					process.exit()
+				},
 				submit: () => {
 					state.isDone = true
 					updateInput(promptSelect.actionContextId, state)
-					stdout.write('\n')
 					finishSelectPrompt()
 				},
 			}
 
-			function handleKeypress(str: string, key: { name: string }) {
+			function handleKeypress(str: string, key: { name: string, ctrl: boolean }) {
 				const actionKey: string | undefined = actionKeys[key.name]
 				const action: () => void | undefined = actions[actionKey]
-
-				if (typeof action === 'function') {
-					action()
-				} else {
-					stdout.write(beep)
-				}
+				
+				if (key.name === 'c' && key.ctrl) {
+					process.exit()
+				} else if (typeof action === "function") {
+          action();
+        } else {
+          stdout.write(beep);
+        }
 			}
 
 			function finishSelectPrompt() {

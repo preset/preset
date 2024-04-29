@@ -11,11 +11,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "strictNullChecks": true,
+    "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "types": [
       "node",
     ],
 		"paths": {
+      "@preset/core": ["./packages/core/src/index.ts"],
       "@preset/core/globals": ["./packages/core/globals.d.ts"],
 		}
   },
@@ -23,5 +25,5 @@
     "./*.ts",
     "./packages/**/*.ts"
   ],
-  "exclude": ["**/dist/**", "node_modules", "packages/cli/init/templates/**"]
+  "exclude": ["**/bin/**", "**/dist/**", "node_modules", "packages/cli/init/templates/**"]
 }

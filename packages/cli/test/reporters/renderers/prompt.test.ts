@@ -5,10 +5,10 @@ import { afterEach, it, expect } from 'vitest'
 import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
 
-import { TextInput } from '../../../src/reporters/renderers/text-prompt'
+import type { TextInput } from '../../../src/reporters/renderers/text-prompt'
 
 import renderPrompt from '../../../src/reporters/renderers/prompt'
-import renderSelectPrompt, { SelectInput } from '../../../src/reporters/renderers/select-prompt'
+import renderSelectPrompt, { type SelectInput } from '../../../src/reporters/renderers/select-prompt'
 import { makeActionContext, makePresetContext, makeSelectInput, makeTextInput } from './utils'
 
 afterEach(() => popCurrentContext())

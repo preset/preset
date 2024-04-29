@@ -1,7 +1,7 @@
 import os from 'node:os'
 import type { ReadonlyDeep } from 'type-fest'
 import { loadConfig } from 'unconfig'
-import { PresetConfiguration } from './types'
+import type { PresetConfiguration } from './types'
 import { debug } from './utils'
 
 export const config: ReadonlyDeep<PresetConfiguration> = {
