@@ -2,6 +2,7 @@
 layout: home
 title: Preset - Elegant, ecosystem-agnostic preset mechanism
 titleTemplate: false
+markdownStyles: false
 ---
 
 <script setup>
