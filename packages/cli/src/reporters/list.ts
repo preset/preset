@@ -374,7 +374,6 @@ export default makeReporter({
 				submit: () => {
 					state.isDone = true
 					updateInput(promptSelect.actionContextId, state)
-					stdout.write('\n')
 					finishSelectPrompt()
 				},
 			}
