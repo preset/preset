@@ -11,7 +11,7 @@ import { debug, objectWithoutKeys, wrap } from '../utils'
 /**
  * Applies one or multiple operations to the given files.
  */
-export const editFiles = defineAction<EditFilesOptions>('edit-files', async({ options, presetContext, actionContext }) => {
+export const editFiles = defineAction<EditFilesOptions>('edit-files', async ({ options, presetContext, actionContext }) => {
 	const paths = await fg(options.files, {
 		ignore: ['node_modules', '.git', 'dist'],
 		markDirectories: true,
@@ -192,17 +192,17 @@ interface AddLineOperation {
 	type: 'add-line'
 
 	/**
-    * The lines to add.
-    */
+	 * The lines to add.
+	 */
 	lines: string | string[]
 
 	/**
-    * Indentation for this line addition.
-		* If a number: will indent with the given amount of spaces.
-		* If a string: will use the given string as indentation.
-		* If true: will keep the indentation from the line before or after.
-		* If false: will not indent.
-    */
+	 * Indentation for this line addition.
+	 * If a number: will indent with the given amount of spaces.
+	 * If a string: will use the given string as indentation.
+	 * If true: will keep the indentation from the line before or after.
+	 * If false: will not indent.
+	 */
 	indent?: number | string | boolean
 }
 
@@ -213,8 +213,8 @@ type AddLineWithMatchOperation = AddLineOperation & {
 	position: 'after' | 'before'
 
 	/**
-   * The line to match.
-   */
+	 * The line to match.
+	 */
 	match: RegExp
 }
 
@@ -242,8 +242,8 @@ interface RemoveLineOperation {
 	type: 'remove-line'
 
 	/**
-    * The line to match.
-    */
+	 * The line to match.
+	 */
 	match: RegExp
 
 	/**
@@ -253,7 +253,7 @@ interface RemoveLineOperation {
 
 	/**
 	 * The amount of lines to remove. Defaults to 1, can be negative to remove previous lines.
-    */
+	 */
 	count?: number
 }
 
@@ -267,13 +267,13 @@ interface ReplaceVariablesOperation {
 	type: 'replace-variables'
 
 	/**
-    * Variable prefix. Defaults to @@.
-    */
+	 * Variable prefix. Defaults to @@.
+	 */
 	prefix?: string
 
 	/**
-    * An object which keys are variable names and values are variable content.
-    */
+	 * An object which keys are variable names and values are variable content.
+	 */
 	variables: Record<string, string | number | ((content: string) => string | number)>
 }
 
@@ -322,17 +322,17 @@ export type EditFileOperation = (AddLineAtIndexOperation | AddLineAtOperation | 
 	/**
 	 * Whether to skip that operation.
 	 */
-	skipIf?: (content: string, targetFile: string) => Promisable<Boolean>
+	skipIf?: (content: string, targetFile: string) => Promisable<boolean>
 }
 
 export interface EditFilesOptions {
 	/**
-    * The files to edit. Can use a double-star glob.
-    */
+	 * The files to edit. Can use a double-star glob.
+	 */
 	files: string | string[]
 
 	/**
-    * List of operations to perform on the given file.
-    */
+	 * List of operations to perform on the given file.
+	 */
 	operations: EditFileOperation | EditFileOperation[]
 }

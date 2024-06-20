@@ -1,10 +1,10 @@
-import { it, expect } from 'vitest'
-import { extractTemplates, emitter } from '../../src'
-import { usingSandbox, expectStructureMatches } from '../utils'
+import { expect, it } from 'vitest'
+import { emitter, extractTemplates } from '../../src'
+import { expectStructureMatches, usingSandbox } from '../utils'
 
-it('extracts the templates directory to the target directory', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates() })
+it('extracts the templates directory to the target directory', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates() })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, { 'file.txt': { type: 'file' } })
@@ -12,9 +12,9 @@ it('extracts the templates directory to the target directory', async() => await 
 	rootStructure: { 'templates/file.txt': { type: 'file' } },
 }))
 
-it('extracts a custom templates directory to the target directory', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ templates: 'data/my-templates' }) })
+it('extracts a custom templates directory to the target directory', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ templates: 'data/my-templates' }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, { 'file.txt': { type: 'file' } })
@@ -22,9 +22,9 @@ it('extracts a custom templates directory to the target directory', async() => a
 	rootStructure: { 'data/my-templates/file.txt': { type: 'file' } },
 }))
 
-it('does not extract actual dotfiles by default', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates() })
+it('does not extract actual dotfiles by default', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates() })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {})
@@ -32,9 +32,9 @@ it('does not extract actual dotfiles by default', async() => await usingSandbox(
 	rootStructure: { 'templates/.gitkeep': { type: 'file' } },
 }))
 
-it('extracts actual dotfiles{ when `extractDotFiles` is true', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ extractDotFiles: true }) })
+it('extracts actual dotfiles{ when `extractDotFiles` is true', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ extractDotFiles: true }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, { '.gitkeep': { type: 'file' } })
@@ -42,9 +42,9 @@ it('extracts actual dotfiles{ when `extractDotFiles` is true', async() => await 
 	rootStructure: { 'templates/.gitkeep': { type: 'file' } },
 }))
 
-it('extracts files with the .dotfile extension as actual dotfiles', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates() })
+it('extracts files with the .dotfile extension as actual dotfiles', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates() })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {
@@ -60,9 +60,9 @@ it('extracts files with the .dotfile extension as actual dotfiles', async() => a
 	},
 }))
 
-it('extracts files from a custom location inside the templates directory', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ from: 'default' }) })
+it('extracts files from a custom location inside the templates directory', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ from: 'default' }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {
@@ -78,9 +78,9 @@ it('extracts files from a custom location inside the templates directory', async
 	},
 }))
 
-it('skips extractions to files that exist', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ whenConflict: 'skip' }) })
+it('skips extractions to files that exist', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ whenConflict: 'skip' }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {
@@ -91,9 +91,9 @@ it('skips extractions to files that exist', async() => await usingSandbox({
 	targetStructure: { 'default.txt': { type: 'file', content: 'Komi is best girl' } },
 }))
 
-it('overrides files that exist', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ whenConflict: 'override' }) })
+it('overrides files that exist', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ whenConflict: 'override' }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {
@@ -104,10 +104,10 @@ it('overrides files that exist', async() => await usingSandbox({
 	targetStructure: { 'default.txt': { type: 'file', content: 'Komi is best girl' } },
 }))
 
-it('extracts a specific file into a specific directory when that directory is used as target', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
+it('extracts a specific file into a specific directory when that directory is used as target', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await extractTemplates({
+			handler: async () => await extractTemplates({
 				from: 'vite.php',
 				to: 'config',
 			}),
@@ -122,9 +122,9 @@ it('extracts a specific file into a specific directory when that directory is us
 	targetStructure: { config: { type: 'directory' } },
 }))
 
-it('fails when trying to extract a directory to a file', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ to: 'file.txt' }) })
+it('fails when trying to extract a directory to a file', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ to: 'file.txt' }) })
 		const execution: any = {}
 
 		emitter.on('action:fail', (context) => execution.context = context)
@@ -138,10 +138,10 @@ it('fails when trying to extract a directory to a file', async() => await usingS
 	targetStructure: { 'file.txt': { type: 'file' } },
 }))
 
-it('extracts a single nested file to the target directory', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
+it('extracts a single nested file to the target directory', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await extractTemplates({
+			handler: async () => await extractTemplates({
 				from: 'nested/gitignore.dotfile',
 				flatten: true,
 			}),
@@ -153,9 +153,9 @@ it('extracts a single nested file to the target directory', async() => await usi
 	rootStructure: { 'templates/nested/gitignore.dotfile': { type: 'file' } },
 }))
 
-it('extracts glob-based files to the target directory', async() => await usingSandbox({
-	fn: async({ targetDirectory }, makeTestPreset) => {
-		const { executePreset } = await makeTestPreset({ handler: async() => await extractTemplates({ from: 'php/**/*.php' }) })
+it('extracts glob-based files to the target directory', async () => await usingSandbox({
+	fn: async ({ targetDirectory }, makeTestPreset) => {
+		const { executePreset } = await makeTestPreset({ handler: async () => await extractTemplates({ from: 'php/**/*.php' }) })
 
 		await executePreset()
 		await expectStructureMatches(targetDirectory, {

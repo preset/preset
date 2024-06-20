@@ -10,7 +10,7 @@ const isFile = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })
 /**
  * Renames the given folders or files from the target directory.
  */
-export const renamePaths = defineAction<RenamePathsOptions>('rename-paths', async({ options, actionContext, presetContext }) => {
+export const renamePaths = defineAction<RenamePathsOptions>('rename-paths', async ({ options, actionContext, presetContext }) => {
 	const { transformer, paths } = options
 
 	const globPaths = await fg(paths || '**/**', {
@@ -23,7 +23,7 @@ export const renamePaths = defineAction<RenamePathsOptions>('rename-paths', asyn
 
 	debug.action(actionContext.name, `Matched ${paths.length} paths:`, paths)
 
-	const renamePath = async(oldPath: string, newPath: string) => {
+	const renamePath = async (oldPath: string, newPath: string) => {
 		debug.action(actionContext.name, `Renaming path "${oldPath}" to "${newPath}".`)
 
 		return await fs.rename(oldPath, newPath)

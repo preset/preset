@@ -4,7 +4,7 @@ import { definePreset, extractTemplates } from '@preset/core'
 export default definePreset({
 	name: 'preset-with-node-import',
 	options: {},
-	handler: async() => {
+	handler: async () => {
 		extractTemplates({
 			title: randomUUID(),
 		})

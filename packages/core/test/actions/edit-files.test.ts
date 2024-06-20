@@ -1,5 +1,5 @@
-import { editFiles, type EditFileOperation } from '../../src'
-import { dedent, type DirectoryStructure, expectStructureMatches, type TestRecord, testsInSandbox } from '../utils'
+import { type EditFileOperation, editFiles } from '../../src'
+import { type DirectoryStructure, type TestRecord, dedent, expectStructureMatches, testsInSandbox } from '../utils'
 
 interface EditFileTest extends TestRecord {
 	operation: EditFileOperation
@@ -567,9 +567,9 @@ const tests: Record<string, EditFileTest> = {
 }
 
 testsInSandbox(tests, (test) => ({
-	fn: async({ targetDirectory }, makeTestPreset) => {
+	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await editFiles({
+			handler: async () => await editFiles({
 				files: test.files ?? testFile,
 				operations: [test.operation],
 			}),

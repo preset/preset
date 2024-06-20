@@ -3,7 +3,7 @@ import type { Promisable } from 'type-fest'
 import type { PresetError } from './errors'
 
 export type ActionResult = boolean
-export type ActionHandlerParameters<ResolvedOptions> = {
+export interface ActionHandlerParameters<ResolvedOptions> {
 	/**
 	 * The current preset's context.
 	 */
@@ -47,7 +47,9 @@ interface PostInstallCallbackOptions<Options extends PresetFlags> {
 }
 export type PostInstall<Options extends PresetFlags> = string[] | ((options: PostInstallCallbackOptions<Options>) => string[])
 export type PresetResult = boolean | void
-export type PresetFlags = { [name: string]: any }
+export interface PresetFlags {
+	[name: string]: any
+}
 export type PresetHandler<Options extends PresetFlags> = (context: PresetContext<Options>) => Promise<PresetResult>
 export interface Preset<Options extends PresetFlags = PresetFlags> {
 	/**
@@ -268,8 +270,8 @@ export interface ApplyOptions {
 	rawArguments: readonly string[]
 
 	/**
-   * List of parsed command line options.
-   */
+	 * List of parsed command line options.
+	 */
 	parsedOptions: {
 		/**
 		 * The path to a sub-directory in which to look for a preset.
@@ -368,7 +370,7 @@ export interface PromptSelect {
 	isSelect: boolean
 	name: string
 	text: string
-	choices: Array<{ title: string; value?: string } | string>
+	choices: Array<{ title: string, value?: string } | string>
 	initial?: number
 }
 

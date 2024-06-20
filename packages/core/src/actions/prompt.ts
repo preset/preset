@@ -102,7 +102,7 @@ async function selectPromptAction({ presetContext, actionContext, options }: Sel
 /**
  * Asks for information.
  */
-export const prompt = defineAction<PromptOptions | SelectPromptOptions>('prompt', async({
+export const prompt = defineAction<PromptOptions | SelectPromptOptions>('prompt', async ({
 	presetContext,
 	actionContext,
 	options,
@@ -140,7 +140,7 @@ export interface PromptOptions {
 	default?: string
 }
 
-export type PromptChoice = { title: string; value?: string } | string
+export type PromptChoice = { title: string, value?: string } | string
 
 export interface SelectPromptOptions {
 	/**

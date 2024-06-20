@@ -4,7 +4,7 @@ import path from 'node:path'
 import git from 'simple-git'
 import { PresetError } from './errors'
 import { emitter } from './events'
-import type { LocalDirectoryPreset, RepositoryPreset, ApplyOptions, LocalFilePreset, LocalPreset, ResolvedPreset } from './types'
+import type { ApplyOptions, LocalDirectoryPreset, LocalFilePreset, LocalPreset, RepositoryPreset, ResolvedPreset } from './types'
 import { debug, invoke } from './utils'
 import { config } from './config'
 
@@ -31,7 +31,7 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 
 	// If it's a repository, clone it and resolve the preset file.
 	if (resolved.type === 'repository') {
-		const rootDirectory = await invoke(async() => {
+		const rootDirectory = await invoke(async () => {
 			try {
 				return await cloneRepository(resolved, options)
 			} catch (error: any) {
@@ -246,7 +246,7 @@ export async function resolvePresetFile(directory: string, cwd: string = process
 		return false
 	})
 
-	const ensureFile = async(file?: string) => {
+	const ensureFile = async (file?: string) => {
 		if (!file) {
 			return null
 		}

@@ -3,7 +3,7 @@ import { performance } from 'node:perf_hooks'
 import cac from 'cac'
 import simpleGit from 'simple-git'
 import type { LastArrayElement } from 'type-fest'
-import type { Preset, PresetContext, ActionContext, ApplyOptions, Status, LocalPreset, ActionOptions } from './types'
+import type { ActionContext, ActionOptions, ApplyOptions, LocalPreset, Preset, PresetContext, Status } from './types'
 import { debug, objectWithoutKeys } from './utils'
 import { PresetError } from './errors'
 
@@ -13,9 +13,9 @@ import { PresetError } from './errors'
 const contexts: PresetContext[] = []
 
 /**
-  * Creates the context for the given preset.
-	* @internal
-  */
+ * Creates the context for the given preset.
+ * @internal
+ */
 export async function createPresetContext(preset: Preset, applyOptions: ApplyOptions, localPreset: LocalPreset): Promise<PresetContext> {
 	debug.context(`Creating a new context for "${preset.name}".`)
 
@@ -123,9 +123,9 @@ export function finishActionContext(action: LastArrayElement<PresetContext['acti
 }
 
 /**
-  * Removes the current context from the context stacks.
-  * @internal
-  */
+ * Removes the current context from the context stacks.
+ * @internal
+ */
 export function popCurrentContext(): void {
 	debug.context('Destroying the current context.')
 

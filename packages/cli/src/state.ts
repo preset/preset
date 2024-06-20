@@ -1,4 +1,4 @@
-import type { PresetContext, ActionContext } from '@preset/core'
+import type { ActionContext, PresetContext } from '@preset/core'
 
 export const contexts: PresetContext[] = []
 

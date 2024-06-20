@@ -1,6 +1,6 @@
 import { popCurrentContext } from '@preset/core'
 
-import { afterEach, it, expect } from 'vitest'
+import { afterEach, expect, it } from 'vitest'
 
 import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
@@ -12,7 +12,7 @@ const text: string = 'This is text...'
 
 afterEach(() => popCurrentContext())
 
-it('renders default', async() => {
+it('renders default', async () => {
 	const presetContext = await makePresetContext()
 	const actionContext = makeActionContext({ default: promptDefault, text })
 	const textInput = makeTextInput() as TextInput
@@ -24,7 +24,7 @@ it('renders default', async() => {
 	)
 })
 
-it('renders response', async() => {
+it('renders response', async () => {
 	const response: string = 'some response'
 
 	const presetContext = await makePresetContext()
@@ -38,7 +38,7 @@ it('renders response', async() => {
 	)
 })
 
-it('trims response', async() => {
+it('trims response', async () => {
 	const responseText: string = 'some response with leading and trailing spaces'
 	const response: string = `   ${responseText}   `
 
@@ -53,7 +53,7 @@ it('trims response', async() => {
 	)
 })
 
-it('indents when multiple presets present', async() => {
+it('indents when multiple presets present', async () => {
 	await makePresetContext()
 	const presetContext = await makePresetContext()
 	const actionContext = makeActionContext({ default: promptDefault, text })

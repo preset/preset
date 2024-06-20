@@ -1,4 +1,4 @@
-import { debug, execute, wrap, detectNodePackageManager, invoke } from '../utils'
+import { debug, detectNodePackageManager, execute, invoke, wrap } from '../utils'
 import { PresetError } from '../errors'
 import { defineAction } from '../api'
 import { config } from '../config'
@@ -83,7 +83,7 @@ async function getComposerInstallArguments(cwd: string, options: InstallPackages
  */
 export const installPackages = defineAction<InstallPackagesOptions>(
 	ACTION_NAME,
-	async({ options, presetContext, actionContext }) => {
+	async ({ options, presetContext, actionContext }) => {
 		const cwd = presetContext.applyOptions.targetDirectory
 		const args = await {
 			node: () => getNodePackageManagerInstallArguments(cwd, options),

@@ -1,5 +1,5 @@
-import { deletePaths, type DeletePathsOptions } from '../../src'
-import { type DirectoryStructure, expectStructureMatches, testsInSandbox, type TestRecord } from '../utils'
+import { type DeletePathsOptions, deletePaths } from '../../src'
+import { type DirectoryStructure, type TestRecord, expectStructureMatches, testsInSandbox } from '../utils'
 
 interface DeletePathTest extends TestRecord {
 	options: DeletePathsOptions
@@ -68,9 +68,9 @@ const tests: Record<string, DeletePathTest> = {
 }
 
 testsInSandbox(tests, (test) => ({
-	fn: async({ targetDirectory }, makeTestPreset) => {
+	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await deletePaths(test.options),
+			handler: async () => await deletePaths(test.options),
 		})
 
 		await executePreset()

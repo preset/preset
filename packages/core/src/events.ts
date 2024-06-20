@@ -1,5 +1,5 @@
 import createEvents from 'mitt'
-import type { PresetContext, ActionContext, PromptInput, PromptResponse, LocalPreset, PromptSelect } from './types'
+import type { ActionContext, LocalPreset, PresetContext, PromptInput, PromptResponse, PromptSelect } from './types'
 
 export const emitter = createEvents<{
 	// Presets

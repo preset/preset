@@ -10,7 +10,7 @@ export interface GroupOptions {
 /**
  * Runs actions in a group.
  */
-export const group = defineAction<GroupOptions>('group', async({ options, presetContext, actionContext }) => {
+export const group = defineAction<GroupOptions>('group', async ({ options, presetContext, actionContext }) => {
 	await options.handler()
 
 	return presetContext.actions

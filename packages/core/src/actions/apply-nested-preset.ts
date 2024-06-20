@@ -24,7 +24,7 @@ export interface ApplyNestedPresetOptions {
 /**
  * Applies another preset. It makes presets composable and reusable.
  */
-export const applyNestedPreset = defineAction<ApplyNestedPresetOptions>('apply-nested-preset', async({ options, presetContext, name }) => {
+export const applyNestedPreset = defineAction<ApplyNestedPresetOptions>('apply-nested-preset', async ({ options, presetContext, name }) => {
 	const otherPresetOptions: ApplyOptions = {
 		resolvable: options.preset,
 		targetDirectory: presetContext.applyOptions.targetDirectory,

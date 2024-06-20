@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-// eslint-disable-next-line import/named
-import { execa, type CommonOptions } from 'execa'
+
+import { type Options as CommonOptions, execa } from 'execa'
 import createDebugger from 'debug'
 import type { NodePackageManager } from './types'
 
@@ -52,7 +52,7 @@ export async function execute(
 	args: string[] = [],
 	fn: (log: string) => void,
 	cwd: string,
-	options: CommonOptions<'utf8'> = {},
+	options: CommonOptions = {},
 	ignoreExitCode: boolean = false,
 ): Promise<boolean> {
 	const result = execa(command, args, {
@@ -78,9 +78,8 @@ export async function execute(
 /**
  * Returns a clone of the given object without the specified keys.
  */
-export function objectWithoutKeys<T extends object = {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+export function objectWithoutKeys<T extends object = object>(obj: T, ...keys: (keyof T)[]): Partial<T> {
 	return (keys as any).reduce((a: Partial<T>, e: keyof T) => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { [e]: _, ...rest } = a
 
 		return rest

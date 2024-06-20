@@ -6,7 +6,7 @@ export default definePreset({
 		install: true,
 		git: true,
 	},
-	handler: async() => {
+	handler: async () => {
 		await extractTemplates({})
 	},
 })

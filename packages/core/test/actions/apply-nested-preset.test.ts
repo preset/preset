@@ -1,12 +1,12 @@
-import { it, expect } from 'vitest'
-import { applyNestedPreset, emitter, type PresetContext } from '../../src'
-import { usingSandbox, presetFixture } from '../utils'
+import { expect, it } from 'vitest'
+import { type PresetContext, applyNestedPreset, emitter } from '../../src'
+import { presetFixture, usingSandbox } from '../utils'
 
-it('applies the given nested preset', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('applies the given nested preset', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const result: any = {}
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await applyNestedPreset({
+			handler: async () => await applyNestedPreset({
 				preset: presetFixture('basic-preset.ts'),
 			}),
 		})
@@ -19,11 +19,11 @@ it('applies the given nested preset', async() => await usingSandbox({
 	},
 }))
 
-it('can be given arguments', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('can be given arguments', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const result = { context: undefined as PresetContext | undefined }
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await applyNestedPreset({
+			handler: async () => await applyNestedPreset({
 				args: ['some-arg', '--some-flag'],
 				preset: presetFixture('basic-preset.ts'),
 			}),
@@ -40,11 +40,11 @@ it('can be given arguments', async() => await usingSandbox({
 	},
 }))
 
-it('can inherit arguments', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('can inherit arguments', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const result = { context: undefined as PresetContext | undefined }
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await applyNestedPreset({
+			handler: async () => await applyNestedPreset({
 				inheritsArguments: true,
 				preset: presetFixture('basic-preset.ts'),
 			}),

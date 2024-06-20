@@ -2,6 +2,6 @@
   "private": true,
   "preset": "./preset.ts",
   "dependencies": {
-    "@preset/core": "^0.1.0"
+    "@preset/core": "^0.11.3"
   }
 }

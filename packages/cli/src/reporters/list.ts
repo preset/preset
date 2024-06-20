@@ -1,6 +1,6 @@
 import * as readline from 'node:readline'
 import { emitter } from '@preset/core'
-import type { Status, PresetContext } from '@preset/core'
+import type { PresetContext, Status } from '@preset/core'
 
 import c from 'chalk'
 import debug from 'debug'
@@ -224,8 +224,7 @@ export default makeReporter({
 					count: actionsSucceeded,
 					color: c.green.bold,
 					text: 'executed',
-				},
-				{
+				}, {
 					count: actionsFailed,
 					color: c.green.red,
 					text: 'failed',
@@ -259,7 +258,7 @@ export default makeReporter({
 			updateLog(text)
 		}
 
-		emitter.on('prompt:input', async(promptInput) => {
+		emitter.on('prompt:input', async (promptInput) => {
 			inputs.push({ ...promptInput, response: '' })
 
 			function onInput() {
@@ -281,8 +280,8 @@ export default makeReporter({
 						continue
 					// Handle ctrl+c (3) || escape (27)
 					} else if (currentBuffer === 3 || currentBuffer == 27) {
-            process.exit()
-          }
+						process.exit()
+					}
 
 					// Add the chunk
 					input.response += chunk
@@ -307,7 +306,7 @@ export default makeReporter({
 			process.stdin.setRawMode(true)
 		})
 
-		emitter.on('prompt:select', async(promptSelect) => {
+		emitter.on('prompt:select', async (promptSelect) => {
 			const { stdin, stdout } = process
 			const initialCursor = promptSelect.initial || 0
 
@@ -316,7 +315,7 @@ export default makeReporter({
 				value: typeof ch === 'string' ? ch : ch.value || ch.title,
 			}))
 
-			type SelectInputState = {
+			interface SelectInputState {
 				cursor: number
 				response: string
 				isDone: boolean
@@ -381,14 +380,14 @@ export default makeReporter({
 			function handleKeypress(str: string, key: { name: string, ctrl: boolean }) {
 				const actionKey: string | undefined = actionKeys[key.name]
 				const action: () => void | undefined = actions[actionKey]
-				
+
 				if (key.name === 'c' && key.ctrl) {
 					process.exit()
-				} else if (typeof action === "function") {
-          action();
-        } else {
-          stdout.write(beep);
-        }
+				} else if (typeof action === 'function') {
+					action()
+				} else {
+					stdout.write(beep)
+				}
 			}
 
 			function finishSelectPrompt() {

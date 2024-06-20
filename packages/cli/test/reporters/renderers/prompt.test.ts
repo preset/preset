@@ -1,6 +1,6 @@
 import { popCurrentContext } from '@preset/core'
 
-import { afterEach, it, expect } from 'vitest'
+import { afterEach, expect, it } from 'vitest'
 
 import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
@@ -13,7 +13,7 @@ import { makeActionContext, makePresetContext, makeSelectInput, makeTextInput } 
 
 afterEach(() => popCurrentContext())
 
-it('renders empty string when no inputs are found', async() => {
+it('renders empty string when no inputs are found', async () => {
 	const promptDefault: string = 'Some default text'
 	const text: string = 'This is text...'
 
@@ -26,7 +26,7 @@ it('renders empty string when no inputs are found', async() => {
 	expect(result).toEqual('')
 })
 
-it('renders text input', async() => {
+it('renders text input', async () => {
 	const promptDefault: string = 'Some default text'
 	const text: string = 'This is text...'
 
@@ -41,7 +41,7 @@ it('renders text input', async() => {
 	)
 })
 
-it('renders select input', async() => {
+it('renders select input', async () => {
 	const promptChoices: string[] = ['first', 'second']
 
 	const presetContext = await makePresetContext()

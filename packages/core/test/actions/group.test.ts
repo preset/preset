@@ -1,13 +1,13 @@
-import { it, expect } from 'vitest'
-import { group, extractTemplates, executeCommand, emitter, type ActionContext } from '../../src'
+import { expect, it } from 'vitest'
+import { type ActionContext, emitter, executeCommand, extractTemplates, group } from '../../src'
 import { usingSandbox } from '../utils'
 
-it('applies actions in the group', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('applies actions in the group', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const actions: ActionContext[] = []
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await group({
-				handler: async() => {
+			handler: async () => await group({
+				handler: async () => {
 					await extractTemplates()
 				},
 			}),
@@ -21,21 +21,21 @@ it('applies actions in the group', async() => await usingSandbox({
 	},
 }))
 
-it('does not mix multiple groups', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('does not mix multiple groups', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const actions: ActionContext[] = []
 		const { executePreset } = await makeTestPreset({
-			handler: async() => {
+			handler: async () => {
 				await group({
 					title: 'group 1',
-					handler: async() => {
+					handler: async () => {
 						await extractTemplates()
 					},
 				})
 
 				await group({
 					title: 'group 2',
-					handler: async() => {
+					handler: async () => {
 						await extractTemplates()
 					},
 				})
@@ -52,12 +52,12 @@ it('does not mix multiple groups', async() => await usingSandbox({
 	},
 }))
 
-it('fails when sub-action fail', async() => await usingSandbox({
-	fn: async(_, makeTestPreset) => {
+it('fails when sub-action fail', async () => await usingSandbox({
+	fn: async (_, makeTestPreset) => {
 		const actions: ActionContext[] = []
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await group({
-				handler: async() => {
+			handler: async () => await group({
+				handler: async () => {
 					await executeCommand({ command: 'me-no-exist' })
 				},
 			}),

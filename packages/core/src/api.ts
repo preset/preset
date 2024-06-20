@@ -1,8 +1,8 @@
 import fs from 'fs-extra'
 import { debug, objectWithoutKeys } from './utils'
 import { emitter } from './events'
-import { popCurrentContext, getCurrentPresetContext, finishPresetContext, createActionContext, finishActionContext } from './context'
-import type { DefinePresetOptions, Preset, ActionHandler, Action, PresetFlags } from './types'
+import { createActionContext, finishActionContext, finishPresetContext, getCurrentPresetContext, popCurrentContext } from './context'
+import type { Action, ActionHandler, DefinePresetOptions, Preset, PresetFlags } from './types'
 import { PresetError } from './errors'
 
 /**
@@ -20,7 +20,7 @@ export function definePreset<Options extends PresetFlags>(preset: DefinePresetOp
 		name: preset.name,
 		options: preset.options ?? {} as any,
 		postInstall: preset.postInstall,
-		apply: async(context) => {
+		apply: async (context) => {
 			debug.preset(preset.name, `Applying preset "${preset.name}".`)
 			emitter.emit('preset:start', context)
 
@@ -79,7 +79,7 @@ export function defineAction<Options extends Object, OptionsWithDefault extends 
 	action: ActionHandler<OptionsWithDefault>,
 	defaultOptions?: OptionsWithDefault,
 ): Action<Options> {
-	return async(options: any) => {
+	return async (options: any) => {
 		debug.action(name, `Running action "${name}".`)
 
 		const resolved: OptionsWithDefault = {

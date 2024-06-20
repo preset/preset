@@ -1,5 +1,5 @@
-import { renamePaths, type RenamePathsOptions } from '../../src'
-import { type DirectoryStructure, expectStructureMatches, testsInSandbox, type TestRecord } from '../utils'
+import { type RenamePathsOptions, renamePaths } from '../../src'
+import { type DirectoryStructure, type TestRecord, expectStructureMatches, testsInSandbox } from '../utils'
 
 interface RenamePathTest extends TestRecord {
 	options: RenamePathsOptions
@@ -99,9 +99,9 @@ const tests: Record<string, RenamePathTest> = {
 }
 
 testsInSandbox(tests, (test) => ({
-	fn: async({ targetDirectory }, makeTestPreset) => {
+	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async() => await renamePaths(test.options),
+			handler: async () => await renamePaths(test.options),
 		})
 
 		await executePreset()

@@ -4,14 +4,14 @@
 import path from 'node:path'
 import c from 'chalk'
 import createCli from 'cac'
-import { applyPreset, PresetError } from '@preset/core'
+import { PresetError, applyPreset } from '@preset/core'
 import { version } from '../package.json'
 import { patch } from './patch'
 import { reporters } from './reporters'
 import { debug, invoke } from './utils'
 import { checkLatestVersion, registerVersionMismatches } from './version'
 
-invoke(async() => {
+invoke(async () => {
 	debug.cli(`Running preset v${version}`)
 	registerVersionMismatches()
 	checkLatestVersion()
@@ -32,7 +32,7 @@ invoke(async() => {
 		.option('-t, --tag [tag]', 'The branch or tag to use if the preset is a repository.')
 		.option('--ssh', 'Whether to use SSH or not. This can be determined depending on the URL of the Git repository, defaulting to false.')
 		.allowUnknownOptions()
-		.action(async(resolvable: string, targetDirectory: string | undefined, parsedOptions) => await applyPreset({
+		.action(async (resolvable: string, targetDirectory: string | undefined, parsedOptions) => await applyPreset({
 			parsedOptions,
 			resolvable,
 			targetDirectory: targetDirectory ? path.resolve(targetDirectory) : process.cwd(),
@@ -45,7 +45,7 @@ invoke(async() => {
 		.option('--no-git', 'Do not initialize a Git repository.')
 		.option('--no-install', 'Do not install the preset dependency.')
 		.allowUnknownOptions()
-		.action(async(targetDirectory: string | undefined, parsedOptions) => await applyPreset({
+		.action(async (targetDirectory: string | undefined, parsedOptions) => await applyPreset({
 			parsedOptions,
 			resolvable: path.resolve(__dirname, '../init'),
 			targetDirectory: targetDirectory ?? process.cwd(),

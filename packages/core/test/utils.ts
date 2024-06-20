@@ -1,33 +1,29 @@
 import nfs from 'node:fs'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { it, assert, expect } from 'vitest'
+import { assert, expect, it } from 'vitest'
 import fs from 'fs-extra'
 import type { SetRequired } from 'type-fest'
 import createDebugger from 'debug'
 import { definePreset } from '../src'
 import { createPresetContext } from '../src/context'
-import type { Preset, DefinePresetOptions, LocalPreset, ApplyOptions } from '../src'
+import type { ApplyOptions, DefinePresetOptions, LocalPreset, Preset } from '../src'
 import { resetConfig } from '../src/config'
 
 export interface DirectoryStructure {
-	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
+	[path: string]: { type: 'file', content?: any, json?: any } | { type: 'directory' } | { type: 'none' }
 }
 
 export const debug = createDebugger('preset:tests')
 export const fixturesDirectory = path.resolve(__dirname, './__fixtures__')
 export const fixedFixturesDirectory = path.resolve(__dirname, './fixtures')
-export const cleanupFixtures = async(fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
+export const cleanupFixtures = async (fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
 export const presetFixture = (name: string) => path.resolve(fixedFixturesDirectory, name)
 
 /**
  * Creates a test context.
  */
-export const createTestPresetContext = async(
-	preset: Preset,
-	customApplyOptions?: Partial<ApplyOptions>,
-	customLocalPreset?: Partial<LocalPreset>,
-) => {
+export async function createTestPresetContext(preset: Preset,	customApplyOptions?: Partial<ApplyOptions>,	customLocalPreset?: Partial<LocalPreset>) {
 	return await createPresetContext(preset, {
 		resolvable: '',
 		rawArguments: [],
@@ -45,11 +41,7 @@ export const createTestPresetContext = async(
 /**
  * Creates a test preset.
  */
-export const makeTestPreset = async(
-	customPresetOptions: SetRequired<Partial<DefinePresetOptions>, 'handler'>,
-	customApplyOptions?: Partial<ApplyOptions>,
-	customLocalPreset?: Partial<LocalPreset>,
-) => {
+export async function makeTestPreset(customPresetOptions: SetRequired<Partial<DefinePresetOptions>, 'handler'>,	customApplyOptions?: Partial<ApplyOptions>,	customLocalPreset?: Partial<LocalPreset>) {
 	const preset = definePreset({
 		name: 'test-preset',
 		options: {
@@ -63,7 +55,7 @@ export const makeTestPreset = async(
 	return {
 		preset,
 		context,
-		executePreset: async() => {
+		executePreset: async () => {
 			resetConfig()
 			return preset.apply(context)
 		},
@@ -128,7 +120,7 @@ export async function generateStructure(directory: string, ds?: DirectoryStructu
 }
 
 export interface SandboxOptions {
-	fn: (d: { sandboxDirectory: string; targetDirectory: string; rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
+	fn: (d: { sandboxDirectory: string, targetDirectory: string, rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
 	rootStructure?: DirectoryStructure
 	targetStructure?: DirectoryStructure
 	cleanup?: boolean
@@ -228,10 +220,10 @@ export interface TestRecord {
 
 export function testsInSandbox<T extends TestRecord>(tests: Record<string, T>, options: (test: T, name: string) => SandboxOptions) {
 	for (const [name, test] of Object.entries(tests)) {
-		const callback = async() => await usingSandbox(options(test, name))
+		const callback = async () => await usingSandbox(options(test, name))
 
 		if (test.skip === true) {
-			it.skip(name, async() => {})
+			it.skip(name, async () => {})
 			continue
 		}
 

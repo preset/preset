@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { it, expect } from 'vitest'
+import { expect, it } from 'vitest'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
-import type { ResolvedPreset, ApplyOptions } from '../src/types'
+import type { ApplyOptions, ResolvedPreset } from '../src/types'
 import { replaceConfig } from '../src/config'
-import { presetFixture, fixedFixturesDirectory } from './utils'
+import { fixedFixturesDirectory, presetFixture } from './utils'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
 	const cwd = path.resolve(__dirname, '..')
@@ -17,14 +17,14 @@ async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {
 		}
 
 		if (output === false) {
-			await expect(async() => await parseResolvable(options, cwd)).rejects.toThrow()
+			await expect(async () => await parseResolvable(options, cwd)).rejects.toThrow()
 		} else {
 			expect(await parseResolvable(options, cwd)).toMatchObject(output)
 		}
 	}
 }
 
-it('parses local file presets', async() => {
+it('parses local file presets', async () => {
 	await ensureParses([
 		[presetFixture('basic-preset.ts'), { path: presetFixture('basic-preset.ts'), type: 'file' }],
 		['../core/test/fixtures/basic-preset.ts', { path: presetFixture('basic-preset.ts'), type: 'file' }],
@@ -33,7 +33,7 @@ it('parses local file presets', async() => {
 	])
 })
 
-it('parses directory presets', async() => {
+it('parses directory presets', async () => {
 	await ensureParses([
 		[presetFixture('preset-with-root-file'), { path: presetFixture('preset-with-root-file'), type: 'directory' }],
 		['./test/fixtures/preset-with-root-file', { path: presetFixture('preset-with-root-file'), type: 'directory' }],
@@ -41,7 +41,7 @@ it('parses directory presets', async() => {
 	])
 })
 
-it('parses repository presets', async() => {
+it('parses repository presets', async () => {
 	await ensureParses([
 		['preset/cli', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: undefined, path: '' }],
 		['preset/cli@v0.1', { organization: 'preset', repository: 'cli', ssh: false, type: 'repository', tag: 'v0.1', path: '' }],
@@ -53,13 +53,13 @@ it('parses repository presets', async() => {
 	])
 })
 
-it('parses namespaced preset aliases', async() => {
+it('parses namespaced preset aliases', async () => {
 	await ensureParses([
 		['laravel:inertia', { organization: 'laravel-presets', repository: 'inertia', ssh: false, type: 'repository', tag: undefined, path: '' }],
 	])
 })
 
-it('resolves preset files in a directory', async() => {
+it('resolves preset files in a directory', async () => {
 	const map = [
 		[presetFixture('preset-with-root-file'), presetFixture('preset-with-root-file/preset.ts')],
 		['./test/fixtures/preset-with-root-file', presetFixture('preset-with-root-file/preset.ts')],
@@ -73,7 +73,7 @@ it('resolves preset files in a directory', async() => {
 	}
 })
 
-it('resolves preset files in a directory', async() => {
+it('resolves preset files in a directory 2', async () => {
 	const cwd = path.resolve(__dirname, '..')
 	const map = [
 		['preset-with-root-file', presetFixture('preset-with-root-file/preset.ts')],
@@ -96,10 +96,10 @@ it('resolves preset files in a directory', async() => {
 	}
 })
 
-it('finds versions of a resolved preset', async() => {
+it('finds versions of a resolved preset', async () => {
 	const cwd = path.resolve(__dirname, '..')
 	const map = [
-		['preset-with-specific-version', presetFixture('preset-with-specific-version/preset.ts'), '^0.1.0'],
+		['preset-with-specific-version', presetFixture('preset-with-specific-version/preset.ts'), '^0.11.3'],
 	]
 
 	for (const [path, output, version] of map) {
@@ -118,7 +118,7 @@ it('finds versions of a resolved preset', async() => {
 	}
 })
 
-it('resolves globally configured aliases', async() => {
+it('resolves globally configured aliases', async () => {
 	replaceConfig({
 		aliases: {
 			'custom:alias': {

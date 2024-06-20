@@ -30,7 +30,7 @@ export interface ExecuteCommandOptions {
 /**
  * Executes a shell command. This uses `execa` under the hood.
  */
-export const executeCommand = defineAction<ExecuteCommandOptions>('execute-command', async({ options, presetContext }) => {
+export const executeCommand = defineAction<ExecuteCommandOptions>('execute-command', async ({ options, presetContext }) => {
 	return await execute(
 		options.command,
 		options.arguments ?? [],

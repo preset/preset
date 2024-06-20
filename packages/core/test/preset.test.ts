@@ -1,14 +1,14 @@
-import { it, assert, expect } from 'vitest'
+import { assert, expect, it } from 'vitest'
 import { defineAction, emitter } from '../src'
 import { makeTestPreset } from './utils'
 
 const successfulAction = defineAction('successful-action', () => true)
 const failingAction = defineAction('failing-action', () => false)
 
-it('runs a preset and its actions', async() => {
+it('runs a preset and its actions', async () => {
 	const result = { name: '', successful: false, successfulActions: 0 }
 	const { preset, context } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await successfulAction()
 			await successfulAction()
 		},
@@ -25,10 +25,10 @@ it('runs a preset and its actions', async() => {
 	assert.equal(result.successfulActions, 2)
 })
 
-it('runs a preset and its actions and fails at the end', async() => {
+it('runs a preset and its actions and fails at the end', async () => {
 	const result = { name: '', successful: false, successfulActions: 0, failedActions: 0, ended: false }
 	const { preset, context } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await successfulAction()
 			await failingAction()
 			await successfulAction()
@@ -52,7 +52,7 @@ it('runs a preset and its actions and fails at the end', async() => {
 	})
 })
 
-it('runs actions with parameters and default parameters', async() => {
+it('runs actions with parameters and default parameters', async () => {
 	const result: any = { name: '', actionFlag: '', actionDefaultFlag: '', successful: false }
 	const parameterizedAction = defineAction<{ flag: string }>('parameterized-action', ({ options }) => {
 		result.actionFlag = options.flag
@@ -69,7 +69,7 @@ it('runs actions with parameters and default parameters', async() => {
 	})
 
 	const { preset, context } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await successfulAction()
 			await parameterizedAction({ flag: 'flagged' })
 			await parameterizedActionWithDefault({})

@@ -1,4 +1,4 @@
-import { CAC } from 'cac'
+import type { CAC } from 'cac'
 
 const patches = {
 	help: {

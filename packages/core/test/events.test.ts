@@ -1,9 +1,9 @@
-import { test, assert, expect } from 'vitest'
+import { assert, expect, it } from 'vitest'
 import { defineAction, emitter, resolvePreset } from '../src'
 import type { ActionContext } from '../src/types'
-import { makeTestPreset, fixedFixturesDirectory } from './utils'
+import { fixedFixturesDirectory, makeTestPreset } from './utils'
 
-test('an action emits a fail event', async() => {
+it('an action emits a fail event', async () => {
 	const contexts: ActionContext[] = []
 	const failingAction = defineAction('failing-action', () => false)
 	const throwingAction = defineAction('throwing-action', () => {
@@ -13,7 +13,7 @@ test('an action emits a fail event', async() => {
 	emitter.on('action:fail', (context) => contexts.push(context))
 
 	const { executePreset } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await failingAction()
 			await throwingAction()
 		},
@@ -32,14 +32,14 @@ test('an action emits a fail event', async() => {
 	])
 })
 
-test('an action emits a success event', async() => {
+it('an action emits a success event', async () => {
 	const actionNames: string[] = []
 	const successfulAction = defineAction('successful-action', () => true)
 
 	emitter.on('action:success', (context) => actionNames.push(context.name))
 
 	const { executePreset } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await successfulAction()
 		},
 	})
@@ -51,7 +51,7 @@ test('an action emits a success event', async() => {
 	])
 })
 
-test('all actions emit an end event', async() => {
+it('all actions emit an end event', async () => {
 	const actionNames: string[] = []
 	const successfulAction = defineAction('successful-action', () => true)
 	const failingAction = defineAction('failing-action', () => false)
@@ -62,7 +62,7 @@ test('all actions emit an end event', async() => {
 	emitter.on('action:end', (context) => actionNames.push(context.name))
 
 	const { executePreset } = await makeTestPreset({
-		handler: async() => {
+		handler: async () => {
 			await successfulAction()
 			await failingAction()
 			await throwingAction()
@@ -78,7 +78,7 @@ test('all actions emit an end event', async() => {
 	])
 })
 
-test('applying a preset emits an event', async() => {
+it('applying a preset emits an event', async () => {
 	const result: any = {}
 	emitter.on('preset:resolve', (resolved) => result.resolved = resolved)
 

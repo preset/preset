@@ -3,7 +3,7 @@ export default definePreset({
 	options: {
 		// ...
 	},
-	handler: async() => {
+	handler: async () => {
 		await extractTemplates()
 		// ...
 	},

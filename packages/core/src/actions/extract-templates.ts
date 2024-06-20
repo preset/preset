@@ -58,7 +58,7 @@ const isDirectory = (input: string) => nfs.statSync(input, { throwIfNoEntry: fal
  */
 export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<ExtractTemplatesOptions>>(
 	'extract-templates',
-	async({ options, presetContext, actionContext }) => {
+	async ({ options, presetContext, actionContext }) => {
 		const templatesPath = path.resolve(presetContext.localPreset.rootDirectory, options.templates, options.from)
 		const targetPath = path.resolve(presetContext.applyOptions.targetDirectory, options.to)
 

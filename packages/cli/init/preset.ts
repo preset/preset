@@ -1,12 +1,14 @@
 import path from 'node:path'
-import { definePreset, editFiles, extractTemplates, installPackages, executeCommand, group, prompt } from '@preset/core'
+import { definePreset, editFiles, executeCommand, extractTemplates, group, installPackages, prompt } from '@preset/core'
 
-const kebab = (str: string) => str
-	.match(/[A-Z]{2,}(?=[A-Z][a-z0-9]*|\b)|[A-Z]?[a-z0-9]*|[A-Z]|[0-9]+/g)!
-	.filter(Boolean)
-	.map((x: string) => x.toLowerCase())
-	.join('-')
-	.replace(/'/, "\\'")
+function kebab(str: string) {
+	return str
+		.match(/[A-Z]{2,}(?=[A-Z][a-z0-9]*|\b)|[A-Z]?[a-z0-9]*|[A-Z]|[0-9]+/g)!
+		.filter(Boolean)
+		.map((x: string) => x.toLowerCase())
+		.join('-')
+		.replace(/'/, "\\'")
+}
 
 export default definePreset({
 	name: 'preset:initialize',
@@ -19,7 +21,7 @@ export default definePreset({
 		`Push this repository to ${hl('GitHub')}.`,
 		`Use ${hl(`preset apply <github-username>/${path.parse(context.applyOptions.targetDirectory).name}`)}.`,
 	],
-	handler: async(context) => {
+	handler: async (context) => {
 		await prompt({
 			title: 'prompt preset name',
 			name: 'name',
@@ -57,7 +59,7 @@ export default definePreset({
 		if (context.options.git) {
 			await group({
 				title: 'initialize repository',
-				handler: async() => {
+				handler: async () => {
 					await executeCommand({ command: 'git', arguments: ['init'] })
 					await executeCommand({ command: 'git', arguments: ['add', '.'] })
 					await executeCommand({ command: 'git', arguments: ['commit', '-m', 'chore: initialize preset'] })
