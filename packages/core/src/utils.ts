@@ -97,6 +97,7 @@ export async function detectNodePackageManager(directory: string) {
 	}
 
 	const packageLockFiles: Record<string, NodePackageManager> = {
+		'bun.lock': 'bun',
 		'bun.lockb': 'bun',
 		'pnpm-lock.yaml': 'pnpm',
 		'yarn.lock': 'yarn',
