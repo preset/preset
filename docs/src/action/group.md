@@ -37,12 +37,15 @@ Defines the callback that will execute the grouped actions. **The callback must 
 
 ```ts
 await group({
-  title: 'initialize repository',
-  handler: async() => {
-    await executeCommand({ command: 'git', arguments: ['init'] })
-    await executeCommand({ command: 'git', arguments: ['add', '.'] })
-    await executeCommand({ command: 'git', arguments: ['commit', '-m', 'chore: initialize project'] })
-  },
+	title: 'initialize repository',
+	handler: async () => {
+		await executeCommand({ command: 'git', arguments: ['init'] })
+		await executeCommand({ command: 'git', arguments: ['add', '.'] })
+		await executeCommand({
+			command: 'git',
+			arguments: ['commit', '-m', 'chore: initialize project'],
+		})
+	},
 })
 ```
 
@@ -50,6 +53,6 @@ await group({
 
 ```ts
 interface GroupOptions {
-  handler: () => Promise<void>
+	handler: () => Promise<void>
 }
 ```

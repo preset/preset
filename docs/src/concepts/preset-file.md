@@ -10,13 +10,13 @@ In a Preset project, you must have at least what is called a "preset file". This
 
 ```ts
 export default definePreset({
-  name: 'my-preset',
-  options: {
-    // ...
-  },
-  handler: async () => {
-    // ...
-  }
+	name: 'my-preset',
+	options: {
+		// ...
+	},
+	handler: async () => {
+		// ...
+	},
 })
 ```
 
@@ -26,16 +26,16 @@ Preset files named `preset.ts` at the root or in the `src` directory of a projec
 
 ```json
 {
-  "name": "my-preset",
-  "preset": "config/preset.ts",
-  // ...
+	"name": "my-preset",
+	"preset": "config/preset.ts"
+	// ...
 }
 ```
 
 ## Constraints
 
-Even though the preset file is a regular script, it is used in a way that makes external imports unavailable. For instance, you can't install `execa` and use it directly. 
+Even though the preset file is a regular script, it is used in a way that makes external imports unavailable. For instance, you can't install `execa` and use it directly.
 
-This is by design: to improve performances, Preset do not install dependencies. The preset file is compiled through `esbuild` and its default export is retrieved. 
+This is by design: to improve performances, Preset do not install dependencies. The preset file is compiled through `esbuild` and its default export is retrieved.
 
 Local file imports and Node's built-in modules are still available.

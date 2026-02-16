@@ -1,10 +1,10 @@
-import path from 'node:path'
-import nfs from 'node:fs'
-import fs from 'fs-extra'
 import fg from 'fast-glob'
+import fs from 'fs-extra'
+import nfs from 'node:fs'
+import path from 'node:path'
 import { defineAction } from '../api'
-import { debug } from '../utils'
 import { PresetError } from '../errors'
+import { debug } from '../utils'
 
 export interface ExtractTemplatesOptions {
 	/**

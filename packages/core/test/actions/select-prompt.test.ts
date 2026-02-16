@@ -1,15 +1,16 @@
 import { expect, it } from 'vitest'
-import { makeTestPreset } from '../utils'
 import { emitter, prompt } from '../../src'
+import { makeTestPreset } from '../utils'
 
 it('emits select and response events and adds response to context', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'choice',
-			text: 'Which do you choose?',
-			choices: ['first', 'second'],
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'choice',
+				text: 'Which do you choose?',
+				choices: ['first', 'second'],
+			}),
 	}, {
 		parsedOptions: { interaction: true },
 	})
@@ -44,12 +45,13 @@ it('emits select and response events and adds response to context', async () => 
 it('adds a default response to context when no response is emitted', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'choice',
-			text: 'Which do you choose?',
-			choices: ['first', 'second'],
-			initial: 1,
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'choice',
+				text: 'Which do you choose?',
+				choices: ['first', 'second'],
+				initial: 1,
+			}),
 	}, {
 		parsedOptions: { interaction: true },
 	})
@@ -85,11 +87,12 @@ it('adds a default response to context when no response is emitted', async () =>
 it('does not emit events when there are no interactions', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'choice',
-			text: 'Which do you choose?',
-			choices: ['first', 'second'],
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'choice',
+				text: 'Which do you choose?',
+				choices: ['first', 'second'],
+			}),
 	}, {
 		parsedOptions: { interaction: false },
 	})

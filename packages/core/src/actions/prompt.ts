@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { defineAction } from '../api'
-import { debug } from '../utils'
 import { emitter } from '../events'
 import type { ActionContext, PresetContext } from '../types'
+import { debug } from '../utils'
 
 function shouldReturnDefaultResponse(presetContext: PresetContext): boolean {
 	return presetContext.options.interaction === false
@@ -140,7 +140,7 @@ export interface PromptOptions {
 	default?: string
 }
 
-export type PromptChoice = { title: string, value?: string } | string
+export type PromptChoice = { title: string; value?: string } | string
 
 export interface SelectPromptOptions {
 	/**

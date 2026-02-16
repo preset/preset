@@ -2,8 +2,8 @@ import { popCurrentContext } from '@preset/core'
 
 import { afterEach, expect, it } from 'vitest'
 
-import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
+import { format } from '../../../src/reporters/renderers/text-formater'
 import renderTextPrompt, { type TextInput } from '../../../src/reporters/renderers/text-prompt'
 import { makeActionContext, makePresetContext, makeTextInput } from './utils'
 
@@ -20,8 +20,7 @@ it('renders default', async () => {
 	const result = renderTextPrompt(presetContext, actionContext, textInput)
 
 	expect(result).toEqual(`
-    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`,
-	)
+    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`)
 })
 
 it('renders response', async () => {
@@ -34,8 +33,7 @@ it('renders response', async () => {
 	const result = renderTextPrompt(presetContext, actionContext, textInput)
 
 	expect(result).toEqual(`
-    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(response)}`,
-	)
+    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(response)}`)
 })
 
 it('trims response', async () => {
@@ -49,8 +47,7 @@ it('trims response', async () => {
 	const result = renderTextPrompt(presetContext, actionContext, textInput)
 
 	expect(result).toEqual(`
-    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(responseText)}`,
-	)
+    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(responseText)}`)
 })
 
 it('indents when multiple presets present', async () => {
@@ -62,8 +59,7 @@ it('indents when multiple presets present', async () => {
 	const result = renderTextPrompt(presetContext, actionContext, textInput)
 
 	expect(result).toEqual(`
-      ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`,
-	)
+      ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`)
 
 	popCurrentContext()
 })

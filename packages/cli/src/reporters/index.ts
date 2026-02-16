@@ -1,5 +1,5 @@
-import listReporter from './list'
 import debugReporter from './debug'
+import listReporter from './list'
 
 export const reporters = {
 	list: listReporter,

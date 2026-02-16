@@ -1,6 +1,6 @@
-import * as readline from 'node:readline'
 import { emitter } from '@preset/core'
 import type { PresetContext, Status } from '@preset/core'
+import * as readline from 'node:readline'
 
 import c from 'chalk'
 import debug from 'debug'
@@ -13,10 +13,10 @@ import { formatResult, time } from '../utils'
 import { checks } from '../version'
 
 import renderPrompt from './renderers/prompt'
-import type { TextInput } from './renderers/text-prompt'
 import type { SelectInput } from './renderers/select-prompt'
 import { symbols } from './renderers/symbols'
 import { format } from './renderers/text-formater'
+import type { TextInput } from './renderers/text-prompt'
 
 export default makeReporter({
 	name: 'list',
@@ -63,7 +63,9 @@ export default makeReporter({
 					const name = contexts.find((preset) => mismatch.presetFile === preset.localPreset.presetFile)?.name
 
 					if (name) {
-						text += `  ${c.redBright(symbols.arrow)}  Preset ${c.magenta(name)} requires ${c.bold.redBright(mismatch.presetVersion)} ${mismatch.isOutdated ? c.gray('(outdated, may not work)') : ''}\n`
+						text += `  ${c.redBright(symbols.arrow)}  Preset ${c.magenta(name)} requires ${c.bold.redBright(mismatch.presetVersion)} ${
+							mismatch.isOutdated ? c.gray('(outdated, may not work)') : ''
+						}\n`
 					}
 				})
 
@@ -203,33 +205,43 @@ export default makeReporter({
 
 			// Displays stat results
 			if (contexts[0].status !== 'applying') {
-				const actionsFailed = contexts.reduce((failed, { actions }) => failed += actions.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0), 0)
-				const actionsSucceeded = contexts.reduce((succeeded, { actions }) => succeeded += actions.reduce((succeeded, { status }) => succeeded += (status === 'applied' ? 1 : 0), 0), 0)
-				const presetsFailed = contexts.reduce((failed, { status }) => failed += (status === 'failed' ? 1 : 0), 0)
-				const presetsSucceeded = contexts.reduce((failed, { status }) => failed += (status === 'applied' ? 1 : 0), 0)
+				const actionsFailed = contexts.reduce(
+					(failed, { actions }) => failed += actions.reduce((failed, { status }) => failed += status === 'failed' ? 1 : 0, 0),
+					0,
+				)
+				const actionsSucceeded = contexts.reduce(
+					(succeeded, { actions }) => succeeded += actions.reduce((succeeded, { status }) => succeeded += status === 'applied' ? 1 : 0, 0),
+					0,
+				)
+				const presetsFailed = contexts.reduce((failed, { status }) => failed += status === 'failed' ? 1 : 0, 0)
+				const presetsSucceeded = contexts.reduce((failed, { status }) => failed += status === 'applied' ? 1 : 0, 0)
 
 				text += '\n'
-				text += ` ${c.gray('Presets')}  ${formatResult({
-					count: presetsSucceeded,
-					color: c.green.bold,
-					text: 'applied',
-					excludeWhenEmpty: true,
-				}, {
-					count: presetsFailed,
-					color: c.green.red,
-					text: 'failed',
-					excludeWhenEmpty: true,
-				})} \n`
-				text += ` ${c.gray('Actions')}  ${formatResult({
-					count: actionsSucceeded,
-					color: c.green.bold,
-					text: 'executed',
-				}, {
-					count: actionsFailed,
-					color: c.green.red,
-					text: 'failed',
-					excludeWhenEmpty: true,
-				})} \n`
+				text += ` ${c.gray('Presets')}  ${
+					formatResult({
+						count: presetsSucceeded,
+						color: c.green.bold,
+						text: 'applied',
+						excludeWhenEmpty: true,
+					}, {
+						count: presetsFailed,
+						color: c.green.red,
+						text: 'failed',
+						excludeWhenEmpty: true,
+					})
+				} \n`
+				text += ` ${c.gray('Actions')}  ${
+					formatResult({
+						count: actionsSucceeded,
+						color: c.green.bold,
+						text: 'executed',
+					}, {
+						count: actionsFailed,
+						color: c.green.red,
+						text: 'failed',
+						excludeWhenEmpty: true,
+					})
+				} \n`
 				text += `${c.gray('Duration')}  ${time(contexts[0].start, contexts[0].end)}`
 				text += '\n'
 
@@ -244,7 +256,9 @@ export default makeReporter({
 				if (main.status === 'failed') {
 					failedPresets.add(main.id)
 					text += '\n\n'
-					text += ` ${format.titleFail(` ${main.error?.code ?? 'ERROR'} `)} ${c.red(main.error?.parent?.message ?? main.error?.message ?? main.error?.details ?? 'An unknown error occured.')}`
+					text += ` ${format.titleFail(` ${main.error?.code ?? 'ERROR'} `)} ${
+						c.red(main.error?.parent?.message ?? main.error?.message ?? main.error?.details ?? 'An unknown error occured.')
+					}`
 					text += '\n'
 				} else if (postInstall) {
 					text += '\n\n'
@@ -278,7 +292,7 @@ export default makeReporter({
 					if (currentBuffer === 127) {
 						input.response = input.response.slice(0, -1)
 						continue
-					// Handle ctrl+c (3) || escape (27)
+						// Handle ctrl+c (3) || escape (27)
 					} else if (currentBuffer === 3 || currentBuffer == 27) {
 						process.exit()
 					}
@@ -377,7 +391,7 @@ export default makeReporter({
 				},
 			}
 
-			function handleKeypress(str: string, key: { name: string, ctrl: boolean }) {
+			function handleKeypress(str: string, key: { name: string; ctrl: boolean }) {
 				const actionKey: string | undefined = actionKeys[key.name]
 				const action: () => void | undefined = actions[actionKey]
 

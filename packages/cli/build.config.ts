@@ -1,10 +1,10 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from 'obuild/config'
 
 export default defineBuildConfig({
-	entries: ['./src/cli'],
-	clean: true,
-	failOnWarn: false,
-	rollup: {
-		cjsBridge: true,
-	},
+	entries: [
+		{
+			type: 'bundle',
+			input: ['./src/cli.ts'],
+		},
+	],
 })

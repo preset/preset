@@ -1,5 +1,5 @@
-import _debug from 'debug'
 import { emitter } from '@preset/core'
+import _debug from 'debug'
 import { makeReporter } from '../types'
 
 export default makeReporter({

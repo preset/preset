@@ -12,10 +12,10 @@ Call the `deletePaths` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await deletePaths({ paths: ['webpack.mix.js', 'resources/js'] })
-  }
+	// ...
+	handler: async () => {
+		await deletePaths({ paths: ['webpack.mix.js', 'resources/js'] })
+	},
 })
 ```
 
@@ -37,6 +37,6 @@ await deletePaths({ paths: ['webpack.mix.js', 'resources/js'] })
 
 ```ts
 interface DeletePathsOptions {
-  paths: string | string[]
+	paths: string | string[]
 }
 ```

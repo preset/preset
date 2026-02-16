@@ -1,9 +1,9 @@
 import fs from 'fs-extra'
-import { debug, objectWithoutKeys } from './utils'
-import { emitter } from './events'
 import { createActionContext, finishActionContext, finishPresetContext, getCurrentPresetContext, popCurrentContext } from './context'
-import type { Action, ActionHandler, DefinePresetOptions, Preset, PresetFlags } from './types'
 import { PresetError } from './errors'
+import { emitter } from './events'
+import type { Action, ActionHandler, DefinePresetOptions, Preset, PresetFlags } from './types'
+import { debug, objectWithoutKeys } from './utils'
 
 /**
  * Defines a preset.

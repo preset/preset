@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - '**'
-      - '!readme.md'
-      - '!docs/**'
-      - '!packages/**/package.json'
+      - "**"
+      - "!readme.md"
+      - "!docs/**"
+      - "!packages/**/package.json"
   pull_request:
     branches: [main]
 
@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      DEBUG: 'preset:*'
+      DEBUG: "preset:*"
 
     strategy:
       matrix:
@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - run: pnpm install
 

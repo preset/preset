@@ -16,12 +16,12 @@ By default, the template directory is `/templates` at the root of the preset pro
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    extractTemplates({
-      templates: 'preset/templates'
-    })
-  }
+	// ...
+	handler: async () => {
+		extractTemplates({
+			templates: 'preset/templates',
+		})
+	},
 })
 ```
 

@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
-import { defineConfig } from 'vitepress'
 import Unocss from 'unocss/vite'
+import { defineConfig } from 'vitepress'
 
 const production = process.env.NODE_ENV === 'production'
 const title = 'Preset'
@@ -132,7 +132,8 @@ export default defineConfig({
 		},
 
 		footer: {
-			message: 'Made with <span class="i-mdi:cards-heart mx-1 inline-block text-pink-300"></span> by <a class="ml-1 underline" href="https://twitter.com/enzoinnocenzi">Enzo Innocenzi</a>',
+			message:
+				'Made with <span class="i-mdi:cards-heart mx-1 inline-block text-pink-300"></span> by <a class="ml-1 underline" href="https://twitter.com/enzoinnocenzi">Enzo Innocenzi</a>',
 		},
 	},
 

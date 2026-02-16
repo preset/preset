@@ -6,7 +6,7 @@ outline: deep
 
 ## Organization shorthand
 
-Organization names that end with `-presets` have a dedicated shorthand of the format `organization:repository`. For instance, the presets in the `laravel-presets` organization can be used with `laravel:<preset-name>`. 
+Organization names that end with `-presets` have a dedicated shorthand of the format `organization:repository`. For instance, the presets in the `laravel-presets` organization can be used with `laravel:<preset-name>`.
 
 ## Custom aliases
 
@@ -18,12 +18,12 @@ A repository alias can be defined with a value that implements the following int
 
 ```ts
 interface RepositoryPreset {
-  type: 'repository'
-  organization: string
-  repository: string
-  ssh?: boolean
-  path?: string
-  tag?: string
+	type: 'repository'
+	organization: string
+	repository: string
+	ssh?: boolean
+	path?: string
+	tag?: string
 }
 ```
 
@@ -33,24 +33,24 @@ For instance, the following configuration will make the `preset apply config` co
 
 ```json
 {
-  "aliases": {
-    "config": {
-      "type": "repository",
-      "organization": "innocenzi",
-      "repository": "config"
-    }
-  }
+	"aliases": {
+		"config": {
+			"type": "repository",
+			"organization": "innocenzi",
+			"repository": "config"
+		}
+	}
 }
 ```
 
 ### Local aliases
 
-An alias stored locally can be aliased using the following interface: 
+An alias stored locally can be aliased using the following interface:
 
 ```ts
 interface LocalPreset {
-  type: 'directory' | 'file'
-  path: string
+	type: 'directory' | 'file'
+	path: string
 }
 ```
 
@@ -58,12 +58,12 @@ For instance, the following configuration will make the `preset apply config` co
 
 ```json
 {
-  "aliases": {
-    "config": {
-      "type": "file",
-      "path": "~/presets/config/preset.ts"
-    }
-  }
+	"aliases": {
+		"config": {
+			"type": "file",
+			"path": "~/presets/config/preset.ts"
+		}
+	}
 }
 ```
 

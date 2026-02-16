@@ -35,17 +35,8 @@ const features: Feature[] = []
 							href="/introduction.html"
 						>
 							Get started
-							<svg
-								class="ml-2 transition group-hover:translate-x-1"
-								xmlns="http://www.w3.org/2000/svg"
-								width="10"
-								height="10"
-								viewBox="0 0 24 24"
-							>
-								<path
-									d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"
-									fill="currentcolor"
-								/>
+							<svg class="ml-2 transition group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
+								<path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z" fill="currentcolor" />
 							</svg>
 						</a>
 						<a
@@ -71,12 +62,15 @@ const features: Feature[] = []
 						:is="feature.url ? 'a' : 'div'"
 						class="group relative flex flex-col justify-center gap-4 rounded-lg bg-[var(--vp-c-bg-soft)] p-6"
 						:class="{
-							'transition cursor-pointer hover:bg-[var(--vp-c-bg-mute)]': feature.url
+							'transition cursor-pointer hover:bg-[var(--vp-c-bg-mute)]': feature.url,
 						}"
 						:href="feature.url"
 					>
 						<div class="h-25 w-25 absolute right-5 flex shrink-0 items-center justify-center rounded p-2">
-							<div :class="feature.icon" class="h-full w-full text-[var(--vp-c-text-2)] opacity-0 transition group-hover:opacity-5 dark:group-hover:opacity-10" />
+							<div
+								:class="feature.icon"
+								class="h-full w-full text-[var(--vp-c-text-2)] opacity-0 transition group-hover:opacity-5 dark:group-hover:opacity-10"
+							/>
 						</div>
 						<div>
 							<span class="font-semibold" v-text="feature.title" />
@@ -94,7 +88,7 @@ const features: Feature[] = []
 .title-bg {
 	animation: title-gradient 20s ease infinite;
 	background-size: 400% 400%;
-  background-image: linear-gradient(
+	background-image: linear-gradient(
 		-45deg,
 		var(--vp-logo-shadow-1),
 		var(--vp-logo-shadow-2),
@@ -120,10 +114,10 @@ const features: Feature[] = []
 }
 
 .image-bg {
-  filter: blur(40px);
+	filter: blur(40px);
 	animation: image-gradient 10s ease infinite;
 	background-size: 400% 400%;
-  background-image: linear-gradient(
+	background-image: linear-gradient(
 		-45deg,
 		var(--vp-logo-shadow-1),
 		var(--vp-logo-shadow-2),

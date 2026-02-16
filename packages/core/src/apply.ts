@@ -1,9 +1,9 @@
-import type { ApplyOptions } from './types'
+import { initializeConfig, resetConfig } from './config'
 import { createPresetContext } from './context'
 import { importPresetFile } from './import'
 import { resolvePreset } from './resolve'
+import type { ApplyOptions } from './types'
 import { debug } from './utils'
-import { initializeConfig, resetConfig } from './config'
 
 /**
  * Applies the given preset.

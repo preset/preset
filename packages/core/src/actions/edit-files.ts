@@ -1,10 +1,10 @@
-import path from 'node:path'
-import fs from 'node:fs'
-import fg from 'fast-glob'
-import detectIndent from 'detect-indent'
-import unset from 'unset-value'
 import merge from 'deepmerge'
+import detectIndent from 'detect-indent'
+import fg from 'fast-glob'
+import fs from 'node:fs'
+import path from 'node:path'
 import type { JsonObject, Promisable } from 'type-fest'
+import unset from 'unset-value'
 import { defineAction } from '../api'
 import { debug, objectWithoutKeys, wrap } from '../utils'
 
@@ -50,7 +50,7 @@ export const editFiles = defineAction<EditFilesOptions>('edit-files', async ({ o
 				debug.action(actionContext.name, `Replacing given variables in file content, with prefix ${prefix}.`)
 
 				for (let [variableName, variableValue] of Object.entries(operation.variables)) {
-					variableName = variableName.startsWith(prefix)	? variableName : `${prefix}${variableName}`
+					variableName = variableName.startsWith(prefix) ? variableName : `${prefix}${variableName}`
 					variableValue = typeof variableValue === 'function' ? variableValue(content)?.toString() : variableValue?.toString()
 					content = content.replaceAll(variableName, variableValue ?? variableName)
 
@@ -318,12 +318,22 @@ interface EditJsonOperation {
 	delete?: string | string[]
 }
 
-export type EditFileOperation = (AddLineAtIndexOperation | AddLineAtOperation | AddLineWithMatchOperation | RemoveLineOperation | ReplaceVariablesOperation | UpdateContentOperation | EditJsonOperation) & {
-	/**
-	 * Whether to skip that operation.
-	 */
-	skipIf?: (content: string, targetFile: string) => Promisable<boolean>
-}
+export type EditFileOperation =
+	& (
+		| AddLineAtIndexOperation
+		| AddLineAtOperation
+		| AddLineWithMatchOperation
+		| RemoveLineOperation
+		| ReplaceVariablesOperation
+		| UpdateContentOperation
+		| EditJsonOperation
+	)
+	& {
+		/**
+		 * Whether to skip that operation.
+		 */
+		skipIf?: (content: string, targetFile: string) => Promisable<boolean>
+	}
 
 export interface EditFilesOptions {
 	/**

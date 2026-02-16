@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { type Options as CommonOptions, execa } from 'execa'
 import createDebugger from 'debug'
+import { execa, type Options as CommonOptions } from 'execa'
 import type { NodePackageManager } from './types'
 
 export const debug = {

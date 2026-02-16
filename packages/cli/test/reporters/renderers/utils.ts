@@ -1,14 +1,6 @@
-import {
-	type ActionContext,
-	type ActionOptions,
-	type ApplyOptions,
-	type LocalPreset,
-	type Preset,
-	type PromptChoice,
-	createPresetContext,
-} from '@preset/core'
-import type { TextInput } from '../../../src/reporters/renderers/text-prompt'
+import { type ActionContext, type ActionOptions, type ApplyOptions, createPresetContext, type LocalPreset, type Preset, type PromptChoice } from '@preset/core'
 import type { SelectInput } from '../../../src/reporters/renderers/select-prompt'
+import type { TextInput } from '../../../src/reporters/renderers/text-prompt'
 
 export function makePresetContext() {
 	const testPreset: Preset = { name: 'test_preset_name', options: {}, apply: async () => false }
@@ -31,7 +23,7 @@ export function makeActionContext(options: ActionOptions<any> = {}): ActionConte
 	}
 }
 
-export function makeTextInput(response: string = '',	actionContextId: string = 'test_action_id'): TextInput {
+export function makeTextInput(response: string = '', actionContextId: string = 'test_action_id'): TextInput {
 	return {
 		id: 'test_input_id',
 		actionContextId,
@@ -42,7 +34,7 @@ export function makeTextInput(response: string = '',	actionContextId: string = '
 	}
 }
 
-export function makeSelectInput(choices: PromptChoice[],	cursor: number = 0,	isDone: boolean = false): SelectInput {
+export function makeSelectInput(choices: PromptChoice[], cursor: number = 0, isDone: boolean = false): SelectInput {
 	return {
 		id: 'test_input_id',
 		actionContextId: 'test_action_id',

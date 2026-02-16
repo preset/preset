@@ -1,7 +1,7 @@
 import { defineAction } from '../api'
 import { applyPreset } from '../apply'
-import { debug } from '../utils'
 import type { ApplyOptions } from '../types'
+import { debug } from '../utils'
 
 export interface ApplyNestedPresetOptions {
 	/**

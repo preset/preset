@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { expect, it } from 'vitest'
+import { replaceConfig } from '../src/config'
 import { parseResolvable, resolvePresetFile } from '../src/resolve'
 import type { ApplyOptions, ResolvedPreset } from '../src/types'
-import { replaceConfig } from '../src/config'
 import { fixedFixturesDirectory, presetFixture } from './utils'
 
 async function ensureParses(map: Array<[string, ResolvedPreset | false]>) {

@@ -1,3 +1,6 @@
 {
-	"references.preferredLocation": "peek"
+	"references.preferredLocation": "peek",
+	"chat.tools.terminal.autoApprove": {
+		"bun": true
+	}
 }

@@ -1,5 +1,5 @@
-import { type RenamePathsOptions, renamePaths } from '../../src'
-import { type DirectoryStructure, type TestRecord, expectStructureMatches, testsInSandbox } from '../utils'
+import { renamePaths, type RenamePathsOptions } from '../../src'
+import { type DirectoryStructure, expectStructureMatches, type TestRecord, testsInSandbox } from '../utils'
 
 interface RenamePathTest extends TestRecord {
 	options: RenamePathsOptions

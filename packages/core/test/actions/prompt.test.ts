@@ -1,14 +1,15 @@
 import { expect, it } from 'vitest'
-import { makeTestPreset } from '../utils'
 import { emitter, prompt } from '../../src'
+import { makeTestPreset } from '../utils'
 
 it('emits input and response events and adds response to context', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'name',
-			text: 'What is your name?',
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'name',
+				text: 'What is your name?',
+			}),
 	}, {
 		parsedOptions: { interaction: true },
 	})
@@ -43,11 +44,12 @@ it('emits input and response events and adds response to context', async () => {
 it('adds a default response to context when no response is emitted', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'name',
-			text: 'What is your name?',
-			default: 'Okabe',
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'name',
+				text: 'What is your name?',
+				default: 'Okabe',
+			}),
 	}, {
 		parsedOptions: { interaction: true },
 	})
@@ -82,11 +84,12 @@ it('adds a default response to context when no response is emitted', async () =>
 it('does not emit events when there are no interactions', async () => {
 	const result: any = {}
 	const { context, executePreset } = await makeTestPreset({
-		handler: async () => await prompt({
-			name: 'name',
-			text: 'What is your name?',
-			default: 'Makise',
-		}),
+		handler: async () =>
+			await prompt({
+				name: 'name',
+				text: 'What is your name?',
+				default: 'Makise',
+			}),
 	}, {
 		parsedOptions: { interaction: false },
 	})

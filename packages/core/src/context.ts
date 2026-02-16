@@ -1,11 +1,11 @@
+import cac from 'cac'
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
-import cac from 'cac'
 import simpleGit from 'simple-git'
 import type { LastArrayElement } from 'type-fest'
+import { PresetError } from './errors'
 import type { ActionContext, ActionOptions, ApplyOptions, LocalPreset, Preset, PresetContext, Status } from './types'
 import { debug, objectWithoutKeys } from './utils'
-import { PresetError } from './errors'
 
 /**
  * Context list, in order of execution.

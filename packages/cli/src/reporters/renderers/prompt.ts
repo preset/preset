@@ -1,6 +1,6 @@
 import type { ActionContext, PresetContext } from '@preset/core'
-import renderTextPrompt, { type TextInput } from './text-prompt'
 import renderSelectPrompt, { type SelectInput } from './select-prompt'
+import renderTextPrompt, { type TextInput } from './text-prompt'
 
 export default function renderPrompt(
 	preset: PresetContext,

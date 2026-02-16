@@ -1,12 +1,12 @@
-import { createRequire } from 'node:module'
-import vm from 'node:vm'
-import fs from 'node:fs'
-import path from 'node:path'
 import { buildSync } from 'esbuild'
-import type { Preset } from './types'
-import { debug } from './utils'
+import fs from 'node:fs'
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import vm from 'node:vm'
 import { PresetError } from './errors'
 import * as preset from './index'
+import type { Preset } from './types'
+import { debug } from './utils'
 
 /**
  * Imports the given preset file.

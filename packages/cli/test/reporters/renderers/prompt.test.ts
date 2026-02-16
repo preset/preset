@@ -2,8 +2,8 @@ import { popCurrentContext } from '@preset/core'
 
 import { afterEach, expect, it } from 'vitest'
 
-import { format } from '../../../src/reporters/renderers/text-formater'
 import { symbols } from '../../../src/reporters/renderers/symbols'
+import { format } from '../../../src/reporters/renderers/text-formater'
 
 import type { TextInput } from '../../../src/reporters/renderers/text-prompt'
 
@@ -37,8 +37,7 @@ it('renders text input', async () => {
 	const result = renderPrompt(presetContext, actionContext, [textInput])
 
 	expect(result).toEqual(`
-    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`,
-	)
+    ${format.dim(`${symbols.subArrow} ${text}`)} ${format.textPromptResponse(promptDefault)}`)
 })
 
 it('renders select input', async () => {

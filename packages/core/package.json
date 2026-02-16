@@ -1,64 +1,63 @@
 {
-  "name": "@preset/core",
-  "type": "module",
-  "version": "0.11.3",
-  "description": "Elegant, ecosystem-agnostic preset mechanism",
-  "author": "Enzo Innocenzi",
-  "license": "MIT",
-  "homepage": "https://preset.dev",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/preset/preset.git",
-    "directory": "packages/core"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": "https://github.com/preset/preset/issues",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    },
-    "./*": "./*",
-    "./globals": {
-      "types": "./globals.d.ts"
-    }
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "files": [
-    "*.d.ts",
-    "dist"
-  ],
-  "scripts": {
-    "build": "unbuild",
-    "stub": "unbuild --stub",
-    "test": "vitest",
-    "test:watch": "vitest",
-    "prepublishOnly": "npm run build",
-    "prepublish": "tsx ./update-globals.ts",
-    "postpublish": "tsx ./update-globals.ts --delete"
-  },
-  "dependencies": {
-    "cac": "^6.7.14",
-    "debug": "^4.3.5",
-    "deepmerge": "^4.3.1",
-    "esbuild": "^0.21.5",
-    "fast-glob": "^3.3.2",
-    "fs-extra": "^11.2.0",
-    "mitt": "^3.0.1",
-    "simple-git": "^3.25.0",
-    "type-fest": "^4.20.1",
-    "unconfig": "^0.4.4",
-    "unset-value": "^2.0.1"
-  },
-  "devDependencies": {
-    "@types/debug": "^4.1.12",
-    "@types/fs-extra": "^11.0.4",
-    "detect-indent": "^7.0.1",
-    "execa": "^9.2.0",
-    "typescript": "^5.4.5"
-  }
+	"name": "@preset/core",
+	"type": "module",
+	"version": "0.11.3",
+	"description": "Elegant, ecosystem-agnostic preset mechanism",
+	"author": "Enzo Innocenzi",
+	"license": "MIT",
+	"homepage": "https://preset.dev",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/preset/preset.git",
+		"directory": "packages/core"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"bugs": "https://github.com/preset/preset/issues",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
+		},
+		"./*": "./*",
+		"./globals": {
+			"types": "./globals.d.ts"
+		}
+	},
+	"main": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"files": [
+		"*.d.ts",
+		"dist"
+	],
+	"scripts": {
+		"build": "obuild",
+		"stub": "obuild --stub",
+		"test": "vitest",
+		"test:watch": "vitest",
+		"prepublishOnly": "npm run build",
+		"prepublish": "tsx ./update-globals.ts",
+		"postpublish": "tsx ./update-globals.ts --delete"
+	},
+	"dependencies": {
+		"cac": "catalog:",
+		"debug": "catalog:",
+		"deepmerge": "catalog:",
+		"esbuild": "catalog:",
+		"fast-glob": "catalog:",
+		"fs-extra": "catalog:",
+		"mitt": "catalog:",
+		"simple-git": "catalog:",
+		"type-fest": "catalog:",
+		"unconfig": "catalog:",
+		"unset-value": "catalog:"
+	},
+	"devDependencies": {
+		"@types/debug": "catalog:",
+		"@types/fs-extra": "catalog:",
+		"detect-indent": "catalog:",
+		"execa": "catalog:",
+		"typescript": "catalog:"
+	}
 }

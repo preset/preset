@@ -1,5 +1,5 @@
-import path from 'node:path'
 import { definePreset, editFiles, executeCommand, extractTemplates, group, installPackages, prompt } from '@preset/core'
+import path from 'node:path'
 
 function kebab(str: string) {
 	return str

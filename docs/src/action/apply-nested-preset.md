@@ -12,10 +12,10 @@ Call the `applyNestedPreset` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await applyNestedPreset({ preset: 'laravel:inertia' })
-  }
+	// ...
+	handler: async () => {
+		await applyNestedPreset({ preset: 'laravel:inertia' })
+	},
 })
 ```
 
@@ -31,7 +31,7 @@ Defines the arguments to pass to the preset. This must be an array of string.
 
 ### `inheritsArguments`
 
-Defines whether or not to make the nested preset inherit arguments given to the current preset. Default is `false`. 
+Defines whether or not to make the nested preset inherit arguments given to the current preset. Default is `false`.
 
 ## Examples
 
@@ -39,8 +39,8 @@ Defines whether or not to make the nested preset inherit arguments given to the 
 
 ```ts
 await applyNestedPreset({
-  preset: 'laravel:inertia',
-  args: ['--no-pest']
+	preset: 'laravel:inertia',
+	args: ['--no-pest'],
 })
 ```
 
@@ -48,8 +48,8 @@ await applyNestedPreset({
 
 ```ts
 interface ApplyNestedPresetOptions {
-  preset: string
-  args?: string[]
-  inheritsArguments?: boolean
+	preset: string
+	args?: string[]
+	inheritsArguments?: boolean
 }
 ```

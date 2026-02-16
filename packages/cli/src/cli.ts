@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /* eslint-disable no-console */
-import path from 'node:path'
-import c from 'chalk'
+import { applyPreset, PresetError } from '@preset/core'
 import createCli from 'cac'
-import { PresetError, applyPreset } from '@preset/core'
+import c from 'chalk'
+import path from 'node:path'
 import { version } from '../package.json'
 import { patch } from './patch'
 import { reporters } from './reporters'
@@ -32,12 +32,14 @@ invoke(async () => {
 		.option('-t, --tag [tag]', 'The branch or tag to use if the preset is a repository.')
 		.option('--ssh', 'Whether to use SSH or not. This can be determined depending on the URL of the Git repository, defaulting to false.')
 		.allowUnknownOptions()
-		.action(async (resolvable: string, targetDirectory: string | undefined, parsedOptions) => await applyPreset({
-			parsedOptions,
-			resolvable,
-			targetDirectory: targetDirectory ? path.resolve(targetDirectory) : process.cwd(),
-			rawArguments: process.argv.slice(2),
-		}))
+		.action(async (resolvable: string, targetDirectory: string | undefined, parsedOptions) =>
+			await applyPreset({
+				parsedOptions,
+				resolvable,
+				targetDirectory: targetDirectory ? path.resolve(targetDirectory) : process.cwd(),
+				rawArguments: process.argv.slice(2),
+			})
+		)
 
 	// Registers the `init` command
 	cli.command('init [target-directory]', 'Initializes a new preset.')
@@ -45,12 +47,14 @@ invoke(async () => {
 		.option('--no-git', 'Do not initialize a Git repository.')
 		.option('--no-install', 'Do not install the preset dependency.')
 		.allowUnknownOptions()
-		.action(async (targetDirectory: string | undefined, parsedOptions) => await applyPreset({
-			parsedOptions,
-			resolvable: path.resolve(__dirname, '../init'),
-			targetDirectory: targetDirectory ?? process.cwd(),
-			rawArguments: process.argv.slice(2),
-		}))
+		.action(async (targetDirectory: string | undefined, parsedOptions) =>
+			await applyPreset({
+				parsedOptions,
+				resolvable: path.resolve(__dirname, '../init'),
+				targetDirectory: targetDirectory ?? process.cwd(),
+				rawArguments: process.argv.slice(2),
+			})
+		)
 
 	// Runs the CLI after registering the events
 	const { options } = patch(cli).parse(process.argv, { run: false })

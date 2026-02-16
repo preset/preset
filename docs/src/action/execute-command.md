@@ -12,10 +12,10 @@ Call the `executeCommand` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await executeCommand({ command: 'git', arguments: ['init'] })
-  }
+	// ...
+	handler: async () => {
+		await executeCommand({ command: 'git', arguments: ['init'] })
+	},
 })
 ```
 
@@ -49,9 +49,9 @@ await executeCommand({ command: 'git', arguments: ['init'] })
 
 ```ts
 interface ExecuteCommandOptions {
-  command: string
-  arguments?: string[]
-  data?: (stdout: string) => void
-  ignoreExitCode?: boolean
+	command: string
+	arguments?: string[]
+	data?: (stdout: string) => void
+	ignoreExitCode?: boolean
 }
 ```

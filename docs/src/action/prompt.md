@@ -4,7 +4,7 @@ outline: deep
 
 # Prompt
 
-> The `prompt` action can prompt the user for input when applying a preset. There are 2 prompt types available. 
+> The `prompt` action can prompt the user for input when applying a preset. There are 2 prompt types available.
 > The default is a text prompt. A select prompt can be requested by supplying a `choices` property.
 
 ## Text prompt
@@ -13,10 +13,10 @@ Call the `prompt` function in the `handler`:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await prompt({ name: 'name', text: 'What is your name?' })
-  }
+	// ...
+	handler: async () => {
+		await prompt({ name: 'name', text: 'What is your name?' })
+	},
 })
 ```
 
@@ -40,10 +40,10 @@ Defines the default value for the prompt if the answer is skipped or if the term
 
 ```ts
 await prompt({
-  title: 'prompt project name',
-  name: 'name',
-  text: 'What is the name of the project?',
-  default: path.parse(context.applyOptions.targetDirectory).name,
+	title: 'prompt project name',
+	name: 'name',
+	text: 'What is the name of the project?',
+	default: path.parse(context.applyOptions.targetDirectory).name,
 })
 ```
 
@@ -51,25 +51,26 @@ await prompt({
 
 ```ts
 interface PromptOptions {
-  name: string;
-  text: string;
-  default?: string;
+	name: string
+	text: string
+	default?: string
 }
 ```
+
 ## Select prompt
 
 Call the `prompt` function in the `handler` with the `choices` option:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await prompt({
-      name: 'choice',
-      text: 'What is your choice?',
-      choices: ['first', 'second']
-    })
-  }
+	// ...
+	handler: async () => {
+		await prompt({
+			name: 'choice',
+			text: 'What is your choice?',
+			choices: ['first', 'second'],
+		})
+	},
 })
 ```
 
@@ -97,27 +98,27 @@ Defines the index of the initial choice. This will be used if the answer is skip
 
 ```ts
 await prompt({
-  title: 'Choose a testing library',
-  name: 'testing',
-  text: 'Choose between mocha, vitest or jest',
-  choices: [
-    { title: 'Mocha', value: 'mocha' },
-    { title: 'vitest'},
-    'jest',
-  ],
-  initial: 0,
+	title: 'Choose a testing library',
+	name: 'testing',
+	text: 'Choose between mocha, vitest or jest',
+	choices: [
+		{ title: 'Mocha', value: 'mocha' },
+		{ title: 'vitest' },
+		'jest',
+	],
+	initial: 0,
 })
 ```
 
 ## Interface
 
 ```ts
-type PromptChoice = { title: string, value?: string } | string
+type PromptChoice = { title: string; value?: string } | string
 
 interface SelectPromptOptions {
-  name: string
-  text: string
-  initial?: number
-  choices: [PromptChoice]
+	name: string
+	text: string
+	initial?: number
+	choices: [PromptChoice]
 }
 ```

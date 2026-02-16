@@ -1,29 +1,29 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "baseUrl": ".",
-    "target": "es2016",
-    "lib": ["esnext"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "strictNullChecks": true,
-    "verbatimModuleSyntax": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": [
-      "node",
-    ],
+	"compilerOptions": {
+		"module": "esnext",
+		"baseUrl": ".",
+		"target": "es2016",
+		"lib": ["esnext"],
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"noUnusedLocals": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"strictNullChecks": true,
+		"verbatimModuleSyntax": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": [
+			"node"
+		],
 		"paths": {
-      "@preset/core": ["./packages/core/src/index.ts"],
-      "@preset/core/globals": ["./packages/core/globals.d.ts"],
+			"@preset/core": ["./packages/core/src/index.ts"],
+			"@preset/core/globals": ["./packages/core/globals.d.ts"]
 		}
-  },
-  "include": [
-    "./*.ts",
-    "./packages/**/*.ts"
-  ],
-  "exclude": ["**/bin/**", "**/dist/**", "node_modules", "packages/cli/init/templates/**"]
+	},
+	"include": [
+		"./*.ts",
+		"./packages/**/*.ts"
+	],
+	"exclude": ["**/bin/**", "**/dist/**", "node_modules", "packages/cli/init/templates/**"]
 }

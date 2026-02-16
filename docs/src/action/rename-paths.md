@@ -12,13 +12,13 @@ Call the `renamePaths` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await renamePaths({
-      paths: 'vite.config.js',
-      transformer: ({name}) => `${name}.ts`,
-    })
-  },
+	// ...
+	handler: async () => {
+		await renamePaths({
+			paths: 'vite.config.js',
+			transformer: ({ name }) => `${name}.ts`,
+		})
+	},
 })
 ```
 
@@ -38,8 +38,8 @@ Defines the `string` or mutating function which returns the targets `ParsedPath`
 
 ```ts
 await renamePaths({
-  paths: '_tsconfig.json',
-  transformer: 'tsconfig.json',
+	paths: '_tsconfig.json',
+	transformer: 'tsconfig.json',
 })
 ```
 
@@ -47,8 +47,8 @@ await renamePaths({
 
 ```ts
 await renamePaths({
-  paths: 'blog-post.md',
-  transformer: ({name}) => `${name}.mdx`,
+	paths: 'blog-post.md',
+	transformer: ({ name }) => `${name}.mdx`,
 })
 ```
 
@@ -56,8 +56,8 @@ await renamePaths({
 
 ```ts
 await renamePaths({
-  paths: ['folder-1', 'folder-2'],
-  transformer: ({base}) => `old-${base}`,
+	paths: ['folder-1', 'folder-2'],
+	transformer: ({ base }) => `old-${base}`,
 })
 ```
 
@@ -67,8 +67,8 @@ await renamePaths({
 const now = new Date().toISOString().substring(0, 10)
 
 await renamePaths({
-  paths: '**/*.txt',
-  transformer: ({base}) => `${now}-${base}`,
+	paths: '**/*.txt',
+	transformer: ({ base }) => `${now}-${base}`,
 })
 ```
 
@@ -76,13 +76,13 @@ await renamePaths({
 
 ```ts
 interface ParsedPath {
-  name: string
-  base: string
-  ext?: string
+	name: string
+	base: string
+	ext?: string
 }
 
 export interface RenamePathsOptions {
-  paths: string | string[]
-  transformer: string | ((parameters: ParsedPath) => string)
+	paths: string | string[]
+	transformer: string | ((parameters: ParsedPath) => string)
 }
 ```

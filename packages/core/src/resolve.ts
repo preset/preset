@@ -2,11 +2,11 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import git from 'simple-git'
+import { config } from './config'
 import { PresetError } from './errors'
 import { emitter } from './events'
 import type { ApplyOptions, LocalDirectoryPreset, LocalFilePreset, LocalPreset, RepositoryPreset, ResolvedPreset } from './types'
 import { debug, invoke } from './utils'
-import { config } from './config'
 
 /**
  * Resolves the preset file and returns its path.
@@ -67,8 +67,7 @@ export async function resolvePreset(options: ApplyOptions): Promise<LocalPreset>
 export async function parseResolvable(options: ApplyOptions, cwd: string = process.cwd()): Promise<ResolvedPreset> {
 	debug.resolve('Working directory:', cwd)
 	debug.resolve('Parsing resolvable:', options.resolvable)
-	const resolved
-		= await resolveConfiguredAlias(options)
+	const resolved = await resolveConfiguredAlias(options)
 		|| await resolveAlias(options)
 		|| await resolveNamespacedAlias(options)
 		|| await resolveLocalFile(options, cwd)
@@ -256,7 +255,7 @@ export async function resolvePresetFile(directory: string, cwd: string = process
 			if ((fs.statSync(filepath)).isFile()) {
 				return filepath
 			}
-		} catch { }
+		} catch {}
 
 		return null
 	}
@@ -287,7 +286,7 @@ export async function resolvePresetFile(directory: string, cwd: string = process
 export async function cloneRepository(preset: RepositoryPreset, options: ApplyOptions) {
 	const targetDirectory = path.resolve(fs.realpathSync(os.tmpdir()), 'presets', preset.repository)
 	const cloneWithSsh = options?.parsedOptions?.ssh === undefined ? preset.ssh : options.parsedOptions.ssh
-	const tag = (options?.parsedOptions?.tag === undefined ? preset.tag : options.parsedOptions.tag)
+	const tag = options?.parsedOptions?.tag === undefined ? preset.tag : options.parsedOptions.tag
 	const repositoryUrl = cloneWithSsh
 		? `git@github.com:${preset.organization}/${preset.repository}.git`
 		: `https://github.com/${preset.organization}/${preset.repository}`

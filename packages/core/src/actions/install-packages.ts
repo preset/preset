@@ -1,8 +1,8 @@
-import { debug, detectNodePackageManager, execute, invoke, wrap } from '../utils'
-import { PresetError } from '../errors'
 import { defineAction } from '../api'
 import { config } from '../config'
+import { PresetError } from '../errors'
 import type { NodePackageManager } from '../types'
+import { debug, detectNodePackageManager, execute, invoke, wrap } from '../utils'
 
 const ACTION_NAME = 'install-packages'
 
@@ -14,30 +14,39 @@ async function getNodePackageManagerInstallArguments(cwd: string, options: Insta
 	debug.action(ACTION_NAME, `Using package manager: ${packageManager}`)
 
 	if (packageManager === 'bun') {
-		return [packageManager, [
-			options.type!,
-			options.dev ? '-D' : '',
-			...args,
-			...packageNames,
-		].filter(Boolean)]
+		return [
+			packageManager,
+			[
+				options.type!,
+				options.dev ? '-D' : '',
+				...args,
+				...packageNames,
+			].filter(Boolean),
+		]
 	}
 
 	if (packageManager === 'npm') {
-		return [packageManager, [
-			options.type!,
-			options.dev ? '-D' : '',
-			...args,
-			...packageNames,
-		].filter(Boolean)]
+		return [
+			packageManager,
+			[
+				options.type!,
+				options.dev ? '-D' : '',
+				...args,
+				...packageNames,
+			].filter(Boolean),
+		]
 	}
 
 	if (packageManager === 'pnpm') {
-		return [packageManager, [
-			options.type!,
-			options.dev ? '-D' : '',
-			...args,
-			...packageNames,
-		].filter(Boolean)]
+		return [
+			packageManager,
+			[
+				options.type!,
+				options.dev ? '-D' : '',
+				...args,
+				...packageNames,
+			].filter(Boolean),
+		]
 	}
 
 	if (packageManager === 'yarn') {
@@ -53,12 +62,15 @@ async function getNodePackageManagerInstallArguments(cwd: string, options: Insta
 			return 'install'
 		})
 
-		return [packageManager, [
-			command,
-			options.dev ? '-D' : '',
-			...args,
-			...packageNames,
-		].filter(Boolean)]
+		return [
+			packageManager,
+			[
+				command,
+				options.dev ? '-D' : '',
+				...args,
+				...packageNames,
+			].filter(Boolean),
+		]
 	}
 
 	throw new PresetError({ code: 'ERR_ACTION_FAILED', details: `Package manager "${packageManager}" is not supported.` })
@@ -68,13 +80,16 @@ async function getComposerInstallArguments(cwd: string, options: InstallPackages
 	const packageNames = wrap(options.install ?? options.packages)
 	const args = options.additionalArgs || []
 
-	return ['composer', [
-		packageNames.length > 0 ? 'require' : options.type!,
-		options.dev ? '--dev' : '',
-		'--no-interaction',
-		...args,
-		...packageNames,
-	].filter(Boolean)]
+	return [
+		'composer',
+		[
+			packageNames.length > 0 ? 'require' : options.type!,
+			options.dev ? '--dev' : '',
+			'--no-interaction',
+			...args,
+			...packageNames,
+		].filter(Boolean),
+	]
 }
 
 /**

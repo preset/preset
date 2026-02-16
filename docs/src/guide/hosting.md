@@ -29,7 +29,7 @@ Organization using the `<community>-presets` convention can use a shorter, easie
 
 ```shell
 preset apply community:repository
-``` 
+```
 
 For instance, you can apply the `laravel-presets/inertia` preset using `preset apply laravel:inertia`.
 

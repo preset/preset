@@ -1,29 +1,30 @@
+import createDebugger from 'debug'
+import fs from 'fs-extra'
+import { randomUUID } from 'node:crypto'
 import nfs from 'node:fs'
 import path from 'node:path'
-import { randomUUID } from 'node:crypto'
-import { assert, expect, it } from 'vitest'
-import fs from 'fs-extra'
 import type { SetRequired } from 'type-fest'
-import createDebugger from 'debug'
+import { assert, expect, it } from 'vitest'
 import { definePreset } from '../src'
-import { createPresetContext } from '../src/context'
 import type { ApplyOptions, DefinePresetOptions, LocalPreset, Preset } from '../src'
 import { resetConfig } from '../src/config'
+import { createPresetContext } from '../src/context'
 
 export interface DirectoryStructure {
-	[path: string]: { type: 'file', content?: any, json?: any } | { type: 'directory' } | { type: 'none' }
+	[path: string]: { type: 'file'; content?: any; json?: any } | { type: 'directory' } | { type: 'none' }
 }
 
 export const debug = createDebugger('preset:tests')
 export const fixturesDirectory = path.resolve(__dirname, './__fixtures__')
 export const fixedFixturesDirectory = path.resolve(__dirname, './fixtures')
-export const cleanupFixtures = async (fixtures: string = fixturesDirectory) => await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
+export const cleanupFixtures = async (fixtures: string = fixturesDirectory) =>
+	await fs.rm(fixtures, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 })
 export const presetFixture = (name: string) => path.resolve(fixedFixturesDirectory, name)
 
 /**
  * Creates a test context.
  */
-export async function createTestPresetContext(preset: Preset,	customApplyOptions?: Partial<ApplyOptions>,	customLocalPreset?: Partial<LocalPreset>) {
+export async function createTestPresetContext(preset: Preset, customApplyOptions?: Partial<ApplyOptions>, customLocalPreset?: Partial<LocalPreset>) {
 	return await createPresetContext(preset, {
 		resolvable: '',
 		rawArguments: [],
@@ -41,7 +42,11 @@ export async function createTestPresetContext(preset: Preset,	customApplyOptions
 /**
  * Creates a test preset.
  */
-export async function makeTestPreset(customPresetOptions: SetRequired<Partial<DefinePresetOptions>, 'handler'>,	customApplyOptions?: Partial<ApplyOptions>,	customLocalPreset?: Partial<LocalPreset>) {
+export async function makeTestPreset(
+	customPresetOptions: SetRequired<Partial<DefinePresetOptions>, 'handler'>,
+	customApplyOptions?: Partial<ApplyOptions>,
+	customLocalPreset?: Partial<LocalPreset>,
+) {
 	const preset = definePreset({
 		name: 'test-preset',
 		options: {
@@ -120,7 +125,7 @@ export async function generateStructure(directory: string, ds?: DirectoryStructu
 }
 
 export interface SandboxOptions {
-	fn: (d: { sandboxDirectory: string, targetDirectory: string, rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
+	fn: (d: { sandboxDirectory: string; targetDirectory: string; rootDirectory: string }, proxyMakeTestPreset: typeof makeTestPreset) => Promise<void>
 	rootStructure?: DirectoryStructure
 	targetStructure?: DirectoryStructure
 	cleanup?: boolean
@@ -133,11 +138,12 @@ export async function usingSandbox({ fn, rootStructure, targetStructure, cleanup
 	const sandboxDirectory = path.resolve(fixturesDirectory, randomUUID())
 	const targetDirectory = path.resolve(sandboxDirectory, 'preset-target')
 	const rootDirectory = path.resolve(sandboxDirectory, 'preset-root')
-	const proxyMakeTestPreset: typeof makeTestPreset = (presetOptions, applyOptions, fs) => makeTestPreset(
-		presetOptions,
-		{ targetDirectory, ...applyOptions },
-		{ rootDirectory, ...fs },
-	)
+	const proxyMakeTestPreset: typeof makeTestPreset = (presetOptions, applyOptions, fs) =>
+		makeTestPreset(
+			presetOptions,
+			{ targetDirectory, ...applyOptions },
+			{ rootDirectory, ...fs },
+		)
 
 	try {
 		debug(`Making sandbox in ${sandboxDirectory}.`)
@@ -177,7 +183,7 @@ export function dedent(
 		}
 
 		return arr
-	}, <number[]>[])
+	}, <number[]> [])
 
 	// 3. Remove the common indentation from all strings.
 	if (indentLengths.length) {

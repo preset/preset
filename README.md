@@ -25,7 +25,7 @@
 <div align="center">
   An elegant, ecosystem-agnostic preset mechanism.
   <br />
-  It was made to automate the repetitive task of doing the same modifications each time a project is created. 
+  It was made to automate the repetitive task of doing the same modifications each time a project is created.
   <br />
   <br />
   <a href="https://preset.dev">Learn more</a>

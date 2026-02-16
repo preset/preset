@@ -1,5 +1,5 @@
 import { type EditFileOperation, editFiles } from '../../src'
-import { type DirectoryStructure, type TestRecord, dedent, expectStructureMatches, testsInSandbox } from '../utils'
+import { dedent, type DirectoryStructure, expectStructureMatches, type TestRecord, testsInSandbox } from '../utils'
 
 interface EditFileTest extends TestRecord {
 	operation: EditFileOperation
@@ -537,19 +537,27 @@ const tests: Record<string, EditFileTest> = {
 			type: 'edit-json',
 			delete: ['devDependencies.@preset/core'],
 		},
-		fileBefore: JSON.stringify({
-			private: true,
-			devDependencies: {
-				'@preset/core': '*',
-				'debug': '^4.3.4',
+		fileBefore: JSON.stringify(
+			{
+				private: true,
+				devDependencies: {
+					'@preset/core': '*',
+					'debug': '^4.3.4',
+				},
 			},
-		}, null, '  '),
-		fileAfter: JSON.stringify({
-			private: true,
-			devDependencies: {
-				debug: '^4.3.4',
+			null,
+			'  ',
+		),
+		fileAfter: JSON.stringify(
+			{
+				private: true,
+				devDependencies: {
+					debug: '^4.3.4',
+				},
 			},
-		}, null, '  '),
+			null,
+			'  ',
+		),
 	},
 	'skips operation on condition': {
 		operation: {
@@ -569,19 +577,23 @@ const tests: Record<string, EditFileTest> = {
 testsInSandbox(tests, (test) => ({
 	fn: async ({ targetDirectory }, makeTestPreset) => {
 		const { executePreset } = await makeTestPreset({
-			handler: async () => await editFiles({
-				files: test.files ?? testFile,
-				operations: [test.operation],
-			}),
+			handler: async () =>
+				await editFiles({
+					files: test.files ?? testFile,
+					operations: [test.operation],
+				}),
 		})
 
 		await executePreset()
-		await expectStructureMatches(targetDirectory, test.finalStructure ?? {
-			[testFile]: {
-				type: 'file',
-				content: test.fileAfter,
+		await expectStructureMatches(
+			targetDirectory,
+			test.finalStructure ?? {
+				[testFile]: {
+					type: 'file',
+					content: test.fileAfter,
+				},
 			},
-		})
+		)
 	},
 	targetStructure: test.initialStructure ?? {
 		[testFile]: {

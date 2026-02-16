@@ -12,12 +12,12 @@ Call the `extractTemplates` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await extractTemplates({
-      from: 'vue'
-    })
-  }
+	// ...
+	handler: async () => {
+		await extractTemplates({
+			from: 'vue',
+		})
+	},
 })
 ```
 
@@ -31,13 +31,13 @@ Defines the path to the templates directory inside the preset's project. The def
 
 Defines the path to a file or a directory inside the template directory to copy. The default value is empty, so the whole template directory will be extracted.
 
-### `to` 
+### `to`
 
 Defines the path to a file or directory inside the target directory to copy to. The default value is empty, so the templates will be extracted to the root of the target directory.
 
 ### `flatten`
 
-Defines whether to ignore the structure of the template directory. If this is `true`, the structure of the template directory will be ignored and their content will be extracted inside the directory defined by `to`. 
+Defines whether to ignore the structure of the template directory. If this is `true`, the structure of the template directory will be ignored and their content will be extracted inside the directory defined by `to`.
 
 This option only works if `from` is a file and `to` is a directory.
 
@@ -61,7 +61,7 @@ await extractTemplates()
 
 ```ts
 await extractTemplates({
-  from: 'default'
+	from: 'default',
 })
 ```
 
@@ -69,8 +69,8 @@ await extractTemplates({
 
 ```ts
 await extractTemplates({
-  from: 'default',
-  to: 'config'
+	from: 'default',
+	to: 'config',
 })
 ```
 
@@ -78,11 +78,11 @@ await extractTemplates({
 
 ```ts
 interface ExtractTemplatesOptions {
-  templates?: string
-  from?: string
-  to?: string
-  flatten?: boolean
-  extractDotFiles?: boolean
-  whenConflict?: 'override' | 'skip'
+	templates?: string
+	from?: string
+	to?: string
+	flatten?: boolean
+	extractDotFiles?: boolean
+	whenConflict?: 'override' | 'skip'
 }
 ```

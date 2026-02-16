@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { assert, expect, it } from 'vitest'
-import { importPresetFile } from '../src/import'
 import { emitter } from '../src/events'
+import { importPresetFile } from '../src/import'
 import { createTestPresetContext } from './utils'
 
 async function testImport(presetFixturePath: string, expect: any) {

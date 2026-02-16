@@ -26,8 +26,7 @@ type RequiredKeys<T> = { [K in keyof T]-?: ({} extends { [P in K]: T[K] } ? neve
 
 export type ActionHandler<T> = (parameters: ActionHandlerParameters<T>) => Promisable<ActionResult>
 export type ActionOptions<T> = T extends undefined ? Pick<ActionContext, 'title'> : (T & Pick<ActionContext, 'title'>)
-export type Action<T> = RequiredKeys<T> extends never
-	? (options?: ActionOptions<T>) => Promise<void>
+export type Action<T> = RequiredKeys<T> extends never ? (options?: ActionOptions<T>) => Promise<void>
 	: (options: ActionOptions<T>) => Promise<void>
 
 type Colorize = (text: string) => string
@@ -370,7 +369,7 @@ export interface PromptSelect {
 	isSelect: boolean
 	name: string
 	text: string
-	choices: Array<{ title: string, value?: string } | string>
+	choices: Array<{ title: string; value?: string } | string>
 	initial?: number
 }
 

@@ -1,4 +1,4 @@
-import { type LocalPreset, emitter } from '@preset/core'
+import { emitter, type LocalPreset } from '@preset/core'
 import semver from 'semver'
 import checkUpdates, { type UpdateInfo } from 'update-notifier'
 import pkg from '../../core/package.json'

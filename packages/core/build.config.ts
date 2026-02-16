@@ -1,16 +1,14 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from 'obuild/config'
 
 export default defineBuildConfig({
-	entries: ['./src/index'],
-	clean: true,
-	declaration: true,
-	failOnWarn: false, // globals.d.ts is generated dynamically
-	externals: [
-		'esbuild',
+	entries: [
+		{
+			type: 'bundle',
+			input: ['./src/index.ts'],
+			dts: {},
+			rolldown: {
+				external: ['esbuild'],
+			},
+		},
 	],
-	rollup: {
-		emitCJS: true,
-		cjsBridge: true,
-		inlineDependencies: true,
-	},
 })

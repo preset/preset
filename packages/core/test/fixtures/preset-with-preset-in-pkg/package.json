@@ -1,4 +1,4 @@
 {
-  "private": true,
-  "preset": "./my-preset.ts"
+	"private": true,
+	"preset": "./my-preset.ts"
 }

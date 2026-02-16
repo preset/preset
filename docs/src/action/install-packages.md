@@ -12,14 +12,14 @@ Call the `installPackages` options in the `handler` function:
 
 ```ts
 export default definePreset({
-  // ...
-  handler: async () => {
-    await installPackages({
-      for: 'node',
-      packages: ['@preset/core'],
-      dev: true,
-    })
-  }
+	// ...
+	handler: async () => {
+		await installPackages({
+			for: 'node',
+			packages: ['@preset/core'],
+			dev: true,
+		})
+	},
 })
 ```
 
@@ -33,7 +33,7 @@ Defines the packages to install. This can be anything that would be passed as an
 
 Defines whether or not the packages to install are development dependencies. Defaults to `false`.
 
-### `for` 
+### `for`
 
 Defines the ecosystem to install packages for. The only two options are `php` and `node`, the latter being the default.
 
@@ -43,13 +43,13 @@ Defines whether to `install` or `update`. In either case, `packages` can be empt
 
 ### `packageManager`
 
-Defines the package manager that can be used. 
+Defines the package manager that can be used.
 
 This option is only used for Node, for which `npm`, `yarn`, `pnpm` and `bun` are available. If not specified, the package manager will be determined, by the lockfile in the target directory or the the `defaultNodeAgent` property of `~/.presetrc.json`, if specified. Otherwise, `npm` will be used.
 
 ### `additionalArgs`
 
-Defines additional arguments that will be given to the package manager. 
+Defines additional arguments that will be given to the package manager.
 
 ## Examples
 
@@ -57,8 +57,8 @@ Defines additional arguments that will be given to the package manager.
 
 ```ts
 await installPackages({
-  for: 'php',
-  packages: 'innocenzi/laravel-vite:^0.1.20',
+	for: 'php',
+	packages: 'innocenzi/laravel-vite:^0.1.20',
 })
 ```
 
@@ -66,9 +66,9 @@ await installPackages({
 
 ```ts
 await installPackages({
-  for: 'node',
-  packages: 'debug',
-  dev: true
+	for: 'node',
+	packages: 'debug',
+	dev: true,
 })
 ```
 
@@ -76,8 +76,8 @@ await installPackages({
 
 ```ts
 await installPackages({
-  for: 'php',
-  type: 'update'
+	for: 'php',
+	type: 'update',
 })
 ```
 
