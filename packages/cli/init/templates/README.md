@@ -7,7 +7,7 @@
 </p>
 
 <h2 align="center">@@presetName</h2>
-<pre><div align="center">npx apply username/@@dir</div></pre>
+<pre><div align="center">bunx apply username/@@dir</div></pre>
 
 <br />
 

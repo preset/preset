@@ -12,14 +12,14 @@ Preset is distributed as a Node command line tool. You can install it globally w
 npm i -g @preset/cli
 ```
 
-Once installed on your system, the `preset` command becomes available. Alternatively, you can use Preset with `npx` directly:
+Once installed on your system, the `preset` command becomes available. Alternatively, you can use Preset with `bunx` directly:
 
 ```bash
 # With global installation
 preset apply organization/preset
 
-# With npx for one-off commands (note that `apply` is an aliased package equivalent to `@preset/cli`)
-npx apply organization/preset
+# With bunx for one-off commands (note that `apply` is an aliased package equivalent to `@preset/cli`)
+bunx apply organization/preset
 ```
 
 ## Usage

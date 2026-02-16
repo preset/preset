@@ -8,7 +8,7 @@ outline: deep
 
 Preset is a system that makes it easy to perform modifications on a **freshly scaffolded project**.
 
-It is distributed as a command line tool, which makes it accessible without installation thanks to [`npx`](https://www.npmjs.com/package/npx). It also has a [programmatic API](/extra-topics/programmatic-api) that is useful for building tools with similar needs.
+It is distributed as a command line tool, which makes it accessible without installation thanks to [`bunx`](https://bun.com/docs/pm/bunx). It also has a [programmatic API](/extra-topics/programmatic-api) that is useful for building tools with similar needs.
 
 ![](/record.gif)
 
