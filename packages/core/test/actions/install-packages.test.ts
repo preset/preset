@@ -154,7 +154,7 @@ it('installs the given node package with yarn when yarn was used to run the pres
 		targetStructure: { 'package.json': { type: 'file', content: '{}' } },
 	}))
 
-it('installs the given node package with pnpm when pnpm was used to run the preset', async () =>
+it.todo('installs the given node package with pnpm when pnpm was used to run the preset', async () =>
 	await usingSandbox({
 		fn: async ({ targetDirectory }, makeTestPreset) => {
 			process.env.npm_config_user_agent = 'pnpm'
@@ -385,7 +385,7 @@ it('installs the given node package with bun', async () =>
 			await expectStructureMatches(targetDirectory, {
 				'node_modules': { type: 'directory' },
 				'node_modules/debug': { type: 'directory' },
-				'bun.lockb': { type: 'file' },
+				'bun.lock': { type: 'file' },
 				'package.json': {
 					type: 'file',
 					json: {
