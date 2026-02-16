@@ -1,0 +1,39 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**"
+      - "!readme.md"
+      - "!docs/**"
+      - "!packages/**/package.json"
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
+    runs-on: ${{ matrix.os }}
+
+    env:
+      DEBUG: "preset:*"
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        os: [ubuntu-latest]
+      fail-fast: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Bun dependencies
+        run: bun install
+
+      - name: CI scripts
+        run: bun run ci
