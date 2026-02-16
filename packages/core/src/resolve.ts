@@ -95,9 +95,9 @@ export async function resolveGitHubRepository(options: ApplyOptions): Promise<Re
 	debug.resolve('Trying to resolve as a GitHub repository.')
 
 	const regexes = [
-		/^([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:@([\w-\.]+))?$/,
-		/^git@github\.com:([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:\.git)?(?:@([\w-\.]+))?$/,
-		/^https?:\/\/(?:www\.)?github\.com\/([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:\.git)?(?:@([\w-\.]+))?/,
+		/^([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:@([\w-.]+))?$/,
+		/^git@github\.com:([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:\.git)?(?:@([\w-.]+))?$/,
+		/^https?:\/\/(?:www\.)?github\.com\/([a-zA-Z][\w-]+)\/([a-zA-Z][\w-]+)(?:\.git)?(?:@([\w-.]+))?/,
 	]
 
 	const repository = regexes

@@ -54,7 +54,7 @@ export async function createPresetContext(preset: Preset, applyOptions: ApplyOpt
  * Adds an action to the context.
  * @internal
  */
-export function createActionContext<Options extends Object, ResolvedOptions extends ActionOptions<Options>>(
+export function createActionContext<Options extends object, ResolvedOptions extends ActionOptions<Options>>(
 	presetContext: PresetContext,
 	name: string,
 	options: ResolvedOptions,

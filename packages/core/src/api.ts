@@ -74,7 +74,7 @@ export function definePreset<Options extends PresetFlags>(preset: DefinePresetOp
  * @param name The action name.
  * @param preset The action's script.
  */
-export function defineAction<Options extends Object, OptionsWithDefault extends Options = Options>(
+export function defineAction<Options extends object, OptionsWithDefault extends Options = Options>(
 	name: string,
 	action: ActionHandler<OptionsWithDefault>,
 	defaultOptions?: OptionsWithDefault,
@@ -83,8 +83,8 @@ export function defineAction<Options extends Object, OptionsWithDefault extends 
 		debug.action(name, `Running action "${name}".`)
 
 		const resolved: OptionsWithDefault = {
-			...defaultOptions ?? {},
-			...options ?? {},
+			...defaultOptions,
+			...options,
 		}
 
 		debug.action(name, 'Resolved options:', resolved)

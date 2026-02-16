@@ -47,7 +47,7 @@ const defaultOptions: Required<ExtractTemplatesOptions> = {
 }
 
 function renameDotfiles(input: string) {
-	return input.replace(/^(.+[\/\\])*(.+\.dotfile)$/, (_, directory, dotfile) => path.resolve(`${directory}/.${dotfile.replace('.dotfile', '')}`))
+	return input.replace(/^(.+[/\\])*(.+\.dotfile)$/, (_, directory, dotfile) => path.resolve(`${directory}/.${dotfile.replace('.dotfile', '')}`))
 }
 
 const isFile = (input: string) => nfs.statSync(input, { throwIfNoEntry: false })?.isFile() ?? false
