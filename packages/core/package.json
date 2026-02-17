@@ -17,8 +17,8 @@
 	"bugs": "https://github.com/preset/preset/issues",
 	"exports": {
 		".": {
-			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.mts"
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs"
 		},
 		"./*": "./*",
 		"./globals": {
@@ -36,9 +36,8 @@
 		"stub": "obuild --stub",
 		"test": "vitest",
 		"test:watch": "vitest",
-		"prepublishOnly": "npm run build",
-		"prepublish": "tsx ./update-globals.ts",
-		"postpublish": "tsx ./update-globals.ts --delete"
+		"prepare": "bun run build && bun run ./update-globals.ts",
+		"postpack": "bun run ./update-globals.ts --delete"
 	},
 	"dependencies": {
 		"cac": "catalog:",
