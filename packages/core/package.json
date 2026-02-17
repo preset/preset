@@ -35,9 +35,7 @@
 		"build": "obuild",
 		"stub": "obuild --stub",
 		"test": "vitest",
-		"test:watch": "vitest",
-		"prepare": "bun run build && bun run ./update-globals.ts",
-		"postpack": "bun run ./update-globals.ts --delete"
+		"test:watch": "vitest"
 	},
 	"dependencies": {
 		"cac": "catalog:",

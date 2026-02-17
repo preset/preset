@@ -25,7 +25,9 @@ jobs:
         run: bun install
 
       - name: Build
-        run: bun run build
+        run: |
+          bun run build
+          bun run packages/core/update-globals.ts
 
       - name: Install Node
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
