@@ -22,6 +22,16 @@ export interface ExtractTemplatesOptions {
 	to?: string
 
 	/**
+	 * Specifies the template type. If defined, takes priority over runtime checks.
+	 */
+	templateType?: 'file' | 'directory' | 'auto'
+
+	/**
+	 * Specifies the target type. If defined, takes priority over runtime checks.
+	 */
+	targetType?: 'file' | 'directory' | 'auto'
+
+	/**
 	 * Ignore templates file structure. Only works when extracting from a file to a directory.
 	 */
 	flatten?: boolean
@@ -44,6 +54,8 @@ const defaultOptions: Required<ExtractTemplatesOptions> = {
 	whenConflict: 'override',
 	flatten: false,
 	extractDotFiles: false,
+	targetType: 'auto',
+	templateType: 'auto',
 }
 
 function renameDotfiles(input: string) {
@@ -74,7 +86,7 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 				return
 			}
 
-			debug.action(actionContext.name, `Copying ${input} to ${output}.`)
+			debug.action(actionContext.name, `Copying file ${input} to ${output}.`)
 			await fs.copy(input, output)
 		}
 
@@ -100,13 +112,19 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 			}
 		}
 
+		// Determine types using options in priority, then runtime checks as fallback
+		const isTemplateFile = options.templateType === 'file' || (options.templateType === 'auto' && isFile(templatesPath))
+		const isTemplateDirectory = options.templateType === 'directory' || (options.templateType === 'auto' && isDirectory(templatesPath))
+		const isTargetFile = options.targetType === 'file' || (options.targetType === 'auto' && isFile(targetPath))
+		const isTargetDirectory = options.targetType === 'directory' || (options.targetType === 'auto' && isDirectory(targetPath))
+
 		// Copying a directory to a file is kind of a dumb operation
-		if (isDirectory(templatesPath) && isFile(targetPath)) {
+		if (isTemplateDirectory && isTargetFile) {
 			throw new PresetError({ code: 'ERR_ACTION_FAILED', details: 'Can not extract a directory to a file.' })
 		}
 
 		// Copying a file to a directory means copying the file inside the directory
-		if (isFile(templatesPath) && isDirectory(targetPath)) {
+		if (isTemplateFile && isTargetDirectory) {
 			const finalTargetPath = options.flatten
 				? path.resolve(targetPath, path.basename(options.from))
 				: path.resolve(targetPath, options.from)
@@ -117,14 +135,14 @@ export const extractTemplates = defineAction<ExtractTemplatesOptions, Required<E
 		}
 
 		// If templatesPath is a file and targetPath is a file too
-		if (isFile(templatesPath) && isFile(targetPath)) {
+		if (isTemplateFile && isTargetFile) {
 			await copyFileToFile(templatesPath, targetPath)
 
 			return true
 		}
 
 		// If templatesPath is a directory and targetPath is a directory too
-		if (isDirectory(templatesPath) && isDirectory(targetPath)) {
+		if (isTemplateDirectory && isTargetDirectory) {
 			await copyDirectoryToDirectory(templatesPath, targetPath)
 
 			return true

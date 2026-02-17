@@ -184,3 +184,92 @@ it('extracts glob-based files to the target directory', async () =>
 			'templates/php/config/vite.php': { type: 'file' },
 		},
 	}))
+
+it('uses templateType override to treat template as file', async () =>
+	await usingSandbox({
+		fn: async ({ targetDirectory }, makeTestPreset) => {
+			const { executePreset } = await makeTestPreset({
+				handler: async () =>
+					await extractTemplates({
+						from: 'file.txt',
+						to: 'output.txt',
+						templateType: 'file',
+						targetType: 'file',
+					}),
+			})
+
+			await executePreset()
+			await expectStructureMatches(targetDirectory, {
+				'output.txt': { type: 'file' },
+			})
+		},
+		rootStructure: { 'templates/file.txt': { type: 'file' } },
+	}))
+
+it('uses templateType override to treat template as directory', async () =>
+	await usingSandbox({
+		fn: async ({ targetDirectory }, makeTestPreset) => {
+			const { executePreset } = await makeTestPreset({
+				handler: async () =>
+					await extractTemplates({
+						from: 'data',
+						templateType: 'directory',
+					}),
+			})
+
+			await executePreset()
+			await expectStructureMatches(targetDirectory, {
+				'file1.txt': { type: 'file' },
+				'file2.txt': { type: 'file' },
+			})
+		},
+		rootStructure: {
+			'templates/data/file1.txt': { type: 'file' },
+			'templates/data/file2.txt': { type: 'file' },
+		},
+	}))
+
+it('uses targetType override to copy file into directory', async () =>
+	await usingSandbox({
+		fn: async ({ targetDirectory }, makeTestPreset) => {
+			const { executePreset } = await makeTestPreset({
+				handler: async () =>
+					await extractTemplates({
+						from: 'config.php',
+						to: 'config',
+						templateType: 'file',
+						targetType: 'directory',
+					}),
+			})
+
+			await executePreset()
+			await expectStructureMatches(targetDirectory, {
+				'config/config.php': { type: 'file' },
+			})
+		},
+		rootStructure: { 'templates/config.php': { type: 'file' } },
+	}))
+
+it('fails when templateType is directory and targetType is file', async () =>
+	await usingSandbox({
+		fn: async (_, makeTestPreset) => {
+			const { executePreset } = await makeTestPreset({
+				handler: async () =>
+					await extractTemplates({
+						templateType: 'directory',
+						targetType: 'file',
+						to: 'output.txt',
+					}),
+			})
+			const execution: any = {}
+
+			emitter.on('action:fail', (context) => execution.context = context)
+			execution.result = await executePreset()
+
+			expect(execution.result).toBe(false)
+			expect(execution.context?.name).toBe('extract-templates')
+			expect(execution.context?.error).toBeInstanceOf(Error)
+		},
+		rootStructure: { 'templates/file.txt': { type: 'file' } },
+		targetStructure: { 'output.txt': { type: 'file' } },
+	}))
